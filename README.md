@@ -1,358 +1,209 @@
+# 日本語
+
 # 📦 Template JLine HTML
+EJS、SCSS、JavaScriptを使用した静的サイト用テンプレート。最新のビルドシステムとFTPサーバーへの自動CI/CDデプロイ機能を搭載しています。
 
-Template dự án web tĩnh (static site) sử dụng **EJS + SCSS + JavaScript** với hệ thống build tự động và CI/CD deploy lên FTP server.
+## 💻 システム要件
+- Node.js (v20 以上): 各環境での推奨インストール方法
+  - **Windows**: [nvm-windows](https://github.com/coreybutler/nvm-windows) などのバージョン管理ツール、または公式インストーラー
+  - **Mac / Linux**: [nvm](https://github.com/nvm-sh/nvm) または [fnm](https://github.com/Schniz/fnm) の使用を推奨します。
+- npm (v9 以上)
+- Git (v2 以上)
 
----
-
-## 📋 Mục lục
-
-- [Yêu cầu hệ thống](#-yêu-cầu-hệ-thống)
-- [Cài đặt & Chạy dự án](#-cài-đặt--chạy-dự-án)
-- [Cấu trúc dự án](#-cấu-trúc-dự-án)
-- [Cách thức hoạt động](#-cách-thức-hoạt-động)
-- [Setup Server Deploy (CI/CD)](#-setup-server-deploy-cicd)
-- [Xử lý sự cố](#-xử-lý-sự-cố)
-
----
-
-## 💻 Yêu cầu hệ thống
-
-| Công cụ  | Phiên bản tối thiểu |
-| -------- | -------------------- |
-| Node.js  | v20 trở lên          |
-| npm      | v9 trở lên           |
-| Git      | v2 trở lên           |
-
----
-
-## 🚀 Cài đặt & Chạy dự án
-
-### 1. Clone dự án
-
+## 🚀 インストールと実行 (Windows, Mac, Linux 共通)
+### 1. プロジェクトのクローン
+ターミナル (Mac/Linux) または コマンドプロンプト / PowerShell (Windows) を開き、以下のコマンドを実行します：
 ```bash
-git clone https://github.com/hiep-dev-023/template_jline_html.git
-cd template_jline_html
+git clone https://github.com/jline-coding/TEMPLATE_HTML
+cd TEMPLATE_HTML
 ```
 
-### 2. Cài đặt dependencies
-
+### 2. 依存関係のインストール
 ```bash
 npm install
 ```
+*(Mac / Linux でパーミッションエラーが出た場合は、`sudo` を使わずに `nvm` を利用して Node.js 環境を構築することを推奨します。)*
 
-### 3. Chạy môi trường phát triển (Development)
-
+### 3. 開発サーバーの起動 (ローカル開発)
 ```bash
 npm run dev
 ```
+- `src/` フォルダ内の変更を監視し、自動でビルドを行います。
+- ブラウザが自動的に開き `http://localhost:8080` を表示します。ファイル保存時に変更が即座に反映 (ホットリロード) されます。
 
-- Tự động build toàn bộ file EJS, SCSS, JS, images
-- Mở trình duyệt tại **http://localhost:8080**
-- **Hot reload**: Tự động reload khi bạn sửa file trong thư mục `src/`
-
-### 4. Build sản phẩm (Production)
-
+### 4. 本番用ビルド
 ```bash
 npm run build
 ```
+- 最適化されたファイルが自動生成され、`public/` フォルダに出力されます。
 
-- Build một lần, xuất kết quả vào thư mục `public/`
-- Dùng khi cần kiểm tra kết quả build trước khi push
-
-### 5. Dọn dẹp thư mục build
-
+### 5. クリーンアップ
 ```bash
 npm run clean
 ```
-
-- Xóa toàn bộ thư mục `public/` (output đã build)
-
----
-
-## 📁 Cấu trúc dự án
-
-```
-template_jline_html/
-├── src/                          ← 📝 SOURCE CODE (viết code ở đây)
-│   ├── layouts/                  ← Layout dùng chung
-│   │   ├── _default.ejs          ← Layout chính (HTML wrapper)
-│   │   ├── _header.ejs           ← Header component
-│   │   └── _footer.ejs           ← Footer component
-│   ├── assets/                   ← Tài nguyên tĩnh
-│   │   ├── scss/                 ← File SCSS (style)
-│   │   ├── js/                   ← File JavaScript
-│   │   ├── images/               ← Hình ảnh gốc (tự chuyển sang WebP)
-│   │   └── vendor/               ← Thư viện bên ngoài (jQuery, Slick, AOS...)
-│   ├── index.ejs                 ← Trang chủ
-│   ├── sample.ejs                ← Trang mẫu
-│   └── about/                    ← Trang con
-│       └── index.ejs
-│
-├── public/                       ← 📤 OUTPUT (tự động sinh, KHÔNG sửa tay)
-│   ├── index.html                ← HTML đã compile từ EJS
-│   ├── assets/
-│   │   ├── css/                  ← CSS đã compile từ SCSS
-│   │   ├── js/                   ← JS đã xử lý
-│   │   └── images/               ← Hình ảnh đã tối ưu (WebP)
-│   └── about/
-│       └── index.html
-│
-├── scripts/                      ← 🔧 Build scripts
-│   ├── build.js                  ← Script build chính
-│   └── clean.js                  ← Script dọn dẹp
-│
-├── .github/                      ← ⚙️ CI/CD
-│   ├── workflows/
-│   │   └── deploy.yml            ← GitHub Actions workflow
-│   └── scripts/
-│       └── deploy.cjs            ← Script deploy lên FTP
-│
-├── deploy-config.json            ← 🔑 Cấu hình deploy cho dự án
-├── package.json                  ← Dependencies & scripts
-└── .gitignore
-```
+- 生成済みの `public/` フォルダのデータをすべて削除します。
 
 ---
 
-## ⚙️ Cách thức hoạt động
+## ✨ テンプレートの主要機能 (詳細解説)
 
-### Quy trình Build
+1. **EJS と Front Matter によるモジュール化されたHTML生成**
+   - 共通のレイアウト設定 (`_default.ejs` 等) や、ヘッダー・フッターのコンポーネント管理が可能です。
+   - 各ファイルの先頭に記述される Front Matter (gray-matter を採用) によって、`title`、`description` などのSEOメタデータや、読み込む CSS/JS のリストをページ毎に個別に制御できます。
 
-```
-src/ (EJS + SCSS + JS + Images)
-          │
-          ▼
-    scripts/build.js
-          │
-          ▼
-public/ (HTML + CSS + JS + WebP)
-```
+2. **高速な SCSS コンパイルと CSS 高度最適化**
+   - ネイティブ言語で実装された超高速の `sass-embedded` で SCSS を解析します。
+   - `postcss` と `autoprefixer` を用いてブラウザごとのベンダープレフィックスを自動付与。さらに `cssnano` と `postcss-sort-media-queries` を連携させ、CSSコードの極限までの軽量化（Minify化）を実現します。
 
-| Loại file     | Xử lý                                                         |
-| ------------- | -------------------------------------------------------------- |
-| `.ejs`        | Compile thành `.html`, hỗ trợ layout và include component     |
-| `.scss`       | Compile thành `.css`, tự động thêm prefix, nén (minify)       |
-| `.js`         | Copy và xử lý                                                 |
-| Hình ảnh      | Tự động chuyển đổi `.jpg/.png` → `.webp` để tối ưu dung lượng |
-| `vendor/`     | Copy nguyên bản các thư viện bên ngoài                         |
+3. **リアルタイムな開発環境 (Browser-Sync + Chokidar)**
+   - ソースコード全体を監視し、変更された差分のみを再ビルド。即座にブラウザのリロードを実行し、シームレスなコーディング体験を提供します。
 
-### Hệ thống Layout (EJS)
+4. **画像の自動最適化 (`sharp` エンジン)**
+   - 開発で配置した画像を、自動的に軽量かつ次世代フォーマットである `.webp` に変換し、Webページの読み込み速度を飛躍的に向上させます。
 
-Mỗi trang EJS sử dụng **front matter** (khối `---`) ở đầu file để khai báo metadata. Layout `_default.ejs` sẽ đọc các trường này để tự động sinh thẻ `<title>`, `<meta>`, `<link>`, `<script>`.
-
-#### Ví dụ đầy đủ (trang chủ `src/index.ejs`)
-
-```ejs
----
-layout: _default
-title: Trang chủ
-description: Mô tả trang chủ cho SEO
-keyword: từ khóa 1, từ khóa 2
-vendorcss: ['aos/aos','slick/slick']
-vendorjs: ['aos/aos','slick/slick.min']
-css: ['common','top']
-js: ['common','top']
-page: top
----
-
-<main class="p-top">
-    <h1>Nội dung trang</h1>
-</main>
-```
-
-#### Ví dụ trang con (`src/about/index.ejs`)
-
-```ejs
----
-layout: _default
-title: about
-description: description About
-keyword: keyword About
-vendorcss: ['aos/aos','slick/slick']
-vendorjs: ['aos/aos','slick/slick.min']
-css: ['common','about']
-js: ['common','about']
-page: about
----
-
-<main class="p-about">
-    <h1>Nội dung trang About</h1>
-</main>
-```
-
-#### Bảng giải thích các trường Front Matter
-
-| Trường       | Bắt buộc | Kiểu dữ liệu | Mô tả                                                                                                |
-| ------------ | -------- | -------------- | ----------------------------------------------------------------------------------------------------- |
-| `layout`     | ✅       | `string`       | Layout sử dụng — tương ứng file trong `src/layouts/` (ví dụ: `_default` → `_default.ejs`)             |
-| `title`      | ✅       | `string`       | Tiêu đề trang, hiển thị trên tab trình duyệt và thẻ `<meta og:title>`                                |
-| `description`| ❌       | `string`       | Mô tả trang cho SEO — sinh ra thẻ `<meta name="description">` và `<meta og:description>`             |
-| `keyword`    | ❌       | `string`       | Từ khóa SEO — sinh ra thẻ `<meta name="keywords">`                                                   |
-| `vendorcss`  | ❌       | `array`        | Danh sách file CSS thư viện ngoài cần load, đường dẫn tương đối từ `src/assets/vendor/` (không cần đuôi `.css`) |
-| `vendorjs`   | ❌       | `array`        | Danh sách file JS thư viện ngoài cần load, đường dẫn tương đối từ `src/assets/vendor/` (không cần đuôi `.js`)   |
-| `css`        | ❌       | `array`        | Danh sách file CSS riêng cho trang, đường dẫn tương đối từ `src/assets/scss/` (không cần đuôi `.css`)            |
-| `js`         | ❌       | `array`        | Danh sách file JS riêng cho trang, đường dẫn tương đối từ `src/assets/js/` (không cần đuôi `.js`)               |
-| `page`       | ❌       | `string`       | Tên trang, dùng để phân biệt class CSS trên `<body>` hoặc logic trong layout                          |
-
-#### Thứ tự load trong HTML (sinh bởi `_default.ejs`)
-
-```
-<head>
-  ├── <meta> tags (title, description, keyword, og:*)
-  ├── <link> vendorcss   ← CSS thư viện (AOS, Slick...)
-  └── <link> css         ← CSS riêng của trang (common, top...)
-</head>
-<body>
-  ├── Header (_header.ejs)
-  ├── Nội dung trang (contents)
-  ├── Footer (_footer.ejs)
-  ├── <script> jQuery     ← Luôn load jQuery trước
-  ├── <script> cookie.js  ← Luôn load cookie.js
-  ├── <script> vendorjs   ← JS thư viện (AOS, Slick...)
-  └── <script> js         ← JS riêng của trang (common, top...)
-</body>
-```
-
-> **💡 Lưu ý**: jQuery (`vendor/jquery/jquery-3.5.1.min.js`) và `cookie.js` được layout **tự động load** cho mọi trang, không cần khai báo trong front matter.
+5. **自動化された CI/CD (FTPデプロイ)**
+   - GitHub Actions を用いた FTP デプロイが最初から組み込まれています。
+   - ルート階層の `deploy-config.json` にてサーバーと対象ディレクトリを設定するだけで、`main` ブランチへのプッシュ時に自動的にデプロイが行われます。
+   - デプロイ時の設定に Basic 認証の情報を含めることができ、プレビュー環境や本番環境への不正アクセスを自動的に防ぐシステムを完備しています。
 
 ---
+---
 
-## 🚀 Setup Server Deploy (CI/CD)
+# Tiếng Việt
 
-Hệ thống tự động deploy code lên FTP server mỗi khi push code lên nhánh `main`.
+# 📦 Template JLine HTML
+Template dự án web tĩnh được trang bị hệ thống build cực kỳ hiện đại bằng EJS, SCSS, JavaScript, kết hợp CI/CD tự động deploy lên FTP server.
 
-### Tổng quan quy trình
+## 💻 Yêu cầu hệ thống
+- Node.js (v20+): Khuyến nghị cài đặt thông qua trình quản lý phiên bản:
+  - **Windows**: Sử dụng [nvm-windows](https://github.com/coreybutler/nvm-windows) hoặc tải bộ cài chuẩn trực tiếp.
+  - **Mac / Linux**: Sử dụng [nvm](https://github.com/nvm-sh/nvm) hoặc [fnm](https://github.com/Schniz/fnm).
+- npm (v9+): Cài đặt sẵn cùng Node.js.
+- Git (v2+)
 
-```
-Push code lên main
-       │
-       ▼
-GitHub Actions chạy workflow
-       │
-       ├── 1. Cài Node.js & dependencies
-       ├── 2. Build dự án (npm run build)
-       ├── 3. Kết nối FTP server
-       ├── 4. Kiểm tra bảo mật (.repo_lock)
-       └── 5. Upload file lên server
-```
-
-### Bước 1: Cấu hình `deploy-config.json`
-
-File này nằm ở **gốc dự án**, khai báo thông tin deploy:
-
-```json
-{
-  "server": "SERVER_A",
-  "project_dir": "template_jline_html",
-  "source_folder": "public",
-  "has_build_step": true,
-  "build_command": "npm run build",
-  "basic_auth": {
-    "username": "tester",
-    "password": "mat_khau_test_123"
-  }
-}
-```
-
-| Trường           | Mô tả                                                                                          |
-| ---------------- | ----------------------------------------------------------------------------------------------- |
-| `server`         | Tên server (dùng để ghép với `_CONFIG` tìm GitHub Secret, ví dụ: `SERVER_A` → `SERVER_A_CONFIG`) |
-| `project_dir`    | Tên thư mục trên server FTP (chỉ cho phép chữ, số, `-`, `_`)                                    |
-| `source_folder`  | Thư mục chứa file cần upload (thường là `public`)                                               |
-| `has_build_step` | `true` nếu dự án cần build trước khi deploy                                                     |
-| `build_command`  | Lệnh build (mặc định: `npm run build`)                                                          |
-| `basic_auth`     | Thông tin đăng nhập Basic Auth bảo vệ trang web                                                 |
-
-### Bước 2: Tạo GitHub Secret cho FTP Server
-
-Vì **GitHub Free plan** không hỗ trợ Organization Secrets cho repo private, nên cần tạo **Repository Secret**.
-
-1. Vào repo trên GitHub → **Settings** → **Secrets and variables** → **Actions**
-2. Nhấn **"New repository secret"**
-3. Đặt tên: `SERVER_A_CONFIG` (ghép từ trường `server` + `_CONFIG`)
-4. Nhập giá trị JSON chứa thông tin FTP:
-
-```json
-{
-  "host": "ftp.example.com",
-  "user": "ftp_username",
-  "pass": "ftp_password",
-  "ftp_dir": "./public_html/client/github_deploy",
-  "root_path": "/home/username/public_html/client/github_deploy"
-}
-```
-
-| Trường      | Mô tả                                                                  |
-| ----------- | ----------------------------------------------------------------------- |
-| `host`      | Địa chỉ FTP server                                                      |
-| `user`      | Tên đăng nhập FTP                                                        |
-| `pass`      | Mật khẩu FTP                                                             |
-| `ftp_dir`   | Đường dẫn **tương đối** đến thư mục chứa dự án trên FTP                 |
-| `root_path` | Đường dẫn **tuyệt đối** trên server (dùng cho `.htpasswd` trong Apache)  |
-
-> ⚠️ **Lưu ý**: `ftp_dir` và `root_path` trỏ đến **thư mục cha** chứa các dự án, KHÔNG bao gồm tên `project_dir`. Script sẽ tự thêm `project_dir` vào đường dẫn.
-
-### Bước 3: Push code và kiểm tra
-
+## 🚀 Cài đặt & Chạy dự án (Hoạt động đa nền tảng: Windows, Mac, Linux)
+### 1. Clone dự án
+Mở Terminal (trên Mac / Linux) hoặc Command Prompt / PowerShell (trên Windows), và gõ lệnh:
 ```bash
-git add .
-git commit -m "Deploy lần đầu"
-git push origin main
+git clone https://github.com/jline-coding/TEMPLATE_HTML
+cd TEMPLATE_HTML
 ```
 
-Sau khi push:
-1. Vào tab **Actions** trên GitHub để xem tiến trình
-2. Workflow sẽ tự động build và deploy
+### 2. Cài đặt các Package phụ thuộc
+```bash
+npm install
+```
+*(Nếu trên hệ điều hành Mac/Linux bạn gặp lỗi phân quyền permission denied, không nên sử dụng `sudo` mà hãy đảm bảo cài đặt môi trường Node.js thông qua nvm).*
 
-### Chế độ Deploy
+### 3. Chạy môi trường phát triển (Local Development)
+```bash
+npm run dev
+```
+- Các tệp tin trong thư mục `src/` sẽ được theo dõi. Mọi thao tác lưu tệp đều sẽ kích hoạt build lại ngay lập tức.
+- Trình duyệt tự mở ở địa chỉ `http://localhost:8080` với cơ chế (Hot-reload), màn hình sẽ được cập nhật tự động.
 
-| Chế độ        | Khi nào                                        | Hành vi                                                                     |
-| ------------- | ---------------------------------------------- | --------------------------------------------------------------------------- |
-| **Lần đầu**   | Thư mục `project_dir` chưa tồn tại trên server | Tạo thư mục, upload toàn bộ, setup `.htaccess`, `.htpasswd`, `.repo_lock`   |
-| **Cập nhật**   | Đã deploy trước đó                              | Chỉ upload file **thay đổi** và xóa file **đã xóa** (dựa trên `git diff`)   |
+### 4. Build sản phẩm (Production)
+```bash
+npm run build
+```
+- Trình biên dịch sẽ thu gọn, nén, và tối ưu hóa mã nguồn rồi xuất ra thư mục tĩnh mang định dạng hoàn chỉnh tại `public/`.
 
-### Hệ thống bảo mật (3 lớp)
-
-| Lớp | Tên                   | Mô tả                                                                 |
-| --- | ---------------------- | ---------------------------------------------------------------------- |
-| 🛡️ 1 | Chống Path Traversal  | Chặn `project_dir` chứa `../` để tránh ghi file ra ngoài thư mục cho phép |
-| 🛡️ 2 | Khóa chủ quyền       | File `.repo_lock` ghi tên repo — ngăn repo khác ghi đè nhầm dự án         |
-| 🛡️ 3 | Bảo vệ file hệ thống | Không cho xóa/ghi đè `.htaccess`, `.htpasswd`, `.repo_lock` qua deploy    |
-
----
-
-## 🔧 Xử lý sự cố
-
-### Lỗi "require is not defined in ES module scope"
-
-**Nguyên nhân**: `package.json` có `"type": "module"`, file deploy dùng CommonJS.
-
-**Cách sửa**: Đảm bảo file deploy có đuôi `.cjs` (đã sửa: `deploy.cjs`).
-
-### Lỗi "Không tìm thấy Secret cho server"
-
-**Nguyên nhân**: GitHub Secret chưa được tạo hoặc visibility sai.
-
-**Cách sửa**:
-- Kiểm tra Secret tên `<SERVER>_CONFIG` đã tồn tại
-- Nếu dùng Organization Secret: visibility phải là **"All repositories"** hoặc **"Selected repositories"** (bao gồm repo hiện tại)
-- Nếu repo private trên Free plan: dùng **Repository Secret** thay vì Organization Secret
-
-### Lỗi "550 No such file or directory"
-
-**Nguyên nhân**: Bug `ensureDir()` thay đổi CWD, gây lồng đường dẫn.
-
-**Cách sửa**: Đã fix — thêm `client.cd(ftpRoot)` sau mỗi `ensureDir()`.
-
-### Deploy lại từ đầu
-
-Nếu muốn reset và deploy lại hoàn toàn:
-1. Xóa thư mục `project_dir` trên FTP server
-2. Push một commit mới lên `main`
-3. Script sẽ tự nhận là "deploy lần đầu" và setup lại toàn bộ
+### 5. Xóa thư mục build
+```bash
+npm run clean
+```
+- Quét sạch toàn bộ thay đổi và xóa thư mục output đầu ra `public/`.
 
 ---
 
-## 📄 Giấy phép
+## ✨ Các tính năng chi tiết của Template
 
-ISC License
+1. **Kiến trúc HTML linh hoạt qua EJS & Front Matter**
+   - Sử dụng View Engine EJS để chia sẻ cấu trúc (Headers, Footers, Default Layouts), tái sử dụng mã hiệu quả.
+   - Tính năng Front Matter (plugin gray-matter) cho phép bạn đặt các cấu hình tại dòng đầu tiên của file `.ejs`. Cực kỳ hữu dụng khi bạn muốn tuỳ chỉnh `title`, `description`, cùng việc gọi đường dẫn CSS/JS đặc thù chỉ riêng cho trang web đó.
+
+2. **Dịch SCSS & Hệ thống Tối ưu CSS Đỉnh cao**
+   - Biên dịch tốc độ cao với bộ xử lý lõi Native `sass-embedded`.
+   - Kết hợp `postcss` và `autoprefixer` để tự động xử lý tiền tố tương thích cho các trình duyệt (vendor-prefixes). Hơn nữa, tích hợp cùng `cssnano` và `postcss-sort-media-queries` để tối thiểu hoá kích thước file mã CSS đến giọt cuối cùng.
+
+3. **Môi trường Web thực thời gian (Browser-Sync + Chokidar)**
+   - Theo dõi từng thay đổi nhỏ thông qua `chokidar`, ngay lập tức compile và bơm mã mới lên trình duyệt bằng Browser-Sync, tạo ra luồng dev vô cùng nhanh và không độ trễ.
+
+4. **Công cụ tự động chuyển đổi ảnh (`sharp`)**
+   - Toàn bộ ảnh sẽ được engine `sharp` nén lại và chuyển định dạng qua chuẩn hình ảnh thân thiện dùng riêng cho Web là `.webp`, giúp tăng chỉ số tải trang đáng kể.
+
+5. **Giải pháp tự động triển khai - CI/CD FTP Deploy tự động**
+   - Template đi kèm luồng GitHub Actions để phân phối dự án trực tiếp lên máy chủ FTP.
+   - Bạn chỉ cần thông qua tệp tin `deploy-config.json` lưu tại thư mục gốc để tuỳ biến thông tin. Mỗi lệnh push lên nhánh `main` được quy định đều tự động khởi chạy chu trình đưa code lên server.
+   - Đặc biệt, pipeline CI/CD còn có tính năng kích hoạt cấu hình Basic Authorization để bảo vệ site và kiểm soát truy cập từ những giai đoạn kiểm thử.
+
+---
+---
+
+# English
+
+# 📦 Template JLine HTML
+A highly optimized static website template powered by EJS, SCSS, and JavaScript, featuring an ultra-modern build structure and streamlined CI/CD FTP deployment workflows.
+
+## 💻 System Requirements
+- Node.js (v20+): Recommended installation process via version managers:
+  - **Windows**: Use [nvm-windows](https://github.com/coreybutler/nvm-windows) or the official system installer.
+  - **Mac / Linux**: Utilize [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm).
+- npm (v9+): Packaged alongside Node.js naturally.
+- Git (v2+)
+
+## 🚀 Installation & Usage (Cross-Platform compatibility: Windows, Mac, Linux)
+### 1. Clone the repository
+Inaugurate your Terminal (Mac/Linux) or Command Prompt / PowerShell bounds (Windows), and type:
+```bash
+git clone https://github.com/jline-coding/TEMPLATE_HTML
+cd TEMPLATE_HTML
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+*(For Mac/Linux environments encountering permission exceptions, avoid resorting to `sudo` permissions; rather ensure proper Node environments configured by nvm).*
+
+### 3. Run the Development Server (Local Development)
+```bash
+npm run dev
+```
+- Intelligently observes the `src/` directory mappings. As soon as a file is updated and saved, differential rebuilding processes occur.
+- Automatically initiates the project in your browser on `http://localhost:8080`, applying instantaneous reloading updates (Hot-reload methodology).
+
+### 4. Build for Production
+```bash
+npm run build
+```
+- Fully resolves minifications, asset generations, and optimizations to finalize production ready assets safely nested inside the `public/` directory.
+
+### 5. Clean output
+```bash
+npm run clean
+```
+- Eliminates the previously built and active `public/` folder entirely.
+
+---
+
+## ✨ Detailed Breakdown of Core Features
+
+1. **Modular HTML Processing powered by EJS & Front Matter**
+   - Provides EJS rendering to govern repetitive template components such as unified Base Layouts, Headers, and Footers systematically.
+   - Operates utilizing Front Matter properties via the `gray-matter` module embedded at the head of every individual `.ejs` file. This lets developers explicitly configure page variables dynamically, injecting crucial SEO attributes (`title`, `description`) or even distinct script/styles required strictly per route endpoint context.
+
+2. **Turbocharged SCSS Parsing & Peerless CSS Minification**
+   - Propelled under-the-hood by native speed engines explicitly via `sass-embedded`.
+   - Naturally integrated dynamically alongside `postcss` and `autoprefixer` engines acting rapidly granting browser vendor-prefixes automatically. Followed comprehensively by `cssnano` and `postcss-sort-media-queries` rendering maximum compression footprints feasible to reduce bandwidth overhead.
+
+3. **Live Syncing Ecosystem Environment (Browser-Sync + Chokidar)**
+   - Smart background file-system watcher targeting targeted delta mutations safely compiling segments into RAM logic without performance latency problems, immediately triggering synchronization hooks inside current browser viewports seamlessly.
+
+4. **Next-Generation Image Transformations (`sharp`)**
+   - Connects directly onto the powerful backend API engine of `sharp`; compressing graphical heavy images by implicitly re-converting formats swiftly over towards optimized modern web patterns specifically conforming to standard `.webp` file structures implicitly natively out of the box preserving extreme bandwidth data.
+
+5. **Integrated CI/CD GitHub Action FTP Flows**
+   - Shipped by default with persistent and secure mechanisms delegating updates across straight remote FTP hosting deployments.
+   - Configuration remains inherently elementary; handled primarily adjusting the `deploy-config.json` configuration block at root location. Simply push modifications strictly conforming into the `main` git branch and observe workflows transparently automate the staging phases fully.
+   - Extends custom configurable traits protecting staging directories using dynamic basic authentication HTTP protocols defending access layers entirely securely per test-bench builds proactively.
