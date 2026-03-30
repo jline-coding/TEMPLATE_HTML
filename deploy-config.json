@@ -1,0 +1,11 @@
+{
+  "server": "JLWEB",
+  "project_dir": "template_jline_html",
+  "source_folder": "public",
+  "has_build_step": true,
+  "build_command": "npm run build",
+  "basic_auth": {
+    "username": "test",
+    "password": "test"
+  }
+}

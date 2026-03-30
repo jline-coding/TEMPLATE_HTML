@@ -1,0 +1,28 @@
+---
+layout: _default
+title: about
+description: description About
+keyword: keyword About
+vendorcss: ['aos/aos','slick/slick']
+vendorjs: ['aos/aos','slick/slick.min']
+css: ['common','about']
+js: ['common','about']
+page: about
+---
+<script>
+    if (!window.sessionStorage.getItem("storage_loading")) {
+        document.documentElement.classList.add("is-loading");    
+        window.sessionStorage.setItem("storage_loading", new Date().getTime().toString());    
+    }
+</script>
+<main class="p-about">   
+    <div class="c-loading">
+        <div class="c-loading__inner">
+            <div class="c-loading__content">
+                <div class="c-loading__item"></div>
+                <div class="c-loading__item"></div>
+            </div>
+        </div>
+    </div>   
+    <h1></h1>
+</main>
