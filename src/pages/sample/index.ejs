@@ -1,21 +1,21 @@
 ---
 layout: _default
-title: about
+title: sample
 description: description About
 keyword: keyword About
 vendorcss: ['aos/aos','slick/slick']
 vendorjs: ['aos/aos','slick/slick.min']
-css: ['common','about']
-js: ['common','about']
-page: about
+css: ['common','sample']
+js: ['common','sample']
+page: sample
+header: 'header_01'
+footer: 'footer_01'
 ---
-<script>
-    if (!window.sessionStorage.getItem("storage_loading")) {
-        document.documentElement.classList.add("is-loading");    
-        window.sessionStorage.setItem("storage_loading", new Date().getTime().toString());    
-    }
-</script>
 <main class="p-about">   
+    
+    <!-- Bạn có thể nhúng Component bất kỳ ở bất kỳ đâu trong trang bằng lệnh includeComponent này! -->
+    <%- includeComponent('sidebar') %>
+
     <div class="c-loading">
         <div class="c-loading__inner">
             <div class="c-loading__content">
@@ -24,5 +24,6 @@ page: about
             </div>
         </div>
     </div>   
-    <h1></h1>
+    <h1>sample</h1>
+    <img src="../assets/images/common/img_dummy.webp" alt="">
 </main>
