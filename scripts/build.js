@@ -399,14 +399,15 @@ async function compileScssFile(filePath) {
       sourceMap: isWatch,
     });
 
+    const rel = relative(SCSS_DIR, filePath);
+    const cssPath = resolve(DIST, 'assets', 'css', rel.replace(/\.scss$/, '.css'));
+
     // PostCSS processing
     const processed = await postcss(postcssPlugins).process(result.css, {
       from: filePath,
-      map: isWatch ? { inline: false } : false,
+      to: cssPath,
+      map: isWatch ? { inline: false, prev: result.sourceMap, annotation: true } : false,
     });
-
-    const rel = relative(SCSS_DIR, filePath);
-    const cssPath = resolve(DIST, 'assets', 'css', rel.replace(/\.scss$/, '.css'));
     const mapPath = cssPath + '.map';
     ensureDir(dirname(cssPath));
 
