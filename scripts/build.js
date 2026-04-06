@@ -579,7 +579,8 @@ async function buildImages(changedFile) {
       const webpRel = rel.replace(/\.(jpg|jpeg|png)$/i, '.webp');
       const dest = resolve(destDir, webpRel);
       ensureDir(dirname(dest));
-      await sharp(changedFile).webp({ quality: 90 }).toFile(dest);
+      const buf = readFileSync(changedFile);
+      await sharp(buf).webp({ quality: 90 }).toFile(dest);
       console.log(`[images] webp: ${norm(rel)} → ${norm(webpRel)}`);
     }
     return;
@@ -604,7 +605,8 @@ async function buildImages(changedFile) {
       const dest = resolve(destDir, webpRel);
       if (isNewer(file, dest)) {
         ensureDir(dirname(dest));
-        await sharp(file).webp({ quality: 90 }).toFile(dest);
+        const buf = readFileSync(file);
+        await sharp(buf).webp({ quality: 90 }).toFile(dest);
         console.log(`[images] webp: ${norm(rel)} → ${norm(webpRel)}`);
       }
     }
