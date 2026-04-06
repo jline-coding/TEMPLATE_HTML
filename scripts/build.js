@@ -720,12 +720,28 @@ async function startWatch() {
 
   browserSync.init(bsOptions);
 
-  // Debounce helper
+  // Debounce helper (for single-file events like SCSS partial → rebuild all)
   function debounce(fn, wait = 200) {
     let timer;
     return (...args) => {
       clearTimeout(timer);
       timer = setTimeout(() => fn(...args), wait);
+    };
+  }
+
+  // Batch debounce helper (collects all files during wait period, processes all)
+  function batchDebounce(fn, wait = 300) {
+    let timer;
+    const queue = [];
+    return (...args) => {
+      queue.push(args);
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        const batch = queue.splice(0);
+        for (const a of batch) {
+          await fn(...a);
+        }
+      }, wait);
     };
   }
 
@@ -800,19 +816,19 @@ async function startWatch() {
   // JS watcher
   const jsWatcher = chokidarWatch(JS_DIR, watchOpts);
 
-  jsWatcher.on('change', debounce((filepath) => {
+  jsWatcher.on('change', batchDebounce((filepath) => {
     if (!filepath.endsWith('.js')) return;
     console.log(`[watch:js] changed: ${norm(filepath)}`);
     buildJs(getAbs(filepath));
     browserSync.reload();
   }));
-  jsWatcher.on('add', debounce((filepath) => {
+  jsWatcher.on('add', batchDebounce((filepath) => {
     if (!filepath.endsWith('.js')) return;
     console.log(`[watch:js] added: ${norm(filepath)}`);
     buildJs(getAbs(filepath));
     browserSync.reload();
   }));
-  jsWatcher.on('unlink', debounce((filepath) => {
+  jsWatcher.on('unlink', batchDebounce((filepath) => {
     if (!filepath.endsWith('.js')) return;
     const rel = relative(JS_DIR, getAbs(filepath));
     const dest = resolve(DIST, 'assets', 'js', rel);
@@ -827,19 +843,19 @@ async function startWatch() {
   const vendorExts = ['.php', '.png', '.jpg', '.scss', '.css', '.js', '.svg', '.woff', '.woff2', '.ttf', '.eot'];
   function isVendor(f) { return vendorExts.includes(extname(f).toLowerCase()); }
 
-  vendorWatcher.on('change', debounce((filepath) => {
+  vendorWatcher.on('change', batchDebounce((filepath) => {
     if (!isVendor(filepath)) return;
     console.log(`[watch:vendor] changed: ${norm(filepath)}`);
     buildVendor(getAbs(filepath));
     browserSync.reload();
   }));
-  vendorWatcher.on('add', debounce((filepath) => {
+  vendorWatcher.on('add', batchDebounce((filepath) => {
     if (!isVendor(filepath)) return;
     console.log(`[watch:vendor] added: ${norm(filepath)}`);
     buildVendor(getAbs(filepath));
     browserSync.reload();
   }));
-  vendorWatcher.on('unlink', debounce((filepath) => {
+  vendorWatcher.on('unlink', batchDebounce((filepath) => {
     if (!isVendor(filepath)) return;
     const rel = relative(VENDOR_DIR, getAbs(filepath));
     const dest = resolve(DIST, 'assets', 'vendor', rel);
@@ -859,19 +875,19 @@ async function startWatch() {
   const convertExts = ['.jpg', '.jpeg', '.png'];
   function isImage(f) { const e = extname(f).toLowerCase(); return copyExts.includes(e) || convertExts.includes(e); }
 
-  imgWatcher.on('change', debounce(async (filepath) => {
+  imgWatcher.on('change', batchDebounce(async (filepath) => {
     if (!isImage(filepath)) return;
     console.log(`[watch:images] changed: ${norm(filepath)}`);
     await buildImages(getAbs(filepath));
     browserSync.reload();
   }));
-  imgWatcher.on('add', debounce(async (filepath) => {
+  imgWatcher.on('add', batchDebounce(async (filepath) => {
     if (!isImage(filepath)) return;
     console.log(`[watch:images] added: ${norm(filepath)}`);
     await buildImages(getAbs(filepath));
     browserSync.reload();
   }));
-  imgWatcher.on('unlink', debounce((filepath) => {
+  imgWatcher.on('unlink', batchDebounce((filepath) => {
     if (!isImage(filepath)) return;
     const rel = relative(IMAGES_DIR, getAbs(filepath));
     const destDir = resolve(DIST, 'assets', 'images');
