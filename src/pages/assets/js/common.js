@@ -1,6 +1,13 @@
 (function ($) {
     let scroll_pos1 = 0;
+    // Inview
+    const movement = new inview.observer({
+        aniDelay: 300,
+        optionView: { bottom: -50 },
+    });
 
+    // run inview 
+    movement.init();
     // =============================
     // Helper: Body lock/unlock (Modal)
     // =============================
