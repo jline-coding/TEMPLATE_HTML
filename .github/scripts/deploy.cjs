@@ -108,6 +108,7 @@ async function uploadDirectory(client, localDir, remoteDir, ftpRoot) {
         const remoteFilePath = `${remoteDir}/${relPath}`;
 
         const remoteFileDir = path.posix.dirname(remoteFilePath);
+        await client.cd(ftpRoot);
         await client.ensureDir(remoteFileDir);
         await client.cd(ftpRoot);
 
@@ -458,7 +459,9 @@ async function runDeploy() {
             console.log('');
             console.log('--- FIRST DEPLOY: Setup structure & security ---');
 
+            await client.cd(ftpRoot);
             await client.ensureDir(targetDir);
+            await client.cd(ftpRoot);
             await client.ensureDir(`${targetDir}/.deploy`);
             await client.cd(ftpRoot);
 
@@ -516,6 +519,7 @@ async function runDeploy() {
             console.log('');
             console.log('--- UPDATE: Comparing manifest files ---');
 
+            await client.cd(ftpRoot);
             await client.ensureDir(`${targetDir}/.deploy`);
             await client.cd(ftpRoot);
 
@@ -607,6 +611,7 @@ async function runDeploy() {
                         const localFilePath = path.join(config.source_folder, relPath);
                         const ftpFilePath = `${targetDir}/${relPath}`;
                         const remoteFileDir = path.posix.dirname(ftpFilePath);
+                        await client.cd(ftpRoot);
                         await client.ensureDir(remoteFileDir);
                         await client.cd(ftpRoot);
                         await client.uploadFrom(localFilePath, ftpFilePath);
