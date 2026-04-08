@@ -421,13 +421,14 @@ async function runDeploy() {
                 }
                 const lockOwner = fs.readFileSync(lockFileLocal, 'utf8').trim();
 
-                if (lockOwner !== lockId) {
+                // Tương thích ngược: Nếu lockOwner là bản cũ (không có :env) nhưng đúng repo, thì cho qua
+                if (lockOwner !== lockId && lockOwner !== process.env.GITHUB_REPO) {
                     throw new Error(
                         `[SECURITY] Directory [${config.project_dir}] belongs to [${lockOwner}]. ` +
                         `Current: [${lockId}]. DEPLOY CANCELLED!`
                     );
                 }
-                console.log(`[OK] Repo lock matched [${lockId}] - safe to proceed.`);
+                console.log(`[OK] Repo lock matched [${lockOwner}] - safe to proceed.`);
             } catch (err) {
                 if (err.message.includes('[SECURITY]')) throw err;
 
