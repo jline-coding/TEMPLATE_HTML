@@ -13,7 +13,7 @@
   },
   "test": {
     "deploy_method": "ftp",
-    "server": "JLWEB_STG",
+    "server": "JLWEB",
     "project_dir": "template_jline_html_stg",
     "basic_auth": {
       "username": "test",
