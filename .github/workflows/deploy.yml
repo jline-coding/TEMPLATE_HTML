@@ -3,7 +3,7 @@ name: Deploy To FTP Server
 on:
   push:
     branches:
-      - main    # Deploy production khi push lên main
+      - master    # Deploy production khi push lên main
       - staging # Deploy lên server test khi push lên staging
   workflow_dispatch: # Cho phép chạy thủ công từ GitHub UI
 
