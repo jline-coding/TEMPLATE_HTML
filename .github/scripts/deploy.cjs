@@ -470,11 +470,11 @@ async function runDeploy() {
             fs.writeFileSync('/tmp/.repo_lock', lockId);
             await client.uploadFrom('/tmp/.repo_lock', `${targetDir}/.deploy/.repo_lock`);
 
-            // 2. Create .htpasswd
+            // 2. Create .htpasswd (cùng cấp với .htaccess)
             console.log('Creating .htpasswd...');
             const hashedPass = crypt(config.basic_auth.password);
             fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
-            await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.deploy/.htpasswd`);
+            await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
 
             // 3. Create .htaccess (MUST stay in root to protect all children)
             console.log('Creating .htaccess...');
@@ -484,7 +484,7 @@ async function runDeploy() {
                 '</Files>',
                 'AuthType Basic',
                 'AuthName "Restricted Area"',
-                `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.deploy/.htpasswd`,
+                `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
                 'Require valid-user',
             ].join('\n');
             fs.writeFileSync('/tmp/.htaccess', htaccessContent);
@@ -527,7 +527,7 @@ async function runDeploy() {
             console.log('Syncing .htpasswd & .htaccess...');
             const hashedPass = crypt(config.basic_auth.password);
             fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
-            await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.deploy/.htpasswd`);
+            await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
 
             const htaccessContent = [
                 '<Files ~ "^\\.">',
@@ -535,7 +535,7 @@ async function runDeploy() {
                 '</Files>',
                 'AuthType Basic',
                 'AuthName "Restricted Area"',
-                `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.deploy/.htpasswd`,
+                `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
                 'Require valid-user',
             ].join('\n');
             fs.writeFileSync('/tmp/.htaccess', htaccessContent);
@@ -635,9 +635,9 @@ async function runDeploy() {
 
             // Cleanup old orphaned files from root if transitioning to .deploy
             try { await client.remove(`${targetDir}/.repo_lock`); } catch(e) {}
-            try { await client.remove(`${targetDir}/.htpasswd`); } catch(e) {}
             try { await client.remove(`${targetDir}/.deploy_sha`); } catch(e) {}
             try { await client.remove(`${targetDir}/.deploy_manifest.json`); } catch(e) {}
+            try { await client.remove(`${targetDir}/.deploy/.htpasswd`); } catch(e) {} // Clean up old .htpasswd inside .deploy if previously generated
 
             // --- Save new manifest + SHA ---
             fs.writeFileSync('/tmp/.deploy_manifest.json', JSON.stringify(currentManifest));
