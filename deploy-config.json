@@ -14,7 +14,7 @@
   "test": {
     "deploy_method": "ftp",
     "server": "JLWEB",
-    "project_dir": "template_jline_html_stg",
+    "project_dir": "template_jline_html",
     "basic_auth": {
       "username": "test",
       "password": "test"
