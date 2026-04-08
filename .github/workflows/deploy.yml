@@ -59,20 +59,31 @@ jobs:
           echo "HAS_BUILD=$HAS_BUILD" >> $GITHUB_ENV
           echo "BUILD_CMD=$BUILD_CMD" >> $GITHUB_ENV
 
+      # ── Chế độ ZIP: Bỏ qua toàn bộ (chỉ cần tạo tag để release) ──
+      - name: ℹ️ Bỏ qua deploy (chế độ ZIP)
+        if: env.DEPLOY_METHOD == 'zip'
+        run: |
+          echo "╔══════════════════════════════════════════════════╗"
+          echo "║  📦 Môi trường [${{ env.DEPLOY_ENV }}] đang ở chế độ ZIP  ║"
+          echo "║  → Bỏ qua FTP deploy.                           ║"
+          echo "║  → Tạo tag (vd: git tag v1.0.0) để tạo Release. ║"
+          echo "╚══════════════════════════════════════════════════╝"
+
+      # ── Chế độ FTP: Build + Deploy lên server ──
       - name: ⚙️ Cài đặt Node.js
+        if: env.DEPLOY_METHOD == 'ftp'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: 📦 Cài đặt dependencies dự án (nếu cần build)
-        if: env.HAS_BUILD == 'true'
+        if: env.DEPLOY_METHOD == 'ftp' && env.HAS_BUILD == 'true'
         run: npm ci
 
       - name: 🔨 Build dự án
-        if: env.HAS_BUILD == 'true'
+        if: env.DEPLOY_METHOD == 'ftp' && env.HAS_BUILD == 'true'
         run: ${{ env.BUILD_CMD }}
 
-      # ── Chế độ FTP: Deploy lên server ──
       - name: 📦 Cài đặt thư viện deploy
         if: env.DEPLOY_METHOD == 'ftp'
         run: npm install --no-save basic-ftp apache-crypt
@@ -86,13 +97,3 @@ jobs:
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
           # Tự động ghép tên SERVER với _CONFIG để lấy đúng Secret
           SERVER_SECRET_JSON: ${{ secrets[format('{0}_CONFIG', env.SERVER_NAME)] }}
-
-      # ── Chế độ ZIP: Bỏ qua FTP ──
-      - name: ℹ️ Bỏ qua FTP (chế độ ZIP)
-        if: env.DEPLOY_METHOD == 'zip'
-        run: |
-          echo "╔══════════════════════════════════════════════════╗"
-          echo "║  📦 Môi trường [${{ env.DEPLOY_ENV }}] đang ở chế độ ZIP  ║"
-          echo "║  → Bỏ qua FTP deploy.                           ║"
-          echo "║  → Tạo tag (vd: git tag v1.0.0) để tạo Release. ║"
-          echo "╚══════════════════════════════════════════════════╝"
