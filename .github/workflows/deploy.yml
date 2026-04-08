@@ -18,7 +18,7 @@ jobs:
       - name: 📥 Kéo Source Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Lấy toàn bộ lịch sử Git để tìm file thay đổi
+          fetch-depth: 1 # Manifest-based: khong can lich su git
 
       - name: 🔍 Đọc cấu hình Deploy
         id: config

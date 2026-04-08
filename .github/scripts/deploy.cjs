@@ -398,23 +398,49 @@ async function runDeploy() {
 
         // SECURITY LAYER 2: REPO LOCK (prevent accidental overwrite)
         let isFirstDeploy = false;
+        let dirExists = true;
+
         try {
             await client.cd(targetDir);
-            const lockFileLocal = '/tmp/.repo_lock';
-            await client.downloadTo(lockFileLocal, '.repo_lock');
-            const lockOwner = fs.readFileSync(lockFileLocal, 'utf8').trim();
+        } catch (e) {
+            // Directory does not exist -> safe for first deploy
+            dirExists = false;
+        }
 
-            if (lockOwner !== process.env.GITHUB_REPO) {
-                throw new Error(
-                    `[SECURITY] Directory [${config.project_dir}] belongs to [${lockOwner}]. ` +
-                    `Current repo: [${process.env.GITHUB_REPO}]. DEPLOY CANCELLED!`
-                );
+        if (dirExists) {
+            // Directory exists -> MUST have matching .repo_lock
+            try {
+                const lockFileLocal = '/tmp/.repo_lock';
+                await client.downloadTo(lockFileLocal, '.repo_lock');
+                const lockOwner = fs.readFileSync(lockFileLocal, 'utf8').trim();
+
+                if (lockOwner !== process.env.GITHUB_REPO) {
+                    throw new Error(
+                        `[SECURITY] Directory [${config.project_dir}] belongs to [${lockOwner}]. ` +
+                        `Current repo: [${process.env.GITHUB_REPO}]. DEPLOY CANCELLED!`
+                    );
+                }
+                console.log('[OK] Repo lock (.repo_lock) matched - safe to proceed.');
+            } catch (err) {
+                if (err.message.includes('[SECURITY]')) throw err;
+
+                // Directory exists but NO .repo_lock -> BLOCK
+                console.error('========================================');
+                console.error('   [ERROR] DIRECTORY ALREADY EXISTS');
+                console.error('========================================');
+                console.error(`Directory [${config.project_dir}] already exists on server but has no .repo_lock file.`);
+                console.error('This means it was created manually or by another system.');
+                console.error('');
+                console.error('Options:');
+                console.error('  1. Delete the directory on server manually, then re-deploy.');
+                console.error('  2. Add .repo_lock file manually with content: ' + process.env.GITHUB_REPO);
+                console.error('');
+                console.error('DEPLOY CANCELLED to prevent data loss.');
+                process.exit(1);
             }
-            console.log('[OK] Repo lock (.repo_lock) matched - safe to proceed.');
-        } catch (err) {
-            if (err.message.includes('[SECURITY]')) throw err;
+        } else {
             isFirstDeploy = true;
-            console.log('[INFO] First deploy detected - will setup everything.');
+            console.log('[INFO] Directory does not exist - first deploy.');
         }
 
         // ════════════════════════════════════════
