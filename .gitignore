@@ -6,3 +6,5 @@
 .htpasswd
 .htaccess
 .deploy_sha
+.deploy_manifest.json
+.env
