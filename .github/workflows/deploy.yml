@@ -8,7 +8,7 @@ on:
   workflow_dispatch: # Cho phép chạy thủ công từ GitHub UI
 
 concurrency:
-  group: deploy-${{ github.repository }}
+  group: deploy-${{ github.repository }}-${{ github.ref_name }}
   cancel-in-progress: false # Bắt buộc xếp hàng, không cho 2 người chạy cùng lúc
 
 jobs:
@@ -23,9 +23,38 @@ jobs:
       - name: 🔍 Đọc cấu hình Deploy
         id: config
         run: |
-          SERVER_NAME=$(jq -r '.server' deploy-config.json | tr 'a-z' 'A-Z')
+          # Phát hiện nhánh → xác định môi trường
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+
+          # 🛡️ Chỉ cho phép deploy từ master hoặc staging
+          if [ "$BRANCH_NAME" != "master" ] && [ "$BRANCH_NAME" != "staging" ]; then
+            echo "❌ LỖI: Không được deploy từ nhánh [$BRANCH_NAME]!"
+            echo "   Chỉ cho phép: master (production) hoặc staging (test)."
+            exit 1
+          fi
+
+          if [ "$BRANCH_NAME" = "staging" ]; then
+            DEPLOY_ENV="test"
+          else
+            DEPLOY_ENV="production"
+          fi
+          echo "DEPLOY_BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "DEPLOY_ENV=$DEPLOY_ENV" >> $GITHUB_ENV
+          echo "📌 Nhánh: $BRANCH_NAME → Môi trường: $DEPLOY_ENV"
+
+          # Đọc cấu hình chung
           HAS_BUILD=$(jq -r '.has_build_step // false' deploy-config.json)
           BUILD_CMD=$(jq -r '.build_command // "npm run build"' deploy-config.json)
+
+          # Đọc deploy_method từ môi trường (mặc định: ftp)
+          DEPLOY_METHOD=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].deploy_method // "ftp"' deploy-config.json)
+          echo "DEPLOY_METHOD=$DEPLOY_METHOD" >> $GITHUB_ENV
+          echo "📦 Phương thức: $DEPLOY_METHOD"
+
+          # Đọc server từ đúng môi trường (chỉ cần khi FTP)
+          SERVER_NAME=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].server // ""' deploy-config.json | tr 'a-z' 'A-Z')
+          echo "🖥️ Server: ${SERVER_NAME:-'(không dùng FTP)'}"
+
           echo "SERVER_NAME=$SERVER_NAME" >> $GITHUB_ENV
           echo "HAS_BUILD=$HAS_BUILD" >> $GITHUB_ENV
           echo "BUILD_CMD=$BUILD_CMD" >> $GITHUB_ENV
@@ -43,12 +72,27 @@ jobs:
         if: env.HAS_BUILD == 'true'
         run: ${{ env.BUILD_CMD }}
 
+      # ── Chế độ FTP: Deploy lên server ──
       - name: 📦 Cài đặt thư viện deploy
+        if: env.DEPLOY_METHOD == 'ftp'
         run: npm install --no-save basic-ftp apache-crypt
 
-      - name: 🚀 Chạy Script Deploy
+      - name: 🚀 Chạy Script Deploy (FTP)
+        if: env.DEPLOY_METHOD == 'ftp'
         run: node .github/scripts/deploy.cjs
         env:
           GITHUB_REPO: ${{ github.repository }}
+          DEPLOY_BRANCH: ${{ env.DEPLOY_BRANCH }}
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
           # Tự động ghép tên SERVER với _CONFIG để lấy đúng Secret
           SERVER_SECRET_JSON: ${{ secrets[format('{0}_CONFIG', env.SERVER_NAME)] }}
+
+      # ── Chế độ ZIP: Bỏ qua FTP ──
+      - name: ℹ️ Bỏ qua FTP (chế độ ZIP)
+        if: env.DEPLOY_METHOD == 'zip'
+        run: |
+          echo "╔══════════════════════════════════════════════════╗"
+          echo "║  📦 Môi trường [${{ env.DEPLOY_ENV }}] đang ở chế độ ZIP  ║"
+          echo "║  → Bỏ qua FTP deploy.                           ║"
+          echo "║  → Tạo tag (vd: git tag v1.0.0) để tạo Release. ║"
+          echo "╚══════════════════════════════════════════════════╝"

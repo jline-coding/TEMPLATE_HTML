@@ -281,7 +281,34 @@ async function runDeploy() {
         process.exit(1);
     }
 
-    const config = JSON.parse(fs.readFileSync('deploy-config.json', 'utf8'));
+    const rawConfig = JSON.parse(fs.readFileSync('deploy-config.json', 'utf8'));
+
+    // ─── Xác định môi trường deploy ───
+    const deployEnv = process.env.DEPLOY_ENV || 'production';
+    const branch = process.env.DEPLOY_BRANCH || '';
+    console.log(`📌 Nhánh: ${branch || '(không rõ)'} → Môi trường: ${deployEnv.toUpperCase()}`);
+
+    // Lấy cấu hình của môi trường tương ứng
+    const envConfig = rawConfig[deployEnv];
+    if (!envConfig) {
+        console.error(`❌ LỖI: Không tìm thấy cấu hình môi trường "${deployEnv}" trong deploy-config.json!`);
+        console.error(`   Cần có khối "${deployEnv}" chứa: server, project_dir, basic_auth.`);
+        process.exit(1);
+    }
+
+    // Gộp cấu hình: phần chung (gốc) + phần riêng (production/test)
+    const config = {
+        source_folder: rawConfig.source_folder,
+        has_build_step: rawConfig.has_build_step,
+        build_command: rawConfig.build_command,
+        server: envConfig.server,
+        project_dir: envConfig.project_dir,
+        basic_auth: envConfig.basic_auth,
+    };
+
+    console.log(`   🖥️  Server: ${config.server}`);
+    console.log(`   📂 Thư mục: ${config.project_dir}`);
+    console.log('');
 
     // 🛡️ VALIDATION: Kiểm tra cấu trúc config
     const configErrors = validateConfig(config);

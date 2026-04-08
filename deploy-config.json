@@ -1,11 +1,23 @@
 {
-  "server": "JLWEB",
-  "project_dir": "template_jline_html",
   "source_folder": "public",
   "has_build_step": true,
   "build_command": "npm run build",
-  "basic_auth": {
-    "username": "test",
-    "password": "test"
+  "production": {
+    "deploy_method": "zip",
+    "server": "JLWEB",
+    "project_dir": "template_jline_html",
+    "basic_auth": {
+      "username": "test",
+      "password": "test"
+    }
+  },
+  "test": {
+    "deploy_method": "ftp",
+    "server": "JLWEB_STG",
+    "project_dir": "template_jline_html_stg",
+    "basic_auth": {
+      "username": "test",
+      "password": "test"
+    }
   }
 }
