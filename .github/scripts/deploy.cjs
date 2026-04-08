@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const ftp = require('basic-ftp');
 const { execSync } = require('child_process');
@@ -7,9 +7,9 @@ const crypto = require('crypto');
 const https = require('https');
 const http = require('http');
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 // Utilities
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 
 /**
  * Walk a local directory recursively, returning all file paths (relative to dir).
@@ -37,24 +37,24 @@ function validateConfig(config) {
     const errors = [];
 
     if (!config.server || typeof config.server !== 'string') {
-        errors.push('Thiáº¿u trÆ°á»ng "server" (string)');
+        errors.push('Thieu truong "server" (string)');
     }
     if (!config.project_dir || typeof config.project_dir !== 'string') {
-        errors.push('Thiáº¿u trÆ°á»ng "project_dir" (string)');
+        errors.push('Thieu truong "project_dir" (string)');
     }
     if (!config.source_folder || typeof config.source_folder !== 'string') {
-        errors.push('Thiáº¿u trÆ°á»ng "source_folder" (string)');
+        errors.push('Thieu truong "source_folder" (string)');
     }
     if (!config.basic_auth || !config.basic_auth.username || !config.basic_auth.password) {
-        errors.push('Thiáº¿u trÆ°á»ng "basic_auth" vá»›i "username" vÃ  "password"');
+        errors.push('Thieu truong "basic_auth" voi "username" va "password"');
     }
 
     return errors;
 }
 
 /**
- * Táº¡o manifest (danh sÃ¡ch file â†’ MD5 hash) tá»« thÆ° má»¥c local.
- * DÃ¹ng Ä‘á»ƒ so sÃ¡nh file thá»±c táº¿ giá»¯a 2 láº§n deploy.
+ * Generate manifest (file list with MD5 hashes) from a local directory.
+ * Used to compare actual files between deploys.
  */
 function generateManifest(dir) {
     const manifest = {};
@@ -68,7 +68,7 @@ function generateManifest(dir) {
 }
 
 /**
- * So sÃ¡nh 2 manifest, tráº£ vá» danh sÃ¡ch file thÃªm má»›i / sá»­a Ä‘á»•i / bá»‹ xÃ³a.
+ * Compare 2 manifests, return lists of added / modified / deleted files.
  */
 function diffManifest(oldManifest, newManifest) {
     const added = [];
@@ -92,13 +92,12 @@ function diffManifest(oldManifest, newManifest) {
     return { added, modified, deleted };
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 // FTP Upload (recursive directory)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 
 /**
- * Upload toÃ n bá»™ ná»™i dung cá»§a má»™t thÆ° má»¥c local lÃªn FTP (Ä‘á»‡ quy).
- * Giáº£i quyáº¿t lá»—i: client.uploadFrom() chá»‰ upload 1 file, KHÃ”NG upload thÆ° má»¥c.
+ * Upload all files from a local directory to FTP (recursive).
  */
 async function uploadDirectory(client, localDir, remoteDir, ftpRoot) {
     const files = walkDir(localDir);
@@ -108,27 +107,26 @@ async function uploadDirectory(client, localDir, remoteDir, ftpRoot) {
         const localFilePath = path.join(localDir, relPath);
         const remoteFilePath = `${remoteDir}/${relPath}`;
 
-        // Ensure remote directory exists
         const remoteFileDir = path.posix.dirname(remoteFilePath);
         await client.ensureDir(remoteFileDir);
-        await client.cd(ftpRoot); // Reset CWD sau ensureDir
+        await client.cd(ftpRoot);
 
         await client.uploadFrom(localFilePath, remoteFilePath);
         uploadCount++;
-        console.log(`   â¬†ï¸ ${relPath}`);
+        console.log(`   >> ${relPath}`);
     }
 
-    console.log(`   ðŸ“Š Tá»•ng cá»™ng: ${uploadCount} file Ä‘Ã£ upload.`);
+    console.log(`   Total: ${uploadCount} files uploaded.`);
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 // ZIP Upload + PHP Extraction (Fast bulk deploy)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 
 /**
- * Táº¡o ZIP tá»« thÆ° má»¥c local, upload lÃªn FTP, dÃ¹ng PHP giáº£i nÃ©n trÃªn server.
- * Nhanh hÆ¡n Ã—10-50 láº§n so vá»›i upload tá»«ng file qua FTP.
- * Tá»± Ä‘á»™ng fallback vá» uploadDirectory náº¿u tháº¥t báº¡i.
+ * Create ZIP from local dir, upload to FTP, extract via PHP on server.
+ * ~10-50x faster than uploading individual files.
+ * Auto-fallback to uploadDirectory if failed.
  */
 async function uploadViaZip(client, localDir, remoteDir, ftpRoot, config, serverInfo) {
     const zipPath = '/tmp/_deploy_bundle.zip';
@@ -137,21 +135,21 @@ async function uploadViaZip(client, localDir, remoteDir, ftpRoot, config, server
     const phpRemotePath = `${remoteDir}/${phpFilename}`;
 
     try {
-        // 1. Táº¡o ZIP file
-        console.log('ðŸ“¦ Äang nÃ©n source thÃ nh ZIP...');
+        // 1. Create ZIP
+        console.log('Dang nen source thanh ZIP...');
         try { fs.unlinkSync(zipPath); } catch { /* ignore */ }
         execSync(`cd "${localDir}" && zip -r "${zipPath}" . -x '.*'`, { stdio: 'pipe' });
         const zipSize = fs.statSync(zipPath).size;
-        console.log(`   ðŸ“¦ ZIP size: ${(zipSize / 1024 / 1024).toFixed(2)} MB`);
+        console.log(`   ZIP size: ${(zipSize / 1024 / 1024).toFixed(2)} MB`);
 
         // 2. Upload ZIP
-        console.log('â¬†ï¸ Äang upload ZIP lÃªn server...');
+        console.log('Dang upload ZIP len server...');
         await client.uploadFrom(zipPath, `${remoteDir}/_deploy_bundle.zip`);
-        console.log('   âœ… Upload ZIP hoÃ n táº¥t.');
+        console.log('   [OK] Upload ZIP hoan tat.');
 
-        // 3. Táº¡o vÃ  upload PHP extractor (tá»± xÃ³a sau khi cháº¡y)
+        // 3. Create and upload PHP extractor (self-destructs after use)
         const phpContent = `<?php
-// Auto-generated deploy extractor â€” self-destructs after use
+// Auto-generated deploy extractor - self-destructs after use
 header('Content-Type: application/json');
 
 if (!isset($_GET['token']) || $_GET['token'] !== '${token}') {
@@ -181,32 +179,29 @@ if ($zip->open($zipFile) === TRUE) {
 ?>`;
         fs.writeFileSync('/tmp/_extractor.php', phpContent);
         await client.uploadFrom('/tmp/_extractor.php', phpRemotePath);
-        console.log('   âœ… PHP extractor Ä‘Ã£ upload.');
+        console.log('   [OK] PHP extractor da upload.');
 
-        // 4. Gá»i PHP qua HTTP Ä‘á»ƒ giáº£i nÃ©n
-        // Tá»± derive URL tá»« config cÃ³ sáºµn (khÃ´ng cáº§n thÃªm site_url)
-        // host: "ftp.example.com" â†’ domain: "example.com"
-        // root_path: "/home/user/public_html/client/deploy" â†’ web path: "/client/deploy"
+        // 4. Call PHP via HTTP to extract
         const domain = serverInfo.host.replace(/^ftp\./i, '');
         const webPath = serverInfo.root_path.replace(/^.*?\/public_html\/?/, '/');
         const siteUrl = `https://${domain}${webPath}`;
         const extractUrl = `${siteUrl}/${config.project_dir}/${phpFilename}?token=${token}`;
-        console.log(`ðŸ”— Gá»i PHP extractor: ${domain}${webPath}/${config.project_dir}/${phpFilename}`);
+        console.log(`Goi PHP extractor: ${domain}${webPath}/${config.project_dir}/${phpFilename}`);
 
         const result = await httpGet(extractUrl, config.basic_auth);
         const parsed = JSON.parse(result);
 
         if (parsed.ok) {
-            console.log(`   âœ… Giáº£i nÃ©n thÃ nh cÃ´ng: ${parsed.files} files.`);
+            console.log(`   [OK] Giai nen thanh cong: ${parsed.files} files.`);
         } else {
-            throw new Error(`PHP extraction lá»—i: ${parsed.error}`);
+            throw new Error(`PHP extraction loi: ${parsed.error}`);
         }
 
     } catch (err) {
-        console.warn(`âš ï¸ ZIP deploy tháº¥t báº¡i: ${err.message}`);
-        console.log('â„¹ï¸ Fallback: Upload tá»«ng file...');
+        console.warn(`[WARN] ZIP deploy that bai: ${err.message}`);
+        console.log('Fallback: Upload tung file...');
 
-        // Cleanup ZIP + PHP trÃªn server
+        // Cleanup ZIP + PHP on server
         try { await client.remove(`${remoteDir}/_deploy_bundle.zip`); } catch { /* ignore */ }
         try { await client.remove(phpRemotePath); } catch { /* ignore */ }
 
@@ -220,7 +215,7 @@ if ($zip->open($zipFile) === TRUE) {
 }
 
 /**
- * HTTP GET request vá»›i Basic Auth + follow redirects.
+ * HTTP GET request with Basic Auth + follow redirects.
  */
 function httpGet(url, basicAuth, maxRedirects = 5) {
     return new Promise((resolve, reject) => {
@@ -236,7 +231,6 @@ function httpGet(url, basicAuth, maxRedirects = 5) {
             path: urlObj.pathname + urlObj.search,
             method: 'GET',
             headers: {},
-            // Cháº¥p nháº­n self-signed cert (staging server)
             rejectUnauthorized: false,
         };
 
@@ -246,10 +240,9 @@ function httpGet(url, basicAuth, maxRedirects = 5) {
         }
 
         const req = mod.request(options, (res) => {
-            // Follow redirects (301, 302, 307, 308)
             if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
                 const redirectUrl = new URL(res.headers.location, url).toString();
-                console.log(`   â†ªï¸ Redirect â†’ ${redirectUrl}`);
+                console.log(`   -> Redirect: ${redirectUrl}`);
                 return httpGet(redirectUrl, basicAuth, maxRedirects - 1).then(resolve, reject);
             }
 
@@ -273,17 +266,17 @@ function httpGet(url, basicAuth, maxRedirects = 5) {
     });
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 // FTP Connection with Retry
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 
 /**
- * Káº¿t ná»‘i FTP vá»›i retry logic (tá»‘i Ä‘a 3 láº§n).
+ * Connect to FTP with retry logic (max 3 attempts).
  */
 async function connectWithRetry(client, serverInfo, maxRetries = 3) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-            console.log(`ðŸ”— Äang káº¿t ná»‘i FTP (láº§n ${attempt}/${maxRetries})...`);
+            console.log(`Dang ket noi FTP (lan ${attempt}/${maxRetries})...`);
             await client.access({
                 host: serverInfo.host,
                 user: serverInfo.user,
@@ -291,52 +284,50 @@ async function connectWithRetry(client, serverInfo, maxRetries = 3) {
                 secure: true,
                 secureOptions: { rejectUnauthorized: false },
             });
-            console.log(`âœ… Káº¿t ná»‘i FTP thÃ nh cÃ´ng: ${serverInfo.host}`);
+            console.log(`[OK] Ket noi FTP thanh cong: ${serverInfo.host}`);
             return;
         } catch (err) {
-            console.error(`âš ï¸ Láº§n ${attempt} tháº¥t báº¡i: ${err.message}`);
+            console.error(`[WARN] Lan ${attempt} that bai: ${err.message}`);
             if (attempt === maxRetries) {
-                throw new Error(`KhÃ´ng thá»ƒ káº¿t ná»‘i FTP sau ${maxRetries} láº§n thá»­: ${err.message}`);
+                throw new Error(`Khong the ket noi FTP sau ${maxRetries} lan thu: ${err.message}`);
             }
-            // Chá» 3 giÃ¢y trÆ°á»›c khi thá»­ láº¡i
             await new Promise((resolve) => setTimeout(resolve, 3000));
         }
     }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 // Main Deploy Logic
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────
 
 async function runDeploy() {
     console.log('');
-    console.log('â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—');
-    console.log('â•‘   ðŸš€ Há»† THá»NG DEPLOY AN TOÃ€N â€” KHá»žI Äá»˜NG   â•‘');
-    console.log('â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•');
+    console.log('================================================');
+    console.log('   HE THONG DEPLOY AN TOAN - KHOI DONG');
+    console.log('================================================');
     console.log('');
 
-    // â”€â”€â”€ Äá»c & validate config â”€â”€â”€
+    // --- Read & validate config ---
     if (!fs.existsSync('deploy-config.json')) {
-        console.error('âŒ Lá»–I: KhÃ´ng tÃ¬m tháº¥y file deploy-config.json!');
+        console.error('[ERROR] Khong tim thay file deploy-config.json!');
         process.exit(1);
     }
 
     const rawConfig = JSON.parse(fs.readFileSync('deploy-config.json', 'utf8'));
 
-    // â”€â”€â”€ XÃ¡c Ä‘á»‹nh mÃ´i trÆ°á»ng deploy â”€â”€â”€
+    // --- Detect deploy environment ---
     const deployEnv = process.env.DEPLOY_ENV || 'production';
     const branch = process.env.DEPLOY_BRANCH || '';
-    console.log(`ðŸ“Œ NhÃ¡nh: ${branch || '(khÃ´ng rÃµ)'} â†’ MÃ´i trÆ°á»ng: ${deployEnv.toUpperCase()}`);
+    console.log(`Branch: ${branch || '(unknown)'} -> Environment: ${deployEnv.toUpperCase()}`);
 
-    // Láº¥y cáº¥u hÃ¬nh cá»§a mÃ´i trÆ°á»ng tÆ°Æ¡ng á»©ng
     const envConfig = rawConfig[deployEnv];
     if (!envConfig) {
-        console.error(`âŒ Lá»–I: KhÃ´ng tÃ¬m tháº¥y cáº¥u hÃ¬nh mÃ´i trÆ°á»ng "${deployEnv}" trong deploy-config.json!`);
-        console.error(`   Cáº§n cÃ³ khá»‘i "${deployEnv}" chá»©a: server, project_dir, basic_auth.`);
+        console.error(`[ERROR] Khong tim thay config "${deployEnv}" trong deploy-config.json!`);
+        console.error(`   Can co khoi "${deployEnv}" chua: server, project_dir, basic_auth.`);
         process.exit(1);
     }
 
-    // Gá»™p cáº¥u hÃ¬nh: pháº§n chung (gá»‘c) + pháº§n riÃªng (production/test)
+    // Merge shared + environment config
     const config = {
         source_folder: rawConfig.source_folder,
         has_build_step: rawConfig.has_build_step,
@@ -346,68 +337,66 @@ async function runDeploy() {
         basic_auth: envConfig.basic_auth,
     };
 
-    console.log(`   ðŸ–¥ï¸  Server: ${config.server}`);
-    console.log(`   ðŸ“‚ ThÆ° má»¥c: ${config.project_dir}`);
+    console.log(`   Server: ${config.server}`);
+    console.log(`   Directory: ${config.project_dir}`);
     console.log('');
 
-    // ðŸ›¡ï¸ VALIDATION: Kiá»ƒm tra cáº¥u trÃºc config
+    // VALIDATION
     const configErrors = validateConfig(config);
     if (configErrors.length > 0) {
-        console.error('âŒ Lá»–I Cáº¤U HÃŒNH deploy-config.json:');
-        configErrors.forEach((e) => console.error(`   â€¢ ${e}`));
+        console.error('[ERROR] Invalid deploy-config.json:');
+        configErrors.forEach((e) => console.error(`   - ${e}`));
         process.exit(1);
     }
 
-    // ðŸ›¡ï¸ Lá»šP GIÃP 1: CHá»NG HACK ÄÆ¯á»œNG DáºªN (PATH TRAVERSAL)
-    // NgÄƒn cháº·n rá»§i ro Dev gÃµ "../../../" lÃ m xÃ³a nháº§m há»‡ thá»‘ng server
+    // SECURITY LAYER 1: PATH TRAVERSAL PROTECTION
     const isValidDir = /^[a-zA-Z0-9_-]+$/.test(config.project_dir);
     if (!isValidDir) {
-        console.error(`âŒ Lá»–I NGHIÃŠM TRá»ŒNG: TÃªn dá»± Ã¡n "${config.project_dir}" KHÃ”NG Há»¢P Lá»†!`);
-        console.error(`   Chá»‰ cho phÃ©p dÃ¹ng: Chá»¯ cÃ¡i, sá»‘, gáº¡ch ngang (-), gáº¡ch dÆ°á»›i (_).`);
-        console.error(`   ðŸ›¡ï¸ Báº£o vá»‡ Server: ÄÃ£ tá»± Ä‘á»™ng ngáº¯t.`);
+        console.error(`[ERROR] CRITICAL: project_dir "${config.project_dir}" is INVALID!`);
+        console.error(`   Only alphanumeric, dash (-), underscore (_) allowed.`);
+        console.error(`   Server protection: auto-terminated.`);
         process.exit(1);
     }
 
-    // â”€â”€â”€ Kiá»ƒm tra source folder tá»“n táº¡i â”€â”€â”€
+    // Check source folder exists
     if (!fs.existsSync(config.source_folder)) {
-        console.error(`âŒ Lá»–I: ThÆ° má»¥c source "${config.source_folder}" khÃ´ng tá»“n táº¡i!`);
-        console.error(`   Náº¿u dá»± Ã¡n cáº§n build, hÃ£y kiá»ƒm tra has_build_step: true trong deploy-config.json.`);
+        console.error(`[ERROR] Source folder "${config.source_folder}" does not exist!`);
+        console.error(`   Check has_build_step: true in deploy-config.json.`);
         process.exit(1);
     }
 
-    // ðŸ›¡ï¸ Validate source_folder khÃ´ng chá»©a path traversal
+    // Validate source_folder has no path traversal
     if (/\.\.\/|\.\.\\/.test(config.source_folder)) {
-        console.error(`âŒ Lá»–I: source_folder "${config.source_folder}" chá»©a path traversal!`);
+        console.error(`[ERROR] source_folder "${config.source_folder}" contains path traversal!`);
         process.exit(1);
     }
 
-    // â”€â”€â”€ Kiá»ƒm tra Server Secret â”€â”€â”€
+    // Check Server Secret
     if (!process.env.SERVER_SECRET_JSON) {
-        console.error(`âŒ Lá»–I: KhÃ´ng tÃ¬m tháº¥y Secret cho server [${config.server}].`);
-        console.error(`   HÃ£y táº¡o GitHub Secret tÃªn "${config.server}_CONFIG" chá»©a JSON cáº¥u hÃ¬nh FTP.`);
+        console.error(`[ERROR] Secret for server [${config.server}] not found.`);
+        console.error(`   Create GitHub Secret named "${config.server}_CONFIG" with FTP JSON config.`);
         process.exit(1);
     }
 
     const serverInfo = JSON.parse(process.env.SERVER_SECRET_JSON);
     const targetDir = `${serverInfo.ftp_dir}/${config.project_dir}`;
 
-    console.log(`ðŸ“‹ Cáº¥u hÃ¬nh:`);
-    console.log(`   â€¢ Server: ${serverInfo.host}`);
-    console.log(`   â€¢ ThÆ° má»¥c FTP: ${targetDir}`);
-    console.log(`   â€¢ Source: ${config.source_folder}/`);
+    console.log(`Config:`);
+    console.log(`   Server: ${serverInfo.host}`);
+    console.log(`   FTP Dir: ${targetDir}`);
+    console.log(`   Source: ${config.source_folder}/`);
     console.log('');
 
-    // â”€â”€â”€ Káº¿t ná»‘i FTP â”€â”€â”€
+    // --- FTP Connect ---
     const client = new ftp.Client();
-    client.ftp.verbose = false; // Äáº·t true Ä‘á»ƒ debug chi tiáº¿t
+    client.ftp.verbose = false;
 
     try {
         await connectWithRetry(client, serverInfo);
 
-        // LÆ°u FTP root path (sá»­a lá»—i: cd('/') cÃ³ thá»ƒ khÃ´ng Ä‘Ãºng)
         const ftpRoot = await client.pwd();
 
-        // ðŸ›¡ï¸ Lá»šP GIÃP 2: KHÃ“A CHá»¦ QUYá»€N (CHá»NG GHI ÄÃˆ NHáº¦M Dá»° ÃN)
+        // SECURITY LAYER 2: REPO LOCK (prevent accidental overwrite)
         let isFirstDeploy = false;
         try {
             await client.cd(targetDir);
@@ -417,41 +406,40 @@ async function runDeploy() {
 
             if (lockOwner !== process.env.GITHUB_REPO) {
                 throw new Error(
-                    `âŒ Cáº¢NH BÃO Báº¢O Máº¬T: ThÆ° má»¥c [${config.project_dir}] Ä‘ang thuá»™c vá» dá»± Ã¡n [${lockOwner}]. ` +
-                    `Repo hiá»‡n táº¡i: [${process.env.GITHUB_REPO}]. Há»¦Y DEPLOY Äá»‚ TRÃNH GHI ÄÃˆ!`
+                    `[SECURITY] Directory [${config.project_dir}] belongs to [${lockOwner}]. ` +
+                    `Current repo: [${process.env.GITHUB_REPO}]. DEPLOY CANCELLED!`
                 );
             }
-            console.log('âœ… Khá»›p mÃ£ chá»§ quyá»n (.repo_lock) â€” an toÃ n.');
+            console.log('[OK] Repo lock (.repo_lock) matched - safe to proceed.');
         } catch (err) {
-            if (err.message.includes('Cáº¢NH BÃO Báº¢O Máº¬T')) throw err;
+            if (err.message.includes('[SECURITY]')) throw err;
             isFirstDeploy = true;
-            console.log('â„¹ï¸ PhÃ¡t hiá»‡n deploy láº§n Ä‘áº§u â€” sáº½ setup Ä‘áº§y Ä‘á»§.');
+            console.log('[INFO] First deploy detected - will setup everything.');
         }
 
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        // CHáº¾ Äá»˜ 1: DEPLOY Láº¦N Äáº¦U TIÃŠN
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // ════════════════════════════════════════
+        // MODE 1: FIRST DEPLOY
+        // ════════════════════════════════════════
         if (isFirstDeploy) {
             console.log('');
-            console.log('â”â”â” DEPLOY Láº¦N Äáº¦U: Táº¡o cáº¥u trÃºc & báº£o máº­t â”â”â”');
+            console.log('--- FIRST DEPLOY: Setup structure & security ---');
 
-            // Táº¡o thÆ° má»¥c Ä‘Ã­ch
             await client.ensureDir(targetDir);
-            await client.cd(ftpRoot); // Reset CWD sau ensureDir
+            await client.cd(ftpRoot);
 
-            // 1. Táº¡o file khÃ³a chá»§ quyá»n
-            console.log('ðŸ”’ Táº¡o .repo_lock...');
+            // 1. Create repo lock
+            console.log('Creating .repo_lock...');
             fs.writeFileSync('/tmp/.repo_lock', process.env.GITHUB_REPO);
             await client.uploadFrom('/tmp/.repo_lock', `${targetDir}/.repo_lock`);
 
-            // 2. Táº¡o .htpasswd (máº­t kháº©u mÃ£ hÃ³a)
-            console.log('ðŸ” Táº¡o .htpasswd...');
+            // 2. Create .htpasswd
+            console.log('Creating .htpasswd...');
             const hashedPass = crypt(config.basic_auth.password);
             fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
             await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
 
-            // 3. Táº¡o .htaccess (báº£o vá»‡ truy cáº­p)
-            console.log('ðŸ” Táº¡o .htaccess...');
+            // 3. Create .htaccess
+            console.log('Creating .htaccess...');
             const htaccessContent = [
                 '<Files ~ "^\\.">',
                 'Deny from all',
@@ -464,46 +452,45 @@ async function runDeploy() {
             fs.writeFileSync('/tmp/.htaccess', htaccessContent);
             await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
 
-            // 4. Upload toÃ n bá»™ source (ZIP nhanh hoáº·c file-by-file fallback)
-            console.log(`ðŸ“¤ Upload toÃ n bá»™ thÆ° má»¥c ${config.source_folder}/...`);
+            // 4. Upload all source (ZIP fast or file-by-file fallback)
+            console.log(`Uploading all files from ${config.source_folder}/...`);
             await uploadViaZip(client, config.source_folder, targetDir, ftpRoot, config, serverInfo);
 
-            // 5. LÆ°u manifest (danh sÃ¡ch file + hash)
-            console.log('ðŸ“‹ LÆ°u manifest...');
+            // 5. Save manifest (file list + hashes)
+            console.log('Saving manifest...');
             const manifest = generateManifest(config.source_folder);
             fs.writeFileSync('/tmp/.deploy_manifest.json', JSON.stringify(manifest));
             await client.uploadFrom('/tmp/.deploy_manifest.json', `${targetDir}/.deploy_manifest.json`);
-            console.log(`   ðŸ“Š Manifest: ${Object.keys(manifest).length} files.`);
+            console.log(`   Manifest: ${Object.keys(manifest).length} files.`);
 
-            // 6. LÆ°u SHA commit Ä‘Ã£ deploy
+            // 6. Save deploy SHA
             const currentSha = execSync('git rev-parse HEAD').toString().trim();
             fs.writeFileSync('/tmp/.deploy_sha', currentSha);
             await client.uploadFrom('/tmp/.deploy_sha', `${targetDir}/.deploy_sha`);
-            console.log(`ðŸ“Œ ÄÃ£ lÆ°u SHA deploy: ${currentSha.substring(0, 8)}`);
+            console.log(`SHA saved: ${currentSha.substring(0, 8)}`);
 
             console.log('');
-            console.log('âœ… HoÃ n thÃ nh Deploy láº§n Ä‘áº§u!');
+            console.log('[OK] First deploy completed!');
         }
 
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        // CHáº¾ Äá»˜ 2: Cáº¬P NHáº¬T THÃ”NG MINH (SO SÃNH MANIFEST)
-        // Chá»‰ upload file thá»±c sá»± thay Ä‘á»•i, hoáº¡t Ä‘á»™ng cáº£ khi cÃ³ build step
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // ════════════════════════════════════════
+        // MODE 2: SMART UPDATE (MANIFEST COMPARISON)
+        // Only upload actually changed files, works with build step
+        // ════════════════════════════════════════
         else {
             console.log('');
-            console.log('â”â”â” Cáº¬P NHáº¬T: So sÃ¡nh manifest file â”â”â”');
+            console.log('--- UPDATE: Comparing manifest files ---');
 
-            // Quay vá» FTP root trÆ°á»›c khi thao tÃ¡c tiáº¿p
             await client.cd(ftpRoot);
 
-            // ðŸ”„ Re-sync .htpasswd & .htaccess (Ä‘á»“ng bá»™ khi dev Ä‘á»•i credentials)
-            console.log('ðŸ” Äá»“ng bá»™ .htpasswd & .htaccess...');
+            // Re-sync .htpasswd & .htaccess
+            console.log('Syncing .htpasswd & .htaccess...');
             const hashedPass = crypt(config.basic_auth.password);
             fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
             await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
 
             const htaccessContent = [
-                '<Files ~ "^\\\\.">',
+                '<Files ~ "^\\.">',
                 'Deny from all',
                 '</Files>',
                 'AuthType Basic',
@@ -513,64 +500,64 @@ async function runDeploy() {
             ].join('\n');
             fs.writeFileSync('/tmp/.htaccess', htaccessContent);
             await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
-            console.log('âœ… .htpasswd & .htaccess Ä‘Ã£ Ä‘á»“ng bá»™.');
+            console.log('[OK] .htpasswd & .htaccess synced.');
 
-            // ðŸ“Œ Kiá»ƒm tra SHA â€” bá» qua nhanh náº¿u khÃ´ng cÃ³ thay Ä‘á»•i
+            // Check SHA - quick skip if no changes
             let lastDeployedSha = '';
             try {
                 await client.downloadTo('/tmp/.deploy_sha', `${targetDir}/.deploy_sha`);
                 const rawSha = fs.readFileSync('/tmp/.deploy_sha', 'utf8').trim();
                 if (/^[0-9a-f]{40}$/i.test(rawSha)) {
                     lastDeployedSha = rawSha;
-                    console.log(`ðŸ“Œ SHA deploy trÆ°á»›c: ${lastDeployedSha.substring(0, 8)}`);
+                    console.log(`Previous SHA: ${lastDeployedSha.substring(0, 8)}`);
                 }
             } catch (e) {
-                console.log('â„¹ï¸ KhÃ´ng tÃ¬m tháº¥y .deploy_sha.');
+                console.log('[INFO] .deploy_sha not found.');
             }
 
             const currentSha = execSync('git rev-parse HEAD').toString().trim();
-            console.log(`ðŸ“Œ SHA hiá»‡n táº¡i:      ${currentSha.substring(0, 8)}`);
+            console.log(`Current SHA:  ${currentSha.substring(0, 8)}`);
 
             if (lastDeployedSha === currentSha) {
-                console.log('â„¹ï¸ SHA trÃ¹ng khá»›p â€” khÃ´ng cÃ³ gÃ¬ cáº§n cáº­p nháº­t.');
+                console.log('[INFO] SHA matched - nothing to update.');
                 return;
             }
 
-            // â”€â”€â”€ Táº¡o manifest hiá»‡n táº¡i tá»« source Ä‘Ã£ build â”€â”€â”€
-            console.log('ðŸ“‹ Äang quÃ©t file hiá»‡n táº¡i...');
+            // --- Generate current manifest from built source ---
+            console.log('Scanning current files...');
             const currentManifest = generateManifest(config.source_folder);
             const totalFiles = Object.keys(currentManifest).length;
-            console.log(`   ðŸ“Š Tá»•ng cá»™ng: ${totalFiles} files.`);
+            console.log(`   Total: ${totalFiles} files.`);
 
-            // â”€â”€â”€ Táº£i manifest cÅ© tá»« server â”€â”€â”€
+            // --- Download old manifest from server ---
             let oldManifest = null;
             try {
                 await client.downloadTo('/tmp/.deploy_manifest.json', `${targetDir}/.deploy_manifest.json`);
                 oldManifest = JSON.parse(fs.readFileSync('/tmp/.deploy_manifest.json', 'utf8'));
-                console.log('ðŸ“‹ ÄÃ£ táº£i manifest cÅ© tá»« server.');
+                console.log('Old manifest downloaded from server.');
             } catch (e) {
-                console.log('â„¹ï¸ KhÃ´ng tÃ¬m tháº¥y manifest cÅ© â€” sáº½ upload toÃ n bá»™.');
+                console.log('[INFO] Old manifest not found - will upload all.');
             }
 
-            // ðŸ›¡ï¸ Lá»šP GIÃP 3: Báº¢O Vá»† FILE Há»† THá»NG
+            // SECURITY LAYER 3: PROTECTED FILES
             const PROTECTED_FILES = ['.repo_lock', '.htaccess', '.htpasswd', '.deploy_sha', '.deploy_manifest.json'];
 
             if (!oldManifest) {
-                // â”€â”€â”€ KhÃ´ng cÃ³ manifest cÅ© â†’ Upload toÃ n bá»™ báº±ng ZIP â”€â”€â”€
-                console.log('â„¹ï¸ Chuyá»ƒn sang upload toÃ n bá»™ source (ZIP)...');
+                // --- No old manifest -> Full ZIP upload ---
+                console.log('Switching to full source upload (ZIP)...');
                 await uploadViaZip(client, config.source_folder, targetDir, ftpRoot, config, serverInfo);
             } else {
-                // â”€â”€â”€ So sÃ¡nh manifest â†’ Chá»‰ upload file thay Ä‘á»•i â”€â”€â”€
+                // --- Compare manifests -> Only upload changed files ---
                 const diff = diffManifest(oldManifest, currentManifest);
                 const changedCount = diff.added.length + diff.modified.length + diff.deleted.length;
 
                 if (changedCount === 0) {
-                    console.log('â„¹ï¸ KhÃ´ng cÃ³ file nÃ o thay Ä‘á»•i (manifest trÃ¹ng khá»›p).');
+                    console.log('[INFO] No file changes detected (manifest matched).');
                 } else {
-                    console.log(`ðŸ“Š PhÃ¡t hiá»‡n: ${diff.added.length} file má»›i, ${diff.modified.length} file sá»­a, ${diff.deleted.length} file xÃ³a.`);
+                    console.log(`Found: ${diff.added.length} new, ${diff.modified.length} modified, ${diff.deleted.length} deleted.`);
                     console.log('');
 
-                    // Upload file má»›i + file sá»­a
+                    // Upload new + modified files
                     for (const relPath of [...diff.added, ...diff.modified]) {
                         if (PROTECTED_FILES.includes(relPath)) continue;
                         const localFilePath = path.join(config.source_folder, relPath);
@@ -579,44 +566,44 @@ async function runDeploy() {
                         await client.ensureDir(remoteFileDir);
                         await client.cd(ftpRoot);
                         await client.uploadFrom(localFilePath, ftpFilePath);
-                        console.log(`   â¬†ï¸ ${relPath}`);
+                        console.log(`   >> ${relPath}`);
                     }
 
-                    // XÃ³a file Ä‘Ã£ bá»‹ xÃ³a
+                    // Delete removed files
                     for (const relPath of diff.deleted) {
                         if (PROTECTED_FILES.includes(relPath)) continue;
                         const ftpFilePath = `${targetDir}/${relPath}`;
                         try {
                             await client.remove(ftpFilePath);
-                            console.log(`   ðŸ—‘ï¸ ${relPath}`);
-                        } catch (e) { /* file cÃ³ thá»ƒ khÃ´ng tá»“n táº¡i */ }
+                            console.log(`   XX ${relPath}`);
+                        } catch (e) { /* file might not exist */ }
                     }
 
                     console.log('');
-                    console.log(`ðŸ“Š Káº¿t quáº£: ${diff.added.length + diff.modified.length} upload, ${diff.deleted.length} xÃ³a.`);
+                    console.log(`Result: ${diff.added.length + diff.modified.length} uploaded, ${diff.deleted.length} deleted.`);
                 }
             }
 
-            // â”€â”€â”€ LÆ°u manifest + SHA má»›i â”€â”€â”€
+            // --- Save new manifest + SHA ---
             fs.writeFileSync('/tmp/.deploy_manifest.json', JSON.stringify(currentManifest));
             await client.uploadFrom('/tmp/.deploy_manifest.json', `${targetDir}/.deploy_manifest.json`);
 
             fs.writeFileSync('/tmp/.deploy_sha', currentSha);
             await client.uploadFrom('/tmp/.deploy_sha', `${targetDir}/.deploy_sha`);
-            console.log(`ðŸ“Œ ÄÃ£ cáº­p nháº­t SHA + manifest: ${currentSha.substring(0, 8)}`);
-            console.log('âœ… HoÃ n thÃ nh Cáº­p nháº­t!');
+            console.log(`SHA + manifest updated: ${currentSha.substring(0, 8)}`);
+            console.log('[OK] Update completed!');
         }
     } catch (error) {
         console.error('');
-        console.error('â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—');
-        console.error('â•‘         âŒ Lá»–I Há»† THá»NG             â•‘');
-        console.error('â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•');
+        console.error('========================================');
+        console.error('   [ERROR] SYSTEM ERROR');
+        console.error('========================================');
         console.error(error.message);
         process.exit(1);
     } finally {
         client.close();
         console.log('');
-        console.log('ðŸ”Œ ÄÃ£ ngáº¯t káº¿t ná»‘i FTP.');
+        console.log('FTP connection closed.');
     }
 }
 
