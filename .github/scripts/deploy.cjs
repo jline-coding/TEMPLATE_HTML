@@ -397,6 +397,9 @@ async function runDeploy() {
         const ftpRoot = await client.pwd();
 
         // SECURITY LAYER 2: REPO LOCK (prevent accidental overwrite)
+        // Lock ID = repo + environment (e.g. "user/repo:production")
+        // Prevents staging from overwriting production even with same repo
+        const lockId = `${process.env.GITHUB_REPO}:${deployEnv}`;
         let isFirstDeploy = false;
         let dirExists = true;
 
@@ -414,13 +417,13 @@ async function runDeploy() {
                 await client.downloadTo(lockFileLocal, '.repo_lock');
                 const lockOwner = fs.readFileSync(lockFileLocal, 'utf8').trim();
 
-                if (lockOwner !== process.env.GITHUB_REPO) {
+                if (lockOwner !== lockId) {
                     throw new Error(
                         `[SECURITY] Directory [${config.project_dir}] belongs to [${lockOwner}]. ` +
-                        `Current repo: [${process.env.GITHUB_REPO}]. DEPLOY CANCELLED!`
+                        `Current: [${lockId}]. DEPLOY CANCELLED!`
                     );
                 }
-                console.log('[OK] Repo lock (.repo_lock) matched - safe to proceed.');
+                console.log(`[OK] Repo lock matched [${lockId}] - safe to proceed.`);
             } catch (err) {
                 if (err.message.includes('[SECURITY]')) throw err;
 
@@ -433,7 +436,7 @@ async function runDeploy() {
                 console.error('');
                 console.error('Options:');
                 console.error('  1. Delete the directory on server manually, then re-deploy.');
-                console.error('  2. Add .repo_lock file manually with content: ' + process.env.GITHUB_REPO);
+                console.error('  2. Add .repo_lock file manually with content: ' + lockId);
                 console.error('');
                 console.error('DEPLOY CANCELLED to prevent data loss.');
                 process.exit(1);
@@ -455,7 +458,7 @@ async function runDeploy() {
 
             // 1. Create repo lock
             console.log('Creating .repo_lock...');
-            fs.writeFileSync('/tmp/.repo_lock', process.env.GITHUB_REPO);
+            fs.writeFileSync('/tmp/.repo_lock', lockId);
             await client.uploadFrom('/tmp/.repo_lock', `${targetDir}/.repo_lock`);
 
             // 2. Create .htpasswd
