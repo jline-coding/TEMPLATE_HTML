@@ -1,0 +1,29 @@
+@use "sass:math";
+@use "../global" as *;
+
+#mfp_loading,
+#mfp_loading_screen,
+#mfp_overlay_background {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+
+#mfp_hidden {
+  display: none;
+}
+
+#mailformpro {
+    .mfp_err {
+        color: #db2c2c;
+        font-size: rem(14);
+        line-height: 1.4;
+        font-weight: 500;
+        &:not(:empty) {
+          margin-top: math.div(10em,16);
+          width: 100%;
+        }
+        @include mq() {
+            font-size: rem(16);
+        }
+    }
+}

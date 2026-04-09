@@ -1,0 +1,24 @@
+.h3_title {
+    @extend %f_20;
+    font-family: $f_poppins;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &:before {
+        content: "";
+        height: 4px;
+        display: inline-block;
+        margin-right: 16px;
+        margin-bottom: 4px;
+        border: 0;
+        border-left: 16px solid #0fb4b4;
+        border-right: 16px solid #2f57ff;
+    }
+    @include media_min_query() {
+        &:before {
+            height: 5px;
+            border-width: 25px;
+            margin-bottom: 5px;
+        }
+    }
+}

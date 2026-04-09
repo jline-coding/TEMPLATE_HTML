@@ -1,0 +1,14 @@
+$container-width: 1160px;
+$container-offset: 40px;
+
+.container {
+    width: 100%;
+    padding-left: $container-offset * 0.5;
+    padding-right: $container-offset * 0.5;
+
+    @include media_min_query() {
+        max-width: #{$container-width + $container-offset};
+        margin-right: auto;
+        margin-left: auto;
+    }
+}

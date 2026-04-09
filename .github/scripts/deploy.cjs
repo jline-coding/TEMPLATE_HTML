@@ -148,10 +148,19 @@ async function uploadViaZip(client, localDir, remoteDir, ftpRoot, config, server
         await client.uploadFrom(zipPath, `${remoteDir}/_deploy_bundle.zip`);
         console.log('   [OK] Upload ZIP hoan tat.');
 
-        // 3. Create and upload PHP extractor (self-destructs after use)
+        // 3. Create and upload PHP extractor (self-destructs after use, expires 5min)
         const phpContent = `<?php
 // Auto-generated deploy extractor - self-destructs after use
 header('Content-Type: application/json');
+
+// Auto-expire after 5 minutes
+if (time() - filemtime(__FILE__) > 300) {
+    @unlink(__DIR__ . '/_deploy_bundle.zip');
+    @unlink(__FILE__);
+    http_response_code(410);
+    echo json_encode(['ok' => false, 'error' => 'Expired']);
+    exit;
+}
 
 if (!isset($_GET['token']) || $_GET['token'] !== '${token}') {
     http_response_code(403);

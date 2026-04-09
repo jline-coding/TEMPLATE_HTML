@@ -1,0 +1,62 @@
+/*!
+global > color
+------------------------------
+*/
+/*!
+global > content-width
+------------------------------
+*/
+/*!
+global > font
+------------------------------
+*/
+/*!
+global > mixin
+------------------------------
+*/
+/* ================================
+UTILITIES
+================================ */
+.p-about .c-listwelfare {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 41px 37px;
+}
+@media screen and (min-width: 768px) {
+  .p-about .c-listwelfare {
+    gap: 41px 3.1896551724%;
+  }
+}
+.p-about .c-listwelfare__item {
+  flex-basis: clamp(50% - 18.5px, (560px - 100vw) * 1000, 100%);
+}
+@media screen and (min-width: 768px) {
+  .p-about .c-listwelfare__item {
+    flex-basis: 31.2068965517%;
+  }
+}
+.p-about .welfare {
+  position: relative;
+  padding-bottom: 160px;
+}
+.p-about .welfare__float {
+  position: absolute;
+  left: -40px;
+  bottom: -20px;
+  aspect-ratio: 209/263;
+  width: 150px;
+}
+@media screen and (min-width: 768px) {
+  .p-about .welfare__float {
+    width: 209px;
+    left: -40px;
+    bottom: -65px;
+  }
+}
+.p-about .welfare__float svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/*# sourceMappingURL=about.css.map */

@@ -1,0 +1,134 @@
+@use "sass:math";
+@use "../../global" as *;
+
+.quick_quote {
+    background-color: $c_second;
+    color: white;
+    padding: 30px 0;
+    @include mq() {
+        padding: 40px 0 43px;
+    }
+    .container {
+        @include mq() {
+            max-width: 960px;
+            width: 90%;
+        }
+    }
+    &_inner {
+        @include mq(md) {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+        }
+    }
+    &_ttl {
+        font-weight: 700;
+    }
+    &_desc {
+        font-weight: 700;
+        margin-top: 10px;
+        @include mq() {
+            margin-top: 11px;
+        }
+    }
+    &_btn {
+        margin-top: 40px;
+        width: 100%;
+        text-align: center;
+        @include mq() {
+            margin-top: 60px;
+        }
+        @include mq(md) {
+            margin-top: 0;
+            max-width: 410px;
+            
+        }
+        .c_btn {
+            @include mq(md) {
+                margin: 0 0 -3px;
+            }
+            &::after {
+                transform: translate(-40%, -60%);
+                @include mq() {
+                    transform: translate(-50%, -50%);
+                }
+            }
+        }
+    }
+}
+
+.easy_check {
+    padding-bottom: 80px;
+    @include mq() {
+        padding-bottom: 160px;
+    }
+    &_inner {
+        background-color: $c_second;
+        color: white;
+        position: relative;
+        padding: 40px 20px 200px;
+        @include mq() {
+            padding: 50px 40px 300px;
+        }
+        @include mq(md) {
+            padding-bottom: 60px;
+        }
+        &::after {
+            content: "";
+            aspect-ratio: 400/340;
+            background: url(../images/top/img_check.png) center/contain no-repeat;
+            right: 0;
+            bottom: -2px;
+            position: absolute;
+            width: 200px;
+            @include mq() {
+                width: 300px;
+            }
+            @include mq(md) {
+                width: 400px;
+                width: clamped(320,400,1024,1200);
+            }
+            
+        }
+    }
+    &_content {
+        @include mq() {
+            width: 90%;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+    }
+    &_ttl {
+        font-weight: 700;
+        &::after {
+            transform: translate(0%, -120%);
+            @include mq() {
+                transform: translate(-113%, -88%);
+            }
+        }
+    }
+    &_desc {
+        font-weight: 700;
+        margin-top: 15px;
+        @include mq() {
+            margin-top: 21px;
+        }
+    }
+    &_btn {
+        margin-top: 20px;
+        text-align: center;
+        @include mq() {
+            max-width: 410px;
+            margin-top: 30px;
+        }
+        .c_btn {
+            // height: 60px;
+            font-weight: 700;
+            @include mq() {
+                max-width: 100%;
+                height: 75px;
+            }
+        }
+    }
+}

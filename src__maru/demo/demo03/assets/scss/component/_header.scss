@@ -1,0 +1,114 @@
+@use '../global' as *;
+.header_top {
+    display: none;
+    background: #eee;
+    padding: 10px 0;
+    @include mq('md') {
+        display: block;
+        padding: 12px 0 10px;
+    }
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &_txt {
+        letter-spacing: 0.1em;
+        font-weight: bold;
+        line-height: 1.5;
+        @include mq('md') {
+            margin: 0 12px 0 0;
+        }
+    }
+    &_time {
+        position: relative;
+        background: #3a795a;
+        font-weight: bold;
+        color: #f8f8f9;
+        letter-spacing: 0.1em;
+        padding: 2px 14px 4px;
+        line-height: 1.5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        @include mq('md') {
+            margin: 0 12px 0 0;
+            left: -6px;
+        }
+    }
+    &_tel {
+        a {
+            position: relative;
+            color: #333;
+            line-height: 1.5;
+            text-decoration: none;
+            font-family: 'Noto Serif JP', serif;
+            font-size: rem(20);
+            letter-spacing: 0.02em;
+            display: inline-block;
+            padding-left: 30px;
+            @include mq('md') {
+                padding-left: 33px;
+                font-size: rem(28);
+            }
+            &::before {
+                position: absolute;
+                content: '';
+                top: 50%;
+                transform: translateY(-50%);
+                left: 0;
+                background: url(../images/common/icon_tel_01.svg) no-repeat
+                    center/contain;
+                width: 28px;
+                height: 19px;
+            }
+        }
+    }
+}
+
+.header_main {
+    padding: 10px 0;
+    background: #f8f8f9;
+    @include mq('md') {
+        padding: 23px 0 32px;
+    }
+    .container {
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        @include mq('md') {
+            padding: 0 clamped(25, 50, 768, 1600);
+        }
+    }
+    &_logo {
+        position: relative;
+        width: 140px;
+        margin-right: auto;
+        @include mq('md') {
+            width: clamped(90, 140, 768, 1024);
+            left: clamped(-3, 0, 1600, 1440);
+        }
+        @include mq('lg') {
+            width: clamped(140, 182, 1025, 1600);
+        }
+        a {
+            display: block;
+            @include mq('md') {
+                &:hover {
+                    img {
+                        opacity: 0.7;
+                    }
+                }
+            }
+        }
+        img {
+            transition: all 0.5s;
+            @include mq('md') {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+}

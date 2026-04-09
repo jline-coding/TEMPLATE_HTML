@@ -1,0 +1,106 @@
+.intro {
+    > .inner {
+        padding: 0.2px;
+        padding-top: 80px;
+        @include media_min_query() {
+            padding-top: 140px;
+        }
+        @include media_min_query("xl") {
+            padding-top: 200px;
+        }
+    }
+    &_wrap {
+        position: relative;
+        @include media_min_query("lg") {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+    }
+    &_images {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        &_01 {
+            width: 375px;
+            padding-bottom: 80px;
+            @include media_min_query("lg") {
+                width: 600px;
+                max-width: 38%;
+                margin-left: 0;
+            }
+        }
+        &_02 {
+            width: 200px;
+            @include media_min_query("lg") {
+                max-width: 15%;
+
+                margin-right: 0;
+                padding-bottom: 148px;
+                align-self: center;
+            }
+        }
+        .image {
+            &_01 {
+                width: 410px;
+                max-width: 80%;
+                @include media_min_query() {
+                }
+            }
+            &_02 {
+                width: 238px;
+                max-width: 43%;
+                position: absolute;
+                top: 62.6%;
+                left: 57.2%;
+                z-index: 1;
+                @include media_min_query() {
+                }
+            }
+            &_03 {
+            }
+        }
+    }
+
+    &_content {
+        width: 600px;
+        max-width: 100%;
+
+        margin-left: auto;
+        margin-right: auto;
+        padding: 80px 20px 40px 20px;
+        @include media_min_query("lg") {
+            padding-top: 139px;
+            max-width: 40%;
+            padding-left: 0;
+        }
+    }
+    .btn {
+        @include media_max_query("xl") {
+            margin-bottom: 10px;
+        }
+        @include media_min_query("xl") {
+            & + .btn {
+                margin-left: 40px;
+            }
+        }
+        &_group {
+            width: 375px;
+            max-width: 100%;
+
+            margin-top: 40px;
+            margin-left: auto;
+            margin-right: auto;
+            @include media_min_query() {
+            }
+            @include media_min_query("xl") {
+                width: 100%;
+                margin-top: 82px;
+
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}

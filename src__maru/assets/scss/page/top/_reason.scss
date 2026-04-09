@@ -1,0 +1,150 @@
+@use "sass:math";
+@use "../../global" as *;
+
+.reason {
+    padding: 60px 0 80px;
+    @include mq() {
+        padding: 127px 0 160px;
+        padding: clamped(100,127,768,1200) 0 clamped(100, 160, 768, 1200);
+    }
+    .c_ttl {
+        text-align: center;
+        margin-top: 30px;
+        @include mq() {
+            margin-top: 59px;
+            font-size: clamped(36,40,768,1024);
+        }
+        & ~ .c_ttl {
+            margin-top: 60px;
+            @include mq() {
+                margin-top: 178px;
+            }
+        }
+    }
+    .container {
+        @include mq() {
+            max-width: 1560px;
+        }
+    }
+    &_list {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin-top: 30px;
+        @include mq() {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+            // --w:1220px;
+            // --n:4;
+            // --m:2;
+            // grid-template-columns: repeat(auto-fit,minmax(clamp(100%/(var(--n) + 1) + 0.1%,(var(--w) - 100vw)*1000,100%/(var(--m) + 1) + 0.1%),1fr));          
+        }
+        @include mq(ld) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    &_item {
+        background-color: #EDEFF0;
+        padding: 30px 20px;
+        @include mq() {
+            padding: 30px 30px 40px;
+            padding: 30px clamped(20,30,768,1024) 40px;
+        }
+        &:nth-child(even) {
+            position: relative;
+            @include mq() {
+                top: 60px;
+            }
+        }
+        &_txtbox {
+            margin: 0 auto;
+        }
+        &_ttl {
+            display: table;
+            margin: 10px auto 0;
+            color: $c_second;
+            @include mq() {
+                margin-top: 16px;
+            }
+        }
+        &_img {
+            display: table;
+            width: 90%;
+            max-width: 300px;
+            margin: 15px auto 0;
+            @include mq() {
+                max-width: 233.5px;
+                margin-top: 21px;
+            }
+        }
+        &_desc {
+            margin-top: 15px;
+            @include mq() {
+                margin-top: 25px;
+            }
+        }
+    }
+    &_chart {
+        margin: 30px auto 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+        gap: 20px;
+
+        @include mq() {
+            max-width: 1160px;
+            grid-template-columns: repeat(2,1fr);
+            margin-top: 60px;
+            gap: 40px;
+        }
+        &_item {
+            padding: 30px 20px;
+            @include mq() {
+                padding: 50px 60px 42px;
+                padding: clamped(30,50,768,1024) clamped(30,60,768,1024) clamped(30,42,768,1024);
+            }
+            &:first-child {
+                .reason_chart_notice {
+                    text-indent: -6px;
+                }
+            }
+            &:last-child {
+                .reason_chart_notice {
+                    text-align: center;
+                    width: 40%;
+                }
+            }
+        }
+        &_ttl {
+            // display: table;
+            margin: 0 auto;
+            text-align: center;
+            border-bottom: 1px solid #EDEFF0;
+            padding-bottom: math.div(20em,30);
+            @include mq() {
+                display: table;
+                // padding-bottom: 20px;
+                font-size: clamped(25,30,768,1024);
+            }
+        }
+        &_desc {
+            // text-align: center;
+            margin: 15px 0;
+            @include mq() {
+                margin: 20px 0;
+            }
+        }
+        &_notice {
+            font-size: rem(12);
+            margin-top: 5px;
+            @include mq() {
+                margin-top: 8px;
+                font-size: rem(13);
+            }
+        }
+        &_img {
+            display: table;
+            margin: 0 auto;
+        }
+    }
+}

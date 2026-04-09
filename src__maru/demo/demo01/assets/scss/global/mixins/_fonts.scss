@@ -1,0 +1,74 @@
+$p2r: 0.1rem;
+// breakpoint - font size
+@mixin create_font_extend_by_media($bp, $fz) {
+    %#{ $bp }_f_#{ $fz } {
+        @include media_min_query($bp) {
+            font-size: $fz * $p2r;
+        }
+    }
+}
+@for $i from 10 to 100 {
+    %base_f_#{ $i } {
+        font-size: $i * $p2r;
+    }
+}
+@for $i from 10 to 100 {
+    @include create_font_extend_by_media("md", $i);
+    @include create_font_extend_by_media("xl", $i);
+}
+
+// fonts = array[ key:[base: xx, ...bp], ...key: []];
+$fonts: (
+    "17": (
+        "base": 14,
+        "md": 17
+    ),
+    "18": (
+        "base": 16,
+        "md": 18
+    ),
+    "20": (
+        "base": 16,
+        "md": 18,
+        "xl": 20
+    ),
+    "25": (
+        "base": 18,
+        "md": 22,
+        "xl": 25
+    ),
+    "30": (
+        "base": 20,
+        "md": 26,
+        "xl": 30
+    ),
+    "35": (
+        "base": 22,
+        "md": 28,
+        "xl": 35
+    ),
+    "40": (
+        "base": 23,
+        "md": 30,
+        "xl": 40
+    ),
+    "45": (
+        "base": 25,
+        "md": 32,
+        "xl": 45
+    ),
+    "75": (
+        "base": 30,
+        "md": 50,
+        "xl": 75
+    )
+);
+
+//
+@each $name, $arr in $fonts {
+    %f_#{ $name } {
+        @each $bp, $fz in $arr {
+            @extend %#{ $bp }_f_#{ $fz };
+        }
+    }
+}

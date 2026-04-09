@@ -1,0 +1,89 @@
+@use '../../global' as *;
+.top01_homemap {
+    padding-top: 68px;
+    @include mq('md') {
+        padding-top: 136px;
+    }
+    &_img {
+        margin-top: 30px;
+        height: 350px;
+        @include mq('md') {
+            height: 711px;
+            margin-top: 61px;
+        }
+        img,
+        iframe {
+            border: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    }
+    &_main {
+        position: relative;
+        padding: 20px 0;
+        @include mq('md') {
+            padding: 25px 0 35px;
+        }
+        &::before {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            width: 300vw;
+            height: 100%;
+            left: -200vw;
+            background: #f8f8f9 url(../images/top01/bg_pattern_02.png) repeat
+                center;
+        }
+    }
+    &_items {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        z-index: 2;
+        @include mq('md') {
+            padding: 0 clamped(0, 130, 1025, 1600) 0 clamped(0, 178, 1025, 1600);
+        }
+    }
+    &_item {
+        width: 100%;
+        margin-bottom: 20px;
+        @include mq('md') {
+            width: 49%;
+            margin-bottom: clamped(-4, 5, 1600, 1440);
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+        &_txt {
+            align-items: flex-start;
+            display: flex;
+        }
+        .txt {
+            font-size: rem(16);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            @include mq('md') {
+                font-size: rem(20);
+            }
+        }
+        .icon {
+            position: relative;
+            display: inline-block;
+            margin-right: 8px;
+            width: 18px;
+            flex-shrink: 0;
+            @include mq('md') {
+                margin-right: clamped(15, 19, 768, 1600);
+                top: clamped(2, 4, 768, 1600);
+                width: clamped(18, 22, 768, 1600);
+            }
+        }
+        &:nth-child(2n + 2) {
+            @include mq('md') {
+                padding-left: clamped(10, 42, 1440, 1600);
+            }
+        }
+    }
+}

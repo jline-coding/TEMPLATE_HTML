@@ -1,0 +1,26 @@
+@use '../global' as *;
+.c_ttl {
+    position: relative;
+    font-family: 'Noto Serif JP', serif;
+    text-align: center;
+    color: #3a795a;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+    &.has_border {
+        text-align: left;
+        padding-bottom: 15px;
+        @include mq('md') {
+            padding-bottom: 31px;
+        }
+        &::after {
+            position: absolute;
+            content: '';
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: #3a795a;
+        }
+    }
+}

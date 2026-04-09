@@ -1,0 +1,92 @@
+@use "sass:math";
+@use "../global"as *;
+
+/*!
+component > MV
+------------------------------
+*/
+
+.c_mv{
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    z-index: 0;
+    
+    &__inner{
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        padding: vw(26,375) 0 vw(60,375) vw(34,375);
+        @include mq(md) {
+            padding: clamped(39,78, 768, 1920) clamped(54,108, 768, 1920);
+        }
+    }
+    .title{
+        color: #fff;
+        mix-blend-mode: overlay;
+        -webkit-mix-blend-mode: overlay;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        line-height: 1.53;
+        font-size: vw(33.73,375);
+        @include mq(md) {
+            font-size: clamped(44,95.4, 768, 1920);
+            line-height: 1.47;
+        }
+        .num{            
+            letter-spacing: 0.1em;
+            font-family: $font-family-an;
+            font-weight: 400;
+            line-height: 1;
+            font-size: vw(35.42,375);
+            position: relative;
+            top: 3px;
+            @include mq(md) {
+                top: 0;
+                font-size: clamped(45,100.17, 768, 1920);
+            }
+        }
+        .line{
+            position: relative;
+            @include mq(md) {
+                top: clamped(-12,-5, 1920,768);
+            }
+        }
+    }
+    .text{
+        font-size: vw(16,375);
+        font-weight: 900;
+        color: #fff;
+        line-height: math.div(23,16);
+        letter-spacing: 0.1em;
+        margin-top: 12px;
+        @include mq(md) {
+            font-weight: 700;
+            font-size: clamped(16,28, 768, 1920);            
+            letter-spacing: 0.12em;
+            margin-top: clamped(12,24, 768, 1920);
+        }
+        &_1{
+            letter-spacing: 0.14em;
+        }
+    }
+    .c_scroll{
+        display: none;
+        @include mq(md) {
+            display: block;
+        }
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+    .c_mv {
+        height: calc(100vh - 80px);
+    }
+
+    @include mq(md) {
+        .c_mv {
+            height: 100vh;
+        }
+    }
+}

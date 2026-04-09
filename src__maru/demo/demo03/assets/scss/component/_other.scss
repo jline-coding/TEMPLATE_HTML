@@ -1,0 +1,18 @@
+@use '../global' as *;
+
+.pc {
+    display: none;
+}
+@include mq('md') {
+    .sp {
+        display: none;
+    }
+    .pc {
+        display: inherit;
+    }
+}
+.c_phone {
+    @include mq('md') {
+        pointer-events: none;
+    }
+}

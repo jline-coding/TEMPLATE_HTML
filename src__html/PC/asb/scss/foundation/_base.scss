@@ -1,0 +1,61 @@
+@use "../global"as *;
+
+:root {
+    --vh: 1vh;
+}
+
+/*!
+foundation > base
+------------------------------
+*/
+body {
+    line-height: 2;
+    font-size: vw(16,375);
+    font-weight: 600;
+    color: #000000;
+    font-family: $font-family-base;
+    letter-spacing: 0.1em;
+    @include mq(md) {
+        font-size: clamped(12,16, 768, 1920);
+    }
+}
+
+
+.wrapper {
+    position: relative;
+    display: block;
+    // overflow: hidden;
+}
+
+img {
+    width: 100%;
+}
+
+a {
+    cursor: pointer;
+    transition: 0.5s;
+    &:hover {
+        opacity: 1;
+        @include mq(md) {
+            opacity: 0.8;
+        }
+    }
+   
+}
+
+.pc {
+    display: none !important;
+
+    @include mq(md) {
+        display: block !important;
+    }
+}
+
+
+.sp {
+    display: block !important;
+
+    @include mq(md) {
+        display: none !important;
+    }
+}

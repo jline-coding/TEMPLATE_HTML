@@ -1,0 +1,166 @@
+@use "sass:math";
+@use "../../global" as *;
+
+.problem {
+    overflow: hidden;
+    padding-top: 60px;
+    @include mq() {
+        padding-top: 100px;
+    }
+    &_ttl {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        &>* {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            &::before {
+                content: "";
+                position: absolute;
+                width: math.div(12em,40);
+                height: math.div(12em,40);
+                border-radius: 50%;
+                background-color: $c_four;
+                top: math.div(-9em,40);
+            }
+        }
+    }
+    &_inner {
+        padding-bottom: 140px;
+        @include mq() {
+            padding-bottom: 104px;
+        }
+    }
+    &_content {
+        margin: 30px auto 0;
+        position: relative;
+        // max-width: 335px;
+        @include mq() {
+            width: 55%;
+            max-width: 450px;
+            margin-top: 59px;
+        }
+        &::after {
+            content: '';
+            height: 63px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url(../images/top/img_pattern_track.svg);
+            position: absolute;
+            right: 0;
+            width: 25px;
+            right: calc(50% - 65px);
+            @include mq() {
+                width: 45px;
+                right: 100px;
+                top: 108%;
+            }
+        }
+    }
+    &_desc {
+        display: flex;
+        align-items: center;
+        background-color: #EDEFF0;
+        border-radius: 100px;
+        font-weight: bold;
+        padding: 15px;
+        max-width: 335px;
+        margin: 0 auto;
+        @include mq() {
+            max-width: unset;
+            margin: 0;
+            padding: 20px 30px;
+            font-size: clamped(16,20,768,1024);
+        }
+        & + .problem_desc {
+            margin-top: 15px;
+            @include mq() {
+                margin-top: 20px;
+            }
+        }
+        &::before {
+            content: "";
+            width: math.div(32em,20);
+            height: math.div(32em,20);
+            border-radius: 50%;
+            background-color: $c_second;
+            background-size: math.div(16.28em,20) math.div(10.25em,20);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url(../images/top/icon_checked.svg);
+            // margin-right: 10px;
+            margin-right: math.div(10em,20);
+            flex-shrink: 0;
+        }
+    }
+    &_img {
+        position: absolute;
+        width: max-content;
+        z-index: -1;
+    }
+    &_img01 {
+        bottom: -140px;
+        left: 0;
+        max-width: 160px;
+        transform: translate(-40%, 32%);
+        @include mq() {
+            top: 0;
+            left: auto;
+            bottom: auto;
+            right: 101%;
+            transform: translateY(5%);
+            max-width: 406px;
+            max-width: clamped(300,406,768,1024);
+        }
+        @include mq(md) {
+            max-width: unset;
+            right: 113%;
+            transform: translateY(-7%);
+        }
+    }
+    &_img02 {
+        max-width: 160px;
+        bottom: -140px;
+        right: 0;
+        transform: translate(30%,20%);
+        @include mq() {
+            right: auto;
+            bottom: auto;
+            top: 0;
+            left: 108%;
+            transform: translateY(-37%);
+            max-width: 405px;
+            max-width: clamped(300,405,768,1024);
+        }
+        @include mq(md) {
+            max-width: unset;
+            left: 113%;
+            transform: translateY(-31%);
+        }
+    }
+    &_box {
+        padding-top: 20px;
+        @include mq() {
+            padding-top: 26px;
+        }
+        &_desc {
+            text-align: center;
+            @include mq() {
+                font-size: clamped(30,40,768,1200);
+            }
+            &:not(:first-child) {
+                margin-top: math.div(8em,40);
+            }
+            img {
+                height: math.div(60em,40);
+                width: auto;
+            }
+            &__color {
+                color: $c_four;
+            }
+        }
+    }
+}

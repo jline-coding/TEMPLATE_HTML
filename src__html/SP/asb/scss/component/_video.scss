@@ -1,0 +1,45 @@
+@use "sass:math";
+@use "../global"as *;
+
+/*!
+component > Video
+------------------------------
+*/
+
+.c_video{
+    position: fixed;
+    z-index: -1;
+    left: 0;
+    top: 0;   
+    width: 100%;
+    video{
+        width: 100%;
+        height: 100vh;
+        object-fit: cover;
+        object-position: center;
+    }
+    &__bg{
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: rgba($color: #000000, $alpha: 0.8);
+        opacity: 0;
+        z-index: 2;
+    }
+    
+}
+
+.c_bgani{
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: rgba(69, 149, 188, 0.85);
+    opacity: 0;
+    z-index: -1;
+}

@@ -1,0 +1,285 @@
+@use "sass:math";
+@use "../global"as *;
+
+/*!
+component > Scroll
+------------------------------
+*/
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.c_scroll{
+	position: absolute;
+	right: vw(23,375);
+    bottom: vw(-42,375);
+	@include mq(md) {
+		right: clamped(40,125, 768, 1920);
+    	bottom: clamped(40,98, 768, 1920);
+	}
+	&__inner{
+		display: inline-block;
+		position: relative;
+	}
+	&__txt{
+		width: vw(70,375);
+		animation: spin 10s linear infinite;
+		display: block;
+		@include mq(md) {
+			width: clamped(98,196, 768, 1920);
+		}
+	}
+	&__car{
+		position: absolute;
+		left: vw(2,375);
+		top: vw(-19,375);
+		display: block;
+		width: vw(21,375);
+		@include mq(md) {
+			left: -2px;
+			top: clamped(-20,-12, 1920, 768);
+			width: clamped(30,60, 768, 1920);
+		}
+	}
+	&__icon{
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%,-50%);
+		width: vw(17,375);
+		@include mq(md) {
+			width: clamped(20,40, 768, 1920);
+		}
+	}
+}
+
+
+.c_scrollcontent{
+	&__inner{
+		position: relative;
+		
+		@include mq(md) {
+		}
+	}
+	&__sticky{		
+		top: 0;
+		overflow: hidden;
+		padding: vw(29,375) vw(20,375) vw(30,375) vw(20,375);
+		@include mq(md) {
+			position: sticky;
+			padding: 0;
+			padding-top: clamped(120,152, 768, 1920);
+			padding-bottom: 100px;
+		}
+	}
+	&__content{
+		@include mq(md) {
+			width: clamped(696,1401, 768, 1920);
+			margin: 0 auto;
+			.slick-list{
+				overflow: visible;
+			}
+			.slick-track{
+				display: flex;
+			}
+		}
+	}
+	
+	&__item{
+		position: relative;
+		margin-bottom: vw(66,375);
+		cursor: pointer;
+		transition: 0.5s;
+		@include mq(md) {
+			margin-bottom: 0;
+			margin-left: clamped(48,97, 768, 1920);
+			margin-right: clamped(48,97, 768, 1920);
+		}
+		&:last-child{
+			margin-bottom: 0;
+		}
+
+		.content{
+			position: absolute;
+			left: vw(11,375);
+			top: vw(11,375);
+			color: #fff;
+			z-index: 1;
+			@include mq(md) {
+				left: clamped(28,56, 768, 1920);
+    			top: clamped(16,32, 768, 1920);
+			}	
+			.num{
+				&_big{
+					font-weight: 400;
+					letter-spacing: 0.1em;
+					line-height: 1;
+					font-family: $font-family-an;
+					text-shadow: 0 0 5px rgba($color: #000000, $alpha: 1.0);
+					position: relative;
+					font-size: vw(27,375);
+					padding-right: vw(10,375);
+					@include mq(md) {
+						text-shadow: 0 0 13px rgba($color: #000000, $alpha: 1.0);
+						padding-right: clamped(18,30, 768, 1920);
+						font-size: clamped(48,96, 768, 1920);
+					}
+					&::after{
+						content: "";
+						width: 2px;
+						height: vw(25,375);
+						background-color: #fff;
+						position: absolute;
+						right: 0;
+						top: vw(8,375);
+						transform: rotate(28deg);
+						box-shadow: 0 0 13px rgba($color: #000000, $alpha: 1.0);
+						@include mq(md) {
+							height: 100px;
+							top: clamped(11,22, 768, 1920);
+							width: 4px;
+							height: clamped(50,105, 768, 1920);
+						}
+					}
+				}
+				&_small{
+					font-weight: 400;
+					letter-spacing: 0.05em;
+					line-height: 1;
+					font-family: $font-family-an;
+					text-shadow: 0 0 5px rgba($color: #000000, $alpha: 1.0);
+					position: relative;
+					font-size: vw(16,375);
+					@include mq(md) {
+						text-shadow: 0 0 10px rgba($color: #000000, $alpha: 1.0);
+						top: clamped(0,3, 768, 1920);
+						font-size: clamped(24,48, 768, 1920);
+						padding-left: clamped(2,5, 768, 1920);
+					}
+				}
+			}
+			.text{
+				position: relative;
+				font-weight: 900;
+				letter-spacing: 0.1em;
+				line-height: 1;
+				text-shadow: 0 0 5px rgba($color: #000000, $alpha: 1.0);
+				font-size: vw(27,375);
+				padding-left: vw(3,375);
+				top: vw(-2,375);
+				@include mq(md) {
+					text-shadow: 0 0 15px rgba($color: #000000, $alpha: 1.0);
+					font-size: clamped(48,98, 1024, 1600);
+					padding-left: clamped(11,22, 768, 1920);
+					top: -3px;
+				}
+			}
+		}
+		.btn{
+			background-color: #fff;
+			display: inline-flex;
+			position: absolute;
+			right: vw(-11,375);
+			bottom: vw(-11,375);
+			z-index: 1;
+			@include mq(md) {
+				right: clamped(-96,-48, 1920, 768);
+				bottom: clamped(-48,-24, 1920, 768);			
+			}
+		}
+		.c_btn01{
+			transition: 0.5s;
+		}
+		.img{
+			display: block;
+			transition: 0.5s;
+			@include mq(md) {
+				background-color: #fff;
+				width: 100%;
+			}
+			img{
+				display: block;
+				object-fit: cover;
+				object-position: center;
+				aspect-ratio: 324/182;
+				transition: 0.5s;
+				@include mq(md) {
+					aspect-ratio: 1207/559;
+				}
+			}
+		}
+		&:hover{
+			.img{
+				img{
+					@include mq(md) {
+						opacity: 0.8;
+					}
+				}
+				
+			}
+			.c_btn01{
+				@include mq(md) {
+					opacity: 0.8;
+				}
+			}
+		}
+	}
+	&__dots{		
+		width: 100%;
+		display: none;
+		text-align: center;
+		@include mq(md) {
+			display: block;
+			margin-top: clamped(40,80, 768, 1920);
+		}
+		.slick-dots{
+			li{
+				width: 10px;
+				height: 10px;
+				border-radius: 99px;
+				background-color: #fff;
+				margin: 5px;
+				display: inline-block;
+				font-size: 0;
+				cursor: pointer;
+				transition: 0.5s;
+				@include mq(md) {
+					margin: clamped(5,7, 768, 1920);
+					width: clamped(6,12, 768, 1920);
+					height: clamped(6,12, 768, 1920);
+				}
+				
+				&.slick-active{
+					background-color: #0F69CB;
+				}
+				&:hover{
+					@include mq(md) {
+						opacity: 0.7;
+					}
+				}
+			}
+		}
+		&__item{
+			width: 10px;
+			height: 10px;
+			border-radius: 99px;
+			background-color: #fff;
+			margin: 5px;
+			display: inline-block;
+			@include mq(md) {
+				margin: clamped(5,7, 768, 1920);
+				width: clamped(6,12, 768, 1920);
+				height: clamped(6,12, 768, 1920);
+			}
+			
+			&.active{
+				background-color: #0F69CB;
+			}
+		}			
+	}
+}

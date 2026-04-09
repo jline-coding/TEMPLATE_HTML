@@ -1,0 +1,23 @@
+.icon {
+    &_arrow_right {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        border-radius: 99px;
+        position: relative;
+        background-color: #5f6c76;
+        &::after {
+            content: "";
+            width: 10px;
+            height: 8.5px;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+
+            background-image: url("./../images/commons/icons/icon_arrow_right_white.svg");
+            background-size: cover;
+        }
+    }
+}
