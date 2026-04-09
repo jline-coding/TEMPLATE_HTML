@@ -45,8 +45,10 @@ function validateConfig(config) {
     if (!config.source_folder || typeof config.source_folder !== 'string') {
         errors.push('Thieu truong "source_folder" (string)');
     }
-    if (!config.basic_auth || !config.basic_auth.username || !config.basic_auth.password) {
-        errors.push('Thieu truong "basic_auth" voi "username" va "password"');
+    if (config.basic_auth) {
+        if (!config.basic_auth.username || !config.basic_auth.password) {
+            errors.push('Truong "basic_auth" neu co thi phai chua "username" va "password"');
+        }
     }
 
     return errors;
@@ -360,10 +362,10 @@ async function runDeploy() {
     }
 
     // SECURITY LAYER 1: PATH TRAVERSAL PROTECTION
-    const isValidDir = /^[a-zA-Z0-9_-]+$/.test(config.project_dir);
+    const isValidDir = /^[a-zA-Z0-9_.-]+$/.test(config.project_dir);
     if (!isValidDir) {
         console.error(`[ERROR] CRITICAL: project_dir "${config.project_dir}" is INVALID!`);
-        console.error(`   Only alphanumeric, dash (-), underscore (_) allowed.`);
+        console.error(`   Only alphanumeric, dot (.), dash (-), underscore (_) allowed.`);
         console.error(`   Server protection: auto-terminated.`);
         process.exit(1);
     }
@@ -479,25 +481,27 @@ async function runDeploy() {
             fs.writeFileSync('/tmp/.repo_lock', lockId);
             await client.uploadFrom('/tmp/.repo_lock', `${targetDir}/.deploy/.repo_lock`);
 
-            // 2. Create .htpasswd (cùng cấp với .htaccess)
-            console.log('Creating .htpasswd...');
-            const hashedPass = crypt(config.basic_auth.password);
-            fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
-            await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
+            // 2 & 3. Create .htpasswd & .htaccess
+            if (config.basic_auth) {
+                console.log('Creating .htpasswd & .htaccess...');
+                const hashedPass = crypt(config.basic_auth.password);
+                fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
+                await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
 
-            // 3. Create .htaccess (MUST stay in root to protect all children)
-            console.log('Creating .htaccess...');
-            const htaccessContent = [
-                '<Files ~ "^\\.">',
-                'Deny from all',
-                '</Files>',
-                'AuthType Basic',
-                'AuthName "Restricted Area"',
-                `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
-                'Require valid-user',
-            ].join('\n');
-            fs.writeFileSync('/tmp/.htaccess', htaccessContent);
-            await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
+                const htaccessLines = [
+                    '<Files ~ "^\\.">',
+                    'Deny from all',
+                    '</Files>',
+                    'AuthType Basic',
+                    'AuthName "Restricted Area"',
+                    `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
+                    'Require valid-user'
+                ];
+                fs.writeFileSync('/tmp/.htaccess', htaccessLines.join('\n'));
+                await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
+            } else {
+                console.log('[INFO] basic_auth omitted - skipping .htaccess/.htpasswd generation to preserve server-side rules.');
+            }
 
             // 4. Upload all source (ZIP fast or file-by-file fallback)
             console.log(`Uploading all files from ${config.source_folder}/...`);
@@ -533,23 +537,27 @@ async function runDeploy() {
             await client.cd(ftpRoot);
 
             // Re-sync .htpasswd & .htaccess
-            console.log('Syncing .htpasswd & .htaccess...');
-            const hashedPass = crypt(config.basic_auth.password);
-            fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
-            await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
+            if (config.basic_auth) {
+                console.log('Syncing .htpasswd & .htaccess...');
+                const hashedPass = crypt(config.basic_auth.password);
+                fs.writeFileSync('/tmp/.htpasswd', `${config.basic_auth.username}:${hashedPass}`);
+                await client.uploadFrom('/tmp/.htpasswd', `${targetDir}/.htpasswd`);
 
-            const htaccessContent = [
-                '<Files ~ "^\\.">',
-                'Deny from all',
-                '</Files>',
-                'AuthType Basic',
-                'AuthName "Restricted Area"',
-                `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
-                'Require valid-user',
-            ].join('\n');
-            fs.writeFileSync('/tmp/.htaccess', htaccessContent);
-            await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
-            console.log('[OK] .htpasswd & .htaccess synced.');
+                const htaccessLinesUpdate = [
+                    '<Files ~ "^\\.">',
+                    'Deny from all',
+                    '</Files>',
+                    'AuthType Basic',
+                    'AuthName "Restricted Area"',
+                    `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
+                    'Require valid-user'
+                ];
+                fs.writeFileSync('/tmp/.htaccess', htaccessLinesUpdate.join('\n'));
+                await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
+                console.log('[OK] .htpasswd & .htaccess synced.');
+            } else {
+                console.log('[INFO] basic_auth omitted - skipping .htaccess/.htpasswd sync to protect manual server configurations.');
+            }
 
             // Check SHA - quick skip if no changes
             let lastDeployedSha = '';

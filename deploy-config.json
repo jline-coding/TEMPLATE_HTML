@@ -9,13 +9,9 @@
     "RENEW_CSS_DIR": "assets/css"
   },
   "production": {
-    "deploy_method": "zip",
-    "server": "JLWEB_PROD",
-    "project_dir": "template_jline_html_production",
-    "basic_auth": {
-      "username": "test",
-      "password": "test"
-    }
+    "deploy_method": "ftp",
+    "server": "JLWEB",
+    "project_dir": "template_jline_html_production"
   },
   "test": {
     "deploy_method": "ftp",
