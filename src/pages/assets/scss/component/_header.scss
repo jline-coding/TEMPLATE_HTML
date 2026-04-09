@@ -6,6 +6,10 @@ component > header
 ------------------------------
 */
 
+.c-header {
+    display: none;
+}
+
 .c-toggle {
     position: absolute;
     right: 25px;
