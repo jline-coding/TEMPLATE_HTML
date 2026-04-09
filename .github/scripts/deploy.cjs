@@ -628,13 +628,34 @@ async function runDeploy() {
                     }
 
                     // Delete removed files
+                    const dirsToCheck = new Set();
                     for (const relPath of diff.deleted) {
                         if (PROTECTED_FILES.includes(relPath) || relPath.startsWith('.deploy/')) continue;
                         const ftpFilePath = `${targetDir}/${relPath}`;
                         try {
                             await client.remove(ftpFilePath);
                             console.log(`   XX ${relPath}`);
+                            
+                            // Collect parent dir for potential cleanup
+                            let dir = path.posix.dirname(relPath);
+                            while (dir && dir !== '.') {
+                                dirsToCheck.add(dir);
+                                dir = path.posix.dirname(dir);
+                            }
                         } catch (e) { /* file might not exist */ }
+                    }
+
+                    // Cleanup empty directories (bottom-up)
+                    if (dirsToCheck.size > 0) {
+                        const sortedDirs = Array.from(dirsToCheck).sort((a, b) => b.split('/').length - a.split('/').length);
+                        for (const dir of sortedDirs) {
+                            try {
+                                await client.removeDir(`${targetDir}/${dir}`);
+                                console.log(`   XX [Dir] ${dir}`);
+                            } catch (e) {
+                                // Ignore: dir is not empty or doesn't exist
+                            }
+                        }
                     }
 
                     console.log('');
