@@ -148,10 +148,19 @@ async function uploadViaZip(client, localDir, remoteDir, ftpRoot, config, server
         await client.uploadFrom(zipPath, `${remoteDir}/_deploy_bundle.zip`);
         console.log('   [OK] Upload ZIP hoan tat.');
 
-        // 3. Create and upload PHP extractor (self-destructs after use)
+        // 3. Create and upload PHP extractor (self-destructs after use, expires 5min)
         const phpContent = `<?php
 // Auto-generated deploy extractor - self-destructs after use
 header('Content-Type: application/json');
+
+// Auto-expire after 5 minutes
+if (time() - filemtime(__FILE__) > 300) {
+    @unlink(__DIR__ . '/_deploy_bundle.zip');
+    @unlink(__FILE__);
+    http_response_code(410);
+    echo json_encode(['ok' => false, 'error' => 'Expired']);
+    exit;
+}
 
 if (!isset($_GET['token']) || $_GET['token'] !== '${token}') {
     http_response_code(403);
@@ -619,13 +628,34 @@ async function runDeploy() {
                     }
 
                     // Delete removed files
+                    const dirsToCheck = new Set();
                     for (const relPath of diff.deleted) {
                         if (PROTECTED_FILES.includes(relPath) || relPath.startsWith('.deploy/')) continue;
                         const ftpFilePath = `${targetDir}/${relPath}`;
                         try {
                             await client.remove(ftpFilePath);
                             console.log(`   XX ${relPath}`);
+                            
+                            // Collect parent dir for potential cleanup
+                            let dir = path.posix.dirname(relPath);
+                            while (dir && dir !== '.') {
+                                dirsToCheck.add(dir);
+                                dir = path.posix.dirname(dir);
+                            }
                         } catch (e) { /* file might not exist */ }
+                    }
+
+                    // Cleanup empty directories (bottom-up)
+                    if (dirsToCheck.size > 0) {
+                        const sortedDirs = Array.from(dirsToCheck).sort((a, b) => b.split('/').length - a.split('/').length);
+                        for (const dir of sortedDirs) {
+                            try {
+                                await client.removeDir(`${targetDir}/${dir}`);
+                                console.log(`   XX [Dir] ${dir}`);
+                            } catch (e) {
+                                // Ignore: dir is not empty or doesn't exist
+                            }
+                        }
                     }
 
                     console.log('');

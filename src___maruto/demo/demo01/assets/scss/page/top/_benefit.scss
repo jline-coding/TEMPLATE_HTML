@@ -1,0 +1,76 @@
+.benefit {
+    > .inner {
+        padding: 0.1px;
+    }
+    &_wrap {
+        padding-top: 40px;
+        padding-bottom: 20px;
+        @include media_min_query() {
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
+        @include media_min_query("xl") {
+            padding-top: 200px;
+            padding-bottom: 215px;
+        }
+    }
+    &_head {
+        .p_sub_lead {
+            margin-top: 6px;
+        }
+    }
+    &_body {
+        margin-top: 20px;
+        @include media_min_query() {
+            display: flex;
+            justify-content: space-between;
+        }
+        @include media_min_query("lg") {
+            margin-top: 62px;
+        }
+    }
+    &_more {
+        width: 100%;
+        display: block;
+        margin-bottom: 35px;
+        @include media_min_query() {
+            width: 559px;
+            max-width: calc(50% - 20px);
+            margin-bottom: 0;
+            &:hover {
+                img {
+                    scale: 1.05;
+                }
+
+                .icon {
+                    margin-left: 15px;
+                }
+            }
+        }
+
+        .p {
+            @extend %f_25;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+
+            margin-top: 12px;
+            @include media_min_query() {
+                margin-top: 27px;
+            }
+        }
+        &_image {
+            overflow: hidden;
+            border-radius: 5px;
+            img {
+                transition: 300ms ease-out;
+            }
+        }
+
+        .icon {
+            margin-left: 11px;
+            margin-top: 5px;
+            transition: 150ms ease-out;
+        }
+    }
+}

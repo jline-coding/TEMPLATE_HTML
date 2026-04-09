@@ -1,0 +1,30 @@
+@use 'sass:map';
+
+$breakpoints: (
+    'sd': 'screen and (min-width: 768px)',
+    'md': 'screen and (min-width: 1025px)',
+    'lg': 'screen and (min-width: 1200px)',
+    'ld': 'screen and (min-width: 1300px)',
+    'xd': 'screen and (min-width: 1400px)',
+    'sp': 'screen and (max-width: 767px)',
+);
+
+$hovers: (
+    'default': '(any-hover: hover) and (pointer: fine)',
+    'sd': '(any-hover: hover) and (pointer: fine) and (min-width: 768px)',
+    'md': '(any-hover: hover) and (pointer: fine) and (min-width: 1025px)',
+);
+
+@mixin mq($breakpoint: sd) {
+    @media #{map.get($breakpoints, $breakpoint)} {
+        @content;
+    }
+}
+
+@mixin hover($hover: default) {
+    @media #{map.get($hovers, $hover)} {
+        @content;
+    }
+}
+
+

@@ -63,9 +63,9 @@ jobs:
           ZIP_NAME="${PROJECT_DIR}_${TAG_NAME}.zip"
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
 
-          # Nén thư mục source (public/) thành ZIP sạch
+          # Nén thư mục source (public/) thành ZIP sạch, giữ lại .htaccess
           cd "$SOURCE_FOLDER"
-          zip -r "../$ZIP_NAME" . -x '.*'
+          zip -r "../$ZIP_NAME" . -x '.deploy/*' '.DS_Store' '*.map'
           cd ..
 
           ZIP_SIZE=$(du -h "$ZIP_NAME" | cut -f1)

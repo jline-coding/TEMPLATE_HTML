@@ -1,0 +1,182 @@
+@use "sass:math";
+@use "../../global" as *;
+
+.flow {
+    background-color: #EDEFF0;
+    padding: 60px 0;
+    @include mq() {
+        padding: 127px 0 160px;
+        padding-top: clamped(100,127,768,1024);
+    }
+    &_list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px 20px;
+        margin-top: 40px;
+        justify-content: center;
+        @include mq() {
+            margin-top: 80px;
+            gap: 40px 30px;
+        }
+        @include mq(md) {
+            gap: 40px;
+        }
+    }
+    &_item {
+        position: relative;
+        padding: 30px 20px;
+        background-color: white;
+        min-height: 160px;
+        width: 100%;
+        @include mq() {
+            padding: 40px 40px 30px;
+            min-height: 250px;
+            width: calc(50% - 15px);
+        }
+        @include mq(md) {
+            width: calc(100%/3 - 80px/3);
+        }
+        &_step {
+            position: absolute;
+            z-index: 1;
+            border-radius: 100px;
+            font-family: $font_manrope;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            background-color: $c_second;
+            color: white;
+            width: 55px;
+            height: 55px;
+            line-height: 1;
+            left: 0;
+            top: 0;
+            transform: translateY(-26%);
+            font-size: rem(10);
+            @include mq() {
+                font-size: rem(12);
+                width: math.div(80em,12);
+                height: math.div(80em,12);
+            }
+            &__word {
+                text-transform: uppercase;
+            }
+            &__num {
+                font-size: rem(22);
+                @include mq() {
+                    font-size: math.div(36em,12);
+                }
+            }
+        }
+        &_ttl {
+            color: $c_second;
+            text-align: center;
+            letter-spacing: 0.06em;
+            margin-bottom: 10px;
+            @include mq() {
+                margin-bottom: 20px;
+            }
+        }
+        &_desc {
+            small {
+                word-break: break-all;
+                font-size: math.div(16em,20);
+                line-height: math.div(24em,16);
+            }
+            &__sm {
+                margin-top: math.div(9em,14);
+                font-size: rem(14);
+            }
+            a {
+                color: $c_four;
+            }
+        }
+    }
+   
+    &_banner {
+        background-color: $c_second;
+        margin-top: 80px;
+        color: white;
+        padding: 40px 0;
+        @include mq() {
+            margin-top: 160px;
+            margin-top: clamped(100,160,768,1024);
+            padding: 71px 0 80px;
+            // padding: clamped(60,90,1024,1200) 0 clamped(60,80,1024,1200);
+        }
+        .container {
+            @include mq(md) {
+                max-width: 1600px;
+                padding: 0;
+            }
+        }
+        &_ttl {
+            position: relative;
+            margin-bottom: 20px;
+            display: table;
+            margin: 0 auto 20px;
+            font-size: rem(22);
+            
+            @include mq() {
+                text-align: center;
+                margin-bottom: 50px;
+                font-size: rem(40);
+                
+            }
+            &::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 60px;
+                height: 60px;
+                background: url(../images/top/icon_free.svg) center/contain no-repeat;
+                transform: translate(0%, -100%);
+                @include mq() {
+                    width: 80px;
+                    height: 80px;
+                    transform: translate(-115%, -52%);
+                }
+            }
+        }
+        &_flex {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 35px 0px;
+            @include mq() {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                font-size: rem(16); 
+                gap: 40px 30px;
+                padding: 0 40px;
+            }
+            @include mq(md) {
+                gap: clamped(40,60,1200,1400);
+            }
+        }
+        &_desc {
+            text-align: center;
+            font-size: clamped(16,18,375,767);
+            @include mq() {
+                font-size: 1em;
+            }
+        }
+        &_btn {
+            margin-top: 15px;
+            text-align: center;
+            @include mq() {
+                margin-top: 19px;
+                width: 410px;
+                width: clamped(340,410,1200,1400);
+            }
+            .c_btn {
+                &:not(:first-child) {
+                    margin-top: 20px;
+                }
+            }
+        }
+    }
+}

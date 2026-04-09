@@ -1,0 +1,119 @@
+.nav {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        visibility 300ms ease,
+        opacity 200ms linear 100ms;
+
+    &.is_active {
+        opacity: 1;
+        visibility: visible;
+    }
+    > .inner {
+        width: 100%;
+        height: 100%;
+
+        padding-top: 160px;
+        padding-left: 20px;
+        padding-right: 20px;
+        background-color: rgba($color: #000000, $alpha: 0.8);
+    }
+    &_wrap {
+        width: 420px;
+        max-width: 100%;
+
+        margin-left: auto;
+        margin-right: auto;
+
+        .btn {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+    }
+    &_toggler {
+        width: 50px;
+        height: 50px;
+        position: relative;
+        z-index: 2;
+        background-color: #fff;
+        margin-left: auto;
+
+        border-radius: 5px;
+        cursor: pointer;
+
+        @include media_min_query() {
+            width: 70px;
+            height: 70px;
+            &:hover {
+                .nav_toggler_bar {
+                    &:nth-child(1) {
+                        translate: 4px 0;
+                    }
+                    &:nth-child(4) {
+                        translate: -4px 0;
+                    }
+                }
+            }
+        }
+        @include media_min_query("xl") {
+            margin-left: 0;
+        }
+
+        &_bar {
+            width: 100%;
+            height: 2px;
+            background-color: #5f6c76;
+
+            position: absolute;
+            left: 0;
+            transition: 300ms ease-out;
+            &:nth-child(1) {
+                top: 0;
+                transform-origin: center right;
+            }
+            &:nth-child(2),
+            &:nth-child(3) {
+                top: calc(50% - 1px);
+            }
+            &:nth-child(4) {
+                top: calc(100% - 2px);
+            }
+            &_group {
+                width: 14px;
+                height: 12px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+
+                translate: -50% -50%;
+            }
+        }
+
+        &.is_active {
+            .nav_toggler_bar {
+                &:nth-child(1),
+                &:nth-child(4) {
+                    scale: 0 1;
+                }
+                &:nth-child(2) {
+                    rotate: 45deg;
+                }
+                &:nth-child(3) {
+                    rotate: -45deg;
+                }
+            }
+        }
+    }
+
+    .btn {
+        @include media_min_query("xl") {
+            margin-right: 20px;
+        }
+    }
+}

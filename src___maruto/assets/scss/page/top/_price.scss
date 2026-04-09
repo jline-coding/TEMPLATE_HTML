@@ -1,0 +1,329 @@
+@use "sass:math";
+@use "../../global" as *;
+
+.price {
+    padding: 60px 0 80px;
+    @include mq() {
+        padding: 126px 0 160px;
+        padding: clamped(100,126,768,1024) 0 102px;
+    }
+    &_table {
+        margin-top: 40px;
+        @include mq() {
+            display: grid;
+            grid-template-columns: math.div(170em,20) 1fr 1fr 1fr;
+            gap: math.div(30em,20);
+            margin-top: 80px;
+            font-size: clamped(17,20,768,1024);
+        }
+        .c_btn {
+            color: white;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 10px;
+            @include mq() {
+                margin-bottom: math.div(20em,20);
+                height: math.div(80em,20);
+            }
+        }
+        &_btn01 {
+            background-color: $c_five;
+        }
+        &_btn02 {
+            background-color: $c_second;
+        }
+        &_btn03 {
+            background-color: $c_base;
+        }
+        &_ttl {
+            display: flex;
+            align-items: center;
+            // min-width;width: 160px;
+            width: 50%;
+            @include mq() {
+                width: unset;
+                height: math.div(100em,20);
+            }
+        }
+        &_col {
+            padding-bottom: 15px;
+            @include mq() {
+                padding-bottom: 0;
+            }
+        }
+        &_num {
+            font-weight: 800;
+            font-family: $font_manrope;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: -0.04em;
+            @include mq() {
+                height: math.div(100em,40);
+                font-size: math.div(40em,20);
+            }
+        }
+        &_unit {
+            font-weight: 900;
+            font-family: $font_base;
+            font-size: math.div(24em,40);
+            margin-left: math.div(4em,24);
+            position: relative;
+            top: math.div(4em,24);
+        }
+        &_th {
+            @include mq() {
+                padding-top: math.div(100em,20);
+            }
+        }
+        &_flex {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            @include mq() {
+                padding: 0;
+                display: block;
+            }
+        }
+    }
+    &_details {
+        margin-top: 15px;
+        @include mq() {
+            margin-top: 29px;
+        }
+        &_line {
+            @include mq() {
+                display: flex;
+            }
+            &:not(:last-child) {
+                margin-bottom: 12px;
+                @include mq() {
+                    margin-bottom: 16px;
+                }
+            }
+        }
+        &_ttl {
+            @include mq() {
+                width: 280px;
+            }
+        }
+        &_desc {
+            small {
+                font-size: math.div(14em,20);
+                line-height: math.div(20,14);
+                margin-left: math.div(10em,14);
+                @include mq() {
+                    top: math.div(2em,14);
+                    position: relative;
+                }
+            }
+        }
+    }
+    &_notice {
+        margin-top: 40px;
+        @include mq() {
+            margin-top: 60px;
+        }
+        &_item {
+            display: flex;
+            align-items: flex-start;
+            font-weight: bold;
+            &::before {
+                content: "※";
+                color: inherit;
+                flex-shrink: 0;
+                font-size: inherit;
+                margin-right: math.div(5em,20);
+            }
+            &:not(:last-child) {
+                // @include mq() 
+                margin-bottom: math.div(10em,20);
+            }
+        }
+    }
+    &_other {
+        margin-top: 50px;
+        @include mq() {
+            margin-top: 80px;
+        }
+        &_ttl {
+            text-align: center;
+            letter-spacing: 0.06em;
+            
+        }
+        &_list {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(clamp(280px, math.div(280,320)*100vw, 320px), 1fr));
+            margin-top: 20px;
+            @include mq() {
+                margin-top: 40px;
+                gap: 40px;
+                gap: clamped(30,40,768,1200);
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        &_item {
+            padding: 30px 20px;
+            @include mq() {
+                padding: 50px 60px 37px;
+                padding: clamped(40,50,768,1200) clamped(25,60,768,1200) 37px;
+            }
+            &__ttl {
+                text-align: center;
+                padding-bottom: math.div(20em,30);
+                border-bottom: 2px solid $c_base;
+                font-size: rem(18);
+                @include mq() {
+                    white-space: nowrap;
+                    border-bottom-width: 3px;
+                    font-size: clamped(17,29,768,1200);
+                }
+            }
+            &__content {
+                border-bottom: 1px solid $c_base;
+                margin-top: 20px;
+                padding-bottom: 20px;
+                @include mq() {
+                    margin-top: 39px;
+                    padding-bottom: 39px;
+                    font-size: clamped(16,20,768,1024);
+                }
+            }
+            &__line {
+                display: flex;
+                justify-content: space-between;
+                &:not(:last-child) {
+                    margin-bottom: 10px;
+                    @include mq() {
+                        margin-bottom: 16px;
+                    }
+                }
+            }
+            &__num {
+                &>*:first-child {
+                    margin-right: 10px;
+                    @include mq() {
+                        margin-right: 16px;
+                    }
+                }
+            }
+        }
+        &_total {
+            display: flex;
+            justify-content: flex-end;
+            align-items: baseline;
+            margin-top: 10px;
+            @include mq() {
+                margin-top: 18px;
+            }
+            &__num {
+                font-weight: 800;
+                letter-spacing: -0.04em;
+                font-family: $font_manrope;
+            }
+            &__unit {
+                font-weight: 900;
+                font-size: math.div(24em,40);
+                margin-left: math.div(4em,24);
+                position: relative;
+                top: math.div(-3em,24);
+            }
+        }
+    }
+    &_demo {
+        margin-top: 60px;
+        @include mq() {
+            margin-top: 119px;
+            margin-top: clamped(100,119,768,1024);
+        }
+        &_ttl {
+            text-align: center;
+            letter-spacing: 0.06em;
+        }
+        &_list {
+            margin: 30px auto 0;
+            max-width: 500px;
+            @include mq() {
+                max-width: unset;
+                display: flex;
+                justify-content: center;
+                gap: 40px;
+                margin-top: 40px;
+                gap: clamped(30,40,768,1024);
+            }
+        }
+        &_item {
+            display: block;
+            width: 100%;
+            &:not(:last-child) {
+                margin-bottom: 30px;
+                @include mq() {
+                    margin-bottom: 0;
+                }
+            }
+        }
+        &_content {
+            margin-top: 10px;
+            @include mq() {
+                margin-top: 20px;
+            }
+        }
+        &_txt {
+            display: table;
+            position: relative;
+            &::after {
+                content: "";
+                position: absolute;
+                // width: 9px;
+                width: math.div(9em,20);
+                // height: 16px;
+                height: math.div(16em,20);
+                background-color: currentColor;
+                mask-repeat: no-repeat;
+                mask-position: right center;
+                mask-size: contain;
+                mask-image: url(../images/common/icon_arrow02.svg);
+                top: 52%;
+                left: calc(100% + 8px);
+                transform: translate(0, -50%);
+                @include mq() {
+                    top: 53%;
+                    left: calc(100% + 20px);
+                }
+            }
+        }
+        &_tags {
+            margin-top: 5px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: rem(12);
+            gap: 4px 10px;
+            @include mq() {
+                font-size: rem(14);
+                margin-top: 6px;
+                gap: 5px 12px;
+            }
+        }
+        &_desc {
+            margin-top: 10px;
+            @include mq() {
+                margin-top: 13px;
+            }
+        }
+        &_btn {
+            margin-top: 50px;
+            @include mq() {
+                margin-top: 80px;
+            }
+            .c_btn {
+                @include mq() {
+                    height: 90px;
+                    max-width: 340px;
+                }
+            }
+        }
+    }
+}

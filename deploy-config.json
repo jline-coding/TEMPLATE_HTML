@@ -2,6 +2,12 @@
   "source_folder": "public",
   "has_build_step": true,
   "build_command": "npm run build",
+  "env": {
+    "MODE": "new",
+    "OUTPUT_EXT": "php",
+    "RENEW_SCSS_DIR": "PC/asb/scss, SP/asb/scss",
+    "RENEW_CSS_DIR": "PC/asb/css, SP/asb/css"
+  },
   "production": {
     "deploy_method": "zip",
     "server": "JLWEB_PROD",

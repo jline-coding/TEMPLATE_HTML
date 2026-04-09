@@ -1,0 +1,106 @@
+@use "sass:math";
+@use "../../global" as *;
+
+.faq {
+    padding: 60px 0 80px;
+    @include mq() {
+        padding: 127px 0 160px;
+        padding: clamped(100,127,768,1024) 0 clamped(120,160,768,1024);
+    }
+    &_list {
+        margin: 60px auto 0;
+        border-top: 1px solid #EDEFF0;
+        @include mq() {
+            margin-top: 80px;
+            max-width: 960px;
+        }
+    }
+    &_item {
+        border-bottom: 1px solid #EDEFF0;
+    }
+    &_question {
+        position: relative;
+        padding: 20px 30px;
+        cursor: pointer;
+        @include mq() {
+            padding: 35px 43px 35px;
+        }
+        &_q {
+            position: absolute;
+            font-size: math.div(30em,20);
+            line-height: 1;
+            color: $c_four;
+            font-family: $font_jose;
+            left: 0;
+            top: 22px;
+            @include mq() {
+                top: math.div(37em,30);
+            }
+        }
+        &_open {
+            height: 25px;
+            width: 25px;
+            background-color: $c_second;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            @include mq() {
+                height: 30px;
+                width: 30px;
+            }
+            &::after,&::before {
+                content: "";
+                height: 2px;
+                width: 10px;
+                background-color: white;
+                transition: transform 0.5s ease;
+                position: absolute;
+                @include mq() {
+                    width: 14px;
+                }
+            }
+            &::after {
+                transform: rotate(90deg);
+            }
+        }
+        &.active {
+            .faq_question_open {
+                &::after {
+                    transform: rotate(00deg);
+                }
+            }
+        }
+    }
+    &_answer {
+        position: relative;
+        top: -15px;
+        padding: 0 30px;
+        overflow: hidden;
+        // height: 0;
+        display: none;
+        @include mq() {
+            top: -26px;
+            padding: 0 40px;
+        }
+        &_contain {
+            padding: 10px 0 5px;
+            @include mq() {
+                padding: 9px 0 0;
+            }
+        }
+        &_wrap {
+            display: table;
+            padding: 10px 20px;
+            background-color: #EDEFF0;
+            border-radius: 10px;
+            @include mq() {
+                padding: 16px 24px 15px;
+            }
+        }
+    }
+}

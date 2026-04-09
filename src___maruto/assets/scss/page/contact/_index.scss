@@ -1,0 +1,38 @@
+@use "sass:math";
+@use "../../global" as *;
+
+.p_contact {
+    padding-top: 0 !important;
+    .contact {
+        &::after {
+            display: none;
+        }
+    }
+
+    .container {
+        max-width: 100%;
+    }
+    .contact_chat_desc01{
+        text-align: left;
+        font-weight: 200;
+        font-size: rem(12);
+        letter-spacing: 0.04em;
+        margin-top: 20px;
+        @include mq('md') {
+            text-align: center;
+            margin-top: 30px;
+            font-size: rem(14);
+        }
+        a{
+            transition: all 0.5s;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            display: inline-block;
+            @include mq('md') {
+                &:hover{
+                    text-decoration:none;
+                }
+            }
+        }
+    }
+}

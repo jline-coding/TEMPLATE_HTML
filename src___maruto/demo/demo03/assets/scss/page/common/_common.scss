@@ -1,0 +1,37 @@
+@use '../../global' as *;
+@use '../../foundation';
+@use '../../utilities';
+@use '../../component';
+@use '../../layout';
+
+#wrapper {
+    overflow: hidden;
+}
+html {
+    @include mq('md') {
+        scrollbar-color: #3a795a #eee;
+        scrollbar-width: thin;
+    }
+}
+html.overflow {
+    overflow: hidden;
+}
+/* For Chrome and other browsers except Firefox */
+body {
+    @include mq('md') {
+        &::-webkit-scrollbar {
+            width: 10px;
+            background-color: #eee;
+            z-index: 1;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #3a795a;
+        }
+    }
+}
+a,
+a *,
+div,
+div * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}

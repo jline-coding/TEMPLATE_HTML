@@ -1,0 +1,45 @@
+::-webkit-scrollbar {
+    width: 9px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3057ff;
+}
+
+html {
+    line-height: 1.6;
+}
+
+body {
+    font-size: 1.4rem;
+    color: #5f6c76;
+    font-family: $f_base;
+    -webkit-font-smoothing: antialiased;
+
+    @include media_min_query() {
+        font-size: 1.6rem;
+    }
+}
+img {
+    width: 100%;
+}
+#wrapper {
+    position: relative;
+    overflow: hidden;
+}
+.overflow_auto {
+    min-width: 100%;
+    overflow: auto;
+}
+
+.pc {
+    @include media_max_query() {
+        display: none !important;
+    }
+}
+.sp {
+    @include media_min_query() {
+        display: none !important;
+    }
+}

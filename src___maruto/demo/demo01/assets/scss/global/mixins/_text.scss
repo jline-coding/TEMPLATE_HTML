@@ -1,0 +1,13 @@
+$text_aligns: (
+    "left": left,
+    "right": right,
+    "center": center,
+    "justify": justify
+);
+
+// -- ▷ create
+@each $name, $prop in $text_aligns {
+    %txt_#{$name} {
+        text-align: $prop;
+    }
+}

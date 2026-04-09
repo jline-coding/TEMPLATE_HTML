@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.84" height="23.31" viewBox="0 0 12.84 23.31">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #434343;
+        stroke-width: 1px;
+        fill-rule: evenodd;
+        filter: url(#filter);
+      }
+    </style>
+    <filter id="filter" x="1338.94" y="6390.16" width="11.84" height="22.31" filterUnits="userSpaceOnUse">
+      <feFlood result="flood" flood-color="#fff"/>
+      <feComposite result="composite" operator="in" in2="SourceGraphic"/>
+      <feBlend result="blend" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g transform="translate(-1338.44 -6389.66)" style="fill: none; filter: url(#filter)">
+    <path id="長方形_29" data-name="長方形 29" class="cls-1" d="M1339.63,6390.15l11.16,11.15-11.16,11.16" style="stroke: inherit; filter: none; fill: inherit"/>
+  </g>
+  <use transform="translate(-1338.44 -6389.66)" xlink:href="#長方形_29" style="stroke: #434343; filter: none; fill: none"/>
+</svg>

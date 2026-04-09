@@ -1,0 +1,257 @@
+@use "sass:math";
+@use '../global' as *;
+
+.c_totop {
+    position: absolute;
+    top: 0;
+    right: 35px;
+    height: 100%;
+    z-index: 50;
+    pointer-events: none;
+    @include mq() {
+        height: calc(100% - clamped(0,60,1600,768));
+        right: 65px;
+    }
+    &_wrap {
+        width: 0px;
+        // height: calc(100vh - 110px);
+        height: calc(100vh - 200px);
+        height: calc(100dvh - 200px);
+        position: sticky;
+        top: 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        @include mq() {
+            // height: calc(100vh - 180px);
+            height: calc(100vh - 320px);
+        }
+    }
+    &_btn {
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        box-shadow: rgba(black, 0.2) 0 2px 6px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        border-radius: 50%;
+        font-size: rem(50);
+        color: white;
+        background-color: $c_five;
+        width: 1em;
+        height: 1em;
+        flex-shrink: 0;
+        transition: all 0.5s ease;
+        border: 2px solid $c_five;
+        @include hover() {
+            &:hover {
+                background-color: white;
+                color: $c_five;
+                opacity: 1;
+            }
+        }
+        &.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        @include mq() {
+            font-size: rem(70);
+        }
+        &::after, &::before {
+            content: "";
+            width: 0;
+            height: 0;
+            translate: 0 -5px;
+            flex-shrink: 0;
+            // transition: all 0.5s ease;
+            border-top: math.div(11em,70) solid currentColor;
+        }
+        &::before {
+            border-left: math.div(28em,70) solid transparent;
+            transform-origin: top right;
+            rotate: -45deg;
+        }
+        &::after {
+            border-right: math.div(28em,70) solid transparent;
+            transform-origin: top left;
+            rotate: 45deg;
+        }
+    }
+}
+
+// .c_cookiewrap {
+//     position: fixed;
+//     bottom: 0;
+//     left: 0;
+//     width: 100%;
+//     background-color: #333;
+//     color: white;
+//     z-index: 8888;
+//     padding: 20px;
+//     @include mq() {
+//         padding: 20px 40px;
+//     }
+//     &_inner {
+//         margin: 0 auto;
+//         width: 100%;
+//         @include mq() {
+//             max-width: 1240px;
+//             padding: 0;
+//             align-items: center;
+//             display: flex;
+//         }
+//     }
+//     &_desc {
+//         font-size: rem(12);
+//         width: 100%;
+//         @include mq() {
+//             font-size: rem(14);
+//         }
+//     }
+//     &_close {
+//         width: 200px;
+//         margin: 20px auto 0;
+//         border: 1px solid white;
+//         @include mq() {
+//             margin-top: 0;
+//             flex-shrink: 0;
+//             width: 140px;
+//             margin-left: 20px;
+//         }
+//         a {
+//             height: 40px;
+//             font-size: rem(15);
+//             display: flex;
+//             align-items: center;
+//             justify-content: center;
+//             width: 100%;
+//             @include mq() {
+//                 font-size: rem(18);
+//             }
+//         }
+//     }
+// }
+
+
+html.is_loadding .c_loading {
+    opacity: 1;
+    pointer-events: all;
+}
+
+html.is_loadding body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+.c_loading {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background-color: $c_five;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    &_body {
+        position: relative;
+        display: inline-block;
+        height: 50px;
+        width: 50px;
+        animation: spin calc(1.1s * 2.5) infinite linear;
+        &_dot {
+            position: absolute;
+            height: 100%;
+            width: 30%;
+            &::after {
+                content: '';
+                position: absolute;
+                height: 0%;
+                width: 100%;
+                padding-bottom: 100%;
+                background-color: white;
+                border-radius: 50%;
+            }
+            &:nth-child(1) {
+                bottom: 5%;
+                left: 0;
+                transform: rotate(60deg);
+                transform-origin: 50% 85%;
+                &::after {
+                    bottom: 0;
+                    left: 0;
+                    animation: wobble1 1.1s infinite ease-in-out;
+                    animation-delay: calc(1.1s * -0.3);
+                }
+            }
+            &:nth-child(2) {
+                bottom: 5%;
+                right: 0;
+                transform: rotate(-60deg);
+                transform-origin: 50% 85%;
+                &::after {
+                    bottom: 0;
+                    left: 0;
+                    animation: wobble1 1.1s infinite calc(1.1s * -0.15) ease-in-out;
+                }
+            }
+            &:nth-child(3) {
+                bottom: -5%;
+                left: 0;
+                transform: translateX(116.666%);
+                &::after {
+                    top: 0;
+                    left: 0;
+                    animation: wobble2 1.1s infinite ease-in-out;
+                }
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes wobble1 {
+
+    0%,
+    100% {
+        transform: translateY(0%) scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translateY(-66%) scale(0.65);
+        opacity: 0.8;
+    }
+}
+
+@keyframes wobble2 {
+
+    0%,
+    100% {
+        transform: translateY(0%) scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translateY(66%) scale(0.65);
+        opacity: 0.8;
+    }
+}

@@ -1,0 +1,162 @@
+@use "sass:math";
+@use "../global"as *;
+
+/**
+ * 10-12 -> 10
+ * 13-14 -> 12
+ * 15-16 -> 14
+ * 17-20 -> 16
+ * 21-26 -> 18
+ * 27-32 -> 20
+ * 33-38 -> 22
+ * 39-44 -> 24
+ * 45-50 -> 26
+ * 51-56 -> 28
+ * 57-62 -> 30
+ * 63-68 -> 32
+ * 69-74 -> 34
+ * 65-80 -> 36
+ * 81-95 -> 38
+ * 96 ++ -> 40
+ */
+
+// -- ▷ font size
+$font_size: (0: 0,
+    80: 36,
+    71: 34,
+    66: 32,
+    62: 30,
+    60: 30,
+    54: 28,
+    50: 26,
+    45: 26,
+    42: 24,
+    40: 24,
+    35: 22,
+    30: 20,
+    29: 20,
+    25: 18,
+    24: 18,
+    22: 18,
+    20: 16,
+    19: 16,
+    18: 16,
+    16: 14,
+    14: 12,
+    11: 10,
+);
+
+@each $in_pc,
+$in_sp in $font_size {
+    .f_#{ $in_pc } {
+        font-size: rem($in_sp);
+    }
+
+    @include mq(md) {
+        .f_#{ $in_pc } {
+            font-size: rem($in_pc);
+        }
+    }
+}
+
+.txt {
+    &_center {
+        text-align: center;
+    }
+
+    &_mincho {
+        font-family: $font-mincho;
+    }
+
+    &_trump {
+        font-family: $font-trump;
+    }
+
+    &_noto {
+        font-family: $font-noto;
+    }
+}
+
+.fw {
+    &_light {
+        font-weight: 300;
+    }
+
+    &_regular {
+        font-weight: 400;
+    }
+
+    &_medium {
+        font-weight: 500;
+    }
+
+    &_demibold {
+        font-weight: 600;
+    }
+
+    &_bold {
+        font-weight: 700;
+    }
+}
+
+.bc {
+    &_A3D54C {
+        background-color: #A3D54C;
+    }
+
+    &_00A54F {
+        background-color: #00A54F;
+    }
+
+    &_F5F5F5 {
+        background-color: #F5F5F5;
+    }
+}
+
+.color {
+    &_FFFFFF {
+        color: #FFFFFF;
+    }
+
+    &_594E33 {
+        color: #594E33;
+    }
+
+    &_00A850 {
+        color: #00A850;
+    }
+
+    &_707070 {
+        color: #707070;
+    }
+
+    &_AAC89A {
+        color: #AAC89A;
+    }
+
+    &_D4E4B4 {
+        color: #D4E4B4;
+    }
+}
+
+.c_txt {
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: math.div(20, 14);
+
+    @include mq(md) {
+        line-height: math.div(32, 15.3);
+    }
+}
+
+.c_txt20 {
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: math.div(20, 14);
+    font-size: rem(14);
+
+    @include mq(md) {
+        font-size: rem(20);
+        line-height: math.div(27, 20);
+    }
+}

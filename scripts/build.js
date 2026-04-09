@@ -44,16 +44,17 @@ const beautifyOptions = {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const SRC = resolve(ROOT, 'src');
-const PAGES_DIR = resolve(SRC, 'pages');
+let PAGES_DIR = resolve(SRC, 'pages');
 const DIST = resolve(ROOT, 'public');
 const LAYOUTS_DIR = resolve(SRC, 'layouts');
 const COMPONENTS_DIR = resolve(SRC, 'components');
-const ASSETS_DIR = resolve(PAGES_DIR, 'assets');
-const SCSS_DIR = resolve(ASSETS_DIR, 'scss');
+let ASSETS_DIR = resolve(PAGES_DIR, 'assets');
+let SCSS_DIR = resolve(ASSETS_DIR, 'scss');
 const JS_DIR = resolve(ASSETS_DIR, 'js');
 const IMAGES_DIR = resolve(ASSETS_DIR, 'images');
 const VIDEOS_DIR = resolve(ASSETS_DIR, 'videos');
 const VENDOR_DIR = resolve(ASSETS_DIR, 'vendor');
+const CSS_DIR = resolve(ASSETS_DIR, 'css');
 
 
 const isWatch = process.argv.includes('--watch');
@@ -77,13 +78,39 @@ async function formatCode(code, destExt) {
 }
 
 // ─────────────────────────────────────────────
-// Read .env Configuration
+// Read Configuration (deploy-config.json → .env override)
 // ─────────────────────────────────────────────
+let MODE = 'new';
 let OUTPUT_EXT = '.html';
 let PROXY_URL = '';
 let SERVER_TYPE = '';
 let USE_PHP_INCLUDE = false;
+let RENEW_SCSS_DIR = '';   // relative to src/ (e.g. PC/asb/scss)
+let RENEW_CSS_DIR = '';    // relative to public/ (e.g. PC/asb/css)
 
+// 1) Read defaults from deploy-config.json → env block
+try {
+  const configPath = resolve(ROOT, 'deploy-config.json');
+  if (existsSync(configPath)) {
+    const config = JSON.parse(readFileSync(configPath, 'utf8'));
+    if (config.env) {
+      if (config.env.MODE) MODE = config.env.MODE.toLowerCase();
+      if (config.env.OUTPUT_EXT) {
+        const v = config.env.OUTPUT_EXT.toLowerCase();
+        OUTPUT_EXT = v.startsWith('.') ? v : `.${v}`;
+      }
+      if (config.env.PROXY_URL) PROXY_URL = config.env.PROXY_URL;
+      if (config.env.SERVER_TYPE) SERVER_TYPE = config.env.SERVER_TYPE;
+      if (config.env.USE_PHP_INCLUDE === true) USE_PHP_INCLUDE = true;
+      if (config.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = config.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
+      if (config.env.RENEW_CSS_DIR) RENEW_CSS_DIR = config.env.RENEW_CSS_DIR.replace(/\\/g, '/');
+    }
+  }
+} catch (e) {
+  // Ignore error
+}
+
+// 2) Override with .env file (local machine settings take priority)
 try {
   const envPath = resolve(ROOT, '.env');
   if (existsSync(envPath)) {
@@ -94,10 +121,13 @@ try {
       if (parts.length >= 2) {
         const key = parts[0].trim();
         const value = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
+        if (key === 'MODE') MODE = value.toLowerCase();
         if (key === 'OUTPUT_EXT') OUTPUT_EXT = value.toLowerCase().startsWith('.') ? value.toLowerCase() : `.${value.toLowerCase()}`;
         if (key === 'PROXY_URL') PROXY_URL = value;
         if (key === 'SERVER_TYPE') SERVER_TYPE = value;
         if (key === 'USE_PHP_INCLUDE') USE_PHP_INCLUDE = value.toLowerCase() === 'true';
+        if (key === 'RENEW_SCSS_DIR') RENEW_SCSS_DIR = value.replace(/\\/g, '/');
+        if (key === 'RENEW_CSS_DIR') RENEW_CSS_DIR = value.replace(/\\/g, '/');
       }
     });
   }
@@ -106,7 +136,9 @@ try {
 }
 
 // Auto-generate PROXY_URL from SERVER_TYPE if not explicitly set
-if (!PROXY_URL && SERVER_TYPE) {
+// Skip when OUTPUT_EXT=html (no local server needed for static HTML)
+const needsProxy = OUTPUT_EXT !== '.html';
+if (!PROXY_URL && SERVER_TYPE && needsProxy) {
   const projectName = basename(ROOT);
   const type = SERVER_TYPE.toLowerCase();
   if (type === 'laragon' || type === 'xampp' || type === 'apache') {
@@ -116,6 +148,52 @@ if (!PROXY_URL && SERVER_TYPE) {
   } else if (type === 'valet') {
     PROXY_URL = `http://${projectName}.test`;
   }
+}
+
+const isRenew = MODE === 'renew';
+
+// CSS output directory relative to DIST (used by SCSS compiler)
+let CSS_OUTPUT_REL = 'assets/css';
+
+let RENEW_SCSS_DIRS = [];
+let RENEW_CSS_DIRS = [];
+
+function parseDirList(str, defaultVal) {
+  if (!str) return [defaultVal];
+  return str.split(',').map(s => s.trim()).filter(Boolean);
+}
+
+// Renew mode: use src/ directly as source root (client structure)
+if (isRenew) {
+  PAGES_DIR = SRC;
+  
+  const scssArr = parseDirList(RENEW_SCSS_DIR, 'assets/scss');
+  const cssArr = parseDirList(RENEW_CSS_DIR, 'assets/css');
+  
+  RENEW_SCSS_DIRS = scssArr.map(p => resolve(SRC, p));
+  RENEW_CSS_DIRS = scssArr.map((_, i) => cssArr[i] || cssArr[0] || 'assets/css');
+  
+  // Custom SCSS/CSS paths from .env, or defaults
+  SCSS_DIR = RENEW_SCSS_DIRS[0];
+  CSS_OUTPUT_REL = RENEW_CSS_DIRS[0];
+}
+
+// Helper to find matching SCSS/CSS relation
+function getScssDirsInfo(filePath) {
+  if (isRenew && RENEW_SCSS_DIRS.length > 0) {
+    const absPath = resolve(filePath);
+    for (let i = 0; i < RENEW_SCSS_DIRS.length; i++) {
+        const target = RENEW_SCSS_DIRS[i];
+        if (absPath === target || absPath.startsWith(target + '/') || absPath.startsWith(target + '\\')) {
+            return {
+                scssDir: RENEW_SCSS_DIRS[i],
+                cssRel: RENEW_CSS_DIRS[i]
+            };
+        }
+    }
+    return { scssDir: RENEW_SCSS_DIRS[0], cssRel: RENEW_CSS_DIRS[0] };
+  }
+  return { scssDir: SCSS_DIR, cssRel: CSS_OUTPUT_REL };
 }
 
 // ─────────────────────────────────────────────
@@ -202,6 +280,50 @@ function removeEmptyDirs(dir) {
     try {
       rmSync(dir, { force: true });
     } catch { /* ignore */ }
+  }
+}
+
+// ─────────────────────────────────────────────
+// 0. Renew Mode — Universal Copy
+// ─────────────────────────────────────────────
+/**
+ * Copy ALL files from src → public, except:
+ *  - .scss files (anywhere — never needed in production)
+ *  - .ejs files (template-only)
+ *  - .map files (client source maps are not useful, our SCSS generates its own)
+ * SCSS in assets/scss/ is compiled by buildScss() separately.
+ */
+function buildRenewCopy(changedFile) {
+  if (!existsSync(PAGES_DIR)) return;
+
+  const skipExts = ['.scss', '.ejs', '.map'];
+
+  if (changedFile) {
+    const ext = extname(changedFile).toLowerCase();
+    if (skipExts.includes(ext)) return;
+
+    const rel = relative(PAGES_DIR, changedFile);
+    const dest = resolve(DIST, rel);
+    ensureDir(dirname(dest));
+    writeFileSync(dest, readFileSync(changedFile));
+    console.log(`[renew] copy: ${norm(rel)}`);
+    return;
+  }
+
+  // Full copy — walk all files, skip .scss and .ejs
+  const allFiles = walkSync(PAGES_DIR, (f) => {
+    const ext = extname(f).toLowerCase();
+    return !skipExts.includes(ext);
+  });
+
+  for (const file of allFiles) {
+    const rel = relative(PAGES_DIR, file);
+    const dest = resolve(DIST, rel);
+    if (isNewer(file, dest)) {
+      ensureDir(dirname(dest));
+      writeFileSync(dest, readFileSync(file));
+      console.log(`[renew] copy: ${norm(rel)}`);
+    }
   }
 }
 
@@ -364,7 +486,7 @@ const postcssPlugins = isWatch
 
 async function buildScss(changedFile) {
   // Find all SCSS entry files (non-partial)
-  let entryFiles;
+  let entryFiles = [];
 
   if (changedFile) {
     const changedAbs = resolve(changedFile);
@@ -377,9 +499,14 @@ async function buildScss(changedFile) {
       entryFiles = [changedAbs];
     }
   } else {
-    entryFiles = walkSync(SCSS_DIR, (f) =>
-      extname(f) === '.scss' && !basename(f).startsWith('_')
-    );
+    const targetDirs = isRenew ? RENEW_SCSS_DIRS : [SCSS_DIR];
+    for (const dir of targetDirs) {
+      if (!existsSync(dir)) continue;
+      const files = walkSync(dir, (f) =>
+        extname(f) === '.scss' && !basename(f).startsWith('_')
+      );
+      entryFiles.push(...files);
+    }
   }
 
   for (const entry of entryFiles) {
@@ -392,15 +519,17 @@ async function compileScssFile(filePath) {
     const source = readFileSync(filePath, 'utf8');
     if (!source.trim() || /^{\\rtf/i.test(source)) return;
 
+    const { scssDir, cssRel } = getScssDirsInfo(filePath);
+
     const result = compileString(source, {
       url: new URL(`file:///${norm(filePath)}`),
-      loadPaths: [SCSS_DIR],
+      loadPaths: [scssDir],
       style: 'expanded',
       sourceMap: isWatch,
     });
 
-    const rel = relative(SCSS_DIR, filePath);
-    const cssPath = resolve(DIST, 'assets', 'css', rel.replace(/\.scss$/, '.css'));
+    const rel = relative(scssDir, filePath);
+    const cssPath = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
 
     // PostCSS processing
     const processed = await postcss(postcssPlugins).process(result.css, {
@@ -423,7 +552,9 @@ async function compileScssFile(filePath) {
 
 /** Find SCSS entry files that depend on a given partial */
 function findDependentEntries(changedPartial) {
-  const allFiles = walkSync(SCSS_DIR, (f) => extname(f) === '.scss');
+  const { scssDir } = getScssDirsInfo(changedPartial);
+  if (!existsSync(scssDir)) return [];
+  const allFiles = walkSync(scssDir, (f) => extname(f) === '.scss');
   const importRegex = /@(use|import|forward)\s+['"]([^'"]+)['"]/g;
 
   function resolveImport(importPath, fromDir) {
@@ -657,25 +788,43 @@ function buildVideos(changedFile) {
 // Full Build
 // ─────────────────────────────────────────────
 async function fullBuild() {
+  const modeLabel = isRenew ? 'RENEW' : 'NEW';
   console.log('\n╔══════════════════════════════════════╗');
-  console.log('║       Building template_jline_html   ║');
+  console.log(`║ [${modeLabel}] Building template_jline_html   ║`);
   console.log('╚══════════════════════════════════════╝\n');
 
   const start = Date.now();
 
-  // Clean output
+  // Clean output (full clean only for production build)
   if (existsSync(DIST)) {
-    rmSync(DIST, { recursive: true, force: true });
+    if (!isWatch) {
+      rmSync(DIST, { recursive: true, force: true });
+    } else {
+      // In watch mode, clean stale .map files from previous production builds
+      for (const f of walkSync(DIST, (f) => extname(f) === '.map')) {
+        // Keep map files that are in CSS_OUTPUT_REL (generated by SCSS in watch mode)
+        if (!f.includes(CSS_OUTPUT_REL)) {
+          try { unlinkSync(f); } catch { /* ignore */ }
+        }
+      }
+    }
   }
   ensureDir(DIST);
 
   // Run tasks
-  buildEjs();
-  await buildScss();
-  buildJs();
-  buildVendor();
-  await buildImages();
-  buildVideos();
+  if (isRenew) {
+    // RENEW: copy all source files + compile SCSS
+    buildRenewCopy();
+    await buildScss();
+  } else {
+    // NEW: full pipeline (EJS, SCSS, JS, Images, Vendor, Videos)
+    await buildEjs();
+    await buildScss();
+    buildJs();
+    buildVendor();
+    await buildImages();
+    buildVideos();
+  }
 
 
   const elapsed = Date.now() - start;
@@ -705,8 +854,8 @@ async function startWatch() {
   } else {
     bsOptions.server = { baseDir: DIST };
     
-    // If outputting PHP but no proxy is set, serve .php files as text/html to avoid browser download
-    if (OUTPUT_EXT === '.php') {
+    // Serve .php files as text/html when no proxy (for both PHP output and renew mode)
+    if (OUTPUT_EXT === '.php' || isRenew) {
       bsOptions.server.middleware = [
         function (req, res, next) {
           if (req.url.includes('.php')) {
@@ -755,6 +904,93 @@ async function startWatch() {
     return resolve(ROOT, filepath);
   }
 
+  // ─────────────────────────────────────────
+  // RENEW Mode Watchers (early return)
+  // ─────────────────────────────────────────
+  if (isRenew) {
+    const skipExts = ['.scss', '.ejs', '.map'];
+
+    // Universal watcher — all files (except .scss/.ejs handled separately)
+    const renewWatcher = chokidarWatch(PAGES_DIR, watchOpts);
+
+    renewWatcher.on('change', batchDebounce((filepath) => {
+      const abs = getAbs(filepath);
+      if (skipExts.includes(extname(filepath).toLowerCase())) return;
+      console.log(`[watch:renew] changed: ${norm(filepath)}`);
+      buildRenewCopy(abs);
+      if (filepath.endsWith('.css')) {
+        browserSync.reload('*.css');
+      } else {
+        browserSync.reload();
+      }
+    }));
+
+    renewWatcher.on('add', batchDebounce((filepath) => {
+      const abs = getAbs(filepath);
+      if (skipExts.includes(extname(filepath).toLowerCase())) return;
+      console.log(`[watch:renew] added: ${norm(filepath)}`);
+      buildRenewCopy(abs);
+      browserSync.reload();
+    }));
+
+    renewWatcher.on('unlink', (filepath) => {
+      const abs = getAbs(filepath);
+      if (skipExts.includes(extname(filepath).toLowerCase())) return;
+      const rel = relative(PAGES_DIR, abs);
+      const dest = resolve(DIST, rel);
+      try {
+        if (existsSync(dest)) {
+          unlinkSync(dest);
+          console.log(`[watch:renew] removed: ${norm(rel)}`);
+          removeEmptyDirs(DIST);
+        }
+      } catch (err) {
+        console.log(`[watch:renew] remove failed: ${norm(rel)} — ${err.message}`);
+      }
+    });
+
+    // SCSS watcher (renew mode)
+    const targetWatchDirs = RENEW_SCSS_DIRS.filter(d => existsSync(d));
+    if (targetWatchDirs.length === 0) targetWatchDirs.push(RENEW_SCSS_DIRS[0]); // fallback
+    const scssWatcher = chokidarWatch(targetWatchDirs, watchOpts);
+
+    scssWatcher.on('change', debounce(async (filepath) => {
+      if (!filepath.endsWith('.scss')) return;
+      console.log(`[watch:scss] changed: ${norm(filepath)}`);
+      await buildScss(getAbs(filepath));
+      browserSync.reload('*.css');
+    }));
+    scssWatcher.on('add', debounce(async (filepath) => {
+      if (!filepath.endsWith('.scss')) return;
+      console.log(`[watch:scss] added: ${norm(filepath)}`);
+      await buildScss(getAbs(filepath));
+      browserSync.reload('*.css');
+    }));
+    scssWatcher.on('unlink', (filepath) => {
+      if (!filepath.endsWith('.scss')) return;
+      const absPath = getAbs(filepath);
+      const { scssDir, cssRel } = getScssDirsInfo(absPath);
+      const rel = relative(scssDir, absPath);
+      const name = basename(filepath);
+      if (!name.startsWith('_')) {
+        const cssFile = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
+        const mapFile = cssFile + '.map';
+        try { unlinkSync(cssFile); } catch { /* ignore */ }
+        try { unlinkSync(mapFile); } catch { /* ignore */ }
+        console.log(`[watch:scss] removed CSS: ${basename(cssFile)}`);
+      }
+      removeEmptyDirs(resolve(DIST, cssRel));
+    });
+
+    console.log('╔══════════════════════════════════════╗');
+    console.log('║ [RENEW] Watching for changes :8080   ║');
+    console.log('╚══════════════════════════════════════╝\n');
+    return;
+  }
+
+  // ─────────────────────────────────────────
+  // NEW Mode Watchers
+  // ─────────────────────────────────────────
   // EJS watcher
   const ejsWatcher = chokidarWatch(SRC, watchOpts);
 
@@ -799,19 +1035,19 @@ async function startWatch() {
     await buildScss(getAbs(filepath));
     browserSync.reload('*.css');
   }));
-  scssWatcher.on('unlink', debounce((filepath) => {
+  scssWatcher.on('unlink', (filepath) => {
     if (!filepath.endsWith('.scss')) return;
     const rel = relative(SCSS_DIR, getAbs(filepath));
     const name = basename(filepath);
     if (!name.startsWith('_')) {
-      const cssFile = resolve(DIST, 'assets', 'css', rel.replace(/\.scss$/, '.css'));
+      const cssFile = resolve(DIST, CSS_OUTPUT_REL, rel.replace(/\.scss$/, '.css'));
       const mapFile = cssFile + '.map';
       try { unlinkSync(cssFile); } catch { /* ignore */ }
       try { unlinkSync(mapFile); } catch { /* ignore */ }
       console.log(`[watch:scss] removed CSS: ${basename(cssFile)}`);
     }
-    removeEmptyDirs(resolve(DIST, 'assets', 'css'));
-  }));
+    removeEmptyDirs(resolve(DIST, CSS_OUTPUT_REL));
+  });
 
   // JS watcher
   const jsWatcher = chokidarWatch(JS_DIR, watchOpts);

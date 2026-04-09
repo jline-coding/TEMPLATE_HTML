@@ -10,103 +10,47 @@ A battle-tested, high-performance static site generator built on top of Node.js.
 
 ### ✨ Core Features
 
-- **Dual Output Modes**: Compile to `.html` or `.php`. Fully automated `<?php include ?>` extraction for components.
-- **Deep Component Nesting**: Support for infinitely nested component structures (`components/headers/main.ejs` -> `public/components/headers/main.php`).
-- **Frontmatter Routing**: Define Layouts, Headers, Footers, Meta tags, and Vendor CSS/JS directly within your EJS file's Frontmatter data.
-- **AST-Aware Auto Formatting**: A state-of-the-art 2-Phase formatting pipeline. Uses `js-beautify` to strictly align the HTML DOM structure, and `Prettier` (PHP Plugin) to securely format internal PHP AST logic. The output code is pixel-perfect and highly readable.
-- **Next-Gen Image Optimization**: Auto-converts `.jpg` and `.png` to optimized `.webp` formats during build via Sharp.
-- **100% OS-Agnostic**: Implements native Node.js FS APIs instead of bash commands, eliminating cross-platform path configuration issues.
-- **Hot Reloading**: Lightning-fast `browser-sync` live reloading seamlessly proxied over local environments (MAMP, XAMPP, Laragon, Valet).
+- **Dual Build Modes (`new` vs `renew`)**: 
+  - `new`: Build modern websites from scratch using EJS components, frontmatter routing, and layout nesting.
+  - `renew`: Seamlessly integrate with an existing client's raw codebase. Copies all assets as-is and strictly compiles only the designated SCSS directories. Supports multiple independent SCSS directories concurrently.
+- **2-Tier Configuration (`deploy-config.json` & `.env`)**: Securely decouple production CI/CD build instructions into Git from local-only overrides. 
+- **Automated CI/CD Deployments**: Fully integrated GitHub Actions workflows for both Manifest-based Differential FTP Deployments (calculating modified files) and automated GitHub clean ZIP Releases.
+- **Smart Symlinking**: Effortlessly link your `public/` directory directly into Laragon/XAMPP utilizing `npm run link`.
+- **AST-Aware Auto Formatting**: State-of-the-art 2-Phase formatting. Uses `js-beautify` to strictly align HTML and `Prettier` to format internal PHP logic.
+- **Next-Gen Image Optimization**: Auto-converts `.jpg` and `.png` to optimized `.webp` formats via Sharp.
 
 ### 🚀 Quick Start
 
-#### 1. Requirements
-- **Node.js**: `v16.0.0` or higher.
+1. **Install Dependencies**: `npm install`
+2. **Setup Local Env**: Rename `.env.example` to `.env` to configure your local setup (like `WEB_ROOT` and local `SERVER_TYPE`).
+3. **Configure Project**: Use `deploy-config.json` to define the project's permanent `MODE` (`new` or `renew`) so the CI/CD pipeline knows how to build it.
 
-#### 2. Installation
-Clone the repository and install the dependencies:
+#### 🛠️ Available Commands
 ```bash
-npm install
-```
-
-#### 3. Environment Setup
-Rename or copy `.env.example` to `.env` at the root of the project to customize the build outputs:
-```env
-OUTPUT_EXT=.php             # Output extension: .php or .html
-USE_PHP_INCLUDE=true        # Set true to use native PHP component inclusions
-SERVER_TYPE=mamp            # (Optional) Auto-proxy BrowserSync. Options: mamp, xampp, laragon, valet
-PROXY_URL=                  # (Optional) Override exact local proxy URL if needed
-```
-
-#### 4. Available Commands
-```bash
-npm run dev    # Start the development server with live reloading
+npm run dev    # Start the development server with BrowserSync live-reloading
 npm run build  # Run a full production build
 npm run clean  # Clean the public/ output directory
+npm run link   # Setup an OS-level symlink from public/ to your Local Web Server
 ```
 
-### 📂 Project Architecture
+### 📂 Architecture & Build Modes
 
-```text
-├── .env                # Core build configurations
-├── scripts/            # Node.js build pipeline scripts
-├── public/             # 📦 Production build output (Auto-generated)
-└── src/                # 🛠️ Source files
-    ├── components/     # Reusable UI partials (header, footer, sidebar, etc.)
-    ├── layouts/        # Global layout wrappers (e.g. _default.ejs)
-    └── pages/          # EJS Pages and Assets
-        ├── assets/     # scss/, js/, images/, vendor/
-        ├── index.ejs   # Maps to -> public/index.php
-        └── about/      # Maps to -> public/about/index.php
-```
+#### Mode 1: `MODE=new` (New Projects)
+Builds everything from the ground up using EJS.
+- Create pages directly inside `src/pages/`.
+- Use YAML Frontmatter to declare layouts and assets dynamically.
+- `OUTPUT_EXT` (in `.env` or `deploy-config.json`) dictates whether pages generate as `.html` or `.php`.
+- Components in `src/components/` (starting with `_`) auto-compile into `/components` for deep `<?php include ?>` routing.
 
-### 🛠️ Usage Guide
+#### Mode 2: `MODE=renew` (Client Renewal Projects)
+Bypasses the EJS engine. It mirrors the exact structure inside of `src/` directly over to `public/`.
+- `RENEW_SCSS_DIR` and `RENEW_CSS_DIR` dictate where the SCSS compiler listens.
+- **Multi-Directory Parsing**: You can comma-separate targets! `RENEW_SCSS_DIR=PC/scss, SP/scss` will accurately compile and output independent stylesheets simultaneously.
 
-#### 1. Creating Pages & Frontmatter
-Pages must be placed directly inside the `src/pages/` directory. Use YAML frontmatter at the top of the file to declare the layout and assets.
-
-```ejs
----
-layout: _default
-title: About Us Homepage
-description: This is an inner about page.
-css: ['common', 'about']
-js: ['common']
-header: 'headers/header_01'
-footer: 'footers/footer_01'
----
-<main class="p-about">
-    <h1>Hello World</h1>
-    
-    <!-- Include a component dynamically from anywhere inside the body! -->
-    <%- includeComponent('sidebar') %>
-</main>
-```
-
-#### 2. Creating Components
-Place your reusable UI components inside `src/components/`. All component files **must start with an underscore `_`** (e.g., `_sidebar.ejs`, `headers/_header_01.ejs`).
-
-The build pipeline will automatically recursively transpile these into `public/components/*` and map all paths mathematically based on directory depth.
-
-#### 3. Assets Management (SCSS, JS, Images)
-Place your raw assets inside `src/pages/assets/`.
-- **SCSS**: Files not prefixed with an underscore (e.g., `common.scss`) will compile into `public/assets/css/common.css`.
-- **Images**: `.jpg` and `.png` will be compressed into `.webp` automatically. Place them in `src/pages/assets/images/`.
-
-In your HTML/PHP files, always use the relative `assetsDir` variable to ensure deeply nested pages locate the assets correctly:
-```html
-<img src="<%= assetsDir %>assets/images/common/logo.webp" alt="Logo">
-```
-
-### ⚙️ How Formatting Works
-This template resolves the notorious "broken indentation" problem associated with compiling `<% %>` EJS templating logic mixing HTML and PHP.
-1. Our customized `<% ... -%>` compiler strips invisible logical blank lines gracefully.
-2. The final build string passes through **js-beautify**, reconstructing the DOM elements mathematically.
-3. If compiling to `.php`, the code routes into **Prettier**, which fine-tunes the indentation inside the `<?php ... ?>` blocks to match the exact depth of the HTML element they are nested inside.
-
-If you don't need PHP formatting overhead, simply set `OUTPUT_EXT=.html` and `USE_PHP_INCLUDE=false` in the `.env` file!
-
-*Built with ❤️ for High-Performance Architectures.*
+### 🛠️ Continuous Integration (CI/CD)
+This template includes robust server interactions:
+1. **Push to Staging (`deploy.yml`)**: Pushing code triggers a strict deployment. It generates a Manifest, hashes the files, and uses a self-destructing PHP Extractor to safely extract ZIPs. If unchanged, it skips the upload completely. It dynamically cleans empty directories.
+2. **Create GitHub Release (`release.yml`)**: Pushing a tag (e.g. `v1.0.0`) automatically compiles a clean ZIP file (excluding `.DS_Store` and map files) containing the `public/` directory for pure client delivery.
 
 <br><br>
 
@@ -114,104 +58,47 @@ If you don't need PHP formatting overhead, simply set `OUTPUT_EXT=.html` and `US
 
 <h2 id="日本語">🇯🇵 日本語</h2>
 
-Node.js上で構築された高速かつ堅牢な静的サイトジェネレーターです。クロスプラットフォーム（Windows、macOS、Linux）対応で設計されており、**EJS**、**SCSS**（Dart Sass）、および**Vanilla JS**をミリ秒単位でビルドし、プロダクションレディな`public/`ディレクトリを出力します。
+Node.js上で構築された高速かつ堅牢な静的サイトジェネレーターです。クロスプラットフォーム対応で設計されており、**EJS**、**SCSS**（Dart Sass）、および**Vanilla JS**をミリ秒単位でビルドし、プロダクションレディな`public/`ディレクトリを出力します。
 
 ### ✨ 主な機能
 
-- **デュアル出力モード**: `.html`または`.php`に出力可能。コンポーネント用の`<?php include ?>`抽出を完全に自動化しています。
-- **深いコンポーネントの入れ子**: コンポーネント構造の深いネスト（例: `components/headers/main.ejs` -> `public/components/headers/main.php`）を無限にサポートします。
-- **Frontmatter（フロントマター）ルーティング**: EJSファイルのFrontmatterデータ内でレイアウト、ヘッダー、フッター、メタタグ、およびベンダーCSS/JSを直接定義します。
-- **AST対応フォーマッタ**: 最先端の2段階フォーマットパイプラインを搭載。`js-beautify`を使用してHTMLのDOM構造を厳密に揃え、`Prettier`（PHPプラグイン）で内部のPHP ASTロジックを安全にフォーマットします。出力コードはピクセルパーフェクトで高可読性を保ちます。
-- **次世代の画像最適化**: ビルド時にSharpライブラリを通じて`.jpg`および`.png`を最適化された`.webp`形式に自動変換します。
-- **100% OS非依存**: Bashコマンドの代わりにネイティブなNode.js API（fs）を実装することで、クロスプラットフォームにおけるパス解決の競合問題を排除しています。
-- **ホットリロード**: ローカル環境（MAMP、XAMPP、Laragon、Valet）上でプロキシを介して高速な`browser-sync`ライブリロードを実現。
+- **デュアルビルドモード (`new` と `renew`)**: 
+  - `new`: EJSコンポーネント、Frontmatter、およびレイアウトネスティングを使用してゼロからモダンなWebサイトを構築します。
+  - `renew`: クライアントの既存ソースコードとシームレスに統合します。全アセットをそのままコピーし、指定されたSCSSディレクトリのみをコンパイルします。複数のSCSSディレクトリの同時コンパイルにも対応しています。
+- **2層構成 (`deploy-config.json` と `.env`)**: 本番CI/CD用の設定をGit上で安全に管理し、ローカル環境の固有設定を分離します。
+- **自動CI/CDデプロイ**: 変更ファイルのみを計算してアップロードするFTP差分デプロイマニフェスト、およびGitHubクリーンZIPリリースの自動作成ワークフローを完全統合しています。
+- **スマート・シンボリックリンク**: `npm run link`コマンド一つで、`public/`ディレクトリをLaragon/XAMPPなどのローカルサーバー環境に直接リンクさせます。
+- **画像・フォーマット自動最適化**: Sharpを利用したWebP自動変換に加え、AST対応の`js-beautify`と`Prettier`による2段階フォーマットを提供します。
 
 ### 🚀 クイックスタート
 
-#### 1. 必須要件
-- **Node.js**: `v16.0.0` 以上
+1. **依存関係のインストール**: `npm install`
+2. **ローカル環境の設定**: `.env.example`を`.env`にリネームし、`WEB_ROOT`や`SERVER_TYPE`などのローカル環境情報を設定します。
+3. **プロジェクト設定**: `deploy-config.json`を使用してプロジェクトの永続的なモードを定義し、CI/CDパイプラインに正しいビルド情報を提供します。
 
-#### 2. インストール
-リポジトリをクローンし、依存関係をインストールします。
+#### 🛠️ コマンド一覧
 ```bash
-npm install
+npm run dev    # BrowserSyncライブリロード付きの開発サーバーを起動
+npm run build  # 本番クリーンビルドの実行
+npm run clean  # public/ フォルダの自動クリーンアップ
+npm run link   # OSレベルで public/ フォルダをWebサーバーのルートへシンボリックリンク化
 ```
 
-#### 3. 環境設定
-出力内容をカスタマイズするには、プロジェクトのルートディレクトリで`.env.example`を`.env`にリネームして以下の設定を行います。
-```env
-OUTPUT_EXT=php             # 出力ファイルの拡張子: .php または .html
-USE_PHP_INCLUDE=true       # trueの場合、コンポーネントのインクルードに <?php include ?> を使用します
-SERVER_TYPE=mamp           # ローカルサーバーの種類（mamp, xampp, laragon, valet）
-WEB_ROOT=                  # Webルートの絶対パス（例: D:\laragon\www）
-PROXY_URL=                 # 固定プロキシURLが存在する場合に設定
-```
+### 📂 アーキテクチャとビルドモード
 
-#### 4. コマンド一覧
-```bash
-npm run dev    # ライブリロード付きの開発サーバーを起動します
-npm run build  # 本番用のクリーンビルドを実行します
-npm run clean  # public/ フォルダを一掃します
-```
+#### Mode 1: `MODE=new`（新規構築プロジェクト）
+- ページは`src/pages/`内に配置し、YAML Frontmatterで動的にレイアウトを管理します。
+- `OUTPUT_EXT`の設定により、出力ファイルの拡張子（`.html` または `.php`）を自在に変更可能。
+- `src/components/`内のファイルは、`<?php include ?>`用に自動的に抽出・整理されます。
 
-### 📂 プロジェクト構成
+#### Mode 2: `MODE=renew`（既存ソース改修・顧客プロジェクト）
+EJSエンジンをスキップし、`src/`内の全ディレクトリ構造を忠実に`public/`へミラーリングします。
+- `RENEW_SCSS_DIR` と `RENEW_CSS_DIR` を基準にSCSSコンパイラが稼働します。
+- **マルチディレクトリコンパイル**: `RENEW_SCSS_DIR=PC/scss, SP/scss` のようにカンマ区切りで複数のディレクトリを指定すれば、各々の環境を独立して自動コンパイル・監視します。
 
-```text
-├── .env                # コアのビルド設定
-├── scripts/            # Node.jsビルドパイプラインのスクリプト群
-├── public/             # 📦 プロダクション用ビルド出力（自動生成）
-└── src/                # 🛠️ ソースファイル
-    ├── components/     # 再利用可能なUIパーツ（ヘッダー、フッターなど）
-    ├── layouts/        # グローバルレイアウトのラッパー（例: _default.ejs）
-    └── pages/          # EJSページおよびアセット
-        ├── assets/     # scss/, js/, images/, vendor/
-        ├── index.ejs   # -> public/index.php
-        └── about/      # -> public/about/index.php
-```
-
-### 🛠️ 開発ガイド
-
-#### 1. ページとFrontmatterの作成
-ページは必ず`src/pages/`ディレクトリの直下に配置してください。ファイルの先頭にYAMLのFrontmatterを使用して、レイアウトとアセットを宣言します。
-
-```ejs
----
-layout: _default
-title: About Us ホームページ
-description: 会社案内ページです。
-css: ['common', 'about']
-js: ['common']
-header: 'headers/header_01'
-footer: 'footers/footer_01'
----
-<main class="p-about">
-    <h1>Hello World</h1>
-    
-    <!-- ここから任意のコンポーネントを動的にインクルードできます -->
-    <%- includeComponent('sidebar') %>
-</main>
-```
-
-#### 2. コンポーネントの作成
-再利用可能なUIコンポーネントは`src/components/`に配置します。すべてのコンポーネントファイル名は**アンダースコア（`_`）で始まる必要があります**（例: `_sidebar.ejs`、`headers/_header_01.ejs`）。
-
-#### 3. アセット管理（SCSS, JS, Images）
-未コンパイルのアセットを`src/pages/assets/`に配置してください。
-- **SCSS**: アンダースコア（`_`）で始まらないファイル（例: `common.scss`）は、独立したファイルとして`public/assets/css/`ディレクトリに出力されます。
-- **画像**: `.jpg`および`.png`は不可逆の`.webp`形式に自動圧縮されます。
-
-HTML/PHPファイル内で画像を呼び出す際は、相対パスを自動解決するため、必ず`assetsDir`変数を使用してください。
-```html
-<img src="<%= assetsDir %>assets/images/common/logo.webp" alt="Logo">
-```
-
-### ⚙️ 自動フォーマッタの仕組み
-このテンプレートは、EJS等のロジックブロック（`<% %>`）によってHTMLとPHPが混在することで発生する「不正なインデント」問題を解決します。
-1. カスタムEJSコンパイラー（`<%- ... -%>`タグ）が、不要な論理空行をエレガントに取り除きます。
-2. その後、ビルドされた文字列は`js-beautify`を通過し、DOM要素が数学的に正しい構造に修正されます。
-3. `php`への出力が有効な場合は、最後にそのファイルが`Prettier`にルーティングされ、`<?php ... ?>`ブロック内のインデントが、外側のHTML要素の深さと正確に一致するように微調整されます。
-
-*高性能なアーキテクチャのために❤️を込めて構築されています。*
+### 🛠️ 継続的インテグレーション（CI/CD）
+- **ステージング自動デプロイ (`deploy.yml`)**: コードをPushすると、マニフェスト（ファイルハッシュ）を用いて差分のみをFTP経由で自動デプロイします。不要になった一時フォルダや削除されたファイルもサーバー上から自動クリーニングされます。
+- **ZIPリリースの自動化 (`release.yml`)**: `v1.0.0` のようなタグ付けを行ってPushすると、顧客納品用に不要ファイルを除外したクリーンなZIP出力がGitHub Releases上に自動生成されます。
 
 <br><br>
 
@@ -219,103 +106,51 @@ HTML/PHPファイル内で画像を呼び出す際は、相対パスを自動解
 
 <h2 id="tiếng-việt">🇻🇳 Tiếng Việt</h2>
 
-Hệ thống Website Tĩnh siêu tốc được xây dựng trên Node.js. Được thiết kế tối ưu trên mọi nền tảng (Windows, macOS, Linux). Nó cung cấp một luồng Build chớp nhoáng, chuyển hóa **EJS**, **SCSS**, và **JS** (Vanilla) thành các file hoàn hảo sẵn sàng trên thư mục `public/` chỉ trong vài mili-giây.
+Hệ thống Website Tĩnh siêu tốc được xây dựng trên Node.js. Thiết kế tối ưu trên mọi nền tảng (Windows, macOS, Linux). Nó cung cấp một luồng Build chớp nhoáng, chuyển hóa **EJS**, **SCSS**, và **JS** thành các file hoàn hảo sẵn sàng trên thư mục `public/` chỉ trong vài mili-giây.
 
 ### ✨ Tính Năng Cốt Lõi
 
-- **Chế Độ Xuất Kép**: Biên dịch ra chuẩn `.html` hoặc `.php`. Cấu trúc nhúng Component thông qua `<?php include ?>` được tự động trích xuất.
-- **Component Đa Tầng**: Hỗ trợ gọi Component từ mọi độ sâu thư mục (`components/headers/main.ejs` -> `public/components/headers/main.php`).
-- **Định Tuyến Frontmatter**: Khai báo Layout, Cấu hình Thẻ Meta, và Danh sách JS/CSS trực tiếp trên phần đầu (Head) của mỗi file EJS.
-- **Auto Format Hiểu DOM (AST)**: Xử lý kiến trúc Code 2 Lớp tân tiến. Dùng `js-beautify` để căn chỉnh lại chính xác kết cấu thẻ DOM, và plugin PHP của `Prettier` nắn chỉnh các thẻ PHP nương theo khối lùi dòng của HTML bên ngoài. HTML/PHP xuất ra sạch bong như in máy.
-- **Tối Ưu Ảnh Thông Minh**: Tự động convert đuôi ảnh `.jpg` / `.png` thành định dạng nhẹ `.webp` bằng thư viện Sharp.
-- **Tương Thích Mọi OS (100% OS-Agnostic)**: Hệ thống sử dụng Node.js FS API gốc để thao tác File thay cho các lệnh Bash, loại bỏ hoàn toàn các lỗi xung đột đường dẫn trên Windows.
-- **Hot Reload Siêu Tốc**: Live reload đỉnh cao tự động proxy web thông qua môi trường dev của riêng bạn (MAMP, XAMPP, Laragon, Valet).
+- **Chế Độ Build Kép (`new` và `renew`)**: 
+  - `new`: Xây dựng site mới tinh từ con số 0 sử dụng EJS component và cấu trúc YAML Frontmatter.
+  - `renew`: Kế thừa và tương thích nhanh chóng với source HTML/PHP có sẵn do khách hàng gửi dở dang. Copy y nguyên mọi file nhưng vẫn hỗ trợ compile SCSS cho nhiều thư mục biệt lập (như PC/SP) cùng lúc.
+- **Cấu Hình 2 Lớp (`deploy-config.json` & `.env`)**: Tách biệt an toàn giữa file thiết lập vĩnh viễn cho máy chủ CI/CD trên Github và file thiết lập dùng riêng cho máy tính local của cá nhân Developer.
+- **Tự Động Hóa CI/CD Toàn Diện**: Tích hợp luồng GitHub Actions "siêu vòng lặp". Tự động soi chi tiết từng file bị sửa đổi / xóa đi để Deploy ngầm lên Máy chủ Staging bằng Manifest Hash. Đồng thời tự động quét và dọn dẹp thư mục rác rỗng.
+- **Công Cụ Symlink 1 Chạm**: Chạy `npm run link` để lập tức kết nối mã nguồn từ `public/` sang kho lưu trữ nội bộ của XAMPP/Laragon mà không cần copy thủ công.
+- **Tối Ưu Ảnh & Format Code Mức AST**: Tự động convert JPG/PNG thành `.webp`. Đồng thời sử dụng 2 lớp thuật toán Format toán học (giữa `js-beautify` và `Prettier`) để dàn dựng code EJS thành HTML/PHP chuẩn lùi dòng không một tì vết.
 
 ### 🚀 Hướng Dẫn Nhanh
 
-#### 1. Yêu Cầu
-- **Node.js**: Phiên bản `v16.0.0` trở lên.
+1. **Cài Đặt Thư Viện**: `npm install`
+2. **Cài Môi Trường Cục Bộ**: Copy `.env.example` thành `.env` để cấu hình đường dẫn `WEB_ROOT` hoặc loại `SERVER_TYPE` (MAMP/Laragon...) tại máy của bạn.
+3. **Cấu Hình Dự Án Thực**: Mở `deploy-config.json` để chỉ định cấu hình vĩnh viễn (VD: `MODE="renew"`) để Workflow trên Github hiểu và làm theo.
 
-#### 2. Cài Đặt
-Copy Source về và chạy cài đặt thư viện:
+#### 🛠️ Hệ Thống Lệnh
 ```bash
-npm install
+npm run dev    # Chạy Watcher mượt mà, bật Local Server kèm BrowserSync Auto-Reload
+npm run build  # Xóa sạch và Build mới 100% để sẵn sàng Release
+npm run clean  # Clean dọn dẹp thư mục public/
+npm run link   # Lệnh HĐH tạo Symlink folder public/ sang Ổ đĩa ảo Local Server
 ```
 
-#### 3. Cấu Hình Môi Trường
-Đổi tên file `.env.example` thành `.env` nằm ở gốc dự án để setup theo ý bạn:
-```env
-OUTPUT_EXT=php             # Đuôi file xuất ra: php hoặc html
-USE_PHP_INCLUDE=true       # Đặt true để dùng <?php include ?> gọi file component
-SERVER_TYPE=mamp           # Server ảo hóa tích hợp: mamp, xampp, laragon, valet
-WEB_ROOT=                  # Nơi chứa webroot của bạn (VD: D:\laragon\www)
-PROXY_URL=                 # Có thể điền cụ thể localhost URL để Server proxy theo
-```
+### 📂 Kiến Trúc & Chế Độ Build
 
-#### 4. Lệnh Command
-```bash
-npm run dev    # Chạy Watcher mượt mà với Auto-Reload
-npm run build  # Xóa sạch và Build mới 100% lên Production
-npm run clean  # Clean Source code public/
-```
+#### Chế Độ 1: `MODE=new` (Dự án xây mới chuẩn)
+Build mọi thứ từ EJS engine.
+- Tạo files trong `src/pages/` kết hợp YAML Frontmatter để nhúng Layouts.
+- Setup `OUTPUT_EXT=php` hay `html` là trang sẽ được xuất ra y format đó.
+- Nén tất tần tật file trong `src/components/` thành từng trạm Component độc lập để điều khiển bằng `<?php include ?>` toàn diện sâu mọi ngóc ngách.
 
-### 📂 Hiểu Về Cấu Trúc File
+#### Chế Độ 2: `MODE=renew` (Dự án chỉnh sửa khách hàng)
+Bỏ qua EJS Engine. Trực tiếp nhân bản tỷ lệ 1:1 từ `src/` qua thẳng `public/`.
+- Quản lý gốc tọa độ SCSS bằng thuộc tính `RENEW_SCSS_DIR` và `RENEW_CSS_DIR`.
+- **Hỗ Trợ Quét Đa Thư Mục**: Hỗ trợ quét song song theo danh sách! Khai báo dạng `RENEW_SCSS_DIR=PC/scss, SP/scss` để biên dịch cùng lúc nhiều nhánh dự án khách hàng.
 
-```text
-├── .env                # Setting chung
-├── scripts/            # Khối thần kinh Build System (Đã Optimize)
-├── public/             # 📦 Thư mục Output cuối cùng (Auto-gen)
-└── src/                # 🛠️ Nơi diễn ra hoạt động Code
-    ├── components/     # Chứa các mảnh UI vụn (header, footer, sidebar...)
-    ├── layouts/        # Chứa Layout sườn (VD: _default.ejs)
-    └── pages/          # Chứa các trang EJS và Assets
-        ├── assets/     # scss/, js/, images/, vendor/
-        ├── index.ejs   # Export -> public/index.php
-        └── about/      # Export -> public/about/index.php
-```
+### 🛠️ Tích Hợp Hệ Thống Liên Tục (CI/CD)
+- **Đẩy Lên Server Tự Động (`deploy.yml`)**: Cứ Push Code là Git tự chạy. Thuật toán tạo và dò file Manifest cho phép nó phân loại chính xác hàng ngàn file thành các tệp: Mới Tạo, Chỉnh Sửa, và Xóa Số đi. Kết hợp cùng trình Extract ZIP nội bộ cực nhanh tự hủy, Deploy lên Server giờ chỉ tốn vài chục giây. Chế độ thu hồi rác ảo, dọn thư mục rỗng hoàn toàn tự động!
+- **Tạo Release Khách Hàng (`release.yml`)**: Gắn tag bản quyền (ví dụ `v1.0.0`) rồi Push - Ngay lập tức một file nén ZIP không chứa file metadata rác (`.deploy/`, `.DS_Store`) sẽ sinh ra trong Tab Release trên GitHub, trong sạch chờ tải xuống bàn giao!
 
-### 🛠️ Hướng Dẫn Sử Dụng Chi Tiết
+<br><br>
 
-#### 1. Khởi Tạo Trang và Frontmatter
-Mỗi khi tạo một trang mới tạo trực tiếp trong `src/pages/`. Sử dụng hệ thống YAML Frontmatter ở trên đỉnh dòng 1 để khai báo Layout, Script, và Meta Data.
-
-```ejs
 ---
-layout: _default
-title: Trang About
-description: Trang mô tả công ty
-css: ['common', 'about']
-js: ['common']
-header: 'headers/header_01'
-footer: 'footers/footer_01'
----
-<main class="p-about">
-    <h1>Hello World</h1>
-    
-    <!-- Lệnh nhúng một Component thần thánh không lo sai Paths -->
-    <%- includeComponent('sidebar') %>
-</main>
-```
 
-#### 2. Quản Lý Component
-Chỉ đặt Component ở thư mục `src/components/`. Bắt buộc phải thêm **dấu gạch dưới `_` ở đầu file** (Ví dụ: `_sidebar.ejs`, `headers/_header_01.ejs`).
-
-Bộ Build sẽ tự động tìm kiếm sâu vào tận trong các folder con, dịch chúng thành mã PHP và xuất riêng biệt ra `public/components/*`.
-
-#### 3. Quản Lý Tệp (Assets)
-Tất cả tài nguyên tĩnh bỏ hết vào `src/pages/assets/`.
-- **SCSS**: Nếu file scss không bắt đầu bằng dấu ngắt `_`, nó sẽ tự nhận đó là File chính cấp 1 và build tự động ra `public/assets/css/`.
-- **Images**: Ảnh đuôi JPG/PNG sẽ bị bắt convert gắt gao sang dạng WebP siêu nhẹ.
-
-Quan trọng: Khi code bên trong HTML, hãy luôn thêm biến `<%= assetsDir %>` để đường dẫn luôn trỏ về gốc dự án chuẩn xác, bất chấp độ sâu của Folder chứa trang:
-```html
-<img src="<%= assetsDir %>assets/images/common/logo.webp" alt="Logo">
-```
-
-### ⚙️ Cơ Chế Làm Sạch Mã Nguồn (Auto-Formatter)
-Dự án được kết hợp Thuật toán xử lý lùi dòng tiên tiến giúp ngăn chặn hệ quả phình trướng lề trống của EJS.
-1. Bộ biên dịch chèn thẻ ngầm `<% ... -%>` dọn sạch rác tàn dư ngắt dòng của JS logic.
-2. Mã thô sau đó được **js-beautify** kéo nắn lại cấu trúc ngang dọc DOM theo hệ toán học.
-3. Cuối cùng, nếu xuất PHP, **Prettier** sẽ chui vào sâu từng hàm `<?php include ?>` để vi chỉnh lại lề của nó khít với thẻ div cha bao quanh nó ở ngoài cùng.
-
-*Được thiết kế với ❤️ dành riêng cho những Developer Tối Giản, Hiện Đại.*
+*Built with ❤️ for High-Performance Architectures.*

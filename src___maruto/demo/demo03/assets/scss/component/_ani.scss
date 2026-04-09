@@ -1,0 +1,244 @@
+@use '../global' as *;
+/**************** Animation time *********************/
+[data-delay='0.1s'] {
+    transition-delay: 0.1s;
+}
+[data-delay='0.2s'] {
+    transition-delay: 0.2s;
+}
+[data-delay='0.3s'] {
+    transition-delay: 0.3s;
+}
+[data-delay='0.4s'] {
+    transition-delay: 0.4s;
+}
+[data-delay='0.5s'] {
+    transition-delay: 0.5s;
+}
+[data-delay='0.6s'] {
+    transition-delay: 0.6s;
+}
+[data-delay='0.7s'] {
+    transition-delay: 0.7s;
+}
+[data-delay='0.8s'] {
+    transition-delay: 0.8s;
+}
+[data-delay='0.9s'] {
+    transition-delay: 0.9s;
+}
+[data-delay='1s'] {
+    transition-delay: 1s;
+}
+[data-delay='1.1s'] {
+    transition-delay: 1.1s;
+}
+[data-delay='1.2s'] {
+    transition-delay: 1.2s;
+}
+[data-delay='1.3s'] {
+    transition-delay: 1.3s;
+}
+[data-delay='1.4s'] {
+    transition-delay: 1.4s;
+}
+[data-delay='1.5s'] {
+    transition-delay: 1.5s;
+}
+[data-delay='1.6s'] {
+    transition-delay: 1.6s;
+}
+[data-delay='1.7s'] {
+    transition-delay: 1.7s;
+}
+[data-delay='1.8s'] {
+    transition-delay: 1.8s;
+}
+[data-delay='1.9s'] {
+    transition-delay: 1.9s;
+}
+[data-delay='2s'] {
+    transition-delay: 2s;
+}
+[data-delay='2.1s'] {
+    transition-delay: 2.1s;
+}
+[data-delay='2.2s'] {
+    transition-delay: 2.2s;
+}
+[data-delay='2.3s'] {
+    transition-delay: 2.3s;
+}
+[data-delay='2.4s'] {
+    transition-delay: 2.4s;
+}
+[data-delay='2.5s'] {
+    transition-delay: 2.5s;
+}
+[data-delay='2.6s'] {
+    transition-delay: 2.6s;
+}
+[data-delay='2.7s'] {
+    transition-delay: 2.7s;
+}
+[data-delay='2.8s'] {
+    transition-delay: 2.8s;
+}
+[data-delay='2.9s'] {
+    transition-delay: 2.9s;
+}
+[data-delay='3s'] {
+    transition-delay: 3s;
+}
+[data-delay='3.5s'] {
+    transition-delay: 3.5s;
+}
+.js_inview[data-interaction='1s'] {
+    transition-duration: 1s;
+}
+.js_inview[data-interaction='1.5s'] {
+    transition-duration: 1.5s;
+}
+.js_inview[data-interaction='2s'] {
+    transition-duration: 2s;
+}
+.js_inview {
+    opacity: 0;
+    transition-property: opacity, transform;
+    transition-timing-function: ease-out;
+    transition-duration: 1s;
+}
+
+.fadeup {
+    transform: translate3d(0, 50px, 0);
+}
+.fadedown {
+    transform: translate3d(0, -50px, 0);
+}
+.faderight {
+    transform: translate3d(100%, 0, 0);
+}
+.fadeupright {
+    transform: translate3d(100%, -100%, 0);
+}
+.fadeleft {
+    transform: translate3d(-100%, 0, 0);
+}
+.fadeupleft {
+    transform: translate3d(-100%, -100%, 0);
+}
+.is_show.js_inview {
+    opacity: 1;
+    transform: translateZ(0) !important;
+}
+/******************************************************************************/
+.js_more_fixed {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 900;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 300ms ease, opacity 300ms linear;
+    @include mq('md') {
+        &.is_hover {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            visibility: visible;
+        }
+    }
+}
+.js_more_hover {
+    display: block;
+    cursor: pointer;
+}
+.js_img_zoom {
+    position: relative;
+    overflow: hidden;
+}
+.js_img_zoom img {
+    transition: linear 0.5s;
+}
+.js_img_zoom.is_zoom img {
+    transform: scale(1.2);
+    opacity: 1 !important;
+}
+.js_txt_loop_ani {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    -webkit-animation: js_txt_loop_ani 20s 0s linear infinite normal;
+    animation: js_txt_loop_ani 20s 0s linear infinite normal;
+    display: inline-block;
+}
+@keyframes js_txt_loop_ani {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+.js_ani_txt {
+    &.is_show {
+        .txt_ani_fast {
+            -webkit-animation: slideText 1.5s ease-in-out 0s both;
+            animation: slideText 1.5s ease-in-out 0s both;
+        }
+        .txt_ani_line {
+            -webkit-animation: slideText1 1.5s ease-in-out 0s both;
+            animation: slideText1 1.5s ease-in-out 0s both;
+        }
+    }
+    .txt_ani_wrap {
+        display: block;
+        overflow: hidden;
+        position: relative;
+        will-change: opacity;
+    }
+    .txt_ani {
+        position: relative;
+        top: 0;
+        will-change: transform;
+        -webkit-transform-origin: top;
+        transform-origin: top;
+        display: block;
+    }
+}
+
+@keyframes slideText {
+    0% {
+        transform: translateY(2em);
+        transform: translateY(2em);
+    }
+    100% {
+        transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+@keyframes slideText1 {
+    0% {
+        transform: translateY(3em);
+        transform: translateY(3em);
+    }
+    100% {
+        transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+
+//js for mask image
+.js_mask {
+    position: relative;
+    overflow: hidden;
+    &_color {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        background-color: #006fc5;
+        display: block;
+    }
+}

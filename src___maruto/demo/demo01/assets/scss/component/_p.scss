@@ -1,0 +1,20 @@
+.p {
+    &_lead {
+    }
+    &_sub_lead {
+        @extend %f_45;
+        font-family: $f_noto_serif;
+        font-weight: 400;
+        line-height: 1.5;
+        letter-spacing: -0.02em;
+    }
+    &_intro {
+        @extend %f_18;
+    }
+    &_desc {
+    }
+    &_dt {
+    }
+    &_dd {
+    }
+}
