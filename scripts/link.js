@@ -9,7 +9,6 @@ const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
 const SRC_DIR = resolve(ROOT, 'public');
 
-let SERVER_TYPE = '';
 let WEB_ROOT = '';
 
 try {
@@ -22,7 +21,6 @@ try {
       if (parts.length >= 2) {
         const key = parts[0].trim();
         const value = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
-        if (key === 'SERVER_TYPE') SERVER_TYPE = value;
         if (key === 'WEB_ROOT') WEB_ROOT = value;
       }
     });

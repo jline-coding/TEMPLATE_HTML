@@ -83,7 +83,6 @@ async function formatCode(code, destExt) {
 let MODE = 'new';
 let OUTPUT_EXT = '.html';
 let PROXY_URL = '';
-let SERVER_TYPE = '';
 let USE_PHP_INCLUDE = false;
 let RENEW_SCSS_DIR = '';   // relative to src/ (e.g. PC/asb/scss)
 let RENEW_CSS_DIR = '';    // relative to public/ (e.g. PC/asb/css)
@@ -100,7 +99,6 @@ try {
         OUTPUT_EXT = v.startsWith('.') ? v : `.${v}`;
       }
       if (config.env.PROXY_URL) PROXY_URL = config.env.PROXY_URL;
-      if (config.env.SERVER_TYPE) SERVER_TYPE = config.env.SERVER_TYPE;
       if (config.env.USE_PHP_INCLUDE === true) USE_PHP_INCLUDE = true;
       if (config.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = config.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
       if (config.env.RENEW_CSS_DIR) RENEW_CSS_DIR = config.env.RENEW_CSS_DIR.replace(/\\/g, '/');
@@ -124,7 +122,6 @@ try {
         if (key === 'MODE') MODE = value.toLowerCase();
         if (key === 'OUTPUT_EXT') OUTPUT_EXT = value.toLowerCase().startsWith('.') ? value.toLowerCase() : `.${value.toLowerCase()}`;
         if (key === 'PROXY_URL') PROXY_URL = value;
-        if (key === 'SERVER_TYPE') SERVER_TYPE = value;
         if (key === 'USE_PHP_INCLUDE') USE_PHP_INCLUDE = value.toLowerCase() === 'true';
         if (key === 'RENEW_SCSS_DIR') RENEW_SCSS_DIR = value.replace(/\\/g, '/');
         if (key === 'RENEW_CSS_DIR') RENEW_CSS_DIR = value.replace(/\\/g, '/');
@@ -135,22 +132,9 @@ try {
   // Ignore error if .env doesn't exist
 }
 
-// Auto-generate PROXY_URL from SERVER_TYPE if not explicitly set
-// Skip when OUTPUT_EXT=html (no local server needed for static HTML)
-const needsProxy = OUTPUT_EXT !== '.html';
-if (!PROXY_URL && SERVER_TYPE && needsProxy) {
-  const projectName = basename(ROOT);
-  const type = SERVER_TYPE.toLowerCase();
-  if (type === 'laragon' || type === 'xampp' || type === 'apache') {
-    PROXY_URL = `http://localhost/${projectName}`;
-  } else if (type === 'mamp') {
-    PROXY_URL = `http://localhost:8888/${projectName}`;
-  } else if (type === 'valet') {
-    PROXY_URL = `http://${projectName}.test`;
-  }
-}
-
 const isRenew = MODE === 'renew';
+
+
 
 // CSS output directory relative to DIST (used by SCSS compiler)
 let CSS_OUTPUT_REL = 'assets/css';

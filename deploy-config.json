@@ -5,13 +5,14 @@
   "env": {
     "MODE": "new",
     "OUTPUT_EXT": "html",
+    "USE_PHP_INCLUDE": "true",
     "RENEW_SCSS_DIR": "assets/scss",
     "RENEW_CSS_DIR": "assets/css"
   },
   "production": {
-    "deploy_method": "ftp",
-    "server": "JLWEB",
-    "project_dir": "template_jline_html_production"
+    "deploy_method": "zip",
+    "server": "",
+    "project_dir": ""
   },
   "test": {
     "deploy_method": "ftp",
