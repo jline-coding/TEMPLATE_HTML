@@ -155,12 +155,45 @@ const isRenew = MODE === 'renew';
 // CSS output directory relative to DIST (used by SCSS compiler)
 let CSS_OUTPUT_REL = 'assets/css';
 
+let RENEW_SCSS_DIRS = [];
+let RENEW_CSS_DIRS = [];
+
+function parseDirList(str, defaultVal) {
+  if (!str) return [defaultVal];
+  return str.split(',').map(s => s.trim()).filter(Boolean);
+}
+
 // Renew mode: use src/ directly as source root (client structure)
 if (isRenew) {
   PAGES_DIR = SRC;
+  
+  const scssArr = parseDirList(RENEW_SCSS_DIR, 'assets/scss');
+  const cssArr = parseDirList(RENEW_CSS_DIR, 'assets/css');
+  
+  RENEW_SCSS_DIRS = scssArr.map(p => resolve(SRC, p));
+  RENEW_CSS_DIRS = scssArr.map((_, i) => cssArr[i] || cssArr[0] || 'assets/css');
+  
   // Custom SCSS/CSS paths from .env, or defaults
-  SCSS_DIR = resolve(SRC, RENEW_SCSS_DIR || 'assets/scss');
-  if (RENEW_CSS_DIR) CSS_OUTPUT_REL = RENEW_CSS_DIR;
+  SCSS_DIR = RENEW_SCSS_DIRS[0];
+  CSS_OUTPUT_REL = RENEW_CSS_DIRS[0];
+}
+
+// Helper to find matching SCSS/CSS relation
+function getScssDirsInfo(filePath) {
+  if (isRenew && RENEW_SCSS_DIRS.length > 0) {
+    const absPath = resolve(filePath);
+    for (let i = 0; i < RENEW_SCSS_DIRS.length; i++) {
+        const target = RENEW_SCSS_DIRS[i];
+        if (absPath === target || absPath.startsWith(target + '/') || absPath.startsWith(target + '\\')) {
+            return {
+                scssDir: RENEW_SCSS_DIRS[i],
+                cssRel: RENEW_CSS_DIRS[i]
+            };
+        }
+    }
+    return { scssDir: RENEW_SCSS_DIRS[0], cssRel: RENEW_CSS_DIRS[0] };
+  }
+  return { scssDir: SCSS_DIR, cssRel: CSS_OUTPUT_REL };
 }
 
 // ─────────────────────────────────────────────
@@ -453,7 +486,7 @@ const postcssPlugins = isWatch
 
 async function buildScss(changedFile) {
   // Find all SCSS entry files (non-partial)
-  let entryFiles;
+  let entryFiles = [];
 
   if (changedFile) {
     const changedAbs = resolve(changedFile);
@@ -466,9 +499,14 @@ async function buildScss(changedFile) {
       entryFiles = [changedAbs];
     }
   } else {
-    entryFiles = walkSync(SCSS_DIR, (f) =>
-      extname(f) === '.scss' && !basename(f).startsWith('_')
-    );
+    const targetDirs = isRenew ? RENEW_SCSS_DIRS : [SCSS_DIR];
+    for (const dir of targetDirs) {
+      if (!existsSync(dir)) continue;
+      const files = walkSync(dir, (f) =>
+        extname(f) === '.scss' && !basename(f).startsWith('_')
+      );
+      entryFiles.push(...files);
+    }
   }
 
   for (const entry of entryFiles) {
@@ -481,15 +519,17 @@ async function compileScssFile(filePath) {
     const source = readFileSync(filePath, 'utf8');
     if (!source.trim() || /^{\\rtf/i.test(source)) return;
 
+    const { scssDir, cssRel } = getScssDirsInfo(filePath);
+
     const result = compileString(source, {
       url: new URL(`file:///${norm(filePath)}`),
-      loadPaths: [SCSS_DIR],
+      loadPaths: [scssDir],
       style: 'expanded',
       sourceMap: isWatch,
     });
 
-    const rel = relative(SCSS_DIR, filePath);
-    const cssPath = resolve(DIST, CSS_OUTPUT_REL, rel.replace(/\.scss$/, '.css'));
+    const rel = relative(scssDir, filePath);
+    const cssPath = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
 
     // PostCSS processing
     const processed = await postcss(postcssPlugins).process(result.css, {
@@ -512,7 +552,9 @@ async function compileScssFile(filePath) {
 
 /** Find SCSS entry files that depend on a given partial */
 function findDependentEntries(changedPartial) {
-  const allFiles = walkSync(SCSS_DIR, (f) => extname(f) === '.scss');
+  const { scssDir } = getScssDirsInfo(changedPartial);
+  if (!existsSync(scssDir)) return [];
+  const allFiles = walkSync(scssDir, (f) => extname(f) === '.scss');
   const importRegex = /@(use|import|forward)\s+['"]([^'"]+)['"]/g;
 
   function resolveImport(importPath, fromDir) {
@@ -908,7 +950,9 @@ async function startWatch() {
     });
 
     // SCSS watcher (renew mode)
-    const scssWatcher = chokidarWatch(SCSS_DIR, watchOpts);
+    const targetWatchDirs = RENEW_SCSS_DIRS.filter(d => existsSync(d));
+    if (targetWatchDirs.length === 0) targetWatchDirs.push(RENEW_SCSS_DIRS[0]); // fallback
+    const scssWatcher = chokidarWatch(targetWatchDirs, watchOpts);
 
     scssWatcher.on('change', debounce(async (filepath) => {
       if (!filepath.endsWith('.scss')) return;
@@ -924,16 +968,18 @@ async function startWatch() {
     }));
     scssWatcher.on('unlink', (filepath) => {
       if (!filepath.endsWith('.scss')) return;
-      const rel = relative(SCSS_DIR, getAbs(filepath));
+      const absPath = getAbs(filepath);
+      const { scssDir, cssRel } = getScssDirsInfo(absPath);
+      const rel = relative(scssDir, absPath);
       const name = basename(filepath);
       if (!name.startsWith('_')) {
-        const cssFile = resolve(DIST, CSS_OUTPUT_REL, rel.replace(/\.scss$/, '.css'));
+        const cssFile = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
         const mapFile = cssFile + '.map';
         try { unlinkSync(cssFile); } catch { /* ignore */ }
         try { unlinkSync(mapFile); } catch { /* ignore */ }
         console.log(`[watch:scss] removed CSS: ${basename(cssFile)}`);
       }
-      removeEmptyDirs(resolve(DIST, CSS_OUTPUT_REL));
+      removeEmptyDirs(resolve(DIST, cssRel));
     });
 
     console.log('╔══════════════════════════════════════╗');

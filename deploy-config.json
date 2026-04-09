@@ -5,8 +5,8 @@
   "env": {
     "MODE": "renew",
     "OUTPUT_EXT": "php",
-    "RENEW_SCSS_DIR": "assets/scss",
-    "RENEW_CSS_DIR": "assets/css"
+    "RENEW_SCSS_DIR": "PC/asb/scss, SP/asb/scss",
+    "RENEW_CSS_DIR": "PC/asb/css, SP/asb/css"
   },
   "production": {
     "deploy_method": "zip",
