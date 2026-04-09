@@ -99,7 +99,7 @@ try {
         OUTPUT_EXT = v.startsWith('.') ? v : `.${v}`;
       }
       if (config.env.PROXY_URL) PROXY_URL = config.env.PROXY_URL;
-      if (config.env.USE_PHP_INCLUDE === true) USE_PHP_INCLUDE = true;
+      if (config.env.USE_PHP_INCLUDE === true || config.env.USE_PHP_INCLUDE === 'true') USE_PHP_INCLUDE = true;
       if (config.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = config.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
       if (config.env.RENEW_CSS_DIR) RENEW_CSS_DIR = config.env.RENEW_CSS_DIR.replace(/\\/g, '/');
     }
