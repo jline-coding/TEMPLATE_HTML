@@ -78,7 +78,9 @@ async function formatCode(code, destExt) {
 }
 
 // ─────────────────────────────────────────────
-// Read Configuration (deploy-config.json → .env override)
+// Read Configuration
+//   deploy-config.json → Project settings (committed, shared)
+//   .env               → Machine settings (local-only, .gitignore)
 // ─────────────────────────────────────────────
 let MODE = 'new';
 let OUTPUT_EXT = '.html';
@@ -87,7 +89,7 @@ let USE_PHP_INCLUDE = false;
 let RENEW_SCSS_DIR = '';   // relative to src/ (e.g. PC/asb/scss)
 let RENEW_CSS_DIR = '';    // relative to public/ (e.g. PC/asb/css)
 
-// 1) Read defaults from deploy-config.json → env block
+// 1) Project config — deploy-config.json (source of truth for build settings)
 try {
   const configPath = resolve(ROOT, 'deploy-config.json');
   if (existsSync(configPath)) {
@@ -98,8 +100,7 @@ try {
         const v = config.env.OUTPUT_EXT.toLowerCase();
         OUTPUT_EXT = v.startsWith('.') ? v : `.${v}`;
       }
-      if (config.env.PROXY_URL) PROXY_URL = config.env.PROXY_URL;
-      if (config.env.USE_PHP_INCLUDE === true) USE_PHP_INCLUDE = true;
+      if (config.env.USE_PHP_INCLUDE === true || config.env.USE_PHP_INCLUDE === 'true') USE_PHP_INCLUDE = true;
       if (config.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = config.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
       if (config.env.RENEW_CSS_DIR) RENEW_CSS_DIR = config.env.RENEW_CSS_DIR.replace(/\\/g, '/');
     }
@@ -108,7 +109,9 @@ try {
   // Ignore error
 }
 
-// 2) Override with .env file (local machine settings take priority)
+// 2) Machine config — .env (local-only override)
+//    Cho phép override: PROXY_URL, OUTPUT_EXT, USE_PHP_INCLUDE
+//    Không override:    MODE, RENEW_SCSS_DIR, RENEW_CSS_DIR (project-level)
 try {
   const envPath = resolve(ROOT, '.env');
   if (existsSync(envPath)) {
@@ -119,12 +122,11 @@ try {
       if (parts.length >= 2) {
         const key = parts[0].trim();
         const value = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
-        if (key === 'MODE') MODE = value.toLowerCase();
-        if (key === 'OUTPUT_EXT') OUTPUT_EXT = value.toLowerCase().startsWith('.') ? value.toLowerCase() : `.${value.toLowerCase()}`;
+        if (!value) return; // Giá trị trống → bỏ qua, dùng deploy-config.json
         if (key === 'PROXY_URL') PROXY_URL = value;
+        if (key === 'OUTPUT_EXT') OUTPUT_EXT = value.toLowerCase().startsWith('.') ? value.toLowerCase() : `.${value.toLowerCase()}`;
         if (key === 'USE_PHP_INCLUDE') USE_PHP_INCLUDE = value.toLowerCase() === 'true';
-        if (key === 'RENEW_SCSS_DIR') RENEW_SCSS_DIR = value.replace(/\\/g, '/');
-        if (key === 'RENEW_CSS_DIR') RENEW_CSS_DIR = value.replace(/\\/g, '/');
+        // WEB_ROOT is read by link.js, not needed here
       }
     });
   }
@@ -775,7 +777,9 @@ async function fullBuild() {
   const modeLabel = isRenew ? 'RENEW' : 'NEW';
   console.log('\n╔══════════════════════════════════════╗');
   console.log(`║ [${modeLabel}] Building template_jline_html   ║`);
-  console.log('╚══════════════════════════════════════╝\n');
+  console.log('╚══════════════════════════════════════╝');
+  console.log(`[config] Mode: ${MODE} | Output: ${OUTPUT_EXT} | PHP Include: ${USE_PHP_INCLUDE}${PROXY_URL ? ` | Proxy: ${PROXY_URL}` : ''}`);
+  console.log('');
 
   const start = Date.now();
 
@@ -826,20 +830,58 @@ async function startWatch() {
   const { watch: chokidarWatch } = await import('chokidar');
   const browserSync = (await import('browser-sync')).default.create();
 
+  // ── Port Auto-Detection ──
+  const net = await import('net');
+  const DEFAULT_PORT = 8686;
+
+  function isPortFree(port) {
+    return new Promise((resolve) => {
+      const server = net.createServer();
+      server.once('error', () => resolve(false));
+      server.once('listening', () => { server.close(); resolve(true); });
+      server.listen(port, '127.0.0.1');
+    });
+  }
+
+  async function findFreePort(startPort, maxTries = 20) {
+    for (let i = 0; i < maxTries; i++) {
+      const port = startPort + i;
+      if (await isPortFree(port)) return port;
+    }
+    return startPort; // fallback, BrowserSync sẽ tự xử lý lỗi
+  }
+
+  const chosenPort = await findFreePort(DEFAULT_PORT);
+  if (chosenPort !== DEFAULT_PORT) {
+    console.log(`[server] ⚠️  Port ${DEFAULT_PORT} đang được sử dụng → chuyển sang port ${chosenPort}`);
+  }
+
   const bsOptions = {
-    port: 8080,
+    port: chosenPort,
     open: true,
     notify: false,
     ui: false,
   };
 
-  if (PROXY_URL) {
+  // ── Proxy Auto-Decision ──
+  // Proxy cần khi output chứa file .php cần PHP server xử lý
+  const needsProxy = OUTPUT_EXT === '.php' || isRenew;
+
+  if (PROXY_URL && needsProxy) {
+    // PHP output + có cấu hình proxy → dùng Laragon/XAMPP
     bsOptions.proxy = PROXY_URL;
-  } else {
+    console.log(`[server] Proxy → http://${PROXY_URL}`);
+  } else if (PROXY_URL && !needsProxy) {
+    // HTML output nhưng .env có PROXY_URL → bỏ qua proxy, dùng static
     bsOptions.server = { baseDir: DIST };
-    
-    // Serve .php files as text/html when no proxy (for both PHP output and renew mode)
-    if (OUTPUT_EXT === '.php' || isRenew) {
+    console.log(`[server] Static server (PROXY_URL bỏ qua — output là ${OUTPUT_EXT})`);
+  } else {
+    // Không có PROXY_URL
+    bsOptions.server = { baseDir: DIST };
+
+    if (needsProxy) {
+      // PHP output nhưng không có proxy → serve .php as static HTML (preview only)
+      console.log(`[server] ⚠️  Static server (thiếu PROXY_URL — file .php sẽ hiển thị như HTML)`);
       bsOptions.server.middleware = [
         function (req, res, next) {
           if (req.url.includes('.php')) {
@@ -848,6 +890,8 @@ async function startWatch() {
           next();
         }
       ];
+    } else {
+      console.log(`[server] Static server`);
     }
   }
 
@@ -967,7 +1011,7 @@ async function startWatch() {
     });
 
     console.log('╔══════════════════════════════════════╗');
-    console.log('║ [RENEW] Watching for changes :8080   ║');
+    console.log(`║ [RENEW] Watching for changes :${chosenPort}   ║`);
     console.log('╚══════════════════════════════════════╝\n');
     return;
   }
@@ -1154,7 +1198,7 @@ async function startWatch() {
   }
 
   console.log('╔══════════════════════════════════════╗');
-  console.log('║   Watching for changes on :8080...   ║');
+  console.log(`║   Watching for changes on :${chosenPort}...   ║`);
   console.log('╚══════════════════════════════════════╝\n');
 }
 
