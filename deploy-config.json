@@ -4,8 +4,8 @@
   "build_command": "npm run build",
   "env": {
     "MODE": "new",
-    "OUTPUT_EXT": "php",
-    "USE_PHP_INCLUDE": "true",
+    "OUTPUT_EXT": "html",
+    "USE_PHP_INCLUDE": "false",
     "RENEW_SCSS_DIR": "assets/scss",
     "RENEW_CSS_DIR": "assets/css"
   },

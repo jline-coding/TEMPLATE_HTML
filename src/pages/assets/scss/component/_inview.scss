@@ -2,14 +2,15 @@
     visibility: hidden;
 }
 
-:where(.inview.inview_opacity) {
+:where(.inview.inview-opacity) {
     opacity: 0;
 }
 
 .fadeIn,
 .fadeUp,
 .fadeRight,
-.fadeRight {
+.fadeRight,
+.bounceIn {
     animation-duration: 1.5s;
     animation-timing-function: ease;
 }
@@ -32,6 +33,11 @@
 
 .fadeIn {
     animation-name: ani_fadein;
+    animation-fill-mode: forwards;
+}
+
+.bounceIn {
+    animation-name: bounce_in;
     animation-fill-mode: forwards;
 }
 
@@ -80,5 +86,34 @@
 
     100% {
         opacity: 1;
+    }
+}
+
+@keyframes bounce_in {
+    0% {
+        opacity: 0;
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
+
+    20% {
+        transform: scale3d(1.2, 1.2, 1.2);
+    }
+
+    40% {
+        transform: scale3d(0.9, 0.9, 0.9);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale3d(1.03, 1.03, 1.03);
+    }
+
+    80% {
+        transform: scale3d(0.97, 0.97, 0.97);
+    }
+
+    100% {
+        opacity: 1;
+        transform: none;
     }
 }

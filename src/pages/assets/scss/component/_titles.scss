@@ -1,9 +1,350 @@
 @use "sass:math";
-@use "../global"as *;
+@use "../global" as *;
 
 /*!
 component > title
 ------------------------------
 */
 
+.c-ttl17 {
+    @extend %fz-17;
+    font-weight: 700;
+    line-height: 1.6;
 
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(18);
+    }
+}
+
+.c-ttl18 {
+    @extend %fz-18;
+    font-weight: 700;
+    line-height: 1.6;
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(18);
+    }
+}
+
+.c-ttl20 {
+    @extend %fz-20;
+    font-weight: 700;
+    line-height: 1.6;
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(20);
+    }
+}
+
+.c-ttl22 {
+    @extend %fz-22;
+    font-weight: 700;
+    line-height: 1.6;
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(22);
+    }
+}
+
+.c-ttl24 {
+    @extend %fz-24;
+    font-weight: 700;
+    line-height: 1.6;
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(24);
+    }
+}
+
+.c-ttl26 {
+    @extend %fz-26;
+    font-weight: 700;
+    line-height: 1.6;
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(26);
+    }
+}
+
+.c-ttl28 {
+    @extend %fz-28;
+    font-weight: 700;
+    line-height: 1.6;
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(28);
+    }
+}
+
+.c-ttl30 {
+    @extend %fz-30;
+    font-weight: 700;
+    line-height: 1.6;
+
+    @include mq(md) {
+        line-height: calc(59.52 / 32);
+    }
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(30);
+    }
+}
+
+.c-ttl32 {
+    @extend %fz-32;
+    font-weight: 700;
+    line-height: calc(52.8 / 32);
+
+    @include mq(md) {
+        line-height: calc(59.52 / 32);
+    }
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(32);
+    }
+}
+
+.c-ttl40 {
+    @extend %fz-40;
+    font-weight: 700;
+    line-height: 1.6;
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(40);
+    }
+}
+
+.c-ttl48 {
+    // @extend %fz-48;
+    font-size: clamped(24);
+    font-weight: 700;
+    line-height: calc(82.6 / 48);
+
+    @include mq(md) {
+        font-size: clamped(24, 48);
+    }
+
+    &--500 {
+        font-weight: 500;
+    }
+
+    &--400 {
+        font-weight: 400;
+    }
+
+    &--green {
+        color: var(--green);
+    }
+
+    &--white {
+        color: var(--white);
+    }
+
+    &--center {
+        text-align: center;
+    }
+
+    &--noresize {
+        font-size: rem(48);
+    }
+}

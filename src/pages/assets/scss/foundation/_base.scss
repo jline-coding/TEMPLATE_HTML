@@ -1,25 +1,22 @@
-@use "../global"as *;
+@use "../global" as *;
 
 /*!
 foundation > base
 ------------------------------
 */
-:root{
-    --base: #333333;
+:root {
+    --base: #3E3E3E;
     --black: #000;
     --white: #fff;
 }
 
 body {
     line-height: 2;
-    font-size: rem(14);
-    font-weight: 500;
+    @extend %fz-16;
+    font-weight: 400;
     color: var(--base);
     font-family: $font-family-base;
-    letter-spacing: 0;
-    @include mq(md) {
-        font-size: rem(16);
-    }
+    letter-spacing: 0.01em;
 }
 
 body.overflow_modal {
@@ -45,12 +42,13 @@ a {
 
     &:hover {
         opacity: 1;
+
         @include mq(md) {
             text-decoration: none;
             opacity: 0.8;
         }
     }
-    
+
 }
 
 .pc {

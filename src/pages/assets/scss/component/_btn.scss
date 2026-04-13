@@ -5,8 +5,6 @@
 component > btn
 ------------------------------
 */
-
-
 .c-totop {
     position: fixed;
     right: 20px;
@@ -22,7 +20,7 @@ component > btn
     letter-spacing: 0.1em;
     line-height: 1;
     z-index: 9;
-    background: var(--base);
+    background: var(--green);
     border-radius: 40px;
     border: 2px solid var(--white);
 
@@ -34,6 +32,7 @@ component > btn
         border-radius: 60px;
         border: 3px solid var(--white);
     }
+
     &::before {
         position: absolute;
         top: 50%;
@@ -44,11 +43,13 @@ component > btn
         background: var(--white);
         transform: translateY(-50%) rotate(-45deg);
         pointer-events: none;
+
         @include mq(md) {
             left: 15px;
             width: 15px;
         }
     }
+
     &::after {
         position: absolute;
         top: 50%;
@@ -59,6 +60,7 @@ component > btn
         transform: translateY(-50%) rotate(45deg);
         pointer-events: none;
         background: var(--white);
+
         @include mq(md) {
             right: 15px;
             width: 15px;

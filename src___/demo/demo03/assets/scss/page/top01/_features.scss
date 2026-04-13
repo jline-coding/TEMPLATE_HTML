@@ -1,9 +1,0 @@
-@use '../../global' as *;
-.top01_features {
-    padding-top: 75px;
-    padding-bottom: 77px;
-    @include mq('md') {
-        padding-top: 151px;
-        padding-bottom: 153px;
-    }
-}

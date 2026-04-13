@@ -1,9 +1,0 @@
-@use "global/"as *;
-@use "../../global" as *;
-/*!
-page > common > common
-------------------------------
-*/
-@use "../../foundation";
-@use "../../component";
-@use "../../layout";
