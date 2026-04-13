@@ -15,7 +15,23 @@
   <meta name="description" content="<% if(file.data.description){ %><%= file.data.description %><% }else{%><%= "" %><% }-%>">
   <meta name="keywords" content="<% if(file.data.keyword){ %><%= file.data.keyword %><% }else{%><%= "" %><% }-%>">
   <link rel="shortcut icon" type="image/x-icon" href="<%= assetsDir %>assets/images/common/favicon.ico" >
-  <link rel="canonical" href="">
+  <%
+    // Build canonical path from file's relative position
+    var canonicalPath = '/';
+    if (file && file.path) {
+      var relPath = file.path.replace(/\\/g, '/');
+      // Extract part after /pages/
+      var pagesIdx = relPath.indexOf('/pages/');
+      if (pagesIdx !== -1) {
+        canonicalPath = relPath.substring(pagesIdx + '/pages'.length);
+      }
+      // Replace .ejs with output extension, then normalize
+      canonicalPath = canonicalPath.replace(/\.ejs$/, '');
+      // If ends with /index, remove it for clean URL
+      canonicalPath = canonicalPath.replace(/\/index$/, '/');
+    }
+  -%>
+  <link rel="canonical" href="<%= canonicalPath %>">
   <title><%= file.data.title %></title>
   <!-- link -->  
   <% if(file.data.vendorcss){ 

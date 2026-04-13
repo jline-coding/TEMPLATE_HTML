@@ -328,8 +328,8 @@ async function buildEjs(changedFile) {
         return str
           .replace(/<%=\s*assetsDir\s*%>/g, '<?php echo $assetsDir ?? "./"; ?>')
           .replace(/<%=\s*file(?:\?\.|\.)data(?:\?\.|\.)([a-zA-Z0-9_]+)\s*%>/g, "<?php echo $$$1 ?? ''; ?>")
-          .replace(/<%\s*if\s*\(\s*file(?:\?\.|\.)data(?:\?\.|\.)([a-zA-Z0-9_]+)\s*(===|==)\s*(['"])(.*?)\3\s*\)\s*{%>/g, "<?php if(isset($$$1) && $$$1 $2 '$4'): ?>")
-          .replace(/<%\s*}\s*else\s*if\s*\(\s*file(?:\?\.|\.)data(?:\?\.|\.)([a-zA-Z0-9_]+)\s*(===|==)\s*(['"])(.*?)\3\s*\)\s*{%>/g, "<?php elseif(isset($$$1) && $$$1 $2 '$4'): ?>")
+          .replace(/<% if\s*\(\s*file(?:\?\.|\.)data(?:\?\.|\.)([a-zA-Z0-9_]+)\s*(!==|!==|===|==)\s*(['"])(.*?)\3\s*\)\s*{%>/g, "<?php if(isset($$$1) && $$$1 $2 '$4'): ?>")
+          .replace(/<% }\s*else\s*if\s*\(\s*file(?:\?\.|\.)data(?:\?\.|\.)([a-zA-Z0-9_]+)\s*(!==|===|==)\s*(['"])(.*?)\3\s*\)\s*{%>/g, "<?php elseif(isset($$$1) && $$$1 $2 '$4'): ?>")
           .replace(/<%\s*}\s*else\s*{\s*%>/g, "<?php else: ?>")
           .replace(/<%\s*}\s*%>/g, "<?php endif; ?>")
           .replace(/<%-?\s*includeComponent\(\s*(['"])(.*?)\1\s*\)\s*%>/gi, `<?php include __DIR__ . '/${rootPrefix}$2.php'; ?>`);
@@ -864,23 +864,24 @@ async function startWatch() {
   };
 
   // ── Proxy Auto-Decision ──
-  // Proxy cần khi output chứa file .php cần PHP server xử lý
+  // Dùng proxy khi: output .php HOẶC renew mode (source có thể chứa .php)
+  // Nhưng chỉ cảnh báo thiếu proxy khi OUTPUT thật sự là .php
   const needsProxy = OUTPUT_EXT === '.php' || isRenew;
 
   if (PROXY_URL && needsProxy) {
-    // PHP output + có cấu hình proxy → dùng Laragon/XAMPP
+    // Có proxy + cần proxy → dùng Laragon/XAMPP
     bsOptions.proxy = PROXY_URL;
     console.log(`[server] Proxy → http://${PROXY_URL}`);
   } else if (PROXY_URL && !needsProxy) {
-    // HTML output nhưng .env có PROXY_URL → bỏ qua proxy, dùng static
+    // HTML output (mode new) + có PROXY_URL → bỏ qua proxy
     bsOptions.server = { baseDir: DIST };
     console.log(`[server] Static server (PROXY_URL bỏ qua — output là ${OUTPUT_EXT})`);
   } else {
     // Không có PROXY_URL
     bsOptions.server = { baseDir: DIST };
 
-    if (needsProxy) {
-      // PHP output nhưng không có proxy → serve .php as static HTML (preview only)
+    if (OUTPUT_EXT === '.php') {
+      // Output .php nhưng thiếu proxy → serve .php as static HTML (preview only)
       console.log(`[server] ⚠️  Static server (thiếu PROXY_URL — file .php sẽ hiển thị như HTML)`);
       bsOptions.server.middleware = [
         function (req, res, next) {
@@ -890,6 +891,9 @@ async function startWatch() {
           next();
         }
       ];
+    } else if (isRenew) {
+      // Renew mode + output html + không proxy → static bình thường
+      console.log(`[server] Static server`);
     } else {
       console.log(`[server] Static server`);
     }
