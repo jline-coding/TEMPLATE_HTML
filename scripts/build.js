@@ -271,37 +271,60 @@ function removeEmptyDirs(dir) {
 }
 
 // ─────────────────────────────────────────────
-// 0. Renew Mode — Universal Copy
+// 0. General Copy (All Modes)
 // ─────────────────────────────────────────────
+function isHandledBySpecificBuilder(filepath) {
+  if (isRenew) return false; // Renew mode: general copy handles everything
+
+  const ext = extname(filepath).toLowerCase();
+  const abs = resolve(filepath);
+  
+  if (ext === '.js' && norm(abs).startsWith(norm(resolve(JS_DIR)))) return true;
+  
+  const copyImgExts = ['.gif', '.svg', '.ico', '.webp'];
+  const convertExts = ['.jpg', '.jpeg', '.png'];
+  if ((copyImgExts.includes(ext) || convertExts.includes(ext)) && norm(abs).startsWith(norm(resolve(IMAGES_DIR)))) return true;
+  
+  const vidExts = ['.mp4', '.webm', '.ogg'];
+  if (vidExts.includes(ext) && norm(abs).startsWith(norm(resolve(VIDEOS_DIR)))) return true;
+  
+  const vendorExts = ['.png', '.jpg', '.scss', '.css', '.js', '.svg', '.woff', '.woff2', '.ttf', '.eot'];
+  if (vendorExts.includes(ext) && norm(abs).startsWith(norm(resolve(VENDOR_DIR)))) return true;
+
+  return false;
+}
+
 /**
  * Copy ALL files from src → public, except:
  *  - .scss files (anywhere — never needed in production)
  *  - .ejs files (template-only)
- *  - .map files (client source maps are not useful, our SCSS generates its own)
- * SCSS in assets/scss/ is compiled by buildScss() separately.
+ *  - .map files (client source maps are not useful)
+ *  - In new mode: files handled by specific builders
  */
-function buildRenewCopy(changedFile) {
+function buildGeneralCopy(changedFile) {
   if (!existsSync(PAGES_DIR)) return;
 
   const skipExts = ['.scss', '.ejs', '.map'];
 
+  function shouldCopy(f) {
+    if (skipExts.includes(extname(f).toLowerCase())) return false;
+    if (isHandledBySpecificBuilder(f)) return false;
+    return true;
+  }
+
   if (changedFile) {
-    const ext = extname(changedFile).toLowerCase();
-    if (skipExts.includes(ext)) return;
+    if (!shouldCopy(changedFile)) return;
 
     const rel = relative(PAGES_DIR, changedFile);
     const dest = resolve(DIST, rel);
     ensureDir(dirname(dest));
     writeFileSync(dest, readFileSync(changedFile));
-    console.log(`[renew] copy: ${norm(rel)}`);
+    console.log(`[copy] ${norm(rel)}`);
     return;
   }
 
-  // Full copy — walk all files, skip .scss and .ejs
-  const allFiles = walkSync(PAGES_DIR, (f) => {
-    const ext = extname(f).toLowerCase();
-    return !skipExts.includes(ext);
-  });
+  // Full copy — walk all files
+  const allFiles = walkSync(PAGES_DIR, shouldCopy);
 
   for (const file of allFiles) {
     const rel = relative(PAGES_DIR, file);
@@ -309,7 +332,7 @@ function buildRenewCopy(changedFile) {
     if (isNewer(file, dest)) {
       ensureDir(dirname(dest));
       writeFileSync(dest, readFileSync(file));
-      console.log(`[renew] copy: ${norm(rel)}`);
+      console.log(`[copy] ${norm(rel)}`);
     }
   }
 }
@@ -803,10 +826,11 @@ async function fullBuild() {
   // Run tasks
   if (isRenew) {
     // RENEW: copy all source files + compile SCSS
-    buildRenewCopy();
+    buildGeneralCopy();
     await buildScss();
   } else {
     // NEW: full pipeline (EJS, SCSS, JS, Images, Vendor, Videos)
+    buildGeneralCopy();
     await buildEjs();
     await buildScss();
     buildJs();
@@ -949,8 +973,8 @@ async function startWatch() {
     renewWatcher.on('change', batchDebounce((filepath) => {
       const abs = getAbs(filepath);
       if (skipExts.includes(extname(filepath).toLowerCase())) return;
-      console.log(`[watch:renew] changed: ${norm(filepath)}`);
-      buildRenewCopy(abs);
+      console.log(`[watch:copy] changed: ${norm(filepath)}`);
+      buildGeneralCopy(abs);
       if (filepath.endsWith('.css')) {
         browserSync.reload('*.css');
       } else {
@@ -961,8 +985,8 @@ async function startWatch() {
     renewWatcher.on('add', batchDebounce((filepath) => {
       const abs = getAbs(filepath);
       if (skipExts.includes(extname(filepath).toLowerCase())) return;
-      console.log(`[watch:renew] added: ${norm(filepath)}`);
-      buildRenewCopy(abs);
+      console.log(`[watch:copy] added: ${norm(filepath)}`);
+      buildGeneralCopy(abs);
       browserSync.reload();
     }));
 
@@ -1024,6 +1048,53 @@ async function startWatch() {
   // ─────────────────────────────────────────
   // NEW Mode Watchers
   // ─────────────────────────────────────────
+  
+  // General copy watcher (for files not handled by specific watchers)
+  const generalWatcher = chokidarWatch(PAGES_DIR, watchOpts);
+  
+  generalWatcher.on('change', batchDebounce((filepath) => {
+    const abs = getAbs(filepath);
+    const ext = extname(filepath).toLowerCase();
+    if (['.scss', '.ejs', '.map'].includes(ext)) return;
+    if (!isHandledBySpecificBuilder(abs)) {
+      console.log(`[watch:copy] changed: ${norm(filepath)}`);
+      buildGeneralCopy(abs);
+      browserSync.reload();
+    }
+  }));
+
+  generalWatcher.on('add', batchDebounce((filepath) => {
+    const abs = getAbs(filepath);
+    const ext = extname(filepath).toLowerCase();
+    if (['.scss', '.ejs', '.map'].includes(ext)) return;
+    if (!isHandledBySpecificBuilder(abs)) {
+      console.log(`[watch:copy] added: ${norm(filepath)}`);
+      buildGeneralCopy(abs);
+      browserSync.reload();
+    }
+  }));
+
+  generalWatcher.on('unlink', batchDebounce((filepath) => {
+    const abs = getAbs(filepath);
+    const ext = extname(filepath).toLowerCase();
+    if (['.scss', '.ejs', '.map'].includes(ext)) return;
+    
+    // Only remove if it wasn't handled by another specific watcher
+    if (!isHandledBySpecificBuilder(abs)) {
+      const rel = relative(PAGES_DIR, abs);
+      const dest = resolve(DIST, rel);
+      try {
+        if (existsSync(dest)) {
+          unlinkSync(dest);
+          console.log(`[watch:copy] removed: ${norm(rel)}`);
+          removeEmptyDirs(DIST);
+        }
+      } catch (err) {
+        /* ignore */
+      }
+    }
+  }));
+
   // EJS watcher
   const ejsWatcher = chokidarWatch(SRC, watchOpts);
 
