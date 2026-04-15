@@ -15,9 +15,9 @@
     "project_dir": "template_jline_html_production"
   },
   "test": {
-    "deploy_method": "ftp",
-    "server": "JLWEB",
-    "project_dir": "template_jline_html",
+    "deploy_method": "ssh",
+    "server": "JLWEB_SSH",
+    "project_dir": "template_test",
     "basic_auth": {
       "username": "test",
       "password": "test"

@@ -392,10 +392,18 @@ async function runDeploy() {
 
     const serverInfo = JSON.parse(process.env.SERVER_SECRET_JSON);
     const targetDir = `${serverInfo.ftp_dir}/${config.project_dir}`;
+    
+    let remoteMetaDir;
+    if (serverInfo.ftp_git) {
+        remoteMetaDir = `${serverInfo.ftp_git}/.deploy/${config.project_dir}`;
+    } else {
+        remoteMetaDir = `${targetDir}/.deploy`;
+    }
 
     console.log(`Config:`);
     console.log(`   Server: ${serverInfo.host}`);
     console.log(`   FTP Dir: ${targetDir}`);
+    console.log(`   Meta Dir: ${remoteMetaDir}`);
     console.log(`   Source: ${config.source_folder}/`);
     console.log('');
 
@@ -427,9 +435,16 @@ async function runDeploy() {
             try {
                 const lockFileLocal = '/tmp/.repo_lock';
                 try {
-                    await client.downloadTo(lockFileLocal, '.deploy/.repo_lock');
-                } catch (e) {
-                    await client.downloadTo(lockFileLocal, '.repo_lock'); // Fallback cho version cu
+                    await client.cd(ftpRoot);
+                    await client.downloadTo(lockFileLocal, `${remoteMetaDir}/.repo_lock`);
+                    await client.cd(targetDir);
+                } catch (e1) {
+                    try {
+                        await client.cd(targetDir); // Phục hồi lại đường dẫn targetDir sau khi e1 lỗi
+                        await client.downloadTo(lockFileLocal, '.deploy/.repo_lock');
+                    } catch (e2) {
+                        await client.downloadTo(lockFileLocal, '.repo_lock'); // Fallback
+                    }
                 }
                 const lockOwner = fs.readFileSync(lockFileLocal, 'utf8').trim();
 
@@ -473,13 +488,13 @@ async function runDeploy() {
             await client.cd(ftpRoot);
             await client.ensureDir(targetDir);
             await client.cd(ftpRoot);
-            await client.ensureDir(`${targetDir}/.deploy`);
+            await client.ensureDir(remoteMetaDir);
             await client.cd(ftpRoot);
 
             // 1. Create repo lock
             console.log('Creating .repo_lock...');
             fs.writeFileSync('/tmp/.repo_lock', lockId);
-            await client.uploadFrom('/tmp/.repo_lock', `${targetDir}/.deploy/.repo_lock`);
+            await client.uploadFrom('/tmp/.repo_lock', `${remoteMetaDir}/.repo_lock`);
 
             // 2 & 3. Create .htpasswd & .htaccess
             if (config.basic_auth) {
@@ -511,13 +526,13 @@ async function runDeploy() {
             console.log('Saving manifest...');
             const manifest = generateManifest(config.source_folder);
             fs.writeFileSync('/tmp/.deploy_manifest.json', JSON.stringify(manifest));
-            await client.uploadFrom('/tmp/.deploy_manifest.json', `${targetDir}/.deploy/.deploy_manifest.json`);
+            await client.uploadFrom('/tmp/.deploy_manifest.json', `${remoteMetaDir}/.deploy_manifest.json`);
             console.log(`   Manifest: ${Object.keys(manifest).length} files.`);
 
             // 6. Save deploy SHA
             const currentSha = execSync('git rev-parse HEAD').toString().trim();
             fs.writeFileSync('/tmp/.deploy_sha', currentSha);
-            await client.uploadFrom('/tmp/.deploy_sha', `${targetDir}/.deploy/.deploy_sha`);
+            await client.uploadFrom('/tmp/.deploy_sha', `${remoteMetaDir}/.deploy_sha`);
             console.log(`SHA saved: ${currentSha.substring(0, 8)}`);
 
             console.log('');
@@ -533,7 +548,7 @@ async function runDeploy() {
             console.log('--- UPDATE: Comparing manifest files ---');
 
             await client.cd(ftpRoot);
-            await client.ensureDir(`${targetDir}/.deploy`);
+            await client.ensureDir(remoteMetaDir);
             await client.cd(ftpRoot);
 
             // Re-sync .htpasswd & .htaccess
@@ -563,9 +578,16 @@ async function runDeploy() {
             let lastDeployedSha = '';
             try {
                 try {
-                    await client.downloadTo('/tmp/.deploy_sha', `${targetDir}/.deploy/.deploy_sha`);
-                } catch(e) {
-                    await client.downloadTo('/tmp/.deploy_sha', `${targetDir}/.deploy_sha`);
+                    await client.cd(ftpRoot);
+                    await client.downloadTo('/tmp/.deploy_sha', `${remoteMetaDir}/.deploy_sha`);
+                    await client.cd(targetDir);
+                } catch(e1) {
+                    try {
+                        await client.cd(targetDir);
+                        await client.downloadTo('/tmp/.deploy_sha', '.deploy/.deploy_sha');
+                    } catch(e2) {
+                        await client.downloadTo('/tmp/.deploy_sha', '.deploy_sha');
+                    }
                 }
                 const rawSha = fs.readFileSync('/tmp/.deploy_sha', 'utf8').trim();
                 if (/^[0-9a-f]{40}$/i.test(rawSha)) {
@@ -594,9 +616,16 @@ async function runDeploy() {
             let oldManifest = null;
             try {
                 try {
-                    await client.downloadTo('/tmp/.deploy_manifest.json', `${targetDir}/.deploy/.deploy_manifest.json`);
-                } catch(e) {
-                    await client.downloadTo('/tmp/.deploy_manifest.json', `${targetDir}/.deploy_manifest.json`);
+                    await client.cd(ftpRoot);
+                    await client.downloadTo('/tmp/.deploy_manifest.json', `${remoteMetaDir}/.deploy_manifest.json`);
+                    await client.cd(targetDir);
+                } catch(e1) {
+                    try {
+                        await client.cd(targetDir);
+                        await client.downloadTo('/tmp/.deploy_manifest.json', '.deploy/.deploy_manifest.json');
+                    } catch(e2) {
+                        await client.downloadTo('/tmp/.deploy_manifest.json', '.deploy_manifest.json');
+                    }
                 }
                 oldManifest = JSON.parse(fs.readFileSync('/tmp/.deploy_manifest.json', 'utf8'));
                 console.log('Old manifest downloaded from server.');
@@ -675,14 +704,14 @@ async function runDeploy() {
             try { await client.remove(`${targetDir}/.repo_lock`); } catch(e) {}
             try { await client.remove(`${targetDir}/.deploy_sha`); } catch(e) {}
             try { await client.remove(`${targetDir}/.deploy_manifest.json`); } catch(e) {}
-            try { await client.remove(`${targetDir}/.deploy/.htpasswd`); } catch(e) {} // Clean up old .htpasswd inside .deploy if previously generated
+            try { await client.removeDir(`${targetDir}/.deploy`); } catch(e) {} // Clean up old .deploy folder
 
             // --- Save new manifest + SHA ---
             fs.writeFileSync('/tmp/.deploy_manifest.json', JSON.stringify(currentManifest));
-            await client.uploadFrom('/tmp/.deploy_manifest.json', `${targetDir}/.deploy/.deploy_manifest.json`);
+            await client.uploadFrom('/tmp/.deploy_manifest.json', `${remoteMetaDir}/.deploy_manifest.json`);
 
             fs.writeFileSync('/tmp/.deploy_sha', currentSha);
-            await client.uploadFrom('/tmp/.deploy_sha', `${targetDir}/.deploy/.deploy_sha`);
+            await client.uploadFrom('/tmp/.deploy_sha', `${remoteMetaDir}/.deploy_sha`);
             console.log(`SHA + manifest updated: ${currentSha.substring(0, 8)}`);
             console.log('[OK] Update completed!');
         }

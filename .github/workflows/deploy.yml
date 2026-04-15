@@ -1,4 +1,4 @@
-name: Deploy To FTP Server
+name: Deploy To Server
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
           echo "DEPLOY_METHOD=$DEPLOY_METHOD" >> $GITHUB_ENV
           echo "📦 Phương thức: $DEPLOY_METHOD"
 
-          # Đọc server từ đúng môi trường (chỉ cần khi FTP)
+          # Đọc server từ đúng môi trường (chỉ cần khi FTP hoặc Rsync)
           SERVER_NAME=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].server // ""' deploy-config.json | tr 'a-z' 'A-Z')
           echo "🖥️ Server: ${SERVER_NAME:-'(không dùng FTP)'}"
 
@@ -71,17 +71,17 @@ jobs:
 
       # ── Chế độ FTP: Build + Deploy lên server ──
       - name: ⚙️ Cài đặt Node.js
-        if: env.DEPLOY_METHOD == 'ftp'
+        if: env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: 📦 Cài đặt dependencies dự án (nếu cần build)
-        if: env.DEPLOY_METHOD == 'ftp' && env.HAS_BUILD == 'true'
+        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
         run: npm ci
 
       - name: 🔨 Build dự án
-        if: env.DEPLOY_METHOD == 'ftp' && env.HAS_BUILD == 'true'
+        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
         run: ${{ env.BUILD_CMD }}
 
       - name: 📦 Cài đặt thư viện deploy
@@ -96,4 +96,20 @@ jobs:
           DEPLOY_BRANCH: ${{ env.DEPLOY_BRANCH }}
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
           # Tự động ghép tên SERVER với _CONFIG để lấy đúng Secret
+          SERVER_SECRET_JSON: ${{ secrets[format('{0}_CONFIG', env.SERVER_NAME)] }}
+
+      # ── Chế độ SSH: Triển khai qua SSH rsync ──
+      - name: 🔑 Cài đặt SSH Key cho Deploy
+        if: env.DEPLOY_METHOD == 'ssh'
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).private_key }}
+
+      - name: 🚀 Chạy Script Deploy (SSH)
+        if: env.DEPLOY_METHOD == 'ssh'
+        run: bash .github/scripts/deploy-rsync.sh
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+          DEPLOY_BRANCH: ${{ env.DEPLOY_BRANCH }}
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
           SERVER_SECRET_JSON: ${{ secrets[format('{0}_CONFIG', env.SERVER_NAME)] }}
