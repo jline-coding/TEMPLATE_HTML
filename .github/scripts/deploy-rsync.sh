@@ -323,9 +323,13 @@ if [ -n "$BASIC_AUTH_USER" ] && [ -n "$BASIC_AUTH_PASS" ]; then
     ssh_exec "chmod 644 '${TARGET_DIR}/.htaccess' && chmod 644 '${TARGET_DIR}/.htpasswd'"
 
     echo "[OK] .htpasswd & .htaccess da dong bo."
-
-    echo "[OK] .htpasswd & .htaccess da dong bo."
     rm -f /tmp/.htpasswd /tmp/.htaccess
+
+else
+    # Tự động gỡ bỏ Basic Auth trên server nếu config đã xóa phần basic_auth
+    echo "--- Go bo Basic Auth (neu co) ---"
+    ssh_exec "rm -f '${TARGET_DIR}/.htaccess' '${TARGET_DIR}/.htpasswd' 2>/dev/null" || true
+    echo "[OK] Da go bo .htaccess & .htpasswd (vi khong co basic_auth trong config)"
 fi
 
 # ─────────────────────────────────────────────

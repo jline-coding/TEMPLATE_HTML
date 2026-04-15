@@ -517,7 +517,10 @@ async function runDeploy() {
                 fs.writeFileSync('/tmp/.htaccess', htaccessLines.join('\n'));
                 await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
             } else {
-                console.log('[INFO] basic_auth omitted - skipping .htaccess/.htpasswd generation to preserve server-side rules.');
+                console.log('--- Removing basic_auth (if exists) ---');
+                try { await client.remove(`${targetDir}/.htpasswd`); } catch (e) {}
+                try { await client.remove(`${targetDir}/.htaccess`); } catch (e) {}
+                console.log('[INFO] basic_auth omitted - removed any old .htaccess/.htpasswd.');
             }
 
             // 4. Upload all source (ZIP fast or file-by-file fallback)
@@ -573,7 +576,10 @@ async function runDeploy() {
                 await client.uploadFrom('/tmp/.htaccess', `${targetDir}/.htaccess`);
                 console.log('[OK] .htpasswd & .htaccess synced.');
             } else {
-                console.log('[INFO] basic_auth omitted - skipping .htaccess/.htpasswd sync to protect manual server configurations.');
+                console.log('--- Removing basic_auth (if exists) ---');
+                try { await client.remove(`${targetDir}/.htpasswd`); } catch (e) {}
+                try { await client.remove(`${targetDir}/.htaccess`); } catch (e) {}
+                console.log('[INFO] basic_auth omitted - removed any old .htaccess/.htpasswd.');
             }
 
             // Check SHA - quick skip if no changes
