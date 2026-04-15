@@ -383,14 +383,16 @@ async function runDeploy() {
         process.exit(1);
     }
 
-    // Check Server Secret
-    if (!process.env.SERVER_SECRET_JSON) {
-        console.error(`[ERROR] Secret for server [${config.server}] not found.`);
-        console.error(`   Create GitHub Secret named "${config.server}_CONFIG" with FTP JSON config.`);
-        process.exit(1);
-    }
-
-    const serverInfo = JSON.parse(process.env.SERVER_SECRET_JSON);
+    // Đọc server config từ biến môi trường đã được bóc tách
+    const serverInfo = {
+        host: process.env.SSH_HOST || '',
+        user: process.env.SSH_USER || '',
+        pass: process.env.SSH_PASS || '',
+        root_path: process.env.ROOT_PATH || '',
+        ftp_dir: process.env.FTP_DIR || '',
+        ftp_git: process.env.FTP_GIT || null,
+        ssh_port: process.env.SSH_PORT || '22'
+    };
     const targetDir = `${serverInfo.ftp_dir}/${config.project_dir}`;
     
     let remoteMetaDir;

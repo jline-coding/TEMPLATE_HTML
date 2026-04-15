@@ -68,22 +68,12 @@ if [[ ! "$PROJECT_DIR" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
     exit 1
 fi
 
-# 2c. Kiểm tra Server Secret
-if [ -z "${SERVER_SECRET_JSON:-}" ]; then
-    echo "[ERROR] Bien moi truong SERVER_SECRET_JSON khong ton tai!"
-    echo "   Tao GitHub Secret voi cau hinh SSH JSON."
-    exit 1
-fi
-
 # ─────────────────────────────────────────────
-# 3. Parse Server Config từ Secret JSON
+# 3. Parse Server Config từ Secret JSON (Đã chạy ở github actions)
 # ─────────────────────────────────────────────
 
-SSH_HOST=$(echo "$SERVER_SECRET_JSON" | jq -r '.host // ""')
-SSH_USER=$(echo "$SERVER_SECRET_JSON" | jq -r '.user // ""')
-SSH_PORT=$(echo "$SERVER_SECRET_JSON" | jq -r '.ssh_port // "22"')
-ROOT_PATH=$(echo "$SERVER_SECRET_JSON" | jq -r '.root_path // ""')
-FTP_GIT=$(echo "$SERVER_SECRET_JSON" | jq -r '.ftp_git // ""')
+# Các biến SSH_HOST, SSH_USER, SSH_PORT, ROOT_PATH, FTP_GIT đã được ném từ deploy.yml
+SSH_PORT="${SSH_PORT:-22}"
 
 if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$ROOT_PATH" ]; then
     echo "[ERROR] Server Secret thieu thong tin bat buoc!"
@@ -301,13 +291,7 @@ rsync -avz --dry-run --delete \
 echo ""
 echo "--- Thuc thi rsync ---"
 
-# RSYNC thật - với các cờ:
-#   -a : archive mode (giữ permissions, timestamps)
-#   -v : verbose (in ra danh sách file)
-#   -z : compress data khi truyền (nhanh hơn)
-#   --delete : xóa file trên server không có ở local
-#   --exclude-from : bảo vệ .htaccess/.htpasswd trên server
-#   --chmod : đặt quyền an toàn cho files/dirs trên server
+# RSYNC thật - đồng bộ hoàn toàn thay đổi (thêm sửa xóa) TRONG phạm vi project_dir
 rsync -avz --delete \
     --exclude-from="$EXCLUDE_FILE" \
     --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r \

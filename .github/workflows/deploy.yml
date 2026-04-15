@@ -95,8 +95,12 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
           DEPLOY_BRANCH: ${{ env.DEPLOY_BRANCH }}
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
-          # Tự động ghép tên SERVER với _CONFIG để lấy đúng Secret
-          SERVER_SECRET_JSON: ${{ secrets[format('{0}_CONFIG', env.SERVER_NAME)] }}
+          SSH_HOST: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).host }}
+          SSH_USER: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).user }}
+          SSH_PASS: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).pass }}
+          ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}
+          FTP_DIR: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ftp_dir }}
+          FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ftp_git }}
 
       # ── Chế độ SSH: Triển khai qua SSH rsync ──
       - name: 🔑 Cài đặt SSH Key cho Deploy
@@ -112,4 +116,8 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
           DEPLOY_BRANCH: ${{ env.DEPLOY_BRANCH }}
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
-          SERVER_SECRET_JSON: ${{ secrets[format('{0}_CONFIG', env.SERVER_NAME)] }}
+          SSH_HOST: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).host }}
+          SSH_USER: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).user }}
+          SSH_PORT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ssh_port }}
+          ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}
+          FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ftp_git }}
