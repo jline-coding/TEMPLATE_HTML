@@ -109,19 +109,19 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
           DEPLOY_BRANCH: ${{ env.DEPLOY_BRANCH }}
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
-          SSH_HOST: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).host }}
-          SSH_USER: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).user }}
-          SSH_PASS: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).pass }}
-          ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}
-          FTP_DIR: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ftp_dir }}
-          FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ftp_git }}
+          SSH_HOST: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').host }}
+          SSH_USER: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').user }}
+          SSH_PASS: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').pass }}
+          ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').root_path }}
+          FTP_DIR: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').ftp_dir }}
+          FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').ftp_git }}
 
       # ── Chế độ SSH: Triển khai qua SSH rsync ──
       - name: 🔑 Cài đặt SSH Key cho Deploy
         if: env.DEPLOY_METHOD == 'ssh'
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).private_key }}
+          ssh-private-key: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').private_key }}
 
       - name: 🚀 Chạy Script Deploy (SSH)
         if: env.DEPLOY_METHOD == 'ssh'
@@ -130,18 +130,18 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
           DEPLOY_BRANCH: ${{ env.DEPLOY_BRANCH }}
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
-          SSH_HOST: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).host }}
-          SSH_USER: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).user }}
-          SSH_PORT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ssh_port }}
-          ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}
-          FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ftp_git }}
+          SSH_HOST: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').host }}
+          SSH_USER: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').user }}
+          SSH_PORT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').ssh_port }}
+          ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').root_path }}
+          FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').ftp_git }}
 
       - name: 🏥 Health Check (Basic)
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && success()
         run: |
           # Try to guess domain from SSH_HOST or FTP HOST
-          DOMAIN=$(echo "${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).host }}" | sed -e 's/^ftp\.//')
-          ROOT_PATH="${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}"
+          DOMAIN=$(echo "${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').host }}" | sed -e 's/^ftp\.//')
+          ROOT_PATH="${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').root_path }}"
           WEB_PATH=$(echo "$ROOT_PATH" | sed -E 's|^.*?/public_html/?|/|')
           PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // ""' deploy-config.json)
           
