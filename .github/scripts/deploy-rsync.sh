@@ -96,13 +96,20 @@ echo "   Target: ${TARGET_DIR}"
 echo "   Meta:   ${REMOTE_META_DIR}"
 echo ""
 
-# SSH options dùng chung
-SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p ${SSH_PORT}"
+# SSH options dùng chung (với ControlMaster multiplexing để reuse kết nối)
+SSH_CONTROL_PATH="/tmp/ssh-deploy-%r@%h:%p"
+SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p ${SSH_PORT} -o ControlMaster=auto -o ControlPath=${SSH_CONTROL_PATH} -o ControlPersist=60"
 
 # Helper function: chạy lệnh SSH trên server
 ssh_exec() {
     ssh $SSH_OPTS "${SSH_USER}@${SSH_HOST}" "$@"
 }
+
+# Cleanup SSH multiplexing on exit
+cleanup_ssh() {
+    ssh -O exit -o ControlPath="${SSH_CONTROL_PATH}" "${SSH_USER}@${SSH_HOST}" 2>/dev/null || true
+}
+trap cleanup_ssh EXIT
 
 # ─────────────────────────────────────────────
 # 4. SECURITY: Repo Lock (chống deploy nhầm thư mục)
@@ -193,14 +200,9 @@ if [ -n "$BASIC_AUTH_USER" ] && [ -n "$BASIC_AUTH_PASS" ]; then
     echo ""
     echo "--- Tao .htpasswd & .htaccess ---"
 
-    # Tạo .htpasswd bằng htpasswd hoặc openssl
-    if command -v htpasswd &>/dev/null; then
-        htpasswd -cb "/tmp/.htpasswd" "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS"
-    else
-        # Fallback: dùng openssl (có sẵn trên Ubuntu runner)
-        HASHED_PASS=$(openssl passwd -apr1 "$BASIC_AUTH_PASS")
-        echo "${BASIC_AUTH_USER}:${HASHED_PASS}" > "/tmp/.htpasswd"
-    fi
+    # Tạo .htpasswd bằng openssl (có sẵn trên Ubuntu runner)
+    HASHED_PASS=$(openssl passwd -apr1 "$BASIC_AUTH_PASS")
+    echo "${BASIC_AUTH_USER}:${HASHED_PASS}" > "/tmp/.htpasswd"
 
     # Tạo .htaccess
     cat > "/tmp/.htaccess" << HTEOF
@@ -283,10 +285,14 @@ echo ""
 
 # DRY-RUN trước → hiển thị những gì sẽ thay đổi (an toàn tuyệt đối)
 echo "--- Dry-run (preview thay doi) ---"
-rsync -avz --dry-run --delete \
+DRY_RUN_OUTPUT=$(rsync -avz --dry-run --delete \
     --exclude-from="$EXCLUDE_FILE" \
     -e "ssh ${SSH_OPTS}" \
-    "$RSYNC_SRC" "$RSYNC_DEST" 2>&1 | tail -20
+    "$RSYNC_SRC" "$RSYNC_DEST" 2>&1)
+DRY_RUN_COUNT=$(echo "$DRY_RUN_OUTPUT" | grep -c '^[^.]\|^\.' || true)
+echo "$DRY_RUN_OUTPUT" | tail -30
+echo ""
+echo "[INFO] Total changes detected: ~${DRY_RUN_COUNT} items"
 
 echo ""
 echo "--- Thuc thi rsync ---"

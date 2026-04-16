@@ -38,6 +38,14 @@ jobs:
           echo "SOURCE_FOLDER=$SOURCE_FOLDER" >> $GITHUB_ENV
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
 
+          # 🛡️ Validate BUILD_CMD (chỉ cho phép npm/npx commands)
+          if [ "$HAS_BUILD" = "true" ]; then
+            if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
+              echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
+              exit 1
+            fi
+          fi
+
       - name: 🏷️ Lấy thông tin Tag
         id: tag_info
         run: |
@@ -46,13 +54,19 @@ jobs:
           echo "📌 Tag: $TAG_NAME"
 
       - name: ⚙️ Cài đặt Node.js
+        if: env.HAS_BUILD == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: 📦 Cài đặt dependencies (nếu cần build)
         if: env.HAS_BUILD == 'true'
         run: npm ci
+
+      - name: ?? Ch?y Unit Tests
+        if: env.HAS_BUILD == 'true'
+        run: npm run test
 
       - name: 🔨 Build dự án
         if: env.HAS_BUILD == 'true'

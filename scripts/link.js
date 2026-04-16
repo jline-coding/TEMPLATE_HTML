@@ -99,18 +99,9 @@ try {
   
   const osPlatform = platform();
   if (osPlatform === 'win32') {
-    console.log('⚠️ Windows yêu cầu quyền Administrator để thực thi lệnh này.');
-    console.log('🔄 Đang tự động hiển thị popup yêu cầu quyền qụản trị (UAC)...');
-    try {
-      const srcEscaped = SRC_DIR.replace(/'/g, "''");
-      const targetEscaped = targetPath.replace(/'/g, "''");
-      const psCommand = `Start-Process cmd -ArgumentList '/c mklink /J "${targetEscaped}" "${srcEscaped}" ^& echo [Thanh cong] Bam phim bat ky de hoan tat. ^& pause' -Verb RunAs`;
-      execSync(`powershell -Command "${psCommand}"`);
-      console.log('✅ Vui lòng kiểm tra màn hình đen CMD vừa bật lên. Nếu nó báo thành công thì Symlink đã sẵn sàng.');
-    } catch (uacError) {
-      console.error('❌ Lỗi: Người dùng từ chối cấp quyền Administrator hoặc lệnh chạy thất bại.');
-      console.error('Hãy mở CMD/PowerShell bằng quyền Administrator (Run as Administrator) và chạy lại "npm run link".');
-    }
+    console.log('⚠️ Không thể tạo Junction link.');
+    console.log('👉 Vui lòng mở CMD/PowerShell bằng quyền Administrator (Run as Administrator) và chạy lại lệnh:');
+    console.log('   npm run link');
   } else {
     console.log('\n⚠️ Mac / Linux yêu cầu quyền Sudo (Quản trị viên) để tạo Symlink ở thư mục hệ thống.');
     console.log('👉 Bạn hãy gõ lệnh dưới đây:');

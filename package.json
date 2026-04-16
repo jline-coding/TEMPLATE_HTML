@@ -7,7 +7,8 @@
     "dev": "node scripts/build.js --watch",
     "build": "node scripts/build.js",
     "clean": "node scripts/clean.js",
-    "link": "node scripts/link.js"
+    "link": "node scripts/link.js",
+    "test": "vitest run"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "postcss-sort-media-queries": "^5.2.0",
     "prettier": "^3.8.1",
     "sass-embedded": "^1.85.1",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "vitest": "^4.1.4"
   }
 }

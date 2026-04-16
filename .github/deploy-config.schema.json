@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Deploy Configuration",
+  "type": "object",
+  "properties": {
+    "source_folder": {
+      "type": "string",
+      "description": "Thư mục chứa code sau khi build (ví dụ: dist, public)"
+    },
+    "has_build_step": {
+      "type": "boolean",
+      "description": "Dự án có sử dụng Node.js build (npm run build) trước khi deploy không?"
+    },
+    "build_command": {
+      "type": "string",
+      "description": "Lệnh build được chạy nếu has_build_step = true"
+    },
+    "production": {
+      "$ref": "#/definitions/environment"
+    },
+    "test": {
+      "$ref": "#/definitions/environment"
+    }
+  },
+  "required": ["source_folder", "has_build_step", "production"],
+  "definitions": {
+    "environment": {
+      "type": "object",
+      "properties": {
+        "deploy_method": {
+          "type": "string",
+          "enum": ["ftp", "ssh", "zip"],
+          "description": "Phương thức triển khai"
+        },
+        "server": {
+          "type": "string",
+          "description": "Tên server dùng để match với secret trong GitHub Actions (ví dụ: XCORE -> XCORE_CONFIG)"
+        },
+        "project_dir": {
+          "type": "string",
+          "description": "Đường dẫn thư mục dự án trên server (tính từ root_path)"
+        },
+        "basic_auth": {
+          "type": "object",
+          "properties": {
+            "username": { "type": "string" },
+            "password": { "type": "string" }
+          },
+          "required": ["username", "password"],
+          "description": "Tùy chọn thiết lập Basic Auth bảo vệ thư mục"
+        }
+      },
+      "required": ["deploy_method", "server", "project_dir"]
+    }
+  }
+}

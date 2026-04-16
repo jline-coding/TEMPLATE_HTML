@@ -59,6 +59,15 @@ jobs:
           echo "HAS_BUILD=$HAS_BUILD" >> $GITHUB_ENV
           echo "BUILD_CMD=$BUILD_CMD" >> $GITHUB_ENV
 
+          # 🛡️ Validate BUILD_CMD (chỉ cho phép npm/npx commands)
+          if [ "$HAS_BUILD" = "true" ]; then
+            if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
+              echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
+              echo "   Chỉ cho phép các lệnh bắt đầu bằng 'npm ' hoặc 'npx '."
+              exit 1
+            fi
+          fi
+
       # ── Chế độ ZIP: Bỏ qua toàn bộ (chỉ cần tạo tag để release) ──
       - name: ℹ️ Bỏ qua deploy (chế độ ZIP)
         if: env.DEPLOY_METHOD == 'zip'
@@ -75,10 +84,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: 📦 Cài đặt dependencies dự án (nếu cần build)
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
         run: npm ci
+
+      - name: ?? Ch?y Unit Tests
+        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
+        run: npm run test
 
       - name: 🔨 Build dự án
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
@@ -121,3 +135,34 @@ jobs:
           SSH_PORT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ssh_port }}
           ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}
           FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).ftp_git }}
+
+      - name: 🏥 Health Check (Basic)
+        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && success()
+        run: |
+          # Try to guess domain from SSH_HOST or FTP HOST
+          DOMAIN=$(echo "${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).host }}" | sed -e 's/^ftp\.//')
+          ROOT_PATH="${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}"
+          WEB_PATH=$(echo "$ROOT_PATH" | sed -E 's|^.*?/public_html/?|/|')
+          PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // ""' deploy-config.json)
+          
+          SITE_URL="https://${DOMAIN}${WEB_PATH}${PROJECT_DIR}"
+          SITE_URL=$(echo "$SITE_URL" | sed 's|//|/|g' | sed 's|https:/|https://|')
+          
+          echo "🔍 Kiểm tra URL dự kiến: $SITE_URL"
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" -I -k "$SITE_URL" || echo "FAILED")
+          
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ] || [ "$HTTP_STATUS" = "401" ]; then
+            echo "✅ Health Check OK: Nhận HTTP $HTTP_STATUS"
+          else
+            echo "⚠️ CẢNH BÁO: Không thể truy cập URL dự kiến (HTTP $HTTP_STATUS)."
+            echo "   Có thể URL chưa được public hoặc cấu hình directory không khớp domain."
+            echo "   Vui lòng kiểm tra trang web thủ công!"
+          fi
+
+      - name: ❌ Lỗi Deploy
+        if: failure()
+        run: |
+          echo "❌ Quá trình deploy thất bại!"
+          echo "👉 Kiểm tra log các bước trước đó trên GitHub Actions."
+          echo "TODO: Có thể tích hợp Slack/Discord webhook tại đây."
+          exit 1

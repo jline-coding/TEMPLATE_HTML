@@ -29,9 +29,15 @@
       canonicalPath = canonicalPath.replace(/\.ejs$/, '');
       // If ends with /index, remove it for clean URL
       canonicalPath = canonicalPath.replace(/\/index$/, '/');
+      // Ensure no leading slash so it can safely append to siteUrl
+      canonicalPath = canonicalPath.replace(/^\//, '');
     }
+    
+    // Fallback if siteUrl is missing
+    var baseDomain = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl : 'https://example.com';
+    if (!baseDomain.endsWith('/')) baseDomain += '/';
   -%>
-  <link rel="canonical" href="<%= canonicalPath %>">
+  <link rel="canonical" href="<%= baseDomain %><%= canonicalPath %>">
   <title><%= file.data.title %></title>
   <!-- link -->  
   <% if(file.data.vendorcss){ 
@@ -74,7 +80,7 @@
     </div>
     <!-- script -->  
 
-    <script src="<%= assetsDir %>assets/vendor/jquery/jquery-3.5.1.min.js"></script>    
+    <script src="<%= assetsDir %>assets/vendor/jquery/jquery-4.0.0.min.js"></script>    
     <script src="<%= assetsDir %>assets/js/cookie.js"></script>
     <% if(file.data.vendorjs){ 
       file.data.vendorjs.forEach(jsItem => { -%>

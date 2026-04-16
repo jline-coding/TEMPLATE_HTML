@@ -17,7 +17,7 @@
   "test": {
     "deploy_method": "ssh",
     "server": "JLWEB_SSH",
-    "project_dir": "template_test",
+    "project_dir": "template_test_ssh",
     "basic_auth": {
       "username": "test",
       "password": "test"
