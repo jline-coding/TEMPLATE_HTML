@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>確認用エレメント機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'confirm.js';</span>を有効にしてください。</p>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<dt class="mfp"><span class="must">必須</span>携帯アドレス</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="携帯アドレス" size="40" required="required"></dd>
+		<dt class="mfp"><span class="must">必須</span>確認のためもう一度</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">確認用エレメントとして利用するエレメントに<strong>data-confirm</strong>属性を付けてください。name属性が<strong>携帯アドレス</strong>のエレメントの値との一致を確認する場合であれば<strong>data-confirm="携帯アドレス"</strong>となります。</span>
+			<input type="email" data-type="email" name="携帯アドレス（確認用）" data-confirm="携帯アドレス" size="40" required="required">
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

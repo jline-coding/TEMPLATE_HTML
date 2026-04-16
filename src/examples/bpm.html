@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>クレジット決済代行業者さんの<a href="http://bpmc.co.jp/">BPM社</a>さんのご厚意で開発環境をご提供いただいたのでつくってみました。</p>
+					<p>ご利用にはBPM社さんとの契約が必要になります。詳細は<a href="http://bpmc.co.jp/flow.html">こちら</a>をご参照ください。</p>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform" id="deliveryTime">
+		<dt class="mfp">注文商品</dt>
+		<dd class="mfp">
+			テスト商品 <input type="number" data-type="number" name="テスト商品" id="test_item" data-price="100" size="8"> 個
+		</dd>
+		
+		<dt class="mfp">決済方法</dt>
+		<dd class="mfp">
+			<ul>
+				<li><label><input type="radio" name="決済方法" value="銀行振込" required="required" id="bank" data-price="350"> 銀行振込（手数料350円）</label></li>
+				<li><label><input type="radio" name="決済方法" value="PayPal決済" id="mfp_paypal_payment" data-price="500"> PayPal決済（手数料500円）</label></li>
+				<li><label><input type="radio" name="決済方法" value="クレジット決済" data-toggle="credit_wrapper" data-toggle-hide="1"> クレジット決済</label></li>
+			</ul>
+			<div id="errormsg_決済方法" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<dl class="mailform" id="credit_wrapper">
+		<dt class="mfp"><span class="must">必須</span>カード名義</dt>
+		<dd class="mfp"><input type="email" data-type="text" name="カード名義" required="required" data-charcheck="alphabet"></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>カード番号</dt>
+		<dd class="mfp"><input type="tel" data-type="text" name="カード番号" data-min="15" data-max="16" required="required" data-charcheck="digit"></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>セキュリティコード</dt>
+		<dd class="mfp"><input type="tel" data-type="text" name="セキュリティコード" data-min="3" data-max="4" required="required" data-charcheck="digit"></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>カード有効期限</dt>
+		<dd class="mfp">
+			<input type="hidden" name="カード有効期限" data-unjoin="カード有効期限（年）+カード有効期限（月）+まで" value="" />
+			<select name="カード有効期限（年）" data-creditcard-exp="1" required="required"></select>
+			<select name="カード有効期限（月）" required="required">
+				<option value="01">01月</option>
+				<option value="02">02月</option>
+				<option value="03">03月</option>
+				<option value="04">04月</option>
+				<option value="05">05月</option>
+				<option value="06">06月</option>
+				<option value="07">07月</option>
+				<option value="08">08月</option>
+				<option value="09">09月</option>
+				<option value="10">10月</option>
+				<option value="11">11月</option>
+				<option value="12">12月</option>
+			</select>
+		</dd>
+	</dl>
+	<dl class="mailform">
+		<dt class="mfp">お支払い合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price">0円</div>
+			<input type="hidden" name="お支払い金額" id="mfp_price_element">
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="email" size="40" required="required"></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>電話番号</dt>
+		<dd class="mfp"><input type="tel" data-type="tel" name="電話番号" size="16" data-min="9" required="required"></dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">注文する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

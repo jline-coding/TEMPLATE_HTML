@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>確認画面の見出し列にはIDが<strong>th_(エレメントのID)</strong>が、値列には<strong>td_(エレメントのID)</strong>が付与されます。</p>
+					<p>たとえば<span>&lt;input type=&quot;text&quot; name=&quot;お名前&quot; id=&quot;ElementName1&quot;&gt;</span>というエレメントの場合、確認画面では<span>&lt;th id=&quot;th_ElementName1&quot;&gt;お名前&lt;/th&gt;&lt;td id=&quot;td_ElementName1&quot;&gt;入力された値&lt;/td&gt;</span>となります。</p>
+				</div>
+				
+				<div class="tips">
+					<p>各入力項目に<strong>data-confirm-label-text</strong>属性を付与することで確認画面の見出し列の見出し文字列の下に指定されたテキストを表示させることができます。</p>
+					<p>同様に<strong>data-confirm-value-text</strong>属性を付与することで確認画面の値列の文字列の下に指定されたテキストを表示させることができます。</p>
+					<p>指定された文字列には実体参照化したHTMLタグを利用することができます。</p>
+				</div>
+				
+				<div class="tips">
+					<p>formタグに<strong>data-confirm-before</strong>属性、<strong>data-confirm-after</strong>属性を付与することで確認画面表組みの前後に指定のテキストを表示させることができます。</p>
+					<p>指定された文字列には実体参照化したHTMLタグを利用することができます。</p>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST" data-confirm-before="&lt;strong&gt;確認画面ビフォー&lt;/strong&gt;" data-confirm-after="確認画面アフター">
+	<dl class="mailform">
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp"><input type="text" name="お名前" required="required" data-confirm-label-text="確認画面の見出しの下に表示されます" data-confirm-value-text="確認画面の値の下に表示されます"></dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

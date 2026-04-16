@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>年月の選択補助を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'yearmonth.js';</span>を有効にしてください。</p>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		
+		<dt class="mfp">年月</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">
+				dateタイプを利用する場合は YYYY-MM 形式になります。<br>
+				data-yearmonthの指定はdata-yearmonth="始点,終点"となります。始点・終点は○年前として指定するため、100年前から10年前までの90年間を表示する場合はdata-yearmonth="100,10"となります。これにより10才～100才が該当する年が表示されます。<br>
+				data-yearmonth-formatに指定がある場合、文字列は指定された出力になります。<br>
+				$1…西暦年<br>
+				$2…月<br>
+				$3…和暦年<br>
+				$4…英語月<br>
+				$5…英語月(省略)<br>
+			</span>
+			<input type="text" name="年月" data-yearmonth="100,0" required="required" data-yearmonth-format="$3 $1年$2月 $4 $5">
+			<div id="yearmonth_年月"></div>
+		</dd>
+		
+		<dt class="mfp">年月</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">
+				data-yearmonth-select-jc属性をつけることで年選択に和暦が付与されます。
+			</span>
+			<input type="text" name="年月2" data-yearmonth="100,0" required="required" data-yearmonth-format="$3$2月" data-yearmonth-select-jc="1">
+			<div id="yearmonth_年月2"></div>
+		</dd>
+		
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

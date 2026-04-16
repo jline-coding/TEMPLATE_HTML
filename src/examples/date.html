@@ -1,0 +1,80 @@
+d<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>日付選択リスト機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'datelist.js';</span>を有効にしてください。</p>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform" id="deliveryTime">
+		
+		<dt class="mfp"><span class="must">必須</span>配送希望日時</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">日付選択リスト機能を利用する場合、任意のselectタグにdata-daystart（選択可能日 0を指定した場合は当日から選択可）とdata-daymax（何日分のリストを表示するか）を指定してください。</span>
+			<table>
+				<tr>
+					<th valign="top">data-daystart</th>
+					<td valign="top">何日後から選択できるかの指定</td>
+				</tr>
+				<tr>
+					<th valign="top">data-daymax</th>
+					<td valign="top">何日分選択できるかの指定定</td>
+				</tr>
+				<tr>
+					<th valign="top">data-startday</th>
+					<td valign="top">何月何日から選択できるようになるかの開始日の指定（任意）</td>
+				</tr>
+				<tr>
+					<th valign="top">data-lastday</th>
+					<td valign="top">何月何日で選択できなくなるようになるか終了日の指定（任意）</td>
+				</tr>
+				<tr>
+					<th valign="top">data-dayexc</th>
+					<td valign="top">選択させない日付の指定（YYYY-MM-DD形式）</td>
+				</tr>
+				<tr>
+					<th valign="top">data-weekexc</th>
+					<td valign="top">曜日によって表示させたりさせなかったりする場合の指定（日～土までカンマ区切り、1の場合は表示されない。0,0,0,1,0,0,0とした場合、水曜日は表示されない。）</td>
+				</tr>
+				<tr>
+					<th valign="top"><span class="new">NEW</span>data-limithour</th>
+					<td valign="top">18時以降は翌日扱いにしたい、みたいな際に利用するもの。data-limithour="18:00:00"みたいに指定する。</td>
+				</tr>
+			</table>
+			<select name="配送希望日" required="required" data-daystart="0" data-limithour="18:00:00" data-daymax="5" data-showcount="5" data-startday="2021-03-20" data-lastday="2051-03-25" data-dayexc="2014-12-24,2015-06-30" data-weekexc="0,0,0,1,0,0,0">
+				<option value="">配送希望日を選択してください</option>
+			</select>
+		</dd>
+		
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">確認</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

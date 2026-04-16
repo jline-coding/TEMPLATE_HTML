@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>LINE通知機能を利用する場合は以下の手順で設定してください。</p>
+					<ol>
+						<li><strong>config.cgi</strong>を編集し、<span>push @Modules,'LineNotify';</span>を有効にします。</li>
+						<li><a href="https://notify-bot.line.me/ja/">LINE Notify</a>へアクセスし、ログインし、マイページへアクセスします。</li>
+						<li><strong>トークンを発行する</strong>をクリックします。</li>
+						<li><strong>トークン名</strong>にはなにかしらわかりやすい名前をつけます。この名前はLINEから通知が届く際に表示されます。</li>
+						<li><strong>通知を送信するトークルーム</strong>を選択してください。</li>
+						<li><strong>発行する</strong>ボタンを押して表示されたものが<strong>アクセストークン</strong>です。</li>
+						<li><strong>/mailformpro/configs/LineNotify.cgi</strong>にアクセストークンを記述する場所があるので、そこに先程のアクセストークンをはっつけてください。</li>
+						<li>これで作業は完了です。送信テストを行い、通知が届くか試してみましょう。</li>
+					</ol>
+				</div>
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

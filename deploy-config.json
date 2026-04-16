@@ -3,7 +3,7 @@
   "has_build_step": true,
   "build_command": "npm run build",
   "env": {
-    "MODE": "new",
+    "MODE": "renew",
     "OUTPUT_EXT": "html",
     "USE_PHP_INCLUDE": "false",
     "RENEW_SCSS_DIR": "assets/scss",

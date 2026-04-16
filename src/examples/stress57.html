@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>ストレスチェック機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @Modules,'stress';</span>を有効にしてください。</p>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<input type="hidden" name="お名前" data-unjoin="姓+ +名+（+セイ+ +メイ+）" value="">
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp">
+			<input type="text" name="姓" data-kana="セイ" size="15" required="required"> <input type="text" name="名" data-kana="メイ" size="15" required="required">
+		</dd>
+		<dt class="mfp">フリガナ</dt>
+		<dd class="mfp"><input type="text" name="セイ" size="15" data-charcheck="kana"> <input type="text" name="メイ" size="15" data-charcheck="kana"></dd>
+		
+		<dt class="mfp">性別</dt>
+		<dd class="mfp">
+			<label><input type="radio" name="sex" value="1" required="required" data-label="性別" data-value="男性"> 男性</label> <label><input type="radio" name="sex" value="2" required="required" data-label="性別" data-value="女性"> 女性</label>
+			<div id="errormsg_性別" class="mfp_err"></div>
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="email" size="40" required="required"></dd>
+		<dt class="mfp"><span class="must">必須</span>確認のためもう一度</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="confirm_email" size="40" required="required"></dd>
+	</dl>
+	<h2>あなたの仕事についてうかがいます。最もあてはまるものに○を付けてください。</h2>
+	<dl class="mailform">
+		<dt>A-01</dt>
+		<dd>
+			非常にたくさんの仕事をしなければならない<br>
+			<label><input type="radio" name="A-01" value="1" required="required" data-label="非常にたくさんの仕事をしなければならない" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-01" value="2" required="required" data-label="非常にたくさんの仕事をしなければならない" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-01" value="3" required="required" data-label="非常にたくさんの仕事をしなければならない" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-01" value="4" required="required" data-label="非常にたくさんの仕事をしなければならない" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-01" class="mfp_err"></div>
+		</dd>
+		<dt>A-02</dt>
+		<dd>
+			時間内に仕事が処理しきれない<br>
+			<label><input type="radio" name="A-02" value="1" required="required" data-label="時間内に仕事が処理しきれない" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-02" value="2" required="required" data-label="時間内に仕事が処理しきれない" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-02" value="3" required="required" data-label="時間内に仕事が処理しきれない" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-02" value="4" required="required" data-label="時間内に仕事が処理しきれない" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-02" class="mfp_err"></div>
+		</dd>
+		<dt>A-03</dt>
+		<dd>
+			一生懸命働かなければならない<br>
+			<label><input type="radio" name="A-03" value="1" required="required" data-label="一生懸命働かなければならない" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-03" value="2" required="required" data-label="一生懸命働かなければならない" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-03" value="3" required="required" data-label="一生懸命働かなければならない" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-03" value="4" required="required" data-label="一生懸命働かなければならない" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-03" class="mfp_err"></div>
+		</dd>
+		<dt>A-04</dt>
+		<dd>
+			かなり注意を集中する必要がある-<br>
+			<label><input type="radio" name="A-04" value="1" required="required" data-label="かなり注意を集中する必要がある-" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-04" value="2" required="required" data-label="かなり注意を集中する必要がある-" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-04" value="3" required="required" data-label="かなり注意を集中する必要がある-" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-04" value="4" required="required" data-label="かなり注意を集中する必要がある-" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-04" class="mfp_err"></div>
+		</dd>
+		<dt>A-05</dt>
+		<dd>
+			高度の知識や技術が必要なむずかしい仕事だ<br>
+			<label><input type="radio" name="A-05" value="1" required="required" data-label="高度の知識や技術が必要なむずかしい仕事だ" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-05" value="2" required="required" data-label="高度の知識や技術が必要なむずかしい仕事だ" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-05" value="3" required="required" data-label="高度の知識や技術が必要なむずかしい仕事だ" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-05" value="4" required="required" data-label="高度の知識や技術が必要なむずかしい仕事だ" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-05" class="mfp_err"></div>
+		</dd>
+		<dt>A-06</dt>
+		<dd>
+			勤務時間中はいつも仕事のことを考えていなければならない<br>
+			<label><input type="radio" name="A-06" value="1" required="required" data-label="勤務時間中はいつも仕事のことを考えていなければならない" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-06" value="2" required="required" data-label="勤務時間中はいつも仕事のことを考えていなければならない" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-06" value="3" required="required" data-label="勤務時間中はいつも仕事のことを考えていなければならない" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-06" value="4" required="required" data-label="勤務時間中はいつも仕事のことを考えていなければならない" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-06" class="mfp_err"></div>
+		</dd>
+		<dt>A-07</dt>
+		<dd>
+			からだを大変よく使う仕事だ<br>
+			<label><input type="radio" name="A-07" value="1" required="required" data-label="からだを大変よく使う仕事だ" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-07" value="2" required="required" data-label="からだを大変よく使う仕事だ" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-07" value="3" required="required" data-label="からだを大変よく使う仕事だ" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-07" value="4" required="required" data-label="からだを大変よく使う仕事だ" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-07" class="mfp_err"></div>
+		</dd>
+		<dt>A-08</dt>
+		<dd>
+			自分のペースで仕事ができる<br>
+			<label><input type="radio" name="A-08" value="1" required="required" data-label="自分のペースで仕事ができる" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-08" value="2" required="required" data-label="自分のペースで仕事ができる" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-08" value="3" required="required" data-label="自分のペースで仕事ができる" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-08" value="4" required="required" data-label="自分のペースで仕事ができる" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-08" class="mfp_err"></div>
+		</dd>
+		<dt>A-09</dt>
+		<dd>
+			自分で仕事の順番・やり方を決めることができる<br>
+			<label><input type="radio" name="A-09" value="1" required="required" data-label="自分で仕事の順番・やり方を決めることができる" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-09" value="2" required="required" data-label="自分で仕事の順番・やり方を決めることができる" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-09" value="3" required="required" data-label="自分で仕事の順番・やり方を決めることができる" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-09" value="4" required="required" data-label="自分で仕事の順番・やり方を決めることができる" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-09" class="mfp_err"></div>
+		</dd>
+		<dt>A-10</dt>
+		<dd>
+			職場の仕事の方針に自分の意見を反映できる<br>
+			<label><input type="radio" name="A-10" value="1" required="required" data-label="職場の仕事の方針に自分の意見を反映できる" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-10" value="2" required="required" data-label="職場の仕事の方針に自分の意見を反映できる" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-10" value="3" required="required" data-label="職場の仕事の方針に自分の意見を反映できる" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-10" value="4" required="required" data-label="職場の仕事の方針に自分の意見を反映できる" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-10" class="mfp_err"></div>
+		</dd>
+		<dt>A-11</dt>
+		<dd>
+			自分の技能や知識を仕事で使うことが少ない<br>
+			<label><input type="radio" name="A-11" value="1" required="required" data-label="自分の技能や知識を仕事で使うことが少ない" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-11" value="2" required="required" data-label="自分の技能や知識を仕事で使うことが少ない" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-11" value="3" required="required" data-label="自分の技能や知識を仕事で使うことが少ない" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-11" value="4" required="required" data-label="自分の技能や知識を仕事で使うことが少ない" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-11" class="mfp_err"></div>
+		</dd>
+		<dt>A-12</dt>
+		<dd>
+			私の部署内で意見のくい違いがある<br>
+			<label><input type="radio" name="A-12" value="1" required="required" data-label="私の部署内で意見のくい違いがある" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-12" value="2" required="required" data-label="私の部署内で意見のくい違いがある" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-12" value="3" required="required" data-label="私の部署内で意見のくい違いがある" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-12" value="4" required="required" data-label="私の部署内で意見のくい違いがある" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-12" class="mfp_err"></div>
+		</dd>
+		<dt>A-13</dt>
+		<dd>
+			私の部署と他の部署とはうまが合わない<br>
+			<label><input type="radio" name="A-13" value="1" required="required" data-label="私の部署と他の部署とはうまが合わない" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-13" value="2" required="required" data-label="私の部署と他の部署とはうまが合わない" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-13" value="3" required="required" data-label="私の部署と他の部署とはうまが合わない" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-13" value="4" required="required" data-label="私の部署と他の部署とはうまが合わない" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-13" class="mfp_err"></div>
+		</dd>
+		<dt>A-14</dt>
+		<dd>
+			私の職場の雰囲気は友好的である<br>
+			<label><input type="radio" name="A-14" value="1" required="required" data-label="私の職場の雰囲気は友好的である" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-14" value="2" required="required" data-label="私の職場の雰囲気は友好的である" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-14" value="3" required="required" data-label="私の職場の雰囲気は友好的である" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-14" value="4" required="required" data-label="私の職場の雰囲気は友好的である" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-14" class="mfp_err"></div>
+		</dd>
+		<dt>A-15</dt>
+		<dd>
+			私の職場の作業環境（騒音、照明、温度、換気など）はよくない<br>
+			<label><input type="radio" name="A-15" value="1" required="required" data-label="私の職場の作業環境（騒音、照明、温度、換気など）はよくない" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-15" value="2" required="required" data-label="私の職場の作業環境（騒音、照明、温度、換気など）はよくない" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-15" value="3" required="required" data-label="私の職場の作業環境（騒音、照明、温度、換気など）はよくない" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-15" value="4" required="required" data-label="私の職場の作業環境（騒音、照明、温度、換気など）はよくない" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-15" class="mfp_err"></div>
+		</dd>
+		<dt>A-16</dt>
+		<dd>
+			仕事の内容は自分にあっている<br>
+			<label><input type="radio" name="A-16" value="1" required="required" data-label="仕事の内容は自分にあっている" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-16" value="2" required="required" data-label="仕事の内容は自分にあっている" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-16" value="3" required="required" data-label="仕事の内容は自分にあっている" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-16" value="4" required="required" data-label="仕事の内容は自分にあっている" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-16" class="mfp_err"></div>
+		</dd>
+		<dt>A-17</dt>
+		<dd>
+			働きがいのある仕事だ<br>
+			<label><input type="radio" name="A-17" value="1" required="required" data-label="働きがいのある仕事だ" data-value="そうだ"> そうだ</label>
+			<label><input type="radio" name="A-17" value="2" required="required" data-label="働きがいのある仕事だ" data-value="まあそうだ"> まあそうだ</label>
+			<label><input type="radio" name="A-17" value="3" required="required" data-label="働きがいのある仕事だ" data-value="ややちがう"> ややちがう</label>
+			<label><input type="radio" name="A-17" value="4" required="required" data-label="働きがいのある仕事だ" data-value="ちがう"> ちがう</label>
+			<div id="errormsg_A-17" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<h2>最近1か月間のあなたの状態についてうかがいます。最もあてはまるものに○を付けてください。</h2>
+	<dl class="mailform">
+		<dt>B-01</dt>
+		<dd>
+			活気がわいてくる<br>
+			<label><input type="radio" name="B-01" value="1" required="required" data-label="活気がわいてくる" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-01" value="2" required="required" data-label="活気がわいてくる" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-01" value="3" required="required" data-label="活気がわいてくる" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-01" value="4" required="required" data-label="活気がわいてくる" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-01" class="mfp_err"></div>
+		</dd>
+		<dt>B-02</dt>
+		<dd>
+			元気がいっぱいだ<br>
+			<label><input type="radio" name="B-02" value="1" required="required" data-label="元気がいっぱいだ" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-02" value="2" required="required" data-label="元気がいっぱいだ" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-02" value="3" required="required" data-label="元気がいっぱいだ" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-02" value="4" required="required" data-label="元気がいっぱいだ" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-02" class="mfp_err"></div>
+		</dd>
+		<dt>B-03</dt>
+		<dd>
+			生き生きする<br>
+			<label><input type="radio" name="B-03" value="1" required="required" data-label="生き生きする" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-03" value="2" required="required" data-label="生き生きする" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-03" value="3" required="required" data-label="生き生きする" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-03" value="4" required="required" data-label="生き生きする" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-03" class="mfp_err"></div>
+		</dd>
+		<dt>B-04</dt>
+		<dd>
+			怒りを感じる<br>
+			<label><input type="radio" name="B-04" value="1" required="required" data-label="怒りを感じる" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-04" value="2" required="required" data-label="怒りを感じる" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-04" value="3" required="required" data-label="怒りを感じる" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-04" value="4" required="required" data-label="怒りを感じる" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-04" class="mfp_err"></div>
+		</dd>
+		<dt>B-05</dt>
+		<dd>
+			内心腹立たしい<br>
+			<label><input type="radio" name="B-05" value="1" required="required" data-label="内心腹立たしい" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-05" value="2" required="required" data-label="内心腹立たしい" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-05" value="3" required="required" data-label="内心腹立たしい" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-05" value="4" required="required" data-label="内心腹立たしい" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-05" class="mfp_err"></div>
+		</dd>
+		<dt>B-06</dt>
+		<dd>
+			イライラしている<br>
+			<label><input type="radio" name="B-06" value="1" required="required" data-label="イライラしている" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-06" value="2" required="required" data-label="イライラしている" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-06" value="3" required="required" data-label="イライラしている" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-06" value="4" required="required" data-label="イライラしている" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-06" class="mfp_err"></div>
+		</dd>
+		<dt>B-07</dt>
+		<dd>
+			ひどく疲れた<br>
+			<label><input type="radio" name="B-07" value="1" required="required" data-label="ひどく疲れた" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-07" value="2" required="required" data-label="ひどく疲れた" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-07" value="3" required="required" data-label="ひどく疲れた" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-07" value="4" required="required" data-label="ひどく疲れた" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-07" class="mfp_err"></div>
+		</dd>
+		<dt>B-08</dt>
+		<dd>
+			へとへとだ<br>
+			<label><input type="radio" name="B-08" value="1" required="required" data-label="へとへとだ" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-08" value="2" required="required" data-label="へとへとだ" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-08" value="3" required="required" data-label="へとへとだ" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-08" value="4" required="required" data-label="へとへとだ" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-08" class="mfp_err"></div>
+		</dd>
+		<dt>B-09</dt>
+		<dd>
+			だるい<br>
+			<label><input type="radio" name="B-09" value="1" required="required" data-label="だるい" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-09" value="2" required="required" data-label="だるい" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-09" value="3" required="required" data-label="だるい" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-09" value="4" required="required" data-label="だるい" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-09" class="mfp_err"></div>
+		</dd>
+		<dt>B-10</dt>
+		<dd>
+			気がはりつめている<br>
+			<label><input type="radio" name="B-10" value="1" required="required" data-label="気がはりつめている" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-10" value="2" required="required" data-label="気がはりつめている" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-10" value="3" required="required" data-label="気がはりつめている" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-10" value="4" required="required" data-label="気がはりつめている" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-10" class="mfp_err"></div>
+		</dd>
+		<dt>B-11</dt>
+		<dd>
+			不安だ<br>
+			<label><input type="radio" name="B-11" value="1" required="required" data-label="不安だ" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-11" value="2" required="required" data-label="不安だ" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-11" value="3" required="required" data-label="不安だ" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-11" value="4" required="required" data-label="不安だ" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-11" class="mfp_err"></div>
+		</dd>
+		<dt>B-12</dt>
+		<dd>
+			落着かない<br>
+			<label><input type="radio" name="B-12" value="1" required="required" data-label="落着かない" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-12" value="2" required="required" data-label="落着かない" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-12" value="3" required="required" data-label="落着かない" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-12" value="4" required="required" data-label="落着かない" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-12" class="mfp_err"></div>
+		</dd>
+		<dt>B-13</dt>
+		<dd>
+			ゆううつだ<br>
+			<label><input type="radio" name="B-13" value="1" required="required" data-label="ゆううつだ" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-13" value="2" required="required" data-label="ゆううつだ" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-13" value="3" required="required" data-label="ゆううつだ" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-13" value="4" required="required" data-label="ゆううつだ" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-13" class="mfp_err"></div>
+		</dd>
+		<dt>B-14</dt>
+		<dd>
+			何をするのも面倒だ<br>
+			<label><input type="radio" name="B-14" value="1" required="required" data-label="何をするのも面倒だ" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-14" value="2" required="required" data-label="何をするのも面倒だ" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-14" value="3" required="required" data-label="何をするのも面倒だ" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-14" value="4" required="required" data-label="何をするのも面倒だ" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-14" class="mfp_err"></div>
+		</dd>
+		<dt>B-15</dt>
+		<dd>
+			物事に集中できない<br>
+			<label><input type="radio" name="B-15" value="1" required="required" data-label="物事に集中できない" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-15" value="2" required="required" data-label="物事に集中できない" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-15" value="3" required="required" data-label="物事に集中できない" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-15" value="4" required="required" data-label="物事に集中できない" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-15" class="mfp_err"></div>
+		</dd>
+		<dt>B-16</dt>
+		<dd>
+			気分が晴れない<br>
+			<label><input type="radio" name="B-16" value="1" required="required" data-label="気分が晴れない" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-16" value="2" required="required" data-label="気分が晴れない" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-16" value="3" required="required" data-label="気分が晴れない" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-16" value="4" required="required" data-label="気分が晴れない" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-16" class="mfp_err"></div>
+		</dd>
+		<dt>B-17</dt>
+		<dd>
+			仕事が手につかない<br>
+			<label><input type="radio" name="B-17" value="1" required="required" data-label="仕事が手につかない" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-17" value="2" required="required" data-label="仕事が手につかない" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-17" value="3" required="required" data-label="仕事が手につかない" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-17" value="4" required="required" data-label="仕事が手につかない" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-17" class="mfp_err"></div>
+		</dd>
+		<dt>B-18</dt>
+		<dd>
+			悲しいと感じる<br>
+			<label><input type="radio" name="B-18" value="1" required="required" data-label="悲しいと感じる" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-18" value="2" required="required" data-label="悲しいと感じる" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-18" value="3" required="required" data-label="悲しいと感じる" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-18" value="4" required="required" data-label="悲しいと感じる" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-18" class="mfp_err"></div>
+		</dd>
+		<dt>B-19</dt>
+		<dd>
+			めまいがする<br>
+			<label><input type="radio" name="B-19" value="1" required="required" data-label="めまいがする" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-19" value="2" required="required" data-label="めまいがする" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-19" value="3" required="required" data-label="めまいがする" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-19" value="4" required="required" data-label="めまいがする" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-19" class="mfp_err"></div>
+		</dd>
+		<dt>B-20</dt>
+		<dd>
+			体のふしぶしが痛む<br>
+			<label><input type="radio" name="B-20" value="1" required="required" data-label="体のふしぶしが痛む" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-20" value="2" required="required" data-label="体のふしぶしが痛む" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-20" value="3" required="required" data-label="体のふしぶしが痛む" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-20" value="4" required="required" data-label="体のふしぶしが痛む" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-20" class="mfp_err"></div>
+		</dd>
+		<dt>B-21</dt>
+		<dd>
+			頭が重かったり頭痛がする<br>
+			<label><input type="radio" name="B-21" value="1" required="required" data-label="頭が重かったり頭痛がする" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-21" value="2" required="required" data-label="頭が重かったり頭痛がする" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-21" value="3" required="required" data-label="頭が重かったり頭痛がする" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-21" value="4" required="required" data-label="頭が重かったり頭痛がする" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-21" class="mfp_err"></div>
+		</dd>
+		<dt>B-22</dt>
+		<dd>
+			首筋や肩がこる<br>
+			<label><input type="radio" name="B-22" value="1" required="required" data-label="首筋や肩がこる" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-22" value="2" required="required" data-label="首筋や肩がこる" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-22" value="3" required="required" data-label="首筋や肩がこる" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-22" value="4" required="required" data-label="首筋や肩がこる" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-22" class="mfp_err"></div>
+		</dd>
+		<dt>B-23</dt>
+		<dd>
+			腰が痛い<br>
+			<label><input type="radio" name="B-23" value="1" required="required" data-label="腰が痛い" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-23" value="2" required="required" data-label="腰が痛い" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-23" value="3" required="required" data-label="腰が痛い" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-23" value="4" required="required" data-label="腰が痛い" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-23" class="mfp_err"></div>
+		</dd>
+		<dt>B-24</dt>
+		<dd>
+			目が疲れる<br>
+			<label><input type="radio" name="B-24" value="1" required="required" data-label="目が疲れる" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-24" value="2" required="required" data-label="目が疲れる" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-24" value="3" required="required" data-label="目が疲れる" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-24" value="4" required="required" data-label="目が疲れる" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-24" class="mfp_err"></div>
+		</dd>
+		<dt>B-25</dt>
+		<dd>
+			動悸や息切れがする<br>
+			<label><input type="radio" name="B-25" value="1" required="required" data-label="動悸や息切れがする" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-25" value="2" required="required" data-label="動悸や息切れがする" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-25" value="3" required="required" data-label="動悸や息切れがする" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-25" value="4" required="required" data-label="動悸や息切れがする" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-25" class="mfp_err"></div>
+		</dd>
+		<dt>B-26</dt>
+		<dd>
+			胃腸の具合が悪い<br>
+			<label><input type="radio" name="B-26" value="1" required="required" data-label="胃腸の具合が悪い" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-26" value="2" required="required" data-label="胃腸の具合が悪い" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-26" value="3" required="required" data-label="胃腸の具合が悪い" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-26" value="4" required="required" data-label="胃腸の具合が悪い" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-26" class="mfp_err"></div>
+		</dd>
+		<dt>B-27</dt>
+		<dd>
+			食欲がない<br>
+			<label><input type="radio" name="B-27" value="1" required="required" data-label="食欲がない" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-27" value="2" required="required" data-label="食欲がない" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-27" value="3" required="required" data-label="食欲がない" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-27" value="4" required="required" data-label="食欲がない" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-27" class="mfp_err"></div>
+		</dd>
+		<dt>B-28</dt>
+		<dd>
+			便秘や下痢をする<br>
+			<label><input type="radio" name="B-28" value="1" required="required" data-label="便秘や下痢をする" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-28" value="2" required="required" data-label="便秘や下痢をする" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-28" value="3" required="required" data-label="便秘や下痢をする" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-28" value="4" required="required" data-label="便秘や下痢をする" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-28" class="mfp_err"></div>
+		</dd>
+		<dt>B-29</dt>
+		<dd>
+			よく眠れない<br>
+			<label><input type="radio" name="B-29" value="1" required="required" data-label="よく眠れない" data-value="ほとんどなかった"> ほとんどなかった</label>
+			<label><input type="radio" name="B-29" value="2" required="required" data-label="よく眠れない" data-value="ときどきあった"> ときどきあった</label>
+			<label><input type="radio" name="B-29" value="3" required="required" data-label="よく眠れない" data-value="しばしばあった"> しばしばあった</label>
+			<label><input type="radio" name="B-29" value="4" required="required" data-label="よく眠れない" data-value="ほとんどいつもあった"> ほとんどいつもあった</label>
+			<div id="errormsg_B-29" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<h2>あなたの周りの方々についてうかがいます。最もあてはまるものに○を付けてください。</h2>
+	<h3>次の人たちはどのくらい気軽に話ができますか？</h3>
+	<dl class="mailform">
+		<dt>C-01</dt>
+		<dd>
+			上司<br>
+			<label><input type="radio" name="C-01" value="1" required="required" data-label="上司" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-01" value="2" required="required" data-label="上司" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-01" value="3" required="required" data-label="上司" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-01" value="4" required="required" data-label="上司" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-01" class="mfp_err"></div>
+		</dd>
+		<dt>C-02</dt>
+		<dd>
+			職場の同僚<br>
+			<label><input type="radio" name="C-02" value="1" required="required" data-label="職場の同僚" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-02" value="2" required="required" data-label="職場の同僚" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-02" value="3" required="required" data-label="職場の同僚" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-02" value="4" required="required" data-label="職場の同僚" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-02" class="mfp_err"></div>
+		</dd>
+		<dt>C-03</dt>
+		<dd>
+			配偶者、家族、友人等<br>
+			<label><input type="radio" name="C-03" value="1" required="required" data-label="配偶者、家族、友人等" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-03" value="2" required="required" data-label="配偶者、家族、友人等" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-03" value="3" required="required" data-label="配偶者、家族、友人等" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-03" value="4" required="required" data-label="配偶者、家族、友人等" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-03" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<h3>あなたが困った時、次の人たちはどのくらい頼りになりますか？</h3>
+	<dl class="mailform">
+		<dt>C-04</dt>
+		<dd>
+			上司<br>
+			<label><input type="radio" name="C-04" value="1" required="required" data-label="上司" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-04" value="2" required="required" data-label="上司" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-04" value="3" required="required" data-label="上司" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-04" value="4" required="required" data-label="上司" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-04" class="mfp_err"></div>
+		</dd>
+		<dt>C-05</dt>
+		<dd>
+			職場の同僚<br>
+			<label><input type="radio" name="C-05" value="1" required="required" data-label="職場の同僚" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-05" value="2" required="required" data-label="職場の同僚" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-05" value="3" required="required" data-label="職場の同僚" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-05" value="4" required="required" data-label="職場の同僚" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-05" class="mfp_err"></div>
+		</dd>
+		<dt>C-06</dt>
+		<dd>
+			配偶者、家族、友人等<br>
+			<label><input type="radio" name="C-06" value="1" required="required" data-label="配偶者、家族、友人等" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-06" value="2" required="required" data-label="配偶者、家族、友人等" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-06" value="3" required="required" data-label="配偶者、家族、友人等" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-06" value="4" required="required" data-label="配偶者、家族、友人等" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-06" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<h3>あなたの個人的な問題を相談したら、次の人たちはどのくらいきいてくれますか？</h3>
+	<dl class="mailform">
+		<dt>C-07</dt>
+		<dd>
+			上司<br>
+			<label><input type="radio" name="C-07" value="1" required="required" data-label="上司" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-07" value="2" required="required" data-label="上司" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-07" value="3" required="required" data-label="上司" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-07" value="4" required="required" data-label="上司" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-07" class="mfp_err"></div>
+		</dd>
+		<dt>C-08</dt>
+		<dd>
+			職場の同僚<br>
+			<label><input type="radio" name="C-08" value="1" required="required" data-label="職場の同僚" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-08" value="2" required="required" data-label="職場の同僚" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-08" value="3" required="required" data-label="職場の同僚" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-08" value="4" required="required" data-label="職場の同僚" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-08" class="mfp_err"></div>
+		</dd>
+		<dt>C-09</dt>
+		<dd>
+			配偶者、家族、友人等<br>
+			<label><input type="radio" name="C-09" value="1" required="required" data-label="配偶者、家族、友人等" data-value="非常に"> 非常に</label>
+			<label><input type="radio" name="C-09" value="2" required="required" data-label="配偶者、家族、友人等" data-value="かなり"> かなり</label>
+			<label><input type="radio" name="C-09" value="3" required="required" data-label="配偶者、家族、友人等" data-value="多少"> 多少</label>
+			<label><input type="radio" name="C-09" value="4" required="required" data-label="配偶者、家族、友人等" data-value="全くない"> 全くない</label>
+			<div id="errormsg_C-09" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<h2>満足度について。</h2>
+	<dl class="mailform">
+		<dt>D-01</dt>
+		<dd>
+			仕事に満足だ<br>
+			<label><input type="radio" name="D-01" value="1" required="required" data-label="仕事に満足だ" data-value="満足"> 満足</label>
+			<label><input type="radio" name="D-01" value="2" required="required" data-label="仕事に満足だ" data-value="まあ満足"> まあ満足</label>
+			<label><input type="radio" name="D-01" value="3" required="required" data-label="仕事に満足だ" data-value="やや不満足"> やや不満足</label>
+			<label><input type="radio" name="D-01" value="4" required="required" data-label="仕事に満足だ" data-value="不満足"> 不満足</label>
+			<div id="errormsg_D-01" class="mfp_err"></div>
+		</dd>
+		<dt>D-02</dt>
+		<dd>
+			家庭生活に満足だ<br>
+			<label><input type="radio" name="D-02" value="1" required="required" data-label="家庭生活に満足だ" data-value="満足"> 満足</label>
+			<label><input type="radio" name="D-02" value="2" required="required" data-label="家庭生活に満足だ" data-value="まあ満足"> まあ満足</label>
+			<label><input type="radio" name="D-02" value="3" required="required" data-label="家庭生活に満足だ" data-value="やや不満足"> やや不満足</label>
+			<label><input type="radio" name="D-02" value="4" required="required" data-label="家庭生活に満足だ" data-value="不満足"> 不満足</label>
+			<div id="errormsg_D-02" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>Googleスプレッドシートとの連携機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @Modules,'spreadsheet';</span>を有効にしてください。</p>
+					<ol>
+						<li><strong>config.cgi</strong>を編集し、<span>push @Modules,'spreadsheet';</span>を有効にします。</li>
+						<li>Googleドライブの<a href="https://drive.google.com/drive/my-drive">マイドライブ</a>を開きます。</li>
+						<li><strong>新規</strong>をクリックして適当な名前のフォルダを作成します。今回は例として<strong>mailformpro</strong>というフォルダを作成します。<a href="images/gse_01.jpg" target="_blank"><img src="images/gse_01.jpg"></a>ほいで作成した<strong>mailformpro</strong>というフォルダに移動します。</li>
+						<li><strong>新規</strong>をクリックして<strong>Googleスプレッドシート</strong>を作成します。<a href="images/gse_02.jpg" target="_blank"><img src="images/gse_02.jpg"></a>ファイル名は適当でよいですが、今回は<strong>mfp</strong>という名前にします。</li>
+						<li>
+							スプレッドシートの名前を<strong>mfpdata</strong>に変更しましょう。
+							<a href="images/gse_03.jpg" target="_blank"><img src="images/gse_03.jpg"></a>
+						</li>
+						<li>
+							Googleドライブに戻り、作成したスプレッドシート<strong>mfp</strong>を右クリックすると表示される<strong>共有可能なリンクを取得</strong>をクリック。
+							<a href="images/gse_04.jpg" target="_blank"><img src="images/gse_04.jpg"></a>表示されたURLをコピーしましょう。
+							<span>https://drive.google.com/open?id=<strong>1mdfYAQuHuI0cjt2rmoM4HUiWeCPnN6i6r_FOqsAXBAc</strong></span>みたいなやつです。<strong>id=</strong>以降の文字列が大事な部分です。<br>
+							この際、自動的に共有がオンになるため必ず共有を無効に再設定してください。
+							<a href="images/gse_05.jpg" target="_blank"><img src="images/gse_05.jpg"></a>
+						</li>
+						<li>
+							<strong>新規</strong>をクリックして<strong>［その他］→［Google Apps Script］</strong>を作成します。
+							<a href="images/gse_06.jpg" target="_blank"><img src="images/gse_06.jpg"></a>
+							<strong>Google Apps Script</strong>が表示されていない場合は
+							<a href="images/gse_07.jpg" target="_blank"><img src="images/gse_07.jpg"></a>
+							<strong>［新規］→［その他］→［アプリを追加］</strong>をクリックし、左上のセレクトから<strong>by Google</strong>を選択してください。
+							<a href="images/gse_08.jpg" target="_blank"><img src="images/gse_08.jpg"></a>
+							<strong>Google Apps Script</strong>が表示されると思うので、<strong>接続</strong>をクリックしてください。
+							<a href="images/gse_09.jpg" target="_blank"><img src="images/gse_09.jpg"></a>
+						</li>
+						<li>
+							同梱されている<strong>/examples/code.gs.txt</strong>の中身のコードをコピー＆ペーストし、保存します。
+							<a href="images/gse_10.jpg" target="_blank"><img src="images/gse_10.jpg"></a>
+							ドキュメント名は<strong>mfpconnect</strong>としました。
+						</li>
+						<li>
+							<strong>［公開］→［ウェブアプリケーションとして導入］</strong>をクリック。
+							<a href="images/gse_11.jpg" target="_blank"><img src="images/gse_11.jpg"></a>
+							<strong>アプリケーションにアクセスできるユーザー</strong>を<strong>全員（匿名ユーザーを含む）</strong>に設定し<strong>導入</strong>をクリック。
+							<a href="images/gse_12.jpg" target="_blank"><img src="images/gse_12.jpg"></a>
+							許可が求められる場合は許可します。
+							<a href="images/gse_13.jpg" target="_blank"><img src="images/gse_13.jpg"></a>
+						</li>
+						<li>
+							表示される<strong>現在のウェブアプリケーションのURL</strong>をコピーしましょう。これで準備はあらかた完了です。
+							<a href="images/gse_14.jpg" target="_blank"><img src="images/gse_14.jpg"></a>
+							一連の作業でコピーした情報は
+							<ul>
+								<li>シートの名前（例では<strong>mfpdata</strong>）</li>
+								<li>共有可能なリンク</li>
+								<li>現在のウェブアプリケーションのURL</li>
+							</ul>
+							の３つがあります。こちらを同梱されている<strong>/mailformpro/configs/spreadsheet.cgi</strong>に設定します。
+							<a href="images/gse_15.jpg" target="_blank"><img src="images/gse_15.jpg"></a>
+						</li>
+						<li>
+							さらに最後に作成したGoogleスプレッドシートを開きましょう。<strong>1行目</strong>が<strong>見出し行</strong>となります。<br>
+							ここに記録したい項目名を入力します。本項ではこのサンプルHTMLを例にして項目名を入力していきます。入力欄の<strong>name属性</strong>を見出しに設定するので<br>
+							<strong>mfp_serial、mfp_date、姓、名、セイ、メイ、性別、email</strong>と設定します。
+							<a href="images/gse_16.jpg" target="_blank"><img src="images/gse_16.jpg"></a>
+						</li>
+						<li>
+							これで連携の作業は完了です。動作テストしてみましょう！本機能は<a href="http://qiita.com/snowsunny/items/56a85c63598dcfb1b06e">こちら</a>を参考にさせていただきました。
+						</li>
+					</ol>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<input type="hidden" name="お名前" data-unjoin="姓+ +名+（+セイ+ +メイ+）" value="">
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp">
+			<input type="text" name="姓" data-kana="セイ" size="15" required="required"> <input type="text" name="名" data-kana="メイ" size="15" required="required">
+		</dd>
+		<dt class="mfp">フリガナ</dt>
+		<dd class="mfp"><input type="text" name="セイ" size="15" data-charcheck="zenkaku"> <input type="text" name="メイ" size="15" data-charcheck="kana"></dd>
+		
+		<dt class="mfp">性別</dt>
+		<dd class="mfp">
+			<label><input type="radio" name="性別" value="男性"> 男性</label>
+			<label><input type="radio" name="性別" value="女性"> 女性</label>
+		</dd>
+		<input type="hidden" name="mfp_separator_01" value="\n【メールアドレス】\n">
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="email" size="40" required="required"></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>確認のためもう一度</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="confirm_email" data-post-disable="1" size="40" required="required"></dd>
+		<input type="hidden" name="mfp_separator_02" value="\n【備考欄】\n">
+		
+		<dt class="mfp">備考欄</dt>
+		<dd class="mfp"><textarea name="備考欄" rows="10" cols="60"></textarea></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>送信確認</dt>
+		<dd class="mfp"><label><input type="checkbox" required="required" data-exc="1" name="送信確認" value="送信チェック済み"> 上記送信内容を確認したらチェックを入れてください</label></dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>IPログ機能を有効にする場合は<strong>config.cgi</strong>を編集し、<span>push @Modules,'IPLogs';</span>を有効にしてください。</p>
+					<p>ほいでもって<strong>/configs/IPLogs.cgi</strong>を編集し、<strong>mailformpro.cgi</strong>からみた<strong>iplogs.dat.cgi</strong>のパスを設定してください。</p>
+					<p>さらにトラッキングをする全ページに<span>&lt;script type=&quot;text/javascript&quot; src=&quot;<strong>iplogs/iplogs.cgi</strong>&quot; async&gt;&lt;/script&gt;</span>を埋め込んでください。埋め込む場所は<em>&lt;/body&gt;</em>の直前がよいですね。</p>
+				</div>
+				
+				<div class="tips">
+					<p>さらに4.2.3からの新機能としてクリックをトラッキングするURLを発行することができるようになりました。</p>
+					<p>例えばバナー経由でのお問い合わせ数を知りたい場合などにバナーのリンク先を<span>&lt;a href=&quot;iplogs/iplogs.cgi?<strong>banner_01</strong>&quot;&gt;&lt;img src=&quot;banner.gif&quot;&gt;&lt;/a&gt;</span>という感じで<strong>banner_01</strong>という識別子を<strong>iplogs.cgi</strong>へのリンクにくっつけます。</p>
+					<p>そして<strong>iplogs.cgi</strong>を編集し<span>$uri{'<strong>banner_01</strong>'} = '<em>リダイレクト先URL</em>';</span>とすることで特定のリンクがクリックされたことを記録できます。</p>
+				</div>
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

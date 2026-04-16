@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p><a href="https://www.yamatofinancial.jp/wc/">クロネコWEBコレクト リンク型</a>の決済を行うためのものです。</p>
+					<ol>
+						<li><strong>config.cgi</strong>を編集し、<span>push @Modules,'yamato';</span>を有効にします。</li>
+						<li><strong>configs/yamato.cgi</strong>を編集し<strong>加盟店コード</strong>と<strong>決済のトリガーとなるname属性</strong>を指定します。また、クレジット決済を行う場合はお名前・フリガナ・電話番号・メールアドレスは必須項目になりますのでそれぞれの入力欄を指定してください。</li>
+						<li>これで作業は完了です。</li>
+					</ol>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform" id="deliveryTime">
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col5">
+					<input type="text" name="姓" data-kana="セイ" size="15" required="required">
+				</div>
+				<div class="mfp_col5">
+					<input type="text" name="名" data-kana="メイ" size="15" required="required">
+				</div>
+			</div>
+		</dd>
+		<dt class="mfp">フリガナ</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col5">
+					<input type="text" name="セイ" size="15" data-charcheck="zenkaku">
+				</div>
+				<div class="mfp_col5">
+					<input type="text" name="メイ" size="15" data-charcheck="kana">
+				</div>
+			</div>
+		</dd>
+		<dt class="mfp">電話番号</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<input type="tel" data-type="tel" name="電話番号" size="16" data-min="9">
+				</div>
+			</div>
+		</dd>
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<input type="email" data-type="email" name="email" size="40" required="required">
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">注文商品</dt>
+		<dd class="mfp">
+			テスト商品 <input type="number" data-type="number" name="テスト商品" id="test_item" data-price="100" size="8"> 個
+		</dd>
+		
+		<dt class="mfp">決済方法</dt>
+		<dd class="mfp">
+			<ul>
+				<li><label><input type="radio" name="決済方法" value="銀行振込" required="required" id="bank" data-price="350"> 銀行振込（手数料350円）</label></li>
+				<li><label><input type="radio" name="決済方法" value="PayPal決済" id="mfp_paypal_payment" data-price="500"> PayPal決済（手数料500円）</label></li>
+				<li><label><input type="radio" name="決済方法" value="クレジット決済"> クレジット決済</label></li>
+			</ul>
+			<div id="errormsg_決済方法" class="mfp_err"></div>
+		</dd>
+		<dt class="mfp">お支払い合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price">0円</div>
+			<input type="hidden" name="お支払い金額" id="mfp_price_element">
+		</dd>
+		
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">注文する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

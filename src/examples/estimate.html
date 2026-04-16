@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<ol>
+						<li>エクセルデータから見積機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'estimate/estimate.js';</span><span>push @Modules,'estimate';</span>を有効にしてください。</li>
+						<li>HTMLにはtextareaを用意し<span>data-estimate="ここにファイル名"</span>属性を付与してください。</li>
+						<li>ファイルはdataフォルダ内のestimateフォルダに配置し、拡張子を<span>.txt.cgi</span>とし、TSV（タブ区切りテキスト）形式・文字コードUTF-8Nで保存してください。</li>
+						<li>TSVファイルの書式は同梱されているサンプルのCSVデータを参照してください。</li>
+						<li>画像ファイルはHTMLと同階層にあるimagesフォルダが参照されます。</li>
+						<li>TSVの5列目（E列）はEOFという文字列を必ず配置してください。</li>
+					</ol>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		
+		<dt class="mfp">見積リスト</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<span class="mfp_tips">見積リスト機能を利用する場合はdata-estimate属性にファイル名を指定してください。ファイル名は記号を含めず英数字のみとしてください。</span>
+					<textarea name="見積リスト" data-estimate="item01" required="required" rows="30"></textarea>
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">バイク保管庫</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<textarea name="バイク保管庫" data-estimate="inaba" required="required" rows="30"></textarea>
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col5">
+					<input type="text" name="姓" required="required">
+				</div>
+				<div class="mfp_col5">
+					<input type="text" name="名" required="required">
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">お見積り合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price">0円</div>
+			<input type="hidden" name="お見積り金額" id="mfp_price_element">
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+			<div style="height: 100vh;"></div>
+		</div>
+	</body>
+</html>

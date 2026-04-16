@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>クレジット決済代行業者さんの<a href="https://www.veritrans.co.jp/">veritrans</a>さんのVeriTrans4G POP APIを利用した決済機能です。ご利用にはVeriTransさんとの契約が必要になります。</p>
+					<ol>
+						<li><strong>config.cgi</strong>を編集し、<span>push @Modules,'veritrans';</span>を有効にします。</li>
+						<li><a href="https://pay.veritrans.co.jp/portal/">コントロールパネル</a>にログイン後、「管理者ツール」－「API設定」からClient KeyとServer Keyを取得します。</li>
+						<li><strong>configs/veritrans.cgi</strong>を編集し<strong>API情報</strong>と<strong>決済のトリガーとなるname属性</strong>を指定します。</li>
+						<li>これで作業は完了です。</li>
+					</ol>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform" id="deliveryTime">
+		<dt class="mfp">注文商品</dt>
+		<dd class="mfp">
+			テスト商品 <input type="number" data-type="number" name="テスト商品" id="test_item" data-price="100" size="8"> 個
+		</dd>
+		
+		<dt class="mfp">決済方法</dt>
+		<dd class="mfp">
+			<ul>
+				<li><label><input type="radio" name="決済方法" value="銀行振込" required="required" id="bank" data-price="350"> 銀行振込（手数料350円）</label></li>
+				<li><label><input type="radio" name="決済方法" value="クレジット決済" data-toggle="credit_wrapper" data-toggle-hide="1"> クレジット決済</label></li>
+			</ul>
+			<div id="errormsg_決済方法" class="mfp_err"></div>
+		</dd>
+	</dl>
+	<dl class="mailform">
+		<dt class="mfp">お支払い合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price">0円</div>
+			<input type="hidden" name="お支払い金額" id="mfp_price_element">
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="email" size="40" required="required"></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>電話番号</dt>
+		<dd class="mfp"><input type="tel" data-type="tel" name="電話番号" size="16" data-min="9" required="required"></dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">注文する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

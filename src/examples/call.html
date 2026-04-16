@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>商品呼び出し機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'call/call.js';<br>push @Modules,'call';</span>を有効にしてください。</p>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<dt class="mfp">商品呼び出しサンプル</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">コール機能は文字入力欄に入力された文字列に1件だけヒットした場合、data-call-feedback-priceとdata-call-feedback-nameに指定されたIDのオブジェクトに値を返します。<br>data-callに参照ファイル名を指定することでキー入力時に機能します。<br>サンプルではdata/call/item.txtというファイルを参照するように設定されています。</span>
+			<div class="mfp_rows">
+				<div class="mfp_col3">
+					<input type="text" data-call="item" data-call-feedback-price="item_1_qty" data-call-feedback-price-string="item_1_price" data-call-feedback-price-value="item_1_value" data-call-feedback-name="item_1_name"  name="商品番号1" required="required">
+				</div>
+				<div class="mfp_col3">
+					<input type="text" id="item_1_name" name="商品名1" required="required">
+				</div>
+				<div class="mfp_col4">
+					<div id="item_1_price"></div>
+					<input type="number" data-type="number" id="item_1_qty" name="商品番号1数量" required="required">
+				</div>
+				<div class="mfp_col10">
+					<input type="text" id="item_1_value" name="商品番号1価格" required="required">
+				</div>
+			</div>
+		</dd>
+		<dt class="mfp">お支払い合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price">0円</div>
+			クラス名がmfp_priceになっているオブジェクトにも価格表示が反映されます。このオブジェクトの配置は必須ではありません。
+			<div class="mfp_price">0円</div>
+			<input type="text" name="お支払い金額" id="mfp_price_element" style="display: none;">
+		</dd>
+	</dl>
+	
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

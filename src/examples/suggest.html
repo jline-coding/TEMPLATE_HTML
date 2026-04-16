@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>サジェスト機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'suggest/suggest.js';<br>push @Modules,'suggest';</span>を有効にしてください。</p>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<dt class="mfp">サジェストサンプル</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">サジェスト機能は文字入力欄に入力された文字列にヒットする候補を表示させる機能です。<br>data-suggestに参照ファイル名を指定することでキー入力時にサジェストが機能します。<br>サンプルではdata/suggest/game.txtというファイルを参照するように設定されています。</span>
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<input type="text" data-suggest="game" size="50"  name="サンプル" placeholder="Playとか入力してみてください" required="required">
+				</div>
+			</div>
+		</dd>
+	</dl>
+	
+	<div class="tips">
+		<p>サーチ機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'search/search.js';<br>push @Modules,'search';</span>を有効にしてください。</p>
+	</div>
+	<dl class="mailform">
+		<dt class="mfp">サーチサンプル</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">サーチ機能は複数の条件エレメントを元に、selectタグにその検索結果をフィードバックするための機能です。<br>data-searchに参照ファイル名を指定することでキー入力時または選択時にサーチが機能します。<br>サンプルではdata/search/sample.txtというファイルを参照するように設定されています。</span>
+			<div class="mfp_rows">
+				<div class="mfp_col3">
+					<select name="種別" data-search-for="sample_02">
+						<option value="">種別</option>
+						<option value="据置機">据置機</option>
+						<option value="携帯機">携帯機</option>
+					</select>
+				</div>
+				<div class="mfp_col3">
+					<input type="text" name="キーワード" placeholder="任天堂" data-search-for="sample_02">
+				</div>
+				<div class="mfp_col4">
+					<select name="サーチサンプル" id="sample_02" data-search="sample"></select>
+				</div>
+			</div>
+		</dd>
+		
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>
