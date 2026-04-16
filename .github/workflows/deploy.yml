@@ -145,7 +145,7 @@ jobs:
           WEB_PATH=$(echo "$ROOT_PATH" | sed -E 's|^.*?/public_html/?|/|')
           PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // ""' deploy-config.json)
           
-          SITE_URL="https://${DOMAIN}${WEB_PATH}${PROJECT_DIR}"
+          SITE_URL="https://${DOMAIN}/${WEB_PATH}/${PROJECT_DIR}"
           SITE_URL=$(echo "$SITE_URL" | sed 's|//|/|g' | sed 's|https:/|https://|')
           
           echo "🔍 Kiểm tra URL dự kiến: $SITE_URL"
