@@ -33,9 +33,8 @@
       canonicalPath = canonicalPath.replace(/^\//, '');
     }
     
-    // Fallback if siteUrl is missing
-    var baseDomain = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl : 'https://example.com';
-    if (!baseDomain.endsWith('/')) baseDomain += '/';
+    var baseDomain = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl : '';
+    if (baseDomain && !baseDomain.endsWith('/')) baseDomain += '/';
   -%>
   <link rel="canonical" href="<%= baseDomain %><%= canonicalPath %>">
   <title><%= file.data.title %></title>

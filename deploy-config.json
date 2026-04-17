@@ -7,7 +7,8 @@
     "OUTPUT_EXT": "html",
     "USE_PHP_INCLUDE": "false",
     "RENEW_SCSS_DIR": "assets/scss",
-    "RENEW_CSS_DIR": "assets/css"
+    "RENEW_CSS_DIR": "assets/css",
+    "SITE_URL": "https://jlweb.jp"
   },
   "production": {
     "deploy_method": "zip",

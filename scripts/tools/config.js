@@ -13,7 +13,7 @@ export let MODE = 'new';
 export let OUTPUT_EXT = '.html';
 export let PROXY_URL = '';
 export let USE_PHP_INCLUDE = false;
-export let SITE_URL = 'https://example.com';
+export let SITE_URL = '';
 export let RENEW_SCSS_DIR = '';
 export let RENEW_CSS_DIR = '';
 
@@ -34,6 +34,7 @@ try {
       if (config.env.USE_PHP_INCLUDE === true || config.env.USE_PHP_INCLUDE === 'true') USE_PHP_INCLUDE = true;
       if (config.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = config.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
       if (config.env.RENEW_CSS_DIR) RENEW_CSS_DIR = config.env.RENEW_CSS_DIR.replace(/\\/g, '/');
+      if (config.env.SITE_URL) SITE_URL = config.env.SITE_URL;
     }
   }
 } catch (e) {
@@ -54,7 +55,6 @@ try {
         const value = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
         if (!value) return;
         if (key === 'PROXY_URL') PROXY_URL = value;
-        if (key === 'SITE_URL') SITE_URL = value;
         if (key === 'OUTPUT_EXT') OUTPUT_EXT = value.toLowerCase().startsWith('.') ? value.toLowerCase() : `.${value.toLowerCase()}`;
         if (key === 'USE_PHP_INCLUDE') USE_PHP_INCLUDE = value.toLowerCase() === 'true';
       }
