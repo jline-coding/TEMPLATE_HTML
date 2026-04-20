@@ -1,24 +1,23 @@
 {
   "source_folder": "public",
-  "has_build_step": true,
+  
+  "project_dir": "template_test_ssh",
   "build_command": "npm run build",
   "env": {
     "MODE": "new",
     "OUTPUT_EXT": "html",
     "USE_PHP_INCLUDE": "false",
-    "RENEW_SCSS_DIR": "assets/scss",
+    "RENEW_SCSS_DIR": "abc/scss",
     "RENEW_CSS_DIR": "assets/css",
     "SITE_URL": "https://jlweb.jp"
   },
   "production": {
     "deploy_method": "zip",
-    "server": "",
-    "project_dir": "template_jline_html_production"
+    "server": ""
   },
   "test": {
-    "deploy_method": "ssh",
+    "deploy_method": "ftp",
     "server": "JLWEB_SSH",
-    "project_dir": "template_test_ssh",
     "basic_auth": {
       "username": "test",
       "password": "test"

@@ -391,11 +391,10 @@ async function runDeploy() {
 
     // Merge shared + environment config
     const config = {
-        source_folder: rawConfig.source_folder,
-        has_build_step: rawConfig.has_build_step,
+        source_folder: (rawConfig.source_folder && rawConfig.source_folder.trim() !== "") ? rawConfig.source_folder : "public",
         build_command: rawConfig.build_command,
         server: envConfig.server,
-        project_dir: envConfig.project_dir,
+        project_dir: envConfig.project_dir || rawConfig.project_dir,
         basic_auth: envConfig.basic_auth,
     };
 
@@ -425,10 +424,9 @@ async function runDeploy() {
         process.exit(1);
     }
 
-    // Check source folder exists
     if (!fs.existsSync(config.source_folder)) {
         console.error(`[ERROR] Source folder "${config.source_folder}" does not exist!`);
-        console.error(`   Check has_build_step: true in deploy-config.json.`);
+        console.error(`   Vui long chac chan ban da build source hoac kiem tra lai ten source_folder.`);
         process.exit(1);
     }
 

@@ -7,13 +7,13 @@
       "type": "string",
       "description": "Thư mục chứa code sau khi build (ví dụ: dist, public)"
     },
-    "has_build_step": {
-      "type": "boolean",
-      "description": "Dự án có sử dụng Node.js build (npm run build) trước khi deploy không?"
-    },
     "build_command": {
       "type": "string",
       "description": "Lệnh build được chạy nếu has_build_step = true"
+    },
+    "project_dir": {
+      "type": "string",
+      "description": "Tên thư mục dự án dùng chung cho production và test (có thể override riêng trong từng môi trường)"
     },
     "production": {
       "$ref": "#/definitions/environment"
@@ -22,7 +22,7 @@
       "$ref": "#/definitions/environment"
     }
   },
-  "required": ["source_folder", "has_build_step", "production"],
+  "required": ["source_folder", "production"],
   "definitions": {
     "environment": {
       "type": "object",
@@ -50,7 +50,7 @@
           "description": "Tùy chọn thiết lập Basic Auth bảo vệ thư mục"
         }
       },
-      "required": ["deploy_method", "server", "project_dir"]
+      "required": ["deploy_method", "server"]
     }
   }
 }

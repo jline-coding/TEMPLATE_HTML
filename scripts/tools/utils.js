@@ -1,5 +1,5 @@
 import { join, relative, extname } from 'path';
-import { mkdirSync, statSync, existsSync, readdirSync, unlinkSync, rmSync } from 'fs';
+import { mkdirSync, statSync, existsSync, readdirSync, unlinkSync, rmSync, rmdirSync } from 'fs';
 import { DIST } from './config.js';
 
 /** Normalize path to use posix separators */
@@ -81,7 +81,7 @@ export function removeEmptyDirs(dir) {
   // Re-check after cleaning subdirectories
   if (readdirSync(dir).length === 0 && dir !== DIST) {
     try {
-      rmSync(dir, { force: true });
+      rmdirSync(dir);
     } catch { /* ignore */ }
   }
 }

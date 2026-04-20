@@ -4,10 +4,12 @@ import { existsSync, readFileSync, symlinkSync, unlinkSync, rmdirSync, readlinkS
 import { platform } from 'os';
 import { execSync } from 'child_process';
 
+import { DIST, SOURCE_FOLDER } from './tools/config.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
-const SRC_DIR = resolve(ROOT, 'public');
+const SRC_DIR = DIST;
 
 let WEB_ROOT = '';
 
@@ -47,11 +49,22 @@ if (!existsSync(WEB_ROOT)) {
 
 if (!existsSync(SRC_DIR)) {
   console.error(`❌ Lỗi: Thư mục chứa code '${SRC_DIR}' không tồn tại.`);
-  console.log('Vui lòng chạy lệnh "npm run build" hoặc "npm run dev" để khởi tạo thư mục public trước.');
+  console.log(`Vui lòng chạy lệnh "npm run build" hoặc "npm run dev" để khởi tạo thư mục ${SOURCE_FOLDER} trước.`);
   process.exit(1);
 }
 
-const projectName = basename(ROOT);
+// Read project_dir from deploy-config.json (fallback to folder name)
+let projectName = basename(ROOT);
+try {
+  const configPath = resolve(ROOT, 'deploy-config.json');
+  if (existsSync(configPath)) {
+    const config = JSON.parse(readFileSync(configPath, 'utf8'));
+    if (config.project_dir) {
+      projectName = config.project_dir;
+    }
+  }
+} catch { /* fallback to folder name */ }
+
 const targetPath = resolve(WEB_ROOT, projectName);
 
 console.log(`🔗 Đang tiến hành kết nối source thư mục '${projectName}'...`);

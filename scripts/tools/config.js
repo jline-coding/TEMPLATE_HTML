@@ -1,13 +1,47 @@
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(__dirname, '../..');
 export const SRC = resolve(ROOT, 'src');
-export const DIST = resolve(ROOT, 'public');
+
+let configData = null;
+try {
+  const configPath = resolve(ROOT, 'deploy-config.json');
+  if (existsSync(configPath)) {
+    configData = JSON.parse(readFileSync(configPath, 'utf8'));
+  }
+} catch (e) { /* ignore */ }
+
+export const SOURCE_FOLDER = (configData && configData.source_folder) ? configData.source_folder : 'public';
+export const DIST = resolve(ROOT, SOURCE_FOLDER);
 export const LAYOUTS_DIR = resolve(SRC, 'layouts');
-export const COMPONENTS_DIR = resolve(SRC, 'components');
+
+// Auto-discover include directories (all dirs in src/ except pages, layouts)
+const RESERVED_DIRS = new Set(['pages', 'layouts']);
+export const INCLUDE_DIRS = {};
+
+export function refreshIncludeDirs() {
+  // Clear existing entries
+  for (const key of Object.keys(INCLUDE_DIRS)) {
+    delete INCLUDE_DIRS[key];
+  }
+  // Re-scan src/ for include directories
+  if (existsSync(SRC)) {
+    for (const entry of readdirSync(SRC, { withFileTypes: true })) {
+      if (entry.isDirectory() && !RESERVED_DIRS.has(entry.name)) {
+        INCLUDE_DIRS[entry.name] = resolve(SRC, entry.name);
+      }
+    }
+  }
+}
+
+// Initial scan at startup
+refreshIncludeDirs();
+
+// Backward compatibility
+export const COMPONENTS_DIR = INCLUDE_DIRS['components'] || Object.values(INCLUDE_DIRS)[0] || resolve(SRC, 'components');
 
 export let MODE = 'new';
 export let OUTPUT_EXT = '.html';
@@ -20,25 +54,17 @@ export let RENEW_CSS_DIR = '';
 export const isWatch = process.argv.includes('--watch');
 export const skipFormat = process.argv.includes('--no-format');
 
-try {
-  const configPath = resolve(ROOT, 'deploy-config.json');
-  if (existsSync(configPath)) {
-    const config = JSON.parse(readFileSync(configPath, 'utf8'));
-    if (config.env) {
-      if (config.env.MODE) MODE = config.env.MODE.toLowerCase();
-      if (config.env.OUTPUT_EXT) {
-        const v = config.env.OUTPUT_EXT.toLowerCase();
-        OUTPUT_EXT = v.startsWith('.') ? v : `.${v}`;
-      }
-      if (config.env.PROXY_URL) PROXY_URL = config.env.PROXY_URL;
-      if (config.env.USE_PHP_INCLUDE === true || config.env.USE_PHP_INCLUDE === 'true') USE_PHP_INCLUDE = true;
-      if (config.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = config.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
-      if (config.env.RENEW_CSS_DIR) RENEW_CSS_DIR = config.env.RENEW_CSS_DIR.replace(/\\/g, '/');
-      if (config.env.SITE_URL) SITE_URL = config.env.SITE_URL;
-    }
+if (configData && configData.env) {
+  if (configData.env.MODE) MODE = configData.env.MODE.toLowerCase();
+  if (configData.env.OUTPUT_EXT) {
+    const v = configData.env.OUTPUT_EXT.toLowerCase();
+    OUTPUT_EXT = v.startsWith('.') ? v : `.${v}`;
   }
-} catch (e) {
-  // Ignore error
+  if (configData.env.PROXY_URL) PROXY_URL = configData.env.PROXY_URL;
+  if (configData.env.USE_PHP_INCLUDE === true || configData.env.USE_PHP_INCLUDE === 'true') USE_PHP_INCLUDE = true;
+  if (configData.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = configData.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
+  if (configData.env.RENEW_CSS_DIR) RENEW_CSS_DIR = configData.env.RENEW_CSS_DIR.replace(/\\/g, '/');
+  if (configData.env.SITE_URL) SITE_URL = configData.env.SITE_URL;
 }
 
 try {
@@ -64,14 +90,16 @@ try {
   // Ignore error
 }
 
+// Auto-compute PROXY_URL from project_dir if not explicitly set
+if (!PROXY_URL && configData && configData.project_dir) {
+  PROXY_URL = `${configData.project_dir}.test`;
+}
+
 export const isRenew = MODE === 'renew';
 
 (function validateConfig() {
   if (isRenew && USE_PHP_INCLUDE) {
     console.warn('⚠️ [config] MODE=renew → USE_PHP_INCLUDE=true bị bỏ qua (renew không dùng EJS pipeline)');
-  }
-  if (isRenew && OUTPUT_EXT !== '.html') {
-    console.warn(`⚠️ [config] MODE=renew → OUTPUT_EXT=${OUTPUT_EXT} bị bỏ qua (renew copy tất cả file nguyên bản)`);
   }
   if (OUTPUT_EXT === '.html' && USE_PHP_INCLUDE && !isRenew) {
     console.warn('⚠️ [config] OUTPUT_EXT=html + USE_PHP_INCLUDE=true → PHP include bị bỏ qua (chỉ hoạt động khi OUTPUT_EXT=php)');

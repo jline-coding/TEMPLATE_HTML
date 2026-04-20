@@ -1,0 +1,117 @@
+@use "sass:map";
+@use "./function" as *;
+
+$font-sizes: (
+    10: 10,
+    11: 10,
+    12: 10,
+    13: 12,
+    14: 12,
+    15: 12,
+    16: 14,
+    17: 14,
+    18: 16,
+    19: 16,
+    20: 16,
+    21: 16,
+    22: 18,
+    23: 18,
+    24: 20,
+    25: 20,
+    26: 20,
+    27: 22,
+    28: 22,
+    29: 22,
+    30: 22,
+    31: 22,
+    32: 22,
+    33: 24,
+    34: 24,
+    35: 24,
+    36: 24,
+    37: 24,
+    38: 24,
+    39: 24,
+    40: 24,
+    41: 26,
+    42: 26,
+    43: 26,
+    44: 26,
+    45: 26,
+    46: 26,
+    47: 26,
+    48: 26,
+    49: 26,
+    50: 28,
+    51: 28,
+    52: 28,
+    53: 28,
+    54: 28,
+    55: 28,
+    56: 28,
+    ) !default;
+
+// Auto-generate %fz-XX placeholders from $font-sizes map
+@each $desktop, $sp in $font-sizes {
+    %fz-#{$desktop} {
+        @if $sp ==$desktop {
+            font-size: rem($desktop
+            );
+    }
+
+    @else {
+        font-size: rem($sp);
+
+        @media screen and (min-width: #{$fluid-min-bp}px) {
+            font-size: clamped($desktop);
+        }
+    }
+}
+}
+
+// fz(24)     → SP: rem(map[24]),  PC: clamped(24)
+// fz(18, 24) → SP: rem(18),       PC: clamped(24)
+@mixin fz($a, $b: null) {
+    $desktop: $a;
+
+    @if $b !=null {
+        $desktop: $b;
+    }
+
+    $sp: $desktop;
+
+    @if $b !=null {
+        $sp: $a;
+    }
+
+    @else if map.has-key($font-sizes, $desktop) {
+        $sp: map.get($font-sizes, $desktop );
+    }
+
+    @if $sp ==$desktop {
+        font-size: rem($desktop);
+    }
+
+    @else {
+        font-size: rem($sp);
+
+        @media screen and (min-width: #{$fluid-min-bp}px) {
+            font-size: clamped($desktop);
+        }
+    }
+}
+
+// fz-pc(14, 24) → SP: rem(map[24]), PC: clamped(14, 24)
+@mixin fz-pc($min, $max) {
+    $sp: $max;
+
+    @if map.has-key($font-sizes, $max) {
+        $sp: map.get($font-sizes, $max);
+    }
+
+    font-size: rem($sp);
+
+    @media screen and (min-width: #{$fluid-min-bp}px) {
+        font-size: clamped($min, $max);
+    }
+}

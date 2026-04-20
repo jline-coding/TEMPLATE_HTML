@@ -38,8 +38,8 @@ if [ ! -f "deploy-config.json" ]; then
     exit 1
 fi
 
-SOURCE_FOLDER=$(jq -r '.source_folder // "public"' deploy-config.json)
-PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // ""' deploy-config.json)
+SOURCE_FOLDER=$(jq -r '.source_folder | select(. != null and . != "") // "public"' deploy-config.json)
+PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // .project_dir // ""' deploy-config.json)
 
 # Đọc basic_auth (nếu có)
 BASIC_AUTH_USER=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].basic_auth.username // ""' deploy-config.json)
@@ -56,7 +56,7 @@ echo ""
 # 2a. Kiểm tra source folder tồn tại
 if [ ! -d "$SOURCE_FOLDER" ]; then
     echo "[ERROR] Source folder \"$SOURCE_FOLDER\" does not exist!"
-    echo "   Kiem tra has_build_step: true trong deploy-config.json."
+    echo "   Vui long chac chan ban da build source hoac kiem tra lai ten source_folder."
     exit 1
 fi
 

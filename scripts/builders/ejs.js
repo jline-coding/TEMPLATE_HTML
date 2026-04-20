@@ -8,7 +8,7 @@ import * as phpPlugin from '@prettier/plugin-php';
 
 import {
   isWatch, skipFormat, OUTPUT_EXT, USE_PHP_INCLUDE, SITE_URL,
-  COMPONENTS_DIR, PAGES_DIR, LAYOUTS_DIR, DIST
+  INCLUDE_DIRS, PAGES_DIR, LAYOUTS_DIR, DIST, refreshIncludeDirs
 } from '../tools/config.js';
 import { norm, ensureDir, walkSync } from '../tools/utils.js';
 
@@ -40,6 +40,8 @@ export async function formatCode(code, destExt) {
 }
 
 export async function buildEjs(changedFile) {
+  // Re-scan include dirs to detect runtime changes (rename, add, delete)
+  refreshIncludeDirs();
   if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE) {
     try {
       const transpileEjsToPhp = (str, relToRoot) => {
@@ -58,22 +60,25 @@ export async function buildEjs(changedFile) {
           .replace(/<%-?\s*includeComponent\(\s*(['"])(.*?)\1\s*\)\s*%>/gi, `<?php include __DIR__ . '/${rootPrefix}$2.php'; ?>`);
       };
 
-      if (existsSync(COMPONENTS_DIR)) {
-        const componentFiles = walkSync(COMPONENTS_DIR, (f) => basename(f).startsWith('_') && extname(f) === '.ejs');
+      for (const [dirName, dirPath] of Object.entries(INCLUDE_DIRS)) {
+        if (!existsSync(dirPath)) continue;
+        const partialFiles = walkSync(dirPath, (f) => basename(f).startsWith('_') && extname(f) === '.ejs');
         let extractedCount = 0;
-        for (const file of componentFiles) {
-          const rel = relative(COMPONENTS_DIR, file);
+        for (const file of partialFiles) {
+          const rel = relative(dirPath, file);
           const contentStr = readFileSync(file, 'utf8');
           const transpiled = transpileEjsToPhp(contentStr, rel);
           const dir = dirname(rel);
           const base = basename(rel).replace(/^_/, '').replace(/\.ejs$/, '.php');
           const outName = dir === '.' ? base : posix.join(dir.split(/\\|\//).join('/'), base);
-          const outPath = resolve(DIST, 'components', outName);
+          const outPath = resolve(DIST, dirName, outName);
           ensureDir(dirname(outPath));
           writeFileSync(outPath, await formatCode(transpiled, '.php'));
           extractedCount++;
         }
-        console.log(`[ejs] Extracted ${extractedCount} PHP components`);
+        if (extractedCount > 0) {
+          console.log(`[ejs] Extracted ${extractedCount} PHP partials → ${dirName}/`);
+        }
       }
     } catch (err) {
       console.error(`[ejs] Error extracting PHP header/footer:`, err.message);
@@ -92,7 +97,8 @@ export async function buildEjs(changedFile) {
   if (changedFile) {
     const changedNorm = norm(changedFile);
     const changedBase = basename(changedFile);
-    const isPartialOrLayout = changedBase.startsWith('_') || changedNorm.includes('/layouts/') || changedNorm.includes('/components/');
+    const isInIncludeDir = Object.keys(INCLUDE_DIRS).some(name => changedNorm.includes(`/${name}/`));
+    const isPartialOrLayout = changedBase.startsWith('_') || changedNorm.includes('/layouts/') || isInIncludeDir;
 
     if (!isPartialOrLayout && changedNorm.includes('/pages/')) {
       await renderEjsFile(changedFile);
@@ -127,20 +133,51 @@ async function renderEjsFile(filePath) {
     }
 
     function includeComponent(compName) {
-      if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE) {
-        const prefix = assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir;
-        return `<?php include __DIR__ . '/${prefix}components/${compName}.php'; ?>`;
+      // Support: includeComponent('header') → auto-find in all include dirs
+      //          includeComponent('components/header') → explicit dir
+      const parts = compName.split('/');
+      let targetDirName, targetDirPath, innerPath;
+
+      if (parts.length >= 2 && INCLUDE_DIRS[parts[0]]) {
+        // Explicit directory: includeComponent('components/header')
+        targetDirName = parts[0];
+        targetDirPath = INCLUDE_DIRS[targetDirName];
+        innerPath = parts.slice(1).join('/');
       } else {
+        // Auto-find: search all include dirs for matching file
         const compDir = dirname(compName);
         const compBase = basename(compName);
-        const compPath = resolve(COMPONENTS_DIR, compDir, `_${compBase}.ejs`);
-        if (!existsSync(compPath)) return `<!-- Component _${compBase}.ejs not found -->`;
+        const found = Object.entries(INCLUDE_DIRS).find(([, dirPath]) => {
+          const tryPath = resolve(dirPath, compDir === '.' ? '' : compDir, `_${compBase}.ejs`);
+          return existsSync(tryPath);
+        });
+        if (found) {
+          [targetDirName, targetDirPath] = found;
+        } else {
+          const firstKey = Object.keys(INCLUDE_DIRS)[0];
+          targetDirName = firstKey || 'components';
+          targetDirPath = INCLUDE_DIRS[targetDirName] || null;
+        }
+        innerPath = compName;
+      }
+
+      if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE) {
+        const prefix = assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir;
+        return `<?php include __DIR__ . '/${prefix}${targetDirName}/${innerPath}.php'; ?>`;
+      } else {
+        if (!targetDirPath) return `<!-- Component ${compName} not found -->`;
+        const compDir = dirname(innerPath);
+        const compBase = basename(innerPath);
+        const compPath = resolve(targetDirPath, compDir === '.' ? '' : compDir, `_${compBase}.ejs`);
+        if (!existsSync(compPath)) return `<!-- Component _${compBase}.ejs not found in ${targetDirName}/ -->`;
         const compContent = readFileSync(compPath, 'utf8');
         return ejs.render(compContent, {
           file: { data: frontData, path: filePath },
           assetsDir,
           layoutsDir: LAYOUTS_DIR,
-          componentsDir: COMPONENTS_DIR,
+          componentsDir: targetDirPath,
+          componentsDirName: targetDirName,
+          includeDirs: INCLUDE_DIRS,
           ext: OUTPUT_EXT,
           phpInclude: USE_PHP_INCLUDE,
           siteUrl: SITE_URL,
@@ -149,11 +186,16 @@ async function renderEjsFile(filePath) {
       }
     }
 
+    const firstIncludeDirName = INCLUDE_DIRS['components'] ? 'components' : (Object.keys(INCLUDE_DIRS)[0] || 'components');
+    const firstIncludeDirPath = INCLUDE_DIRS[firstIncludeDirName] || '';
+
     const pageHtml = ejs.render(content, {
       file: { data: frontData, path: filePath },
       assetsDir,
       layoutsDir: LAYOUTS_DIR,
-      componentsDir: COMPONENTS_DIR,
+      componentsDir: firstIncludeDirPath,
+      componentsDirName: firstIncludeDirName,
+      includeDirs: INCLUDE_DIRS,
       ext: OUTPUT_EXT,
       phpInclude: USE_PHP_INCLUDE,
       siteUrl: SITE_URL,
@@ -167,7 +209,9 @@ async function renderEjsFile(filePath) {
       contents: pageHtml,
       assetsDir,
       layoutsDir: LAYOUTS_DIR,
-      componentsDir: COMPONENTS_DIR,
+      componentsDir: firstIncludeDirPath,
+      componentsDirName: firstIncludeDirName,
+      includeDirs: INCLUDE_DIRS,
       ext: OUTPUT_EXT,
       phpInclude: USE_PHP_INCLUDE,
       siteUrl: SITE_URL,

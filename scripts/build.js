@@ -9,7 +9,8 @@ import { extname, relative, resolve, basename, dirname } from 'path';
 import {
   MODE, OUTPUT_EXT, USE_PHP_INCLUDE, PROXY_URL, 
   isWatch, isRenew, DIST, SRC, PAGES_DIR, CSS_OUTPUT_REL,
-  JS_DIR, IMAGES_DIR, VIDEOS_DIR, VENDOR_DIR, SCSS_DIR, RENEW_SCSS_DIRS
+  JS_DIR, IMAGES_DIR, VIDEOS_DIR, VENDOR_DIR, SCSS_DIR, RENEW_SCSS_DIRS,
+  LAYOUTS_DIR
 } from './tools/config.js';
 
 import { norm, ensureDir, walkSync, removeEmptyDirs } from './tools/utils.js';
@@ -106,11 +107,12 @@ async function startWatch() {
   }
 
   const bsOptions = { port: chosenPort, open: true, notify: false, ui: false };
-  const needsProxy = OUTPUT_EXT === '.php' || isRenew;
+  const needsProxy = OUTPUT_EXT === '.php';
 
   if (PROXY_URL && needsProxy) {
-    bsOptions.proxy = PROXY_URL;
-    console.log(`[server] Proxy → http://${PROXY_URL}`);
+    const proxyHost = PROXY_URL.replace(/^https?:\/\//, '');
+    bsOptions.proxy = `http://${proxyHost}`;
+    console.log(`[server] Proxy → http://${proxyHost}`);
   } else if (PROXY_URL && !needsProxy) {
     bsOptions.server = { baseDir: DIST };
     console.log(`[server] Static server (PROXY_URL bỏ qua — output: ${OUTPUT_EXT})`);
@@ -175,6 +177,16 @@ async function startWatch() {
   watcher.on('add', (fp) => router.add('add', getAbs(fp)));
   watcher.on('unlink', (fp) => router.add('unlink', getAbs(fp)));
 
+  // Directory-level changes: rebuild EJS to re-scan include dirs
+  watcher.on('addDir', (fp) => {
+    if (fp === '.') return;
+    router.add('change', getAbs(fp + '/__dir_trigger__.ejs'));
+  });
+  watcher.on('unlinkDir', (fp) => {
+    if (fp === '.') return;
+    router.add('change', getAbs(fp + '/__dir_trigger__.ejs'));
+  });
+
   async function routeEvents(changed, added, unlinked) {
     let needsScssReload = false;
     let needsFullReload = false;
@@ -217,7 +229,9 @@ async function startWatch() {
           needsScssReload = true;
         } else if (ext !== '.ejs' && ext !== '.map') {
           const rel = relative(PAGES_DIR, fp);
-          try { unlinkSync(resolve(DIST, rel)); removeEmptyDirs(DIST); } catch {}
+          const dest = resolve(DIST, rel);
+          if (existsSync(dest)) try { unlinkSync(dest); } catch {}
+          try { removeEmptyDirs(DIST); } catch {}
           needsFullReload = true;
         }
         continue;
@@ -226,12 +240,22 @@ async function startWatch() {
       if (ext === '.scss' && !basename(fp).startsWith('_')) {
         const rel = relative(SCSS_DIR, fp);
         const cssOut = resolve(DIST, CSS_OUTPUT_REL, rel.replace(/\.scss$/, '.css'));
-        try { unlinkSync(cssOut); unlinkSync(cssOut + '.map'); removeEmptyDirs(dirname(cssOut)); } catch {}
+        if (existsSync(cssOut)) try { unlinkSync(cssOut); } catch {}
+        if (existsSync(cssOut + '.map')) try { unlinkSync(cssOut + '.map'); } catch {}
+        try { removeEmptyDirs(dirname(cssOut)); } catch {}
         needsScssReload = true;
       } else if (ext === '.ejs') {
         if (fp.includes(PAGES_DIR)) {
           const rel = relative(PAGES_DIR, fp);
-          try { unlinkSync(resolve(DIST, rel.replace(/\.ejs$/, OUTPUT_EXT))); removeEmptyDirs(DIST); } catch {}
+          const dest = resolve(DIST, rel.replace(/\.ejs$/, OUTPUT_EXT));
+          if (existsSync(dest)) try { unlinkSync(dest); } catch {}
+          try { removeEmptyDirs(DIST); } catch {}
+        } else if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE && !fp.includes(LAYOUTS_DIR) && basename(fp).startsWith('_')) {
+          // Xóa file PHP partial tương ứng trong thư mục public
+          const rel = relative(SRC, fp);
+          const outPath = resolve(DIST, rel.replace(/_([^\\/]+)\.ejs$/, '$1.php'));
+          if (existsSync(outPath)) try { unlinkSync(outPath); } catch {}
+          try { removeEmptyDirs(DIST); } catch {}
         }
         needsFullReload = true;
       } else if (isHandledBySpecificBuilder(fp)) {
@@ -243,13 +267,16 @@ async function startWatch() {
           const destDir = resolve(DIST, 'assets', 'images');
           const rel = relative(IMAGES_DIR, fp);
           destTarget = resolve(destDir, rel);
-          try { unlinkSync(resolve(destDir, rel.replace(/\.(jpg|jpeg|png)$/i, '.webp'))); } catch {}
+          const webpPath = resolve(destDir, rel.replace(/\.(jpg|jpeg|png)$/i, '.webp'));
+          if (existsSync(webpPath)) try { unlinkSync(webpPath); } catch {}
         }
-        try { unlinkSync(destTarget); removeEmptyDirs(dirname(destTarget)); } catch {}
+        if (destTarget && existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
+        if (destTarget) try { removeEmptyDirs(dirname(destTarget)); } catch {}
         needsFullReload = true;
       } else if (!['.map'].includes(ext)) {
         const destTarget = resolve(DIST, relative(PAGES_DIR, fp));
-        try { unlinkSync(destTarget); removeEmptyDirs(dirname(destTarget)); } catch {}
+        if (existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
+        try { removeEmptyDirs(dirname(destTarget)); } catch {}
         needsFullReload = true;
       }
     }

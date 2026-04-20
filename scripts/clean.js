@@ -7,11 +7,11 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const DIST = resolve(ROOT, 'public');
+import { DIST, SOURCE_FOLDER } from './tools/config.js';
 
 try {
   await rm(DIST, { recursive: true, force: true });
-  console.log('[clean] public/ removed');
+  console.log(`[clean] ${SOURCE_FOLDER}/ removed`);
 } catch {
   // Already clean
 }

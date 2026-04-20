@@ -58,7 +58,7 @@
 <% const headerParts = headerName.split('/'); -%>
 <% const headerEjs = headerParts.slice(0, -1).concat('_' + headerParts[headerParts.length - 1]).join('/'); -%>
 <% if (ext === '.php' && phpInclude) { -%>
-      <?php $assetsDir = '<%= assetsDir %>'; <% if (file.data && file.data.page) { %>$page = '<%= file.data.page %>'; <% } %>include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %>components/<%= headerName %>.php'; ?>
+      <?php $assetsDir = '<%= assetsDir %>'; <% if (file.data && file.data.page) { %>$page = '<%= file.data.page %>'; <% } %>include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %><%= componentsDirName %>/<%= headerName %>.php'; ?>
 <% } else { -%>
       <%- include(`${componentsDir}/${headerEjs}`,{assetsDir}); -%>
 <% } -%>
@@ -67,7 +67,7 @@
 <% const footerParts = footerName.split('/'); -%>
 <% const footerEjs = footerParts.slice(0, -1).concat('_' + footerParts[footerParts.length - 1]).join('/'); -%>
 <% if (ext === '.php' && phpInclude) { -%>
-      <?php include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %>components/<%= footerName %>.php'; ?>
+      <?php include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %><%= componentsDirName %>/<%= footerName %>.php'; ?>
 <% } else { -%>
       <%- include(`${componentsDir}/${footerEjs}`,{assetsDir}); -%>
 <% } -%>

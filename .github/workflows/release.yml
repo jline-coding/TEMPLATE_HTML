@@ -29,21 +29,17 @@ jobs:
       - name: 🔍 Đọc cấu hình Build
         id: config
         run: |
-          HAS_BUILD=$(jq -r '.has_build_step // false' deploy-config.json)
           BUILD_CMD=$(jq -r '.build_command // "npm run build"' deploy-config.json)
-          SOURCE_FOLDER=$(jq -r '.source_folder // "public"' deploy-config.json)
-          PROJECT_DIR=$(jq -r '.production.project_dir // "project"' deploy-config.json)
-          echo "HAS_BUILD=$HAS_BUILD" >> $GITHUB_ENV
+          SOURCE_FOLDER=$(jq -r '.source_folder | select(. != null and . != "") // "public"' deploy-config.json)
+          PROJECT_DIR=$(jq -r '.production.project_dir // .project_dir // "project"' deploy-config.json)
           echo "BUILD_CMD=$BUILD_CMD" >> $GITHUB_ENV
           echo "SOURCE_FOLDER=$SOURCE_FOLDER" >> $GITHUB_ENV
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
 
           # 🛡️ Validate BUILD_CMD (chỉ cho phép npm/npx commands)
-          if [ "$HAS_BUILD" = "true" ]; then
-            if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
-              echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
-              exit 1
-            fi
+          if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
+            echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
+            exit 1
           fi
 
       - name: 🏷️ Lấy thông tin Tag
@@ -54,22 +50,18 @@ jobs:
           echo "📌 Tag: $TAG_NAME"
 
       - name: ⚙️ Cài đặt Node.js
-        if: env.HAS_BUILD == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: 📦 Cài đặt dependencies (nếu cần build)
-        if: env.HAS_BUILD == 'true'
         run: npm ci
 
       - name: ?? Ch?y Unit Tests
-        if: env.HAS_BUILD == 'true'
         run: npm run test
 
       - name: 🔨 Build dự án
-        if: env.HAS_BUILD == 'true'
         run: ${{ env.BUILD_CMD }}
 
       - name: 📁 Nén thành file ZIP

@@ -43,7 +43,6 @@ jobs:
           echo "📌 Nhánh: $BRANCH_NAME → Môi trường: $DEPLOY_ENV"
 
           # Đọc cấu hình chung
-          HAS_BUILD=$(jq -r '.has_build_step // false' deploy-config.json)
           BUILD_CMD=$(jq -r '.build_command // "npm run build"' deploy-config.json)
 
           # Đọc deploy_method từ môi trường (mặc định: ftp)
@@ -56,16 +55,13 @@ jobs:
           echo "🖥️ Server: ${SERVER_NAME:-'(không dùng FTP)'}"
 
           echo "SERVER_NAME=$SERVER_NAME" >> $GITHUB_ENV
-          echo "HAS_BUILD=$HAS_BUILD" >> $GITHUB_ENV
           echo "BUILD_CMD=$BUILD_CMD" >> $GITHUB_ENV
 
           # 🛡️ Validate BUILD_CMD (chỉ cho phép npm/npx commands)
-          if [ "$HAS_BUILD" = "true" ]; then
-            if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
-              echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
-              echo "   Chỉ cho phép các lệnh bắt đầu bằng 'npm ' hoặc 'npx '."
-              exit 1
-            fi
+          if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
+            echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
+            echo "   Chỉ cho phép các lệnh bắt đầu bằng 'npm ' hoặc 'npx '."
+            exit 1
           fi
 
       # ── Chế độ ZIP: Bỏ qua toàn bộ (chỉ cần tạo tag để release) ──
@@ -87,15 +83,15 @@ jobs:
           cache: 'npm'
 
       - name: 📦 Cài đặt dependencies dự án (nếu cần build)
-        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
+        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
         run: npm ci
 
       - name: ?? Ch?y Unit Tests
-        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
+        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
         run: npm run test
 
       - name: 🔨 Build dự án
-        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && env.HAS_BUILD == 'true'
+        if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
         run: ${{ env.BUILD_CMD }}
 
       - name: 📦 Cài đặt thư viện deploy
