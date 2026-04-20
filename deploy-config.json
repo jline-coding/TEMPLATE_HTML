@@ -16,7 +16,7 @@
     "server": ""
   },
   "test": {
-    "deploy_method": "ftp",
+    "deploy_method": "ssh",
     "server": "JLWEB_SSH",
     "basic_auth": {
       "username": "test",
