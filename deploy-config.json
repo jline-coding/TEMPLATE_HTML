@@ -1,5 +1,5 @@
 {
-  "source_folder": "public",
+  "source_folder": "dist",
   
   "project_dir": "template_test_ssh",
   "build_command": "npm run build",
