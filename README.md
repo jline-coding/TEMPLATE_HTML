@@ -25,27 +25,27 @@ EJSとSCSSのコンパイル、画像の最適化を行うNode.jsビルド環境
 
 ```json
 {
-  "source_folder": "public",
-  "project_dir": "template_test_ssh",
+  "source_folder": "----public-----",
+  "project_dir": "----name_project-----",
   "build_command": "npm run build",
   "env": {
-    "MODE": "new",
-    "OUTPUT_EXT": "html",
-    "USE_PHP_INCLUDE": "false",
-    "RENEW_SCSS_DIR": "abc/scss",
-    "RENEW_CSS_DIR": "assets/css",
-    "SITE_URL": "https://jlweb.jp"
+    "MODE": "----new-----",
+    "OUTPUT_EXT": "----html-----",
+    "USE_PHP_INCLUDE": "----false-----",
+    "RENEW_SCSS_DIR": "----path/to/scss-----",
+    "RENEW_CSS_DIR": "----path/to/css-----",
+    "SITE_URL": "----https://your-domain.com-----"
   },
   "production": {
-    "deploy_method": "zip",
+    "deploy_method": "----zip-----",
     "server": ""
   },
   "test": {
-    "deploy_method": "ssh",
-    "server": "JLWEB_SSH",
+    "deploy_method": "----ssh-----",
+    "server": "----YOUR_SERVER_NAME-----",
     "basic_auth": {
-      "username": "test",
-      "password": "test"
+      "username": "----username-----",
+      "password": "----password-----"
     }
   }
 }
@@ -176,27 +176,27 @@ Trước khi bắt đầu dự án, bạn cần cấu hình thư mục xuất, c
 
 ```json
 {
-  "source_folder": "public",
-  "project_dir": "template_test_ssh",
+  "source_folder": "----public-----",
+  "project_dir": "----name_project-----",
   "build_command": "npm run build",
   "env": {
-    "MODE": "new",
-    "OUTPUT_EXT": "html",
-    "USE_PHP_INCLUDE": "false",
-    "RENEW_SCSS_DIR": "abc/scss",
-    "RENEW_CSS_DIR": "assets/css",
-    "SITE_URL": "https://jlweb.jp"
+    "MODE": "----new-----",
+    "OUTPUT_EXT": "----html-----",
+    "USE_PHP_INCLUDE": "----false-----",
+    "RENEW_SCSS_DIR": "----path/to/scss-----",
+    "RENEW_CSS_DIR": "----path/to/css-----",
+    "SITE_URL": "----https://your-domain.com-----"
   },
   "production": {
-    "deploy_method": "zip",
+    "deploy_method": "----zip-----",
     "server": ""
   },
   "test": {
-    "deploy_method": "ssh",
-    "server": "JLWEB_SSH",
+    "deploy_method": "----ssh-----",
+    "server": "----YOUR_SERVER_NAME-----",
     "basic_auth": {
-      "username": "test",
-      "password": "test"
+      "username": "----username-----",
+      "password": "----password-----"
     }
   }
 }
