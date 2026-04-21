@@ -6,7 +6,7 @@
 
 <h2 id="日本語">🇯🇵 日本語</h2>
 
-EJSとSCSSのコンパイル、画像の最適化を行うNode.jsビルド環境です。新規テンプレートの構築から既存顧客ソースの改修まで、運用に合わせて明確にスケールします。
+EJS、SCSSのコンパイル、および画像の最適化を行うための静的ビルドシステムです。新規プロジェクトの構築から既存ソースコードの改修まで柔軟にサポートします。
 
 
 ## 1. インストール
@@ -182,7 +182,7 @@ EJSコンポーネントから一般的な静的HTMLをビルドします。
 
 <h2 id="tiếng-việt">🇻🇳 Tiếng Việt</h2>
 
-Hệ thống Build Tĩnh dùng để biên dịch EJS, SCSS và tối ưu ảnh. Phân luồng hoạt động rạch ròi từ việc xây dự án HTML mới đến việc đôn đốc SCSS cho đống code cũ của khách hàng.
+Hệ thống Build Tĩnh dùng để biên dịch EJS, SCSS và tối ưu ảnh, hỗ trợ linh hoạt cho cả việc làm dự án mới hay tinh chỉnh giao diện trên nền code cũ của khách hàng.
 
 ## 1. Cài Đặt Đầu Tiên
 1. **Yêu cầu**: Cài đặt sẵn Node.js `v20.0.0` trở lên.
