@@ -67,7 +67,7 @@ EJSとSCSSのコンパイル、画像の最適化を行うNode.jsビルド環境
 | **`env.USE_PHP_INCLUDE`**| 任意 | `true` でHeader/FooterをPHPの `include` 化。 `false` でHTMLインジェクト。 |
 | **`env.RENEW_SCSS_DIR`** | 任意 | `renew` モード専用。既存ソースの対象作業SCSSディレクトリパス。 |
 | **`env.RENEW_CSS_DIR`**  | 任意 | `renew` モード専用。既存ソースの出力先CSSディレクトリパス。 |
-| **`env.SITE_URL`** | 任意 | プロジェクトの基本ルートURL。`<meta>` タグ等のOGP生成に使用。 |
+| **`env.SITE_URL`** | 任意 | プロジェクトの基本ルートURL（例: `https://your-domain.com`）。`<meta>` タグ等のOGP生成に使用。 |
 | **`[branch].deploy_method`**| 必須 | 環境別のデプロイ方式。`"ftp"`, `"ssh"`, `"zip"` が選択可能。 |
 | **`[branch].server`**| 任意 | GitHub Secrets に保管された接続設定の名前。`"zip"` の場合は空欄可。 |
 | **`[branch].basic_auth`**| 任意 | `"ftp"`/`"ssh"` デプロイ時に指定すると、自動的にベーシック認証の設定を施します。 |
@@ -238,18 +238,22 @@ Trước khi bắt đầu dự án, bạn cần cấu hình thư mục xuất, c
 | **`env.USE_PHP_INCLUDE`**| Tùy chọn | Set `true` để chia nhỏ Header/Footer thành module PHP, set `false` để ráp khối HTML trực tiếp. |
 | **`env.RENEW_SCSS_DIR`** | Tùy chọn | Dùng cho mode `renew`: Trỏ đường dẫn phân cấp tới thư mục chứa file SCSS nguồn xịn. |
 | **`env.RENEW_CSS_DIR`** | Tùy chọn | Dùng cho mode `renew`: Trỏ đường dẫn xuất đích CSS để đè file gốc của khách hàng. |
-| **`env.SITE_URL`** | Tùy chọn | Link domain gốc của website (VD: `https://jlweb.jp`), để hệ thống sinh thẻ `<meta>` OGP/Canonical. |
+| **`env.SITE_URL`** | Tùy chọn | Link domain gốc của website (VD: `https://your-domain.com`), để hệ thống sinh thẻ `<meta>` OGP/Canonical. |
 | **`[nhánh].deploy_method`**| Bắt buộc | Phương thức đẩy code cho từng nhánh: `"ftp"`, `"ssh"`, hoặc `"zip"`. |
 | **`[nhánh].server`** | Tùy chọn | Khóa truy xuất lưu trữ trong phân luồng GitHub Secrets. Bỏ trống nếu áp dụng dạng nén mộc `"zip"`. |
-| **`[nhánh].basic_auth`**| Tùy chọn | gắn xác thực cơ bản cho site trên server (có thể thiết lập hoặc không, không thiết lập xác thực hãy loại bỏ nó trong deploy-config.json). |
+| **`[nhánh].basic_auth`**| Tùy chọn | Gắn xác thực cơ bản cho site trên Server lúc Test. Có thể thiết lập hoặc không (nếu không cần thiết, hãy xóa khối `basic_auth` này khỏi `deploy-config.json`). |
 
 ## 3. Hướng Dẫn Thực Hành Các Trường Hợp
 
 ### Trường hợp 1: Code Trang HTML Thuần (`new html`)
 Mục đích: Viết code EJS chia nhỏ ra nhưng khi xuất thì rập khuôn thành 1 file `.html` cứng tĩnh.
 1. **Cấu hình**: 
-   - `deploy-config.json`: Hãy set `"MODE": "new"`, `"OUTPUT_EXT": "html"`, `"USE_PHP_INCLUDE": "false"`, `"SITE_URL": "https://your-domain.com"`.
-   - `.env`: **Ngó lơ/Không cần điền.** Bạn không cần quan tâm đến `WEB_ROOT` hay `PROXY_URL` ở trường hợp này.
+   - **`deploy-config.json`**:
+     - `"MODE"`: `"new"`
+     - `"OUTPUT_EXT"`: `"html"`
+     - `"USE_PHP_INCLUDE"`: `"false"`
+     - `"SITE_URL"`: `"https://your-domain.com"`
+   - **`.env`**: **Ngó lơ/Không cần điền.** Bạn không cần quan tâm đến `WEB_ROOT` hay `PROXY_URL` ở trường hợp này.
 2. **Code**: Thực hiện code và quản lý giao diện bên trong thư mục `src/`.
 - **🚀 Lệnh Khởi Chạy Nhanh**:
   ```bash
@@ -262,8 +266,12 @@ Mục đích: Viết code EJS chia nhỏ ra nhưng khi xuất thì rập khuôn 
 ### Trường hợp 2: Code Trang PHP Nguyên Tảng (`new php`)
 Mục đích: Biến EJS thành đuôi `.php` (để dùng hàm PHP bên trong) nhưng bắt buộc Layout Header/Footer phải đổ trực tiếp HTML thô tháp vào 1 file duy nhất.
 1. **Cấu hình**: 
-   - `deploy-config.json`: Hãy set `"MODE": "new"`, `"OUTPUT_EXT": "php"`, `"USE_PHP_INCLUDE": "false"`, `"SITE_URL": "https://your-domain.com"`.
-   - `.env`: **BẮT BUỘC ĐIỀN.** Phải điền chính xác `WEB_ROOT` và `PROXY_URL` để tạo ống dẫn Proxy PHP mượt mà.
+   - **`deploy-config.json`**:
+     - `"MODE"`: `"new"`
+     - `"OUTPUT_EXT"`: `"php"`
+     - `"USE_PHP_INCLUDE"`: `"false"`
+     - `"SITE_URL"`: `"https://your-domain.com"`
+   - **`.env`**: **BẮT BUỘC ĐIỀN.** Phải điền chính xác `WEB_ROOT` và `PROXY_URL` để tạo ống dẫn Proxy PHP mượt mà.
 2. **Code**: Trực tiếp sửa đổi source gốc bên trong thư mục `src/`. Bạn có thể chèn code PHP loạn xạ ở đây.
 - **🚀 Lệnh Khởi Chạy Nhanh**: Bật Server ảo, sau đó:
   ```bash
@@ -277,8 +285,12 @@ Mục đích: Biến EJS thành đuôi `.php` (để dùng hàm PHP bên trong) 
 ### Trường hợp 3: Code PHP Lắp Ráp Cắt Lớp (`new php INCLUDE`)
 Cắt phăng Header/Footer ra thành các file tách rời tự động trong `public/components` và nhúng nối tiếp thông qua mã `<?php include ?>`.
 1. **Cấu hình**: 
-   - `deploy-config.json`: Hãy set `"MODE": "new"`, `"OUTPUT_EXT": "php"`, `"USE_PHP_INCLUDE": "true"`, `"SITE_URL": "https://your-domain.com"`.
-   - `.env`: **BẮT BUỘC ĐIỀN.** Giống mục trên, phải điền chính xác `WEB_ROOT` và `PROXY_URL` để Proxy hiểu đường truyền.
+   - **`deploy-config.json`**:
+     - `"MODE"`: `"new"`
+     - `"OUTPUT_EXT"`: `"php"`
+     - `"USE_PHP_INCLUDE"`: `"true"`
+     - `"SITE_URL"`: `"https://your-domain.com"`
+   - **`.env`**: **BẮT BUỘC ĐIỀN.** Giống mục trên, phải điền chính xác `WEB_ROOT` và `PROXY_URL` để Proxy hiểu đường truyền.
 2. **Code**: Thực hiện code và quản lý giao diện bên trong thư mục `src/`.
 - **🚀 Lệnh Khởi Chạy Nhanh**: Bật Server ảo, sau đó:
   ```bash
@@ -292,7 +304,9 @@ Cắt phăng Header/Footer ra thành các file tách rời tự động trong `p
 ### Trường hợp 4: Nối Source Khách Hàng (Tĩnh HTML) (`renew html`)
 Mục đích: Khách giao một bộ Source thuần đuôi `.html`. Bạn chỉ việc viết SCSS cho dự án. Cỡ này không cần bật ảo hóa Proxy.
 1. **Cấu hình**: 
-   - `deploy-config.json`: Hãy set `"MODE": "renew"`, `"OUTPUT_EXT": "html"`.
+   - **`deploy-config.json`**:
+     - `"MODE"`: `"renew"`
+     - `"OUTPUT_EXT"`: `"html"`
    - `.env`: **Không cần điền Server.** Chỉ cần khai báo thêm mục tiêu dịch SCSS (Hỗ trợ phẩy đa mục tiêu để code PC và SP độc lập):
      ```env
      # Ví dụ minh họa (Hỗ trợ 1 hoặc nhiều thư mục nhánh):
@@ -312,7 +326,9 @@ Mục đích: Khách giao một bộ Source thuần đuôi `.html`. Bạn chỉ 
 ### Trường hợp 5: Nối Source Khách Hàng (Động PHP) (`renew php`)
 Mục đích: Khách giao Source chứa đuôi `.php` (như WordPress CMS). Bắt buộc phải gắn thông ống Proxy ra Server ảo để Terminal Watch CSS hiển thị được mã PHP trực tiếp trên BrowserSync.
 1. **Cấu hình**: 
-   - `deploy-config.json`: Hãy set `"MODE": "renew"`, `"OUTPUT_EXT": "php"`.
+   - **`deploy-config.json`**:
+     - `"MODE"`: `"renew"`
+     - `"OUTPUT_EXT"`: `"php"`
    - `.env`: **BẮT BUỘC ĐIỀN.** Khai báo chính xác `WEB_ROOT` và `PROXY_URL` giống như Case trên. Kèm theo đó khai báo mục tiêu dịch SCSS:
      ```env
      # Ví dụ minh họa (Hỗ trợ 1 hoặc nhiều thư mục nhánh):

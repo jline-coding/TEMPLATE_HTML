@@ -8,7 +8,7 @@
     "USE_PHP_INCLUDE": "false",
     "RENEW_SCSS_DIR": "abc/scss",
     "RENEW_CSS_DIR": "assets/css",
-    "SITE_URL": "https://jlweb.jp"
+    "SITE_URL": "https://your-domain.com"
   },
   "production": {
     "deploy_method": "zip",
