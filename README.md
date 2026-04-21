@@ -20,7 +20,55 @@ EJSとSCSSのコンパイル、画像の最適化を行うNode.jsビルド環境
    - *(任意)* PHPを使用する場合は、ローカルサーバーの公開フォルダを `WEB_ROOT` に、サーバーURLを `PROXY_URL` に設定してください（例: `http://localhost/template_html`）。
    - *注意: `.env`ファイルはGitに無視されます。さらに、`WEB_ROOT` はOS（Windows/Mac/Linux）に自動適応するため、`npm run link` コマンドは管理者権限なしでも安全なネイティブショートカットを自動生成します。*
 
-## 2. ワークフロー（各ケースの実行手順）
+## 2. `deploy-config.json` の設定
+プロジェクトを開始する前に、ルートディレクトリにある `deploy-config.json` で全体のビルド方式や展開先を定義します。
+
+```json
+{
+  "source_folder": "public",
+  "project_dir": "template_test_ssh",
+  "build_command": "npm run build",
+  "env": {
+    "MODE": "new",
+    "OUTPUT_EXT": "html",
+    "USE_PHP_INCLUDE": "false",
+    "RENEW_SCSS_DIR": "abc/scss",
+    "RENEW_CSS_DIR": "assets/css",
+    "SITE_URL": "https://jlweb.jp"
+  },
+  "production": {
+    "deploy_method": "zip",
+    "server": ""
+  },
+  "test": {
+    "deploy_method": "ssh",
+    "server": "JLWEB_SSH",
+    "basic_auth": {
+      "username": "test",
+      "password": "test"
+    }
+  }
+}
+```
+
+### パラメータ詳細・設定リスト
+
+| パラメータ名 | 状態 | 意味と使い方の説明 |
+| :--- | :---: | :--- |
+| **`source_folder`** | 基本 | ビルドされた出力先のフォルダ名（通常は `public`）。 |
+| **`project_dir`** | 必須 | サーバー展開先の親ディレクトリ名。 |
+| **`build_command`** | 基本 | GitHub Actions 用のビルド実行コマンド（`npm run build`）。 |
+| **`env.MODE`** | 必須 | `new` (新規HTML/PHP構築) または `renew` (既存サイト改修)。 |
+| **`env.OUTPUT_EXT`** | 必須 | EJSコンパイル後の出力拡張子（`html` または `php`）。 |
+| **`env.USE_PHP_INCLUDE`**| 任意 | `true` でHeader/FooterをPHPの `include` 化。 `false` でHTMLインジェクト。 |
+| **`env.RENEW_SCSS_DIR`** | 任意 | `renew` モード専用。既存ソースの対象作業SCSSディレクトリパス。 |
+| **`env.RENEW_CSS_DIR`**  | 任意 | `renew` モード専用。既存ソースの出力先CSSディレクトリパス。 |
+| **`env.SITE_URL`** | 任意 | プロジェクトの基本ルートURL。`<meta>` タグ等のOGP生成に使用。 |
+| **`[branch].deploy_method`**| 必須 | 環境別のデプロイ方式。`"ftp"`, `"ssh"`, `"zip"` が選択可能。 |
+| **`[branch].server`**| 任意 | GitHub Secrets に保管された接続設定の名前。`"zip"` の場合は空欄可。 |
+| **`[branch].basic_auth`**| 任意 | `"ftp"`/`"ssh"` デプロイ時に指定すると、自動的にベーシック認証の設定を施します。 |
+
+## 3. ワークフロー（各ケースの実行手順）
 
 ### ケース 1: 静的HTMLサイトの構築 (`new html`)
 EJSコンポーネントから一般的な静的HTMLをビルドします。
@@ -123,7 +171,55 @@ Hệ thống Build Tĩnh dùng để biên dịch EJS, SCSS và tối ưu ảnh.
    - *(Tùy chọn)* Nếu làm dự án PHP, hãy điền đường dẫn thư mục ảo vào dòng `WEB_ROOT` và link local vào dòng `PROXY_URL` (VD: `http://localhost/template_html`).
    - *Lưu ý: File `.env` sẽ không bị đẩy lên Git. Hơn nữa, biến `WEB_ROOT` tương thích hoàn toàn trên đa hệ điều hành (Windows/Mac/Linux). Lệnh ảo hóa `npm run link` tự động nhận diện và tạo Shortcut chuẩn native mà không bao giờ đòi hỏi các quyền Administrator.*
 
-## 2. Hướng Dẫn Thực Hành Các Trường Hợp
+## 2. Thiết Lập `deploy-config.json`
+Trước khi bắt đầu dự án, bạn cần cấu hình thư mục xuất, chế độ build và phương thức deploy trong file `deploy-config.json`:
+
+```json
+{
+  "source_folder": "public",
+  "project_dir": "template_test_ssh",
+  "build_command": "npm run build",
+  "env": {
+    "MODE": "new",
+    "OUTPUT_EXT": "html",
+    "USE_PHP_INCLUDE": "false",
+    "RENEW_SCSS_DIR": "abc/scss",
+    "RENEW_CSS_DIR": "assets/css",
+    "SITE_URL": "https://jlweb.jp"
+  },
+  "production": {
+    "deploy_method": "zip",
+    "server": ""
+  },
+  "test": {
+    "deploy_method": "ssh",
+    "server": "JLWEB_SSH",
+    "basic_auth": {
+      "username": "test",
+      "password": "test"
+    }
+  }
+}
+```
+
+### Bảng Giải Thích Tham Số Cấu Hình
+
+| Thuộc tính (Trường) | Trạng thái | Ý nghĩa & Hướng dẫn thiết lập |
+| :--- | :---: | :--- |
+| **`source_folder`** | Mặc định | Tên thư mục chứa source đã build (thường là `public`, hệ thống sẽ dựa vào đây để đẩy code). |
+| **`project_dir`** | Bắt buộc | Tên thư mục của dự án (Tự động sinh ra thư mục rễ tương ứng trên Server của khách). |
+| **`build_command`** | Mặc định | Lệnh chạy Build trong luồng tự động GitHub Actions (thường để nguyên là `npm run build`). |
+| **`env.MODE`** | Bắt buộc | Dùng `new` (Dành cho web dựng lại từ đầu) hoặc `renew` (Dành cho làm Layout/SCSS trên web cũ). |
+| **`env.OUTPUT_EXT`** | Bắt buộc | Định dạng đuôi file xuất ra sau khi biên dịch EJS (`html` hoặc `php`). |
+| **`env.USE_PHP_INCLUDE`**| Tùy chọn | Set `true` để chia nhỏ Header/Footer thành module PHP, set `false` để ráp khối HTML trực tiếp. |
+| **`env.RENEW_SCSS_DIR`** | Tùy chọn | Dùng cho mode `renew`: Trỏ đường dẫn phân cấp tới thư mục chứa file SCSS nguồn xịn. |
+| **`env.RENEW_CSS_DIR`** | Tùy chọn | Dùng cho mode `renew`: Trỏ đường dẫn xuất đích CSS để đè file gốc của khách hàng. |
+| **`env.SITE_URL`** | Tùy chọn | Link domain gốc của website (VD: `https://jlweb.jp`), để hệ thống sinh thẻ `<meta>` OGP/Canonical. |
+| **`[nhánh].deploy_method`**| Bắt buộc | Phương thức đẩy code cho từng nhánh: `"ftp"`, `"ssh"`, hoặc `"zip"`. |
+| **`[nhánh].server`** | Tùy chọn | Khóa truy xuất lưu trữ trong phân luồng GitHub Secrets. Bỏ trống nếu áp dụng dạng nén mộc `"zip"`. |
+| **`[nhánh].basic_auth`**| Tùy chọn | Gắn block này vào nếu bạn muốn tự động dựng rào cấm `.htpasswd` khóa người xem ở giai đoạn Test. |
+
+## 3. Hướng Dẫn Thực Hành Các Trường Hợp
 
 ### Trường hợp 1: Code Trang HTML Thuần (`new html`)
 Mục đích: Viết code EJS chia nhỏ ra nhưng khi xuất thì rập khuôn thành 1 file `.html` cứng tĩnh.
