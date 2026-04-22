@@ -43,7 +43,7 @@
     file.data.vendorcss.forEach(cssItem => { -%>
     <link rel="stylesheet" href="<%= assetsDir %>assets/vendor/<%= cssItem %>.css">
   <% }); } -%>
-
+  <link rel="stylesheet" href="<%= assetsDir %>assets/css/common.css">
   <% if(file.data.css){ 
     file.data.css.forEach(cssItem => { -%>
   <link rel="stylesheet" href="<%= assetsDir %>assets/css/<%= cssItem %>.css">
@@ -51,6 +51,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- script -->  
+
+    <script src="<%= assetsDir %>assets/vendor/jquery/jquery-4.0.0.min.js" defer></script>
+    
+    <% if(file.data.vendorjs){ 
+      file.data.vendorjs.forEach(jsItem => { -%>
+      <script src="<%= assetsDir %>assets/vendor/<%= jsItem %>.js" defer></script>
+    <% }); } -%>
+    <script src="<%= assetsDir %>assets/js/inview.js" defer></script>
+    <script src="<%= assetsDir %>assets/js/cookie.js" defer></script>
+    <script src="<%= assetsDir %>assets/js/common.js" defer></script>
+    <% if(file.data.js){ 
+      file.data.js.forEach(jsItem => { -%>
+      <script src="<%= assetsDir %>assets/js/<%= jsItem %>.js" defer></script>
+    <% }); } -%>
 </head>
 <body>
   <div id="wrapper" class="body-wrapper">
@@ -77,20 +92,6 @@
         <p class="txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「プライバシーポリシー」をご覧ください。</p>
       </div>      
     </div>
-    <!-- script -->  
-
-    <script src="<%= assetsDir %>assets/vendor/jquery/jquery-4.0.0.min.js"></script>    
-    <script src="<%= assetsDir %>assets/js/cookie.js"></script>
-    <% if(file.data.vendorjs){ 
-      file.data.vendorjs.forEach(jsItem => { -%>
-      <script src="<%= assetsDir %>assets/vendor/<%= jsItem %>.js"></script>
-    <% }); } -%>
-    <% if(file.data.js){ 
-      file.data.js.forEach(jsItem => { -%>
-      <script src="<%= assetsDir %>assets/js/<%= jsItem %>.js"></script>
-    <% }); } -%>
- 
   </div>
-  
 </body>
 </html>
