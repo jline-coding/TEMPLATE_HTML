@@ -12,6 +12,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "devDependencies": {
     "@prettier/plugin-php": "^0.25.0",
     "autoprefixer": "^10.4.21",
