@@ -94,13 +94,16 @@ jobs:
         if: env.HAS_PREV_RELEASE == 'true'
         run: |
           mkdir -p public_diff
-          # So sánh nội dung file (-c) giữa bản mới và bản cũ
-          rsync -rcv --compare-dest="$(pwd)/public_old/" "$(pwd)/$SOURCE_FOLDER/" "$(pwd)/public_diff/"
+          # So sánh nội dung file (-c) giữa bản mới và bản cũ, cờ -m giúp loại bỏ thư mục rỗng
+          rsync -rcvm --compare-dest="$(pwd)/public_old/" "$(pwd)/$SOURCE_FOLDER/" "$(pwd)/public_diff/"
           
           # Dọn dẹp các file rác/không cần thiết khỏi thư mục diff để đếm chính xác
           find public_diff -type f -name '.DS_Store' -delete 2>/dev/null || true
           find public_diff -type f -name '*.map' -delete 2>/dev/null || true
           rm -rf public_diff/.deploy
+          
+          # Xóa toàn bộ các thư mục rỗng (nếu có) do quá trình build tạo ra
+          find public_diff -type d -empty -delete 2>/dev/null || true
           
           # Kiểm tra xem có file nào thực sự thay đổi không (bỏ qua thư mục rỗng)
           CHANGE_COUNT=$(find public_diff -type f | wc -l)
