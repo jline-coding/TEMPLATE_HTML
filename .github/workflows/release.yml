@@ -56,7 +56,7 @@ jobs:
           cache: 'npm'
 
       - name: 📦 Cài đặt dependencies (nếu cần build)
-        run: npm ci
+        run: npm install
 
       - name: ?? Ch?y Unit Tests
         run: npm run test
