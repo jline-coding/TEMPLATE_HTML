@@ -64,7 +64,61 @@ jobs:
       - name: 🔨 Build dự án
         run: ${{ env.BUILD_CMD }}
 
-      - name: 📁 Nén thành file ZIP
+      - name: 🔍 Lấy bản Release trước đó (Nếu có)
+        id: prev_release
+        run: |
+          # Dùng GitHub CLI để lấy thông tin Release mới nhất
+          PREV_TAG=$(gh release view --json tagName -q ".tagName" 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            echo "📌 Đã tìm thấy bản Release trước đó: $PREV_TAG"
+            
+            # Tìm tên file ZIP gốc (loại trừ file có chữ diff_data)
+            FULL_ZIP=$(gh release view "$PREV_TAG" --json assets -q '.assets[].name | select(test("diff_data") | not) | select(endswith(".zip"))' | head -n 1)
+            
+            if [ -n "$FULL_ZIP" ]; then
+              echo "⬇️ Tải file: $FULL_ZIP"
+              gh release download "$PREV_TAG" -p "$FULL_ZIP" --dir prev_release
+              
+              # Giải nén vào thư mục public_old
+              mkdir -p public_old
+              unzip -q "prev_release/$FULL_ZIP" -d public_old
+              echo "HAS_PREV_RELEASE=true" >> $GITHUB_ENV
+            fi
+          else
+            echo "ℹ️ Đây là Release đầu tiên, không có bản cũ để so sánh."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ✂️ Trích xuất các file thay đổi (Diff)
+        if: env.HAS_PREV_RELEASE == 'true'
+        run: |
+          mkdir -p public_diff
+          # So sánh nội dung file (-c) giữa bản mới và bản cũ
+          rsync -rcv --compare-dest="$(pwd)/public_old/" "$(pwd)/$SOURCE_FOLDER/" "$(pwd)/public_diff/"
+          
+          # Dọn dẹp các file rác/không cần thiết khỏi thư mục diff để đếm chính xác
+          find public_diff -type f -name '.DS_Store' -delete 2>/dev/null || true
+          find public_diff -type f -name '*.map' -delete 2>/dev/null || true
+          rm -rf public_diff/.deploy
+          
+          # Kiểm tra xem có file nào thực sự thay đổi không (bỏ qua thư mục rỗng)
+          CHANGE_COUNT=$(find public_diff -type f | wc -l)
+          if [ "$CHANGE_COUNT" -gt "0" ]; then
+            DIFF_ZIP_NAME="${PROJECT_DIR}_diff_data_${TAG_NAME}.zip"
+            
+            # Nén thư mục diff
+            cd public_diff
+            zip -r "../$DIFF_ZIP_NAME" .
+            cd ..
+            
+            DIFF_ZIP_SIZE=$(du -h "$DIFF_ZIP_NAME" | cut -f1)
+            echo "📦 Đã tạo file Diff: $DIFF_ZIP_NAME ($CHANGE_COUNT file thay đổi, kích thước: $DIFF_ZIP_SIZE)"
+          else
+            echo "ℹ️ Không có sự thay đổi nào về file tĩnh hợp lệ so với bản trước."
+          fi
+
+      - name: 📁 Nén thành file ZIP (Bản Full)
         run: |
           ZIP_NAME="${PROJECT_DIR}_${TAG_NAME}.zip"
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
@@ -93,10 +147,14 @@ jobs:
 
             ### 📥 Hướng dẫn
             1. Tải file **`.zip`** bên dưới mục **Assets**
+               - Bản **`${{ env.PROJECT_DIR }}_${{ env.TAG_NAME }}.zip`**: Chứa toàn bộ source code sạch (bản đầy đủ).
+               - Bản **`${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip`** *(nếu có)*: Chỉ chứa các file đã được chỉnh sửa/thêm mới so với bản phát hành trước đó.
             2. Giải nén và bàn giao cho khách hàng
 
             > ⚠️ File ZIP chỉ chứa code đã build sạch (thư mục `${{ env.SOURCE_FOLDER }}/`), không chứa `node_modules` hay source code gốc.
-          files: ${{ env.ZIP_NAME }}
+          files: |
+            ${{ env.ZIP_NAME }}
+            ${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip
           draft: false
           prerelease: false
         env:
