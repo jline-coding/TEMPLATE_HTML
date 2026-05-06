@@ -139,19 +139,29 @@ jobs:
           body: |
             ## 📦 Release `${{ env.TAG_NAME }}`
 
-            **Dự án**: `${{ env.PROJECT_DIR }}`
-            **Ngày tạo**: ${{ github.event.head_commit.timestamp || 'N/A' }}
-            **Người tạo**: @${{ github.actor }}
+            **Dự án / プロジェクト**: `${{ env.PROJECT_DIR }}`
+            **Ngày tạo / 作成日時**: ${{ github.event.head_commit.timestamp || 'N/A' }}
+            **Người tạo / 作成者**: @${{ github.actor }}
 
             ---
 
-            ### 📥 Hướng dẫn
+            ### 🇻🇳 📥 Hướng dẫn
             1. Tải file **`.zip`** bên dưới mục **Assets**
                - Bản **`${{ env.PROJECT_DIR }}_${{ env.TAG_NAME }}.zip`**: Chứa toàn bộ source code sạch (bản đầy đủ).
                - Bản **`${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip`** *(nếu có)*: Chỉ chứa các file đã được chỉnh sửa/thêm mới so với bản phát hành trước đó.
-            2. Giải nén và bàn giao cho khách hàng
+            2. Giải nén và bàn giao cho khách hàng.
 
-            > ⚠️ File ZIP chỉ chứa code đã build sạch (thư mục `${{ env.SOURCE_FOLDER }}/`), không chứa `node_modules` hay source code gốc.
+            > ⚠️ **Lưu ý:** File ZIP chỉ chứa code đã build sạch (thư mục `${{ env.SOURCE_FOLDER }}/`), không chứa `node_modules` hay source code gốc.
+
+            ---
+
+            ### 🇯🇵 📥 ダウンロードと使用方法
+            1. 下記の **Assets** から **`.zip`** ファイルをダウンロードしてください。
+               - **`${{ env.PROJECT_DIR }}_${{ env.TAG_NAME }}.zip`**: 全てのクリーンなソースコードが含まれています（フルバージョン）。
+               - **`${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip`** *(ある場合)*: 前回のリリース以降に修正・追加されたファイルのみが含まれています（差分データ）。
+            2. 解凍して、お客様に納品してください。
+
+            > ⚠️ **注意:** ZIPファイルには、ビルド済みのクリーンなコード（`${{ env.SOURCE_FOLDER }}/` フォルダ）のみが含まれており、`node_modules` や元のソースコードは含まれていません。
           files: |
             ${{ env.ZIP_NAME }}
             ${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip
