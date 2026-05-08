@@ -9,7 +9,7 @@
     "RENEW_SCSS_DIR": "abc/scss",
     "RENEW_CSS_DIR": "assets/css",
     "SITE_URL": "https://your-domain.com",
-    "DIP": "true",
+    "DIP": "false",
     "DIP_PO": "op186589"
     
   },
