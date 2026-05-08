@@ -50,6 +50,8 @@ export let USE_PHP_INCLUDE = false;
 export let SITE_URL = '';
 export let RENEW_SCSS_DIR = '';
 export let RENEW_CSS_DIR = '';
+export let DIP = false;
+export let DIP_PO = '';
 
 export const isWatch = process.argv.includes('--watch');
 export const skipFormat = process.argv.includes('--no-format');
@@ -65,6 +67,8 @@ if (configData && configData.env) {
   if (configData.env.RENEW_SCSS_DIR) RENEW_SCSS_DIR = configData.env.RENEW_SCSS_DIR.replace(/\\/g, '/');
   if (configData.env.RENEW_CSS_DIR) RENEW_CSS_DIR = configData.env.RENEW_CSS_DIR.replace(/\\/g, '/');
   if (configData.env.SITE_URL) SITE_URL = configData.env.SITE_URL;
+  if (configData.env.DIP === true || configData.env.DIP === 'true') DIP = true;
+  if (configData.env.DIP_PO) DIP_PO = configData.env.DIP_PO;
 }
 
 try {
@@ -83,6 +87,8 @@ try {
         if (key === 'PROXY_URL') PROXY_URL = value;
         if (key === 'OUTPUT_EXT') OUTPUT_EXT = value.toLowerCase().startsWith('.') ? value.toLowerCase() : `.${value.toLowerCase()}`;
         if (key === 'USE_PHP_INCLUDE') USE_PHP_INCLUDE = value.toLowerCase() === 'true';
+        if (key === 'DIP') DIP = value.toLowerCase() === 'true';
+        if (key === 'DIP_PO') DIP_PO = value;
       }
     });
   }
@@ -96,6 +102,11 @@ if (!PROXY_URL && configData && configData.project_dir) {
 }
 
 export const isRenew = MODE === 'renew';
+
+if (isRenew) {
+  DIP = false;
+  DIP_PO = '';
+}
 
 (function validateConfig() {
   if (isRenew && USE_PHP_INCLUDE) {
@@ -115,7 +126,14 @@ export const VIDEOS_DIR = resolve(ASSETS_DIR, 'videos');
 export const VENDOR_DIR = resolve(ASSETS_DIR, 'vendor');
 export const CSS_DIR = resolve(ASSETS_DIR, 'css');
 
-export let CSS_OUTPUT_REL = 'assets/css';
+export let CSS_OUTPUT_RELS = (DIP && DIP_PO) ? [`pc/${DIP_PO}/css`, `sp/${DIP_PO}/css`] : (DIP ? ['css'] : ['assets/css']);
+export const ASSETS_OUT_PREFIXES = (DIP && DIP_PO) ? [`pc/${DIP_PO}`, `sp/${DIP_PO}`] : (DIP ? [''] : ['assets']);
+export const PAGE_OUT_PREFIXES = (DIP && DIP_PO) ? [`pc/${DIP_PO}`, `sp/${DIP_PO}`] : [''];
+
+export const JS_OUT_DIRS = ASSETS_OUT_PREFIXES.map(p => resolve(DIST, p, 'js'));
+export const IMAGES_OUT_DIRS = ASSETS_OUT_PREFIXES.map(p => resolve(DIST, p, 'images'));
+export const VIDEOS_OUT_DIRS = ASSETS_OUT_PREFIXES.map(p => resolve(DIST, p, 'videos'));
+export const VENDOR_OUT_DIRS = ASSETS_OUT_PREFIXES.map(p => resolve(DIST, p, 'vendor'));
 export let RENEW_SCSS_DIRS = [];
 export let RENEW_CSS_DIRS = [];
 
@@ -133,7 +151,7 @@ if (isRenew) {
   RENEW_CSS_DIRS = scssArr.map((_, i) => cssArr[i] || cssArr[0] || 'assets/css');
   
   SCSS_DIR = RENEW_SCSS_DIRS[0];
-  CSS_OUTPUT_REL = RENEW_CSS_DIRS[0];
+  CSS_OUTPUT_RELS = [RENEW_CSS_DIRS[0]];
 }
 
 export function getScssDirsInfo(filePath) {
@@ -148,7 +166,7 @@ export function getScssDirsInfo(filePath) {
             };
         }
     }
-    return { scssDir: RENEW_SCSS_DIRS[0], cssRel: RENEW_CSS_DIRS[0] };
+    return { scssDir: RENEW_SCSS_DIRS[0], cssRels: [RENEW_CSS_DIRS[0]] };
   }
-  return { scssDir: SCSS_DIR, cssRel: CSS_OUTPUT_REL };
+  return { scssDir: SCSS_DIR, cssRels: CSS_OUTPUT_RELS };
 }

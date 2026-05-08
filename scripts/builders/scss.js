@@ -48,7 +48,7 @@ async function compileScssFile(filePath) {
     const source = readFileSync(filePath, 'utf8');
     if (!source.trim() || /^{\\rtf/i.test(source)) return;
 
-    const { scssDir, cssRel } = getScssDirsInfo(filePath);
+    const { scssDir, cssRels } = getScssDirsInfo(filePath);
 
     const result = compileString(source, {
       url: new URL(`file:///${norm(filePath)}`),
@@ -58,22 +58,25 @@ async function compileScssFile(filePath) {
     });
 
     const rel = relative(scssDir, filePath);
-    const cssPath = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
 
-    // PostCSS processing
-    const processed = await postcss(postcssPlugins).process(result.css, {
-      from: filePath,
-      to: cssPath,
-      map: isWatch ? { inline: false, prev: result.sourceMap, annotation: true } : false,
-    });
-    const mapPath = cssPath + '.map';
-    ensureDir(dirname(cssPath));
+    for (const cssRel of cssRels) {
+      const cssPath = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
 
-    writeFileSync(cssPath, processed.css, 'utf8');
-    if (isWatch && processed.map) {
-      writeFileSync(mapPath, processed.map.toString(), 'utf8');
+      // PostCSS processing
+      const processed = await postcss(postcssPlugins).process(result.css, {
+        from: filePath,
+        to: cssPath,
+        map: isWatch ? { inline: false, prev: result.sourceMap, annotation: true } : false,
+      });
+      const mapPath = cssPath + '.map';
+      ensureDir(dirname(cssPath));
+
+      writeFileSync(cssPath, processed.css, 'utf8');
+      if (isWatch && processed.map) {
+        writeFileSync(mapPath, processed.map.toString(), 'utf8');
+      }
+      console.log(`[scss] ${norm(rel)} → ${norm(relative(DIST, cssPath))}`);
     }
-    console.log(`[scss] ${norm(rel)} → ${basename(cssPath)}`);
   } catch (err) {
     console.error(`[scss] Error compiling ${filePath}:`, err.message);
   }

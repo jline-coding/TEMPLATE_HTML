@@ -8,7 +8,8 @@ import * as phpPlugin from '@prettier/plugin-php';
 
 import {
   isWatch, skipFormat, OUTPUT_EXT, USE_PHP_INCLUDE, SITE_URL,
-  INCLUDE_DIRS, PAGES_DIR, LAYOUTS_DIR, DIST, refreshIncludeDirs
+  INCLUDE_DIRS, PAGES_DIR, LAYOUTS_DIR, DIST, refreshIncludeDirs,
+  DIP, DIP_PO, PAGE_OUT_PREFIXES
 } from '../tools/config.js';
 import { norm, ensureDir, walkSync } from '../tools/utils.js';
 
@@ -220,11 +221,18 @@ async function renderEjsFile(filePath) {
       filename: layoutPath,
     });
 
-    const outPath = resolve(DIST, relPath.replace(/\.ejs$/, OUTPUT_EXT));
-    ensureDir(dirname(outPath));
-    const finalFormattedHtml = await formatCode(fullHtml, OUTPUT_EXT);
-    writeFileSync(outPath, finalFormattedHtml, 'utf8');
-    console.log(`[ejs] ${relPath} → ${norm(relative(DIST, outPath))}`);
+    let finalFormattedHtml = await formatCode(fullHtml, OUTPUT_EXT);
+    
+    if (DIP) {
+      finalFormattedHtml = finalFormattedHtml.replace(/(href|src)=(['"])(.*?)(?:\bassets\/)/g, '$1=$2$3');
+    }
+
+    for (const prefix of PAGE_OUT_PREFIXES) {
+      const outPath = resolve(DIST, prefix, relPath.replace(/\.ejs$/, OUTPUT_EXT));
+      ensureDir(dirname(outPath));
+      writeFileSync(outPath, finalFormattedHtml, 'utf8');
+      console.log(`[ejs] ${relPath} → ${norm(relative(DIST, outPath))}`);
+    }
   } catch (err) {
     console.error(`[ejs] Error processing ${filePath}:`, err.message);
   }

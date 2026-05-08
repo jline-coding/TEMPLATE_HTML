@@ -3,7 +3,8 @@ import { readFileSync, writeFileSync, copyFileSync, existsSync } from 'fs';
 import sharp from 'sharp';
 
 import {
-  isRenew, PAGES_DIR, DIST, JS_DIR, VENDOR_DIR, IMAGES_DIR, VIDEOS_DIR
+  isRenew, PAGES_DIR, DIST, JS_DIR, VENDOR_DIR, IMAGES_DIR, VIDEOS_DIR,
+  JS_OUT_DIRS, VENDOR_OUT_DIRS, IMAGES_OUT_DIRS, VIDEOS_OUT_DIRS, ASSETS_OUT_PREFIXES, PAGE_OUT_PREFIXES
 } from '../tools/config.js';
 import { norm, ensureDir, isNewer, walkSync, removeStaleFiles } from '../tools/utils.js';
 
@@ -42,63 +43,108 @@ export function buildGeneralCopy(changedFile) {
   if (changedFile) {
     if (!shouldCopy(changedFile)) return;
 
-    const rel = relative(PAGES_DIR, changedFile);
-    const dest = resolve(DIST, rel);
-    ensureDir(dirname(dest));
-    writeFileSync(dest, readFileSync(changedFile));
-    console.log(`[copy] ${norm(rel)}`);
+    let baseRel = relative(PAGES_DIR, changedFile);
+    let afterAssets = baseRel;
+    let isAsset = false;
+    if (baseRel.startsWith('assets\\') || baseRel.startsWith('assets/')) {
+      afterAssets = baseRel.substring(7);
+      isAsset = true;
+    }
+    
+    if (isAsset) {
+      for (const prefix of ASSETS_OUT_PREFIXES) {
+        const rel = prefix ? `${prefix}/${afterAssets}` : afterAssets;
+        const dest = resolve(DIST, rel);
+        ensureDir(dirname(dest));
+        writeFileSync(dest, readFileSync(changedFile));
+        console.log(`[copy] ${norm(rel)}`);
+      }
+    } else {
+      for (const prefix of PAGE_OUT_PREFIXES) {
+        const dest = resolve(DIST, prefix, baseRel);
+        ensureDir(dirname(dest));
+        writeFileSync(dest, readFileSync(changedFile));
+        console.log(`[copy] ${norm(relative(DIST, dest))}`);
+      }
+    }
     return;
   }
 
   const allFiles = walkSync(PAGES_DIR, shouldCopy);
 
   for (const file of allFiles) {
-    const rel = relative(PAGES_DIR, file);
-    const dest = resolve(DIST, rel);
-    if (isNewer(file, dest)) {
-      ensureDir(dirname(dest));
-      writeFileSync(dest, readFileSync(file));
-      console.log(`[copy] ${norm(rel)}`);
+    let baseRel = relative(PAGES_DIR, file);
+    let afterAssets = baseRel;
+    let isAsset = false;
+    if (baseRel.startsWith('assets\\') || baseRel.startsWith('assets/')) {
+      afterAssets = baseRel.substring(7);
+      isAsset = true;
+    }
+    
+    if (isAsset) {
+      for (const prefix of ASSETS_OUT_PREFIXES) {
+        const rel = prefix ? `${prefix}/${afterAssets}` : afterAssets;
+        const dest = resolve(DIST, rel);
+        if (isNewer(file, dest)) {
+          ensureDir(dirname(dest));
+          writeFileSync(dest, readFileSync(file));
+          console.log(`[copy] ${norm(rel)}`);
+        }
+      }
+    } else {
+      for (const prefix of PAGE_OUT_PREFIXES) {
+        const dest = resolve(DIST, prefix, baseRel);
+        if (isNewer(file, dest)) {
+          ensureDir(dirname(dest));
+          writeFileSync(dest, readFileSync(file));
+          console.log(`[copy] ${norm(relative(DIST, dest))}`);
+        }
+      }
     }
   }
 }
 
 export function buildJs(changedFile) {
-  const destDir = resolve(DIST, 'assets', 'js');
-
   if (changedFile) {
     const rel = relative(JS_DIR, changedFile);
-    const dest = resolve(destDir, rel);
-    ensureDir(dirname(dest));
     const src = readFileSync(changedFile);
-    writeFileSync(dest, src);
-    console.log(`[js] ${norm(rel)}`);
+    for (const destDir of JS_OUT_DIRS) {
+      const dest = resolve(destDir, rel);
+      ensureDir(dirname(dest));
+      writeFileSync(dest, src);
+      console.log(`[js] ${norm(relative(DIST, dest))}`);
+    }
     return;
   }
 
   const files = walkSync(JS_DIR, (f) => extname(f) === '.js');
   for (const file of files) {
     const rel = relative(JS_DIR, file);
-    const dest = resolve(destDir, rel);
-    if (isNewer(file, dest)) {
-      ensureDir(dirname(dest));
-      writeFileSync(dest, readFileSync(file));
-      console.log(`[js] ${norm(rel)}`);
+    const src = readFileSync(file);
+    for (const destDir of JS_OUT_DIRS) {
+      const dest = resolve(destDir, rel);
+      if (isNewer(file, dest)) {
+        ensureDir(dirname(dest));
+        writeFileSync(dest, src);
+        console.log(`[js] ${norm(relative(DIST, dest))}`);
+      }
     }
   }
-  removeStaleFiles(JS_DIR, destDir);
+  for (const destDir of JS_OUT_DIRS) removeStaleFiles(JS_DIR, destDir);
 }
 
 export function buildVendor(changedFile) {
-  const destDir = resolve(DIST, 'assets', 'vendor');
   const vendorExts = ['.png', '.jpg', '.scss', '.css', '.js', '.svg', '.woff', '.woff2', '.ttf', '.eot'];
 
   if (changedFile) {
     const rel = relative(VENDOR_DIR, changedFile);
-    const dest = resolve(destDir, rel);
-    ensureDir(dirname(dest));
-    writeFileSync(dest, readFileSync(changedFile));
-    console.log(`[vendor] ${norm(rel)}`);
+    const src = readFileSync(changedFile);
+    for (const destDir of VENDOR_OUT_DIRS) {
+      const dest = resolve(destDir, rel);
+      ensureDir(dirname(dest));
+      writeFileSync(dest, src);
+      console.log(`[vendor] ${norm(relative(DIST, dest))}`);
+    }
     return;
   }
 
@@ -109,19 +155,21 @@ export function buildVendor(changedFile) {
 
   for (const file of files) {
     const rel = relative(VENDOR_DIR, file);
-    const dest = resolve(destDir, rel);
-    if (isNewer(file, dest)) {
-      ensureDir(dirname(dest));
-      writeFileSync(dest, readFileSync(file));
-      console.log(`[vendor] ${norm(rel)}`);
+    const src = readFileSync(file);
+    for (const destDir of VENDOR_OUT_DIRS) {
+      const dest = resolve(destDir, rel);
+      if (isNewer(file, dest)) {
+        ensureDir(dirname(dest));
+        writeFileSync(dest, src);
+        console.log(`[vendor] ${norm(relative(DIST, dest))}`);
+      }
     }
   }
-  removeStaleFiles(VENDOR_DIR, destDir);
+  for (const destDir of VENDOR_OUT_DIRS) removeStaleFiles(VENDOR_DIR, destDir);
 }
 
 export async function buildImages(changedFile) {
-  const destDir = resolve(DIST, 'assets', 'images');
-  ensureDir(destDir);
+  for (const destDir of IMAGES_OUT_DIRS) ensureDir(destDir);
 
   const copyExts = ['.gif', '.svg', '.ico', '.webp'];
   const convertExts = ['.jpg', '.jpeg', '.png'];
@@ -131,17 +179,22 @@ export async function buildImages(changedFile) {
     const rel = relative(IMAGES_DIR, changedFile);
 
     if (copyExts.includes(ext)) {
-      const dest = resolve(destDir, rel);
-      ensureDir(dirname(dest));
-      copyFileSync(changedFile, dest);
-      console.log(`[images] copy: ${norm(rel)}`);
+      for (const destDir of IMAGES_OUT_DIRS) {
+        const dest = resolve(destDir, rel);
+        ensureDir(dirname(dest));
+        copyFileSync(changedFile, dest);
+        console.log(`[images] copy: ${norm(relative(DIST, dest))}`);
+      }
     } else if (convertExts.includes(ext)) {
       const webpRel = rel.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-      const dest = resolve(destDir, webpRel);
-      ensureDir(dirname(dest));
       const buffer = readFileSync(changedFile);
-      await sharp(buffer).webp({ quality: 90 }).toFile(dest);
-      console.log(`[images] webp: ${norm(rel)} → ${norm(webpRel)}`);
+      const processed = await sharp(buffer).webp({ quality: 90 }).toBuffer();
+      for (const destDir of IMAGES_OUT_DIRS) {
+        const dest = resolve(destDir, webpRel);
+        ensureDir(dirname(dest));
+        writeFileSync(dest, processed);
+        console.log(`[images] webp: ${norm(relative(DIST, dest))}`);
+      }
     }
     return;
   }
@@ -153,41 +206,52 @@ export async function buildImages(changedFile) {
     const rel = relative(IMAGES_DIR, file);
 
     if (copyExts.includes(ext)) {
-      const dest = resolve(destDir, rel);
-      if (isNewer(file, dest)) {
-        ensureDir(dirname(dest));
-        copyFileSync(file, dest);
-        console.log(`[images] copy: ${norm(rel)}`);
+      for (const destDir of IMAGES_OUT_DIRS) {
+        const dest = resolve(destDir, rel);
+        if (isNewer(file, dest)) {
+          ensureDir(dirname(dest));
+          copyFileSync(file, dest);
+          console.log(`[images] copy: ${norm(relative(DIST, dest))}`);
+        }
       }
     } else if (convertExts.includes(ext)) {
       const webpRel = rel.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-      const dest = resolve(destDir, webpRel);
-      if (isNewer(file, dest)) {
-        ensureDir(dirname(dest));
-        const buffer = readFileSync(file);
-        await sharp(buffer).webp({ quality: 90 }).toFile(dest);
-        console.log(`[images] webp: ${norm(rel)} → ${norm(webpRel)}`);
+      let processed = null;
+      for (const destDir of IMAGES_OUT_DIRS) {
+        const dest = resolve(destDir, webpRel);
+        if (isNewer(file, dest)) {
+          ensureDir(dirname(dest));
+          if (!processed) {
+            const buffer = readFileSync(file);
+            processed = await sharp(buffer).webp({ quality: 90 }).toBuffer();
+          }
+          writeFileSync(dest, processed);
+          console.log(`[images] webp: ${norm(relative(DIST, dest))}`);
+        }
       }
     }
   }
 
-  removeStaleFiles(IMAGES_DIR, destDir, {
-    transformExt: { from: ['.jpg', '.jpeg', '.png'], to: '.webp' },
-  });
+  for (const destDir of IMAGES_OUT_DIRS) {
+    removeStaleFiles(IMAGES_DIR, destDir, {
+      transformExt: { from: ['.jpg', '.jpeg', '.png'], to: '.webp' },
+    });
+  }
 }
 
 export function buildVideos(changedFile) {
-  const destDir = resolve(DIST, 'assets', 'videos');
   const videoExts = ['.mp4', '.webm', '.ogg'];
 
   if (!existsSync(VIDEOS_DIR)) return;
 
   if (changedFile) {
     const rel = relative(VIDEOS_DIR, changedFile);
-    const dest = resolve(destDir, rel);
-    ensureDir(dirname(dest));
-    copyFileSync(changedFile, dest);
-    console.log(`[videos] ${norm(rel)}`);
+    for (const destDir of VIDEOS_OUT_DIRS) {
+      const dest = resolve(destDir, rel);
+      ensureDir(dirname(dest));
+      copyFileSync(changedFile, dest);
+      console.log(`[videos] ${norm(relative(DIST, dest))}`);
+    }
     return;
   }
 
@@ -198,12 +262,14 @@ export function buildVideos(changedFile) {
 
   for (const file of files) {
     const rel = relative(VIDEOS_DIR, file);
-    const dest = resolve(destDir, rel);
-    if (isNewer(file, dest)) {
-      ensureDir(dirname(dest));
-      copyFileSync(file, dest);
-      console.log(`[videos] ${norm(rel)}`);
+    for (const destDir of VIDEOS_OUT_DIRS) {
+      const dest = resolve(destDir, rel);
+      if (isNewer(file, dest)) {
+        ensureDir(dirname(dest));
+        copyFileSync(file, dest);
+        console.log(`[videos] ${norm(relative(DIST, dest))}`);
+      }
     }
   }
-  removeStaleFiles(VIDEOS_DIR, destDir);
+  for (const destDir of VIDEOS_OUT_DIRS) removeStaleFiles(VIDEOS_DIR, destDir);
 }

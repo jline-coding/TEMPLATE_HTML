@@ -177,6 +177,23 @@ EJSコンポーネントから一般的な静的HTMLをビルドします。
   npm run build      # プロジェクト確定時
   ```
 
+---
+
+### ケース 6: Rakuten プロジェクト (DIPモード) (`DIP: true`)
+目的: 楽天RMS・Gold向けの案件で、HTMLとアセット（CSS, JS, 画像など）を分離、またはPC/SPフォルダに完全に分割して出力します。
+1. **設定**: 
+   - **`deploy-config.json`**:
+     - `"MODE"`: `"new"` (※ `renew` モードではDIPは無効化されます)
+     - `"DIP"`: `"true"` (必須: `assets/` プレフィックスを削除)
+     - `"DIP_PO"`: `"op186589"` (任意: 指定した場合は `pc/op186589` と `sp/op186589` の完全独立ソースとしてデュアルビルド)
+2. **コード記述**: 通常通り `src/` フォルダ内でコーディングします。画像等のリンクは `./assets/images/...` のままで問題ありません。
+3. **自動最適化**: ビルド時にすべてのHTMLから `assets/` が自動で削除され、`DIP_PO` がある場合はすべてのソースがそれぞれのターゲットフォルダへ複製されます。ローカル開発時は自動的に該当のPCディレクトリ（例：`http://localhost:8687/pc/op186589/`）を開きます。
+- **🚀 クイック起動コマンド**:
+  ```bash
+  npm run dev        # 開発開始 (Dev起動)
+  npm run build      # プロジェクト確定時
+  ```
+
 
 ---
 
@@ -352,3 +369,19 @@ Mục đích: Khách giao Source chứa đuôi `.php` (như WordPress CMS). Bắ
   npm run build      # Khi chốt dự án
   ```
 
+---
+
+### Trường hợp 6: Dự án Rakuten (Chế độ DIP) (`DIP: true`)
+Mục đích: Dành riêng cho các dự án upload lên Rakuten RMS và Gold, yêu cầu tước bỏ hoàn toàn thư mục `assets/` ra khỏi đường dẫn, hoặc chia nhánh ra thành 2 bộ source độc lập hoàn toàn cho PC và SP (Theo cấu trúc Event PO).
+1. **Cấu hình**: 
+   - **`deploy-config.json`**:
+     - `"MODE"`: `"new"` (Lưu ý: Tính năng DIP chỉ hoạt động ở mode new, sẽ tự động bị vô hiệu hóa nếu để là renew)
+     - `"DIP"`: `"true"` (Bắt buộc: Để hệ thống nhận diện và tước bỏ chữ `assets/` trong HTML)
+     - `"DIP_PO"`: `"op186589"` (Tùy chọn: Nếu điền mã PO, hệ thống sẽ clone ra 2 cấu trúc song song `pc/op186589/` và `sp/op186589/`)
+2. **Code**: Bạn vẫn code bình thường trong `src/` giống y hệt như dự án thường. Đường dẫn ảnh vẫn gọi là `./assets/images/...`.
+3. **Tự động tối ưu**: Lúc build, hệ thống tự động bóc tách và phân luồng thư mục chuẩn xác. Dev server cũng sẽ tự động chuyển hướng vào thư mục đích (VD: `http://localhost:8687/pc/op186589/`) để bạn soi giao diện không bị lệch link.
+- **🚀 Lệnh Khởi Chạy Nhanh**:
+  ```bash
+  npm run dev        # Chạy dev
+  npm run build      # Khi chốt dự án
+  ```

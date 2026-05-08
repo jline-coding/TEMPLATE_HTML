@@ -8,9 +8,10 @@ import { extname, relative, resolve, basename, dirname } from 'path';
 
 import {
   MODE, OUTPUT_EXT, USE_PHP_INCLUDE, PROXY_URL, 
-  isWatch, isRenew, DIST, SRC, PAGES_DIR, CSS_OUTPUT_REL,
+  isWatch, isRenew, DIST, SRC, PAGES_DIR, CSS_OUTPUT_RELS,
   JS_DIR, IMAGES_DIR, VIDEOS_DIR, VENDOR_DIR, SCSS_DIR, RENEW_SCSS_DIRS,
-  LAYOUTS_DIR
+  LAYOUTS_DIR,
+  JS_OUT_DIRS, VENDOR_OUT_DIRS, VIDEOS_OUT_DIRS, IMAGES_OUT_DIRS, PAGE_OUT_PREFIXES
 } from './tools/config.js';
 
 import { norm, ensureDir, walkSync, removeEmptyDirs } from './tools/utils.js';
@@ -41,7 +42,11 @@ async function fullBuild() {
       rmSync(DIST, { recursive: true, force: true });
     } else {
       for (const f of walkSync(DIST, (f) => extname(f) === '.map')) {
-        if (!f.includes(CSS_OUTPUT_REL)) {
+        let shouldKeep = false;
+        for (const cssRel of CSS_OUTPUT_RELS) {
+          if (f.includes(cssRel)) shouldKeep = true;
+        }
+        if (!shouldKeep) {
           try { unlinkSync(f); } catch { /* ignore */ }
         }
       }
@@ -107,6 +112,9 @@ async function startWatch() {
   }
 
   const bsOptions = { port: chosenPort, open: true, notify: false, ui: false };
+  if (PAGE_OUT_PREFIXES && PAGE_OUT_PREFIXES[0]) {
+    bsOptions.startPath = '/' + PAGE_OUT_PREFIXES[0];
+  }
   const needsProxy = OUTPUT_EXT === '.php';
 
   if (PROXY_URL && needsProxy) {
@@ -239,16 +247,20 @@ async function startWatch() {
 
       if (ext === '.scss' && !basename(fp).startsWith('_')) {
         const rel = relative(SCSS_DIR, fp);
-        const cssOut = resolve(DIST, CSS_OUTPUT_REL, rel.replace(/\.scss$/, '.css'));
-        if (existsSync(cssOut)) try { unlinkSync(cssOut); } catch {}
-        if (existsSync(cssOut + '.map')) try { unlinkSync(cssOut + '.map'); } catch {}
-        try { removeEmptyDirs(dirname(cssOut)); } catch {}
+        for (const cssRel of CSS_OUTPUT_RELS) {
+          const cssOut = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
+          if (existsSync(cssOut)) try { unlinkSync(cssOut); } catch {}
+          if (existsSync(cssOut + '.map')) try { unlinkSync(cssOut + '.map'); } catch {}
+          try { removeEmptyDirs(dirname(cssOut)); } catch {}
+        }
         needsScssReload = true;
       } else if (ext === '.ejs') {
         if (fp.includes(PAGES_DIR)) {
           const rel = relative(PAGES_DIR, fp);
-          const dest = resolve(DIST, rel.replace(/\.ejs$/, OUTPUT_EXT));
-          if (existsSync(dest)) try { unlinkSync(dest); } catch {}
+          for (const prefix of PAGE_OUT_PREFIXES) {
+            const dest = resolve(DIST, prefix, rel.replace(/\.ejs$/, OUTPUT_EXT));
+            if (existsSync(dest)) try { unlinkSync(dest); } catch {}
+          }
           try { removeEmptyDirs(DIST); } catch {}
         } else if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE && !fp.includes(LAYOUTS_DIR) && basename(fp).startsWith('_')) {
           // Xóa file PHP partial tương ứng trong thư mục public
@@ -259,24 +271,41 @@ async function startWatch() {
         }
         needsFullReload = true;
       } else if (isHandledBySpecificBuilder(fp)) {
-        let destTarget = '';
-        if (norm(fp).startsWith(norm(resolve(JS_DIR)))) destTarget = resolve(DIST, 'assets', 'js', relative(JS_DIR, fp));
-        else if (norm(fp).startsWith(norm(resolve(VENDOR_DIR)))) destTarget = resolve(DIST, 'assets', 'vendor', relative(VENDOR_DIR, fp));
-        else if (norm(fp).startsWith(norm(resolve(VIDEOS_DIR)))) destTarget = resolve(DIST, 'assets', 'videos', relative(VIDEOS_DIR, fp));
-        else if (norm(fp).startsWith(norm(resolve(IMAGES_DIR)))) {
-          const destDir = resolve(DIST, 'assets', 'images');
+        if (norm(fp).startsWith(norm(resolve(JS_DIR)))) {
+          for (const d of JS_OUT_DIRS) {
+            const destTarget = resolve(d, relative(JS_DIR, fp));
+            if (existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
+            try { removeEmptyDirs(dirname(destTarget)); } catch {}
+          }
+        } else if (norm(fp).startsWith(norm(resolve(VENDOR_DIR)))) {
+          for (const d of VENDOR_OUT_DIRS) {
+            const destTarget = resolve(d, relative(VENDOR_DIR, fp));
+            if (existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
+            try { removeEmptyDirs(dirname(destTarget)); } catch {}
+          }
+        } else if (norm(fp).startsWith(norm(resolve(VIDEOS_DIR)))) {
+          for (const d of VIDEOS_OUT_DIRS) {
+            const destTarget = resolve(d, relative(VIDEOS_DIR, fp));
+            if (existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
+            try { removeEmptyDirs(dirname(destTarget)); } catch {}
+          }
+        } else if (norm(fp).startsWith(norm(resolve(IMAGES_DIR)))) {
           const rel = relative(IMAGES_DIR, fp);
-          destTarget = resolve(destDir, rel);
-          const webpPath = resolve(destDir, rel.replace(/\.(jpg|jpeg|png)$/i, '.webp'));
-          if (existsSync(webpPath)) try { unlinkSync(webpPath); } catch {}
+          for (const destDir of IMAGES_OUT_DIRS) {
+            const destTarget = resolve(destDir, rel);
+            const webpPath = resolve(destDir, rel.replace(/\.(jpg|jpeg|png)$/i, '.webp'));
+            if (existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
+            if (existsSync(webpPath)) try { unlinkSync(webpPath); } catch {}
+            try { removeEmptyDirs(dirname(destTarget)); } catch {}
+          }
         }
-        if (destTarget && existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
-        if (destTarget) try { removeEmptyDirs(dirname(destTarget)); } catch {}
         needsFullReload = true;
       } else if (!['.map'].includes(ext)) {
-        const destTarget = resolve(DIST, relative(PAGES_DIR, fp));
-        if (existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
-        try { removeEmptyDirs(dirname(destTarget)); } catch {}
+        for (const prefix of PAGE_OUT_PREFIXES) {
+          const destTarget = resolve(DIST, prefix, relative(PAGES_DIR, fp));
+          if (existsSync(destTarget)) try { unlinkSync(destTarget); } catch {}
+          try { removeEmptyDirs(dirname(destTarget)); } catch {}
+        }
         needsFullReload = true;
       }
     }
