@@ -127,6 +127,72 @@ component > Other
     }
 }
 
+div#mfp_hidden {
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+	padding: 0px;
+	margin: 0px;
+}
+div#mfp_hidden input {
+	margin: 10px;
+}
+div#mfp_loading_screen {
+	z-index: 20000;
+	opacity: 0.8;
+	display: none;
+	background-color: #000;
+	position: absolute;
+}
+div#mfp_loading {
+	z-index: 20001;
+	position: absolute;
+	display: none;
+	width: 40px;
+	height: 40px;
+	background-image: url(_images/mfp_loading.gif);
+}
+div#mfp_loading_screen {
+	z-index: 20000;
+	opacity: 0.8;
+	display: none;
+	background-color: #000;
+	position: absolute;
+}
+div#mfp_overlay {
+	position: absolute;
+	display: none;
+	z-index: 10001;
+}
+div#mfp_overlay_inner {
+	background-color: #FFF;
+	padding: 15px;
+	margin: 0px auto;
+	border-radius: 5px;
+	box-shadow: 0px 0px 10px #000;
+	width: 640px;
+	max-width: 90%;
+}
+div#mfp_overlay_background {
+	background-color: #000;
+	position: absolute;
+	display: none;
+	z-index: 10000;
+}
+div#mfp_loading_screen {
+	z-index: 20000;
+	opacity: 0.8;
+	display: none;
+	background-color: #000;
+	position: absolute;
+}
+.mfp_err {
+  color: #d9534f;
+  font-size: 13px;
+  margin-top: 8px;
+  display: block;
+}
+
 /*!
 - Cookiewrap
 ------------------------------
