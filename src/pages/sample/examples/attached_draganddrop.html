@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro 4</title>
+		<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro 4</h1>
+				<p>究極の進化を遂げたメールフォームプロ4の登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>Drag &amp; dropでのファイル選択に対応させる場合はfileエレメントにクラス名<strong>draganddrop</strong>を指定してください。</p>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<input type="hidden" name="お名前" data-unjoin="姓+ +名+（+セイ+ +メイ+）" value="">
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col5">
+					<input type="text" name="姓" data-kana="セイ" size="15" required="required">
+				</div>
+				<div class="mfp_col5">
+					<input type="text" name="名" data-kana="メイ" size="15" required="required">
+				</div>
+			</div>
+		</dd>
+		<dt class="mfp">フリガナ</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col5">
+					<input type="text" name="セイ" size="15" data-charcheck="zenkaku">
+				</div>
+				<div class="mfp_col5">
+					<input type="text" name="メイ" size="15" data-charcheck="kana">
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">画像ファイル</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col8">
+					<input type="file" name="画像ファイル" data-max="5" accept=".jpg,.jpeg,.gif,.pdf,.txt" data-size-max="1024000" multiple>
+				</div>
+				<div class="mfp_col2">
+					<button type="button" id="reset_画像ファイル" class="mfp_attached_reset">選択を解除</button>
+				</div>
+			</div>
+			<div class="mfp_rows">
+				<div id="filelist_画像ファイル" class="mfp_col10 mfp_attached_filelist">
+					
+				</div>
+				<div id="draganddrop_画像ファイル" class="mfp_col10 mfp_draganddrop">
+					
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<input type="email" data-type="email" name="email" size="40" required="required">
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>確認のためもう一度</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<input type="email" data-type="email" name="confirm_email" data-post-disable="1" size="40" required="required">
+				</div>
+			</div>
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">確認画面へ</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

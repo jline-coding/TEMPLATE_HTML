@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+<!--メールフォームプロ カート用ファイル-->
+<link rel="stylesheet" href="../mfp.statics/cart.css" type="text/css">
+<script type="text/javascript" src="../mfp.statics/cart.js"></script>
+<!--/メールフォームプロ カート用ファイル-->
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>リクエスト機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'request/request.js';<br>push @Modules,'request';</span>を有効にしてください。</p>
+				</div>
+				<div class="section" style="border: solid 1px #CCC;margin: 10px;padding: 10px;">
+					<h2>リストに追加デモ</h2>
+
+<!--リクエストリストに入れるサンプル-->
+<form class="mfpcart" action="../mailformpro/mailformpro.cgi?addon=request/request.js" data-text="フォームに進む &gt;" data-href="cart.html" onsubmit="return mfpCartAdd(this);">
+	<input type="hidden" name="id" value="test0">
+	<input type="hidden" name="name" value="会社案内パンフレット">
+	<button type="submit" data-text="リストに入れました"><span>会社案内パンフレットをリストに追加</span></button>
+</form>
+<!--/リクエストリストに入れるサンプル-->
+				</div>
+
+				<div class="section" style="border: solid 1px #CCC;margin: 10px;padding: 10px;">
+					<h2>画像付きでリストに追加するデモ</h2>
+<div class="tips">
+	<p>リストに画像を追加する場合はリストが表示されるHTMLと同一ディレクトリに<strong>images</strong>フォルダを作成し、その中に<strong><em>ID</em>.png</strong>という命名規則でファイルを配置してください。<br>かつ<em>name</em>が<strong>image</strong>で<em>value</em>が<strong>1</strong>の<em>hidden</em>タグを追加してください。</p>
+	<p>IDにはハイフン・アンダースコア以外の記号は使えません。</p>
+</div>
+<!--リクエストリストに入れるサンプル-->
+<form class="mfpcart" action="../mailformpro/mailformpro.cgi?addon=request/request.js" data-text="フォームに進む &gt;" data-href="cart.html" onsubmit="return mfpCartAdd(this);">
+	<input type="hidden" name="id" value="test1">
+	<input type="hidden" name="image" value="1">
+	<input type="hidden" name="name" value="製品パンフレット">
+	<button type="submit" data-text="リストに入れました"><span>製品パンフレットをリストに追加</span></button>
+</form>
+<!--/リクエストリストに入れるサンプル-->
+				</div>
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

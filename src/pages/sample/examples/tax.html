@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<dt class="mfp">サンプル1</dt>
+		<dd class="mfp">
+			selectタグを利用する場合でかつoption毎に商品が異なる場合。<br>
+			<select name="サポート">
+				<option value=""></option>
+				<option value="有償サポート" id="support1" data-price="9800">有償サポート／9,800円</option>
+				<option value="年間サポート" id="support2" data-price="108000">年間サポート／108,000円</option>
+			</select>
+		</dd>
+		
+		<dt class="mfp">サンプル2</dt>
+		<dd class="mfp">
+			inputタグで個数を入力する場合。<br>
+			<input type="number" data-type="number" name="山わさび個数" id="yamawasabi" data-price="980" size="8"> 個
+		</dd>
+		
+		<dt class="mfp">サンプル3</dt>
+		<dd class="mfp">
+			selectタグで個数を選択する場合。<br>
+			<select id="wadanoriyuki" data-price="10" name="ワダノリユキの愛憎">
+				<option value=""></option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+			</select>
+		</dd>
+		
+		<dt class="mfp">サンプル4</dt>
+		<dd class="mfp">
+			checkboxやradioでチェックする場合。<br>
+			<label><input type="radio" name="運送会社" value="クロネコヤマト 2000円" id="yamato" data-price="2000"> クロネコヤマト 2000円</label>
+			<label><input type="radio" name="運送会社" value="佐川急便 1500円" id="sagawa" data-price="1500"> 佐川急便 1500円</label>
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>人数</dt>
+		<dd class="mfp">
+			価格の合算値を人数などで乗算する場合はpricefactor.jsを有効にしてください。<br>
+			<select name="人数" id="priceFactor" required="required">
+				<option value="1">1人</option>
+				<option value="2">2人</option>
+			</select>
+		</dd>
+		
+		<dt class="mfp">消費税</dt>
+		<dd class="mfp">
+			消費税を加える場合はtax.jsを有効にしてください。<br>
+			<div id="mfp_tax">0円</div>
+			<input type="text" name="消費税" id="mfp_tax_element" style="display: none;">
+		</dd>
+		
+		<dt class="mfp">注文点数</dt>
+		<dd class="mfp">
+			<div class="mfp_qty">0円</div>
+			<input type="text" name="注文点数" id="mfp_qty_element" style="display: none;" data-format="$1 点">
+		</dd>
+		
+		<dt class="mfp">お支払い合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price" class="mfp_price">0円</div>
+			<input type="text" name="お支払い金額" id="mfp_price_element" style="display: none;">
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

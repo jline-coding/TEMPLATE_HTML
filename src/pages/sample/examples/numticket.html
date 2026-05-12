@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>整理番号発行機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'numticket.js';<br>push @Modules,'numticket';</span>を有効にし、設定ファイル<strong>/mailformpro/configs/numticket.cgi</strong>を編集してください。</p>
+					<p>テストメールを一通送信していただくと、メール内に管理機能へのURLが記載されておりますので、管理機能へアクセスしパスワードを設定してください。</p>
+					<p>自動返信メールなどに利用できる環境変数は以下の通りです。</p>
+					<table>
+						<tr>
+							<th>&lt;_mfp_numticket_uri_&gt;</th>
+							<td>待ち時間確認用URL</td>
+						</tr>
+						<tr>
+							<th>&lt;_mfp_numticket_wait_&gt;</th>
+							<td>予想される待ち時間（分）</td>
+						</tr>
+						<tr>
+							<th>&lt;_mfp_numticket_datetime_&gt;</th>
+							<td>何時何分に自分の番になりそうかの予想時間</td>
+						</tr>
+						<tr>
+							<th>&lt;_mfp_numticket_qty_&gt;</th>
+							<td>受付時の順番</td>
+						</tr>
+						<tr>
+							<th>&lt;_mfp_numticket_number_&gt;</th>
+							<td>受付番号</td>
+						</tr>
+						<tr>
+							<th>&lt;_mfp_numticket_code_&gt;</th>
+							<td>照会番号</td>
+						</tr>
+					</table>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform" id="deliveryTime">
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<input type="text" name="お名前" size="15" required="required">
+				</div>
+			</div>
+		</dd>
+		
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">整理番号を発券する</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+				<div class="tips">
+					<p>順番がきた際にLINEでお知らせ機能を利用する場合は以下の設定を行ってください。<br>LINEをAPI経由で通知できる数量は<a href="https://www.linebiz.com/lp/line-official-account/plan/">無料プランでは1000通/月</a>なので、1000通を超える場合は別途有料の契約が必要っぽいです。一応、管理画面からLINE機能を有効/無効にできるので、利用できる範囲で利用するのもよいと思います。</p>
+					<ol>
+						<li>まず<a href="https://www.linebiz.com/lp/line-official-account/">LINE公式アカウント</a>を開設します。</li>
+						
+						<li><a href="https://developers.line.biz/ja/services/messaging-api/">LINE Developers</a>へアクセスし、Messaging APIを作成します。チャンネルの種類を<strong>Messaging API</strong>を指定してください。LINEメッセージはこのチャンネルから送信されます。</li>
+						<li><span>/mailformpro/configs/numticket.cgi</span>に<strong>チャンネルID</strong>と<strong>チャンネルシークレット</strong>を転記します。</li>
+						<li><strong>Messaging API設定</strong>タブに移動し、<strong>ボットのベーシックID</strong>と<strong>チャネルアクセストークン（ロングターム）</strong>を<span>/mailformpro/configs/numticket.cgi</span>に転記してください。登録時の応答メッセージなどもこの画面で設定できるので、なにか設定が必要な場合はテキトーに設定してください。</li>
+						
+						<li><a href="https://developers.line.biz/ja/services/line-login/">LINE Developers</a>へアクセスし、<strong>LINEログイン API</strong>を作成します。チャンネルの種類を<strong>LINEログイン</strong>、アプリタイプは<strong>ウェブアプリ</strong>を指定してください。</li>
+						<li><span>/mailformpro/configs/numticket.cgi</span>に<strong>チャンネルID</strong>と<strong>チャンネルシークレット</strong>を転記します。</li>
+						<li><strong>LINEログイン設定</strong>タブに移動し、<strong>コールバックURL</strong>に<span>/mailformpro/mailformpro.cgi?module=numticket</span>のURL（ブラウザからアクセスできるURL）を指定します。さらに<strong>リンクされたボット</strong>で<strong>Messaging API</strong>で指定したチャンネルを選んでください。</li>
+						
+						<li><strong>発行する</strong>ボタンを押して表示されたものが<strong>アクセストークン</strong>です。</li>
+						<li><strong>/mailformpro/configs/LineNotify.cgi</strong>にアクセストークンを記述する場所があるので、そこに先程のアクセストークンをはっつけてください。</li>
+						<li>これで作業は完了です。送信テストを行い、通知が届くか試してみましょう。</li>
+					</ol>
+				</div>
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

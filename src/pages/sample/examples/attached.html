@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro 4</title>
+		<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro 4</h1>
+				<p>究極の進化を遂げたメールフォームプロ4の登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>添付ファイル機能は有償の機能になります。すでに添付ファイル機能をご購入の方は無償でアップデートを行うことができますが、未購入の方は購入する必要があります。添付ファイル機能のご購入は<a href="https://www.synck.com/products/mfp4a.html">こちらのページ</a>から。</p>
+				</div>
+			<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+					<dl class="mailform">
+						<input type="hidden" name="お名前" data-unjoin="姓+ +名+（+セイ+ +メイ+）" value="">
+						<dt class="mfp"><span class="must">必須</span>お名前</dt>
+						<dd class="mfp">
+							<input type="text" name="姓" data-kana="セイ" size="15" data-format="$1 様" required="required"> <input type="text" name="名" data-kana="メイ" size="15" required="required">
+						</dd>
+						<dt class="mfp">フリガナ</dt>
+						<dd class="mfp"><input type="text" name="セイ" size="15" data-charcheck="kana"> <input type="text" name="メイ" size="15" data-charcheck="kana"></dd>
+						
+						<dt class="mfp">画像ファイル</dt>
+						<dd class="mfp">
+							<input type="file" name="画像ファイル" data-max="5" accept=".jpg,.jpeg,.gif,.pdf,.txt" data-size-max="1024000" multiple>
+							<button type="button" id="reset_画像ファイル" class="mfp_attached_reset">選択を解除</button>
+						</dd>
+						
+						<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+						<dd class="mfp"><input type="email" data-type="email" name="email" size="40" required="required"></dd>
+						<dt class="mfp"><span class="must">必須</span>確認のためもう一度</dt>
+						<dd class="mfp"><input type="email" data-type="email" name="confirm_email" size="40" required="required"></dd>
+					</dl>
+					<div class="mfp_buttons">
+						<button type="reset">リセット</button>&nbsp;&nbsp;<button type="submit">送信する</button>
+					</div>
+				</form>
+				<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

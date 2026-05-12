@@ -1,0 +1,80 @@
+/**
+ * POSTで受けたフォーム値を、ヘッダーに対応付けて最終行の次に1行で書き込む。
+ * - V8ランタイム対応（let/const, for..of, Object.entries, includes）
+ * - 競合対策としてスクリプトロックを使用
+ * - 値の書き込みは setValues 1回で高速化
+ * - JSON/JSONP（callbackパラメータあり）両対応
+ */
+function doPost(e) {
+  const params = (e && e.parameter) || {};
+  const ignore = new Set(['SPREADSHEET_ID', 'SHEET_NAME', 'callback', '_']);
+
+  const ssId = params.SPREADSHEET_ID;
+  const sheetName = params.SHEET_NAME;
+  if (!ssId || !sheetName) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ work: 'error', message: 'SPREADSHEET_ID または SHEET_NAME が未指定' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(30 * 1000); // 最大30秒待機
+
+    const sheet = SpreadsheetApp.openById(ssId).getSheetByName(sheetName);
+    if (!sheet) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ work: 'error', message: `シートが見つかりません: ${sheetName}` }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 見出し行を取得（1行目）
+    const lastCol = Math.max(1, sheet.getLastColumn());
+    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+
+    // フォーム値を整形：無視キーは除外、配列はカンマ結合
+    const formData = {};
+    for (const [key, val] of Object.entries(params)) {
+      if (ignore.has(key)) continue;
+      formData[key] = Array.isArray(val) ? val.join(',') : val;
+    }
+
+    // 書き込み行配列をヘッダー順で構築
+    const row = headers.map(h => {
+      const k = String(h || '').trim();
+      if (!k) return '';               // 空ヘッダーは空文字
+      return Object.prototype.hasOwnProperty.call(formData, k) ? formData[k] : '';
+    });
+
+    // 末尾に1行追加
+    const lastRow = sheet.getLastRow();
+    const writeRow = Math.max(1, lastRow) + 1;
+    sheet.getRange(writeRow, 1, 1, headers.length).setValues([row]);
+
+    const payload = {
+      work: 'success',
+      row: writeRow,
+      timestamp: new Date().toISOString()
+    };
+
+    // JSONP対応（callback指定があればJS、なければJSON）
+    const cb = params.callback && String(params.callback).trim();
+    if (cb) {
+      return ContentService
+        .createTextOutput(`${cb}(${JSON.stringify(payload)})`)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    } else {
+      return ContentService
+        .createTextOutput(JSON.stringify(payload))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+  } catch (err) {
+    const payload = { work: 'error', message: String(err && err.message || err) };
+    return ContentService
+      .createTextOutput(JSON.stringify(payload))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    try { lock.releaseLock(); } catch (_) {}
+  }
+}

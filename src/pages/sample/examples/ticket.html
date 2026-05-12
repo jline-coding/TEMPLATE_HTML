@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<ol>
+						<li>エクセルデータからの座席予約機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'ticket/ticket.js';</span><span>push @Modules,'ticket';</span>を有効にしてください。</li>
+						<li>HTMLにはtextareaを用意し<span>data-ticket="ここにファイル名"</span>属性を付与してください。</li>
+						<li>ファイルはdataフォルダ内のticketフォルダに配置し、拡張子を<span>.txt.cgi</span>とし、TSV（タブ区切りテキスト）形式・文字コードUTF-8Nで保存してください（※設定でSJISからの自動変換もあります）。</li>
+						<li>TSVファイルの書式は同梱されているサンプルのxlsデータを参照してください。</li>
+						<li>座席IDと講演IDには半角英数字とハイフン以外は利用できません。</li>
+					</ol>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		
+		<dt class="mfp">ご予約チケット</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<span class="mfp_tips">座席予約機能を利用する場合はdata-ticket属性にファイル名を指定してください。ファイル名は記号を含めず英数字のみとしてください。</span>
+					<span class="mfp_tips">data-ticket-label属性にはselectに表示される初期値のテキストラベルを指定してください（省略可）。</span>
+					<span class="mfp_tips">data-ticket-value-hide属性を指定することで値がセットされるtextareaの表示を非表示にできます（省略可）。</span>
+					<span class="mfp_tips">data-ticket-background属性に画像のファイルパスを指定することで背景に画像が配置されます（省略可）。</span>
+					<textarea name="ご希望座席" data-ticket="sample" data-ticket-label="予約する講演を選択してください" data-ticket-value-hide="1" data-ticket-background="images/ticket.gif" required="required" rows="30"></textarea>
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">チケット代合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price">0円</div>
+			<input type="hidden" name="チケット代金額" id="mfp_price_element">
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+			<div style="height: 100vh;"></div>
+		</div>
+	</body>
+</html>

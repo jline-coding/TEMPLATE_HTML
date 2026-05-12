@@ -315,6 +315,27 @@ echo ""
 echo "[OK] Rsync hoan tat thanh cong!"
 
 # ─────────────────────────────────────────────
+# 9.5 Cấu hình phân quyền cho Mailform Pro (CGI)
+# ─────────────────────────────────────────────
+echo ""
+echo "--- Set permissions for Mailform Pro (CGI) ---"
+ssh_exec "
+    find '${TARGET_DIR}' -type d -name 'mailformpro' 2>/dev/null | while read mfp_dir; do
+        chmod -f 755 \"\$mfp_dir\" || true
+        chmod -f 777 \"\$mfp_dir/data\" || true
+        chmod -f 755 \"\$mfp_dir/mailformpro.cgi\" || true
+        
+        parent_dir=\$(dirname \"\$mfp_dir\")
+        if [ -d \"\$parent_dir/iplogs\" ]; then
+            chmod -f 755 \"\$parent_dir/iplogs\" || true
+            chmod -f 755 \"\$parent_dir/iplogs/iplogs.cgi\" || true
+            chmod -f 777 \"\$parent_dir/iplogs/iplogs.dat.cgi\" || true
+        fi
+    done
+" 2>/dev/null || true
+echo "[OK] Permissions checked and applied."
+
+# ─────────────────────────────────────────────
 # 10. Upload .htpasswd & .htaccess (nếu có)
 # ─────────────────────────────────────────────
 

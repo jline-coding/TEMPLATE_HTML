@@ -225,6 +225,33 @@ if ($zip->open($zipFile) === TRUE) {
     $zip->extractTo(__DIR__);
     $count = $zip->numFiles;
     $zip->close();
+
+    // Auto set permissions for MailformPro dynamically anywhere it exists
+    try {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(__DIR__, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+        foreach ($iterator as $item) {
+            if ($item->isDir() && $item->getFilename() === 'mailformpro') {
+                $mfp_dir = $item->getPathname();
+                @chmod($mfp_dir, 0755);
+                if (is_dir($mfp_dir . '/data')) @chmod($mfp_dir . '/data', 0777);
+                if (file_exists($mfp_dir . '/mailformpro.cgi')) @chmod($mfp_dir . '/mailformpro.cgi', 0755);
+                
+                $parent_dir = dirname($mfp_dir);
+                $iplogs_dir = $parent_dir . '/iplogs';
+                if (is_dir($iplogs_dir)) {
+                    @chmod($iplogs_dir, 0755);
+                    if (file_exists($iplogs_dir . '/iplogs.cgi')) @chmod($iplogs_dir . '/iplogs.cgi', 0755);
+                    if (file_exists($iplogs_dir . '/iplogs.dat.cgi')) @chmod($iplogs_dir . '/iplogs.dat.cgi', 0777);
+                }
+            }
+        }
+    } catch (Exception $e) {
+        // Ignore errors to ensure deployment completes even if permission scan fails
+    }
+
     unlink($zipFile);
     unlink(__FILE__);
     echo json_encode(['ok' => true, 'files' => $count]);

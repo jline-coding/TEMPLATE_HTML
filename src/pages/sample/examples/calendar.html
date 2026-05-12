@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>複数の予約カレンダーを切り替えて、予約の受付・在庫の増減を行うための機能です。</p>
+					<ol>
+						<li><strong>config.cgi</strong>を編集し、<span>push @AddOns,'calendar/calendar.js';</span><span>push @Modules,'calendar';</span>を有効にします。</li>
+					</ol>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<dt class="mfp">カレンダーの種類選択</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<div class="tips">
+						<p>カレンダーの切り替えを行う部分です。selectあるいはradioで切り替えるか、切り替えが必要ない場合はhiddenでカレンダーのIDを指定します。<br>各属性の説明は以下の通りです。</p>
+						<table>
+							<thead>
+								<tr>
+									<th>属性名</th>
+									<th>必須</th>
+									<th>値</th>
+									<th>説明</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>data-calendar</td>
+									<td align="center">◯</td>
+									<td align="center">1</td>
+									<td>select、radio、hiddenに設定してください。optionには設定不要。</td>
+								</tr>
+								<tr>
+									<td>data-calendar-name</td>
+									<td align="center">-</td>
+									<td align="center">-</td>
+									<td>カレンダーの名称を設定できます。設定がない場合はvalueの値がカレンダー名として使用されます。</td>
+								</tr>
+								<tr>
+									<td>data-calendar-choice</td>
+									<td align="center">◯</td>
+									<td align="center">-</td>
+									<td>configs/calendar.cgi で設定したカレンダーのIDを指定します。</td>
+								</tr>
+								<tr>
+									<td>data-calendar-stat</td>
+									<td align="center">◯</td>
+									<td align="center">-</td>
+									<td>カレンダーでの表示が▲になる数値を指定します。この値以下になった場合に表示が▲になります。</td>
+								</tr>
+								<tr>
+									<td>data-tax</td>
+									<td align="center">-</td>
+									<td align="center">-</td>
+									<td>価格計算をおこなう場合の税率を指定します。</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- カレンダーの選択をselectで行う場合 -->
+					<!--
+					<select name="シート" data-calendar="1">
+						<option value=""></option>
+						<option value="1部" data-calendar-name="" data-calendar-choice="1B" data-calendar-stat="10">1部</option>
+						<option value="1部（プレミアムシート）" data-calendar-name="" data-calendar-choice="1BP" data-calendar-stat="20">1部（プレミアムシート）</option>
+						<option value="2部" data-calendar-name="" data-calendar-choice="2B" data-calendar-stat="10">2部</option>
+					</select>
+					-->
+					<!-- カレンダーの選択をradioで行う場合 -->
+					<label><input type="radio" name="シート" value="シングルルーム" data-calendar="1" data-calendar-name="value以外の名称を使う場合の項目" data-calendar-choice="ROOM1" data-calendar-stat="5">シングルルーム</label>
+					<label><input type="radio" name="シート" value="ツインルーム" data-calendar="1" data-calendar-name="value以外の名称を使う場合の項目" data-calendar-choice="ROOM2" data-calendar-stat="5">ツインルーム</label>
+					<label><input type="radio" name="シート" value="和室" data-calendar="1" data-calendar-name="value以外の名称を使う場合の項目" data-calendar-choice="ROOM3" data-calendar-stat="5">和室</label>
+					<!-- カレンダーの選択をhiddenで行う場合 -->
+					<!--
+					<input type="hidden" name="シート" value="2部" data-calendar="1" data-calendar-name="" data-calendar-choice="2B" data-calendar-stat="10">
+					-->
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">予約カレンダー</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+					<div class="tips">
+						<p>カレンダーの表示領域を指定します。また、カレンダー未選択時のメッセージとエラーメッセージもこの部分で指定します。表示領域のIDは<strong>mfp_calendar_wrapper</strong>で固定です。</p>
+						<table>
+							<thead>
+								<tr>
+									<th>属性名</th>
+									<th>必須</th>
+									<th>値</th>
+									<th>説明</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>data-calendar-message</td>
+									<td align="center">◯</td>
+									<td align="center">-</td>
+									<td>カレンダー未選択時に表示されるテキストです。</td>
+								</tr>
+								<tr>
+									<td>data-calendar-error</td>
+									<td align="center">◯</td>
+									<td align="center">-</td>
+									<td>申し込み人数が超過した際のエラーメッセージです。</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				<div class="mfp_col10" style="min-height: 460px;">
+					<div id="mfp_calendar_wrapper" data-calendar-message="お申し込み区分を選択してください" data-calendar-error="申込可能人数を超過しています"></div>
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">お申し込み詳細</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<div class="tips">
+						<p>カレンダーの申込内容を受け取るエレメントです。このエレメントは表示しなくても大丈夫です。IDは<strong>mfp_calendar_value</strong>で固定です。</p>
+					</div>
+					<input type="text" name="お申し込み詳細" id="mfp_calendar_value" readonly="readonly">
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">ご予約数量</dt>
+		<dd class="mfp">
+			<div class="tips">
+				<p>ご予約数量エレメントです。数量の合算分が予約枠から減算されます。各属性毎に金額を設定することが可能で、その場合カレンダー側に設定された金額は無視されます。</p>
+				<table>
+					<thead>
+						<tr>
+							<th>属性名</th>
+							<th>必須</th>
+							<th>値</th>
+							<th>説明</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>data-calendar-qty</td>
+							<td align="center">◯</td>
+							<td align="center">1</td>
+							<td>この属性が付与されたエレメントが数量の指定であることを明示するための属性です。</td>
+						</tr>
+						<tr>
+							<td>data-calendar-price</td>
+							<td align="center">-</td>
+							<td align="center">-</td>
+							<td>該当の数量が指定された場合の価格計算の金額を指定する場合の属性になります。この属性が指定されている場合、カレンダー側に設定された金額は無視されます。</td>
+						</tr>
+						<tr>
+							<td>data-calendar-addprice</td>
+							<td align="center">-</td>
+							<td align="center">-</td>
+							<td>該当の数量が指定された場合のカレンダーの価格に対して加算する金額を指定する場合の属性になります。</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="mfp_rows">
+				<div class="mfp_col25">
+					<input type="number" name="大人" placeholder="大人" data-calendar-qty="1" data-calendar-price="5000">
+				</div>
+				<div class="mfp_col25">
+					<input type="number" name="小中学生" placeholder="小中学生" data-calendar-qty="1" data-calendar-addprice="2000">
+				</div>
+				<div class="mfp_col25">
+					<input type="number" name="園児" placeholder="園児" data-calendar-qty="1" data-calendar-price="1000">
+				</div>
+				<div class="mfp_col25">
+					<input type="number" name="幼児（3歳まで）" placeholder="幼児（3歳まで）">
+				</div>
+			</div>
+		</dd>
+		
+		<dt class="mfp">消費税</dt>
+		<dd class="mfp">
+			税率10％ <span class="mfp_tax_10"></span> / 税率8％ <span class="mfp_tax_8"></span><br>
+			税抜支払合計金額  <span class="mfp_tax_net"></span> / 税込支払合計金額 <span class="mfp_price"></span>
+			<input type="text" name="消費税10％" value="" class="mfp_tax_10">
+			<input type="text" name="消費税8％" value="" class="mfp_tax_8">
+			<input type="text" name="税抜支払合計金額" value="" class="mfp_tax_net">
+		</dd>
+
+		<dt class="mfp">お支払い合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price" class="mfp_price">0円</div>
+			<input type="text" name="お支払い金額" id="mfp_price_element" style="display: none;">
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

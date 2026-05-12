@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<div class="mfp_phase" summary="アンケート">
+		<dl class="mailform">
+			<dt class="mfp"><span class="must">必須</span>アンケート</dt>
+			<dd class="mfp">
+				どこでこのサイトを知りましたか？<br>
+				<select name="アンケート（経路）" data-drillfor="example2,example3">
+					<option value="インターネット">インターネット</option>
+					<option value="新聞">新聞</option>
+					<option value="雑誌">雑誌</option>
+					<option value="知人からの紹介">知人からの紹介</option>
+				</select>
+				<select id="example2" name="アンケート（経路詳細）">
+					<optgroup label="インターネット">
+						<option value="Google">Google</option>
+						<option value="Yahoo">Yahoo</option>
+						<option value="Bing">Bing</option>
+						<option value="その他">その他</option>
+					</optgroup>
+					<optgroup label="新聞">
+						<option value="北海道新聞">北海道新聞</option>
+						<option value="読売新聞">読売新聞</option>
+						<option value="朝日新聞">朝日新聞</option>
+						<option value="産経新聞">産経新聞</option>
+						<option value="日経新聞">日経新聞</option>
+						<option value="その他">その他</option>
+					</optgroup>
+					<optgroup label="雑誌">
+						<option value="コロコロコミック">コロコロコミック</option>
+						<option value="コミックボンボン">コミックボンボン</option>
+						<option value="週刊少年ジャンプ">週刊少年ジャンプ</option>
+						<option value="週刊少年マガジン">週刊少年マガジン</option>
+						<option value="週刊少年サンデー">週刊少年サンデー</option>
+						<option value="ファミ通">ファミ通</option>
+						<option value="その他">その他</option>
+					</optgroup>
+					<optgroup label="知人からの紹介">
+						<option value="田中">田中</option>
+						<option value="佐藤">佐藤</option>
+						<option value="吉田">吉田</option>
+						<option value="鈴木">鈴木</option>
+						<option value="和田">和田</option>
+						<option value="その他">その他</option>
+					</optgroup>
+				</select>
+				<select id="example3" name="アンケート（経路詳細）2">
+					<optgroup label="インターネット">
+						<option value="2Google">2Google</option>
+						<option value="Yahoo">Yahoo</option>
+						<option value="Bing">Bing</option>
+						<option value="その他">その他</option>
+					</optgroup>
+					<optgroup label="新聞">
+						<option value="2北海道新聞">2北海道新聞</option>
+						<option value="読売新聞">読売新聞</option>
+						<option value="朝日新聞">朝日新聞</option>
+						<option value="産経新聞">産経新聞</option>
+						<option value="日経新聞">日経新聞</option>
+						<option value="その他">その他</option>
+					</optgroup>
+					<optgroup label="雑誌">
+						<option value="2コロコロコミック">2コロコロコミック</option>
+						<option value="コミックボンボン">コミックボンボン</option>
+						<option value="週刊少年ジャンプ">週刊少年ジャンプ</option>
+						<option value="週刊少年マガジン">週刊少年マガジン</option>
+						<option value="週刊少年サンデー">週刊少年サンデー</option>
+						<option value="ファミ通">ファミ通</option>
+						<option value="その他">その他</option>
+					</optgroup>
+					<optgroup label="知人からの紹介">
+						<option value="2田中">2田中</option>
+						<option value="佐藤">佐藤</option>
+						<option value="吉田">吉田</option>
+						<option value="鈴木">鈴木</option>
+						<option value="和田">和田</option>
+						<option value="その他">その他</option>
+					</optgroup>
+				</select>
+			</dd>
+		</dl>
+		<div class="mfp_buttons">
+			<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

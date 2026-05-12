@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>生年月日入力補助を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'birthday.js';</span>を有効にしてください。</p>
+				</div>
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		
+		<dt class="mfp">生年月日</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">dateタイプを利用する場合は YYYY-MM-DD 形式になります。<br>
+			data-birthdayの指定はdata-birthday="始点,終点"となります。始点・終点は○年前として指定するため、100年前から10年前までの90年間を表示する場合はdata-birthday="100,10"となります。これにより10才～100才が該当する年が表示されます。</span>
+			<input type="date" data-type="date" name="生年月日" data-birthday="100,10" required="required">
+			<div id="birthday_生年月日"></div>
+		</dd>
+		
+		<dt class="mfp">生年月日</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">textタイプを利用する場合は YYYY年MM月DD日 形式になります。</span>
+			<input type="text" name="生年月日２" data-birthday="80,10" required="required">
+		</dd>
+		
+		<dt class="mfp">生年月日</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">textタイプにdata-birthday-jc属性をつけることで和暦の 年号YY年MM月DD日 形式になります。</span>
+			<input type="text" name="生年月日３" data-birthday="80,0" data-birthday-jc="1" required="required">
+		</dd>
+		
+		<dt class="mfp">生年月日</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">textタイプにdata-birthday-age属性をつけることで年齢が追加されます。</span>
+			<input type="text" name="生年月日４" data-birthday="80,0" data-birthday-age="1" required="required">
+		</dd>
+		
+		<dt class="mfp">生年月日</dt>
+		<dd class="mfp">
+			<span class="mfp_tips">data-birthday-age-target属性をつけることで年齢が指定のIDに挿入されます。</span>
+			<input type="text" name="生年月日５" data-birthday="80,0" data-birthday-age-target="age_element" required="required">
+			<input type="text" name="年齢" id="age_element">
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

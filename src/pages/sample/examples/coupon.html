@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro 4</title>
+		<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro 4</h1>
+				<p>究極の進化を遂げたメールフォームプロ4の登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		<dt class="mfp">クーポン番号</dt>
+		<dd class="mfp">
+			<input type="text" name="クーポン番号" size="30" id="CouponCheck" data-error-text="入力されたクーポンコードに誤りがあります。">
+			<div id="CouponCheck_text"></div>
+		</dd>
+		
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

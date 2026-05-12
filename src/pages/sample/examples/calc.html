@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform">
+		
+		<dt class="mfp"><span class="new">NEW</span>税金の計算</dt>
+		<dd class="mfp">
+			<div class="tips">
+				<p>税込金額内の税率を指定する場合、<strong>data-price</strong>のほかに<strong>data-tax</strong>という属性を指定してください。<strong>data-tax</strong>で指定する値は税率です。8%の商品の場合は<strong>data-tax=&quot;8&quot;</strong>となります。</p>
+				<p>税額は税率毎に自動的に計算・集計されますが、誤差がでる場合は手動で税抜価格を設定することもできます。その場合は<strong>data-net-price</strong>を指定し、値を税抜価格としてください。</p>
+			</div>
+			<div class="mfp_rows">
+				<div class="mfp_col4">
+					<select name="商品1">
+						<option value=""></option>
+						<option id="item1" data-price="1000" data-qty-element="itemqty" data-tax="8" value="食品A">食品A／1,000円（税込8％）</option>
+						<option id="item2" data-price="2000" data-qty-element="itemqty" data-tax="8" value="食品B">食品B／2,000円（税込8％）</option>
+						<option id="item3" data-price="3000" data-qty-element="itemqty" data-tax="10" value="物品C">物品C／3,000円（税込10％）</option>
+						<option id="item4" data-price="4000" data-qty-element="itemqty" data-tax="10" value="物品D">物品D／4,000円（税込10％）</option>
+					</select>
+				</div>
+				<div class="mfp_col4">
+					<select name="商品2">
+						<option value=""></option>
+						<option id="item2-1" data-price="1000" data-qty-element="itemqty" data-net-price="925" data-tax="8" value="食品A">食品A／1,000円（税込8％）</option>
+						<option id="item2-2" data-price="2000" data-qty-element="itemqty" data-tax="8" value="食品B">食品B／2,000円（税込8％）</option>
+						<option id="item2-3" data-price="1000" data-qty-element="itemqty" data-net-price="909" data-tax="10" value="物品C">物品C／1,000円（税込10％）</option>
+						<option id="item2-4" data-price="2000" data-qty-element="itemqty" data-tax="10" value="物品D">物品D／2,000円（税込10％）</option>
+					</select>
+				</div>
+				<div class="mfp_col2">
+					<select name="商品個数" id="itemqty">
+						<option value="1">1個</option>
+						<option value="2">2個</option>
+						<option value="3">3個</option>
+						<option value="4">4個</option>
+						<option value="5">5個</option>
+					</select>
+				</div>
+			</div>
+			<div class="tips">
+				<p>税額を表示する場合、表示したいオブジェクトのクラス名を<strong>mfp_tax_税率</strong>とすることで税額が表示されます。税率が8％の税額を表示したい場合、クラス名は<strong>mfp_tax_8</strong>となります。</p>
+				<p>税抜支払合計金額を表示させたい場合はオブジェクトのクラス名を<strong>mfp_tax_net</strong>としてください。</p>
+				<p>inputタグに上記クラス名を付与することで、確認画面やメールに記載することができます。確認画面に表示させる場合はinputのtypeをtextにして、styleで非表示にするなどしてください。</p>
+			</div>
+			<table>
+				<tr>
+					<th>税率10％</th>
+					<td><span class="mfp_tax_10"></span></td>
+					<td><input type="text" name="消費税10％" value="" class="mfp_tax_10"></td>
+				</tr>
+				<tr>
+					<th>税率8％</th>
+					<td><span class="mfp_tax_8"></span></td>
+					<td><input type="text" name="消費税8％" value="" class="mfp_tax_8"></td>
+				</tr>
+				<tr>
+					<th>税抜合計金額</th>
+					<td><span class="mfp_tax_net"></span></td>
+					<td><input type="text" name="税抜合計金額" value="" class="mfp_tax_net"></td>
+				</tr>
+				<tr>
+					<th>税込支払合計金額</th>
+					<td colspan="2"><span class="mfp_price"></span></td>
+				</tr>
+				<tr>
+					<th>注文個数</th>
+					<td colspan="2"><span class="mfp_qty"></span></td>
+				</tr>
+			</table>
+		</dd>
+		
+		<dt class="mfp">サンプル1</dt>
+		<dd class="mfp">
+			selectタグを利用する場合でかつoption毎に商品が異なる場合。<br>
+			<select name="サポート">
+				<option value=""></option>
+				<option value="有償サポート" id="support1" data-price="9800" data-tax="8" data-net-price="9074">有償サポート／9,800円</option>
+				<option value="年間サポート" id="support2" data-price="108000" data-tax="10" data-net-price="98181">年間サポート／108,000円</option>
+			</select>
+		</dd>
+		
+		<dt class="mfp">サンプル2</dt>
+		<dd class="mfp">
+			inputタグで個数を入力する場合。<br>
+			<input type="number" data-type="number" name="山わさび個数" id="yamawasabi" data-price="980" size="8"> 個
+		</dd>
+		<dt class="mfp">サンプル3</dt>
+		<dd class="mfp">
+			selectタグで個数を選択する場合。<br>
+			<select id="wadanoriyuki" data-price="10" name="ワダノリユキの愛憎">
+				<option value=""></option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+			</select>
+		</dd>
+		<dt class="mfp">サンプル4</dt>
+		<dd class="mfp">
+			checkboxやradioでチェックする場合。<br>
+			<label><input type="radio" name="運送会社" value="クロネコヤマト 2000円" id="yamato" data-price="2000"> クロネコヤマト 2000円</label>
+			<label><input type="radio" name="運送会社" value="佐川急便 1500円" id="sagawa" data-price="1500"> 佐川急便 1500円</label>
+		</dd>
+		<!--
+		<dt class="mfp"><span class="must">必須</span>人数</dt>
+		<dd class="mfp">
+			価格の合算値を人数などで乗算する場合はpricefactor.jsを有効にしてください。<br>
+			<select name="人数" id="priceFactor" required="required">
+				<option value="1">1人</option>
+				<option value="2">2人</option>
+			</select>
+		</dd>
+		
+		<dt class="mfp">消費税</dt>
+		<dd class="mfp">
+			消費税を加える場合はtax.jsを有効にしてください。<br>
+			<div id="mfp_tax">0円</div>
+			<input type="text" name="消費税" id="mfp_tax_element" style="display: none;">
+		</dd>
+		
+		<dt class="mfp">注文点数</dt>
+		<dd class="mfp">
+			<div class="mfp_qty">0円</div>
+			<input type="text" name="注文点数" id="mfp_qty_element" style="display: none;" data-format="$1 点">
+		</dd>
+		-->
+		<dt class="mfp">お支払い合計金額</dt>
+		<dd class="mfp">
+			<div id="mfp_price" class="mfp_price">0円</div>
+			<input type="text" name="お支払い金額" id="mfp_price_element" style="display: none;">
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

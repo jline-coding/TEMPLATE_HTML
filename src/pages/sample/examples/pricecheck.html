@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+					<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<ol>
+						<li>config.cgi内で<span>push @AddOns,'pricecheck.js';<br>push @Modules,'pricecheck';</span>を有効にしてください。</li>
+						<li><strong>/configs/pricecheck.cgi</strong>内に価格を照会するためのTSVファイルのパスを設定してください。</li>
+						<li>タブ区切りテキスト形式で、文字コードはUTF-8、1列目：ID、2列目：商品名、3列目：価格　という構成のTSVファイルを用意してください。</li>
+					</ol>
+				</div>
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

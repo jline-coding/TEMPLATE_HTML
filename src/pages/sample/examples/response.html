@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>選択された値によって自動返信メールの文章を変更する場合などに利用する機能です。</p>
+					<ol>
+						<li><strong>config.cgi</strong>を編集し、<span>push @Modules,'response';</span>を有効にします。</li>
+						<li><strong>configs/response.cgi</strong>を編集し項目名と値のコンビネーションによって文章を作成します。</li>
+						<li>自動返信メールに設定する際は<span>&lt;_エレメント名_選択された値_&gt;</span>を配置します。例えば決済方法で銀行振込が選択された場合の文章を表示させる場合は<span>&lt;_決済方法_銀行振込_&gt;</span>となります。</li>
+					</ol>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<dl class="mailform" id="deliveryTime">
+		<dt class="mfp"><span class="must">必須</span>ごはん</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col5">
+					<label><input type="checkbox" name="ごはん" value="おすし" required="required"> おすし</label>
+				</div>
+				<div class="mfp_col5">
+					<label><input type="checkbox" name="ごはん" value="焼肉" required="required"> 焼肉</label>
+				</div>
+			</div>
+		</dd>
+		<dt class="mfp"><span class="must">必須</span>決済方法</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col5">
+					<label><input type="radio" name="決済方法" value="銀行振込" required="required"> 銀行振込</label>
+				</div>
+				<div class="mfp_col5">
+					<label><input type="radio" name="決済方法" value="クレジット決済" required="required"> クレジット決済</label>
+				</div>
+			</div>
+		</dd>
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp">
+			<div class="mfp_rows">
+				<div class="mfp_col10">
+					<input type="email" data-type="email" name="email" size="40" required="required">
+				</div>
+			</div>
+		</dd>
+		
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">注文する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>

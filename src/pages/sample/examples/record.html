@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+		<title>Mailform Pro</title>
+<!--メールフォームプロ用CSS-->
+<link rel="stylesheet" href="../mfp.statics/mailformpro.css" type="text/css">
+<!--/メールフォームプロ用CSS-->
+		<link rel="stylesheet" href="../mfp.statics/example.css" type="text/css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="header">
+				<h1>Mailform Pro</h1>
+				<p>もっと究極の進化を遂げたメールフォームプロの登場です。</p>
+			</div>
+			<div id="container">
+				<script type="text/javascript" src="example.js"></script>
+				<div class="tips">
+					<p>入力内容の記録機能を利用する場合は<strong>config.cgi</strong>を編集し、<span>push @AddOns,'record.js';</span>を有効にしてください。</p>
+					<p>
+						記録用のボタンは自動的に配置されますが、特定位置に配置したい場合はこのサンプルHTMLのように
+						<span>button#mfp_recorder_restore、button#mfp_recorder_clear、button#mfp_recorder_record</span>
+						を配置してください。記録がない場合に呼び出しボタンと消去ボタンを隠す場合、該当ボタンを<em>#mfp_recorder_wrap</em>でラップしてください。
+					</p>
+				</div>
+
+<!--メールフォームプロ-->
+<form id="mailformpro" action="../mailformpro/mailformpro.cgi" method="POST">
+	<div class="mfp_record" id="mfp_recorder_wrap">
+		<p>以前に記録した入力内容があります。呼び出す場合は「記録を呼び出す」ボタンをクリックしてください。</p>
+		<button id="mfp_recorder_restore" type="button">記録を呼び出す</button>
+		<button id="mfp_recorder_clear" type="button">記録を消去する</button>
+	</div>
+	<dl class="mailform">
+		<input type="hidden" name="お名前" data-unjoin="姓+ +名+（+セイ+ +メイ+）" value="">
+		<dt class="mfp"><span class="must">必須</span>お名前</dt>
+		<dd class="mfp">
+			<input type="text" name="姓" data-kana="セイ" size="15" required="required" data-record="1"> <input type="text" name="名" data-kana="メイ" size="15" required="required" data-record="1">
+		</dd>
+		<dt class="mfp">フリガナ</dt>
+		<dd class="mfp"><input type="text" name="セイ" size="15" data-charcheck="kana" data-record="1"> <input type="text" name="メイ" size="15" data-charcheck="kana" data-record="1"></dd>
+		
+		<dt class="mfp">性別</dt>
+		<dd class="mfp">
+			<label><input type="radio" name="性別" value="男性" data-record="1"> 男性</label>
+			<label><input type="radio" name="性別" value="女性" data-record="1"> 女性</label>
+		</dd>
+		
+		<dt class="mfp"><span class="must">必須</span>メールアドレス</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="email" size="40" required="required" data-record="1"></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>確認のためもう一度</dt>
+		<dd class="mfp"><input type="email" data-type="email" name="confirm_email" data-post-disable="1" size="40" required="required" data-record="1"></dd>
+		
+		<dt class="mfp">備考欄</dt>
+		<dd class="mfp"><textarea name="備考欄" rows="10" cols="60"></textarea></dd>
+		
+		<dt class="mfp"><span class="must">必須</span>送信確認</dt>
+		<dd class="mfp"><label><input type="checkbox" required="required" data-exc="1" name="送信確認" value="送信チェック済み"> 上記送信内容を確認したらチェックを入れてください</label></dd>
+		
+		<dt class="mfp">入力内容の記録</dt>
+		<dd class="mfp">
+			入力した内容を記録する場合は下記の「入力内容を記録する」ボタンを押してください。情報はWebサーバには記録されず、ブラウザにのみ記録されます。<br>
+			<button id="mfp_recorder_record" type="button">入力内容を記録する</button>
+		</dd>
+	</dl>
+	<div class="mfp_buttons">
+		<button type="submit">送信する</button>&nbsp;&nbsp;<button type="reset">リセット</button>
+	</div>
+</form>
+<script type="text/javascript" id="mfpjs" src="../mailformpro/mailformpro.cgi" charset="UTF-8"></script>
+<!--/メールフォームプロ-->
+
+			</div>
+			<div id="footer">
+				<p>Copyright &copy; 2004 SYNCKGRAPHICA.All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+</html>
