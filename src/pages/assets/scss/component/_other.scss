@@ -193,6 +193,13 @@ div#mfp_loading_screen {
   display: block;
 }
 
+.wpcf7-form {
+    &.resetting,
+    &.submitting {
+        pointer-events: none;
+    }
+}
+
 /*!
 - Cookiewrap
 ------------------------------
