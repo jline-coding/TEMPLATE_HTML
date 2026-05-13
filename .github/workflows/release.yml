@@ -56,9 +56,9 @@ jobs:
           cache: 'npm'
 
       - name: 📦 Cài đặt dependencies (nếu cần build)
-        run: npm install
+        run: npm install --no-package-lock
 
-      - name: ?? Ch?y Unit Tests
+      - name: 🧪 Chạy Unit Tests
         run: npm run test
 
       - name: 🔨 Build dự án

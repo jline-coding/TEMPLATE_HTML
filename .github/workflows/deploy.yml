@@ -84,9 +84,9 @@ jobs:
 
       - name: 📦 Cài đặt dependencies dự án (nếu cần build)
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
-        run: npm install
+        run: npm install --no-package-lock
 
-      - name: ?? Ch?y Unit Tests
+      - name: 🧪 Chạy Unit Tests
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
         run: npm run test
 
