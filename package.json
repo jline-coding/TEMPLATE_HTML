@@ -24,7 +24,7 @@
     "ejs": "^3.1.10",
     "gray-matter": "^4.0.3",
     "js-beautify": "^1.15.4",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.12",
     "postcss-sort-media-queries": "^5.2.0",
     "prettier": "^3.8.1",
     "sass-embedded": "^1.85.1",
