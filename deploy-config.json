@@ -6,7 +6,7 @@
     "MODE": "new",
     "OUTPUT_EXT": "html",
     "USE_PHP_INCLUDE": "false",
-    "RENEW_SCSS_DIR": "abc/scss",
+    "RENEW_SCSS_DIR": "assets/scss",
     "RENEW_CSS_DIR": "assets/css",
     "SITE_URL": "https://your-domain.com",
     "DIP": "false",
