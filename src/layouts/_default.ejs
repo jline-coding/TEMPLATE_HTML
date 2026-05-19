@@ -3,41 +3,49 @@
 <head>
   <!-- meta -->
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="format-detection" content="telephone=no, address=no, email=no">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:title" content="<%= file.data.title %>">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content>
-  <meta property="og:image" content>
-  <meta property="og:site_name" content="">
-  <meta property="og:description" content="<% if(file.data.description){ %><%= file.data.description %><% }else{%><%= "" %><% }-%>">
-  <meta name="description" content="<% if(file.data.description){ %><%= file.data.description %><% }else{%><%= "" %><% }-%>">
-  <meta name="keywords" content="<% if(file.data.keyword){ %><%= file.data.keyword %><% }else{%><%= "" %><% }-%>">
-  <link rel="shortcut icon" type="image/x-icon" href="<%= assetsDir %>assets/images/common/favicon.ico" >
+  <meta name="format-detection" content="telephone=no, address=no, email=no">
   <%
     // Build canonical path from file's relative position
     var canonicalPath = '/';
     if (file && file.path) {
       var relPath = file.path.replace(/\\/g, '/');
-      // Extract part after /pages/
       var pagesIdx = relPath.indexOf('/pages/');
       if (pagesIdx !== -1) {
         canonicalPath = relPath.substring(pagesIdx + '/pages'.length);
       }
-      // Replace .ejs with output extension, then normalize
       canonicalPath = canonicalPath.replace(/\.ejs$/, '');
-      // If ends with /index, remove it for clean URL
       canonicalPath = canonicalPath.replace(/\/index$/, '/');
-      // Ensure no leading slash so it can safely append to siteUrl
       canonicalPath = canonicalPath.replace(/^\//, '');
     }
     
     var baseDomain = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl : '';
     if (baseDomain && !baseDomain.endsWith('/')) baseDomain += '/';
+    var pageUrl = baseDomain ? (baseDomain + canonicalPath) : '';
+    var pageDescription = file.data.description || '';
+    var pageOgImage = baseDomain ? (baseDomain + 'assets/images/common/ogp.jpg') : '';
+    var pageOgType = 'website';
+    var pageSiteName = '';
   -%>
-  <link rel="canonical" href="<%= baseDomain %><%= canonicalPath %>">
   <title><%= file.data.title %></title>
+  <meta name="description" content="<%= pageDescription %>">
+  <link rel="canonical" href="<%= pageUrl %>">
+  <!-- OGP -->
+  <meta property="og:title" content="<%= file.data.title %>">
+  <meta property="og:description" content="<%= pageDescription %>">
+  <meta property="og:type" content="<%= pageOgType %>">
+  <meta property="og:url" content="<%= pageUrl %>">
+  <meta property="og:image" content="<%= pageOgImage %>">
+  <meta property="og:site_name" content="<%= pageSiteName %>">
+  <meta property="og:locale" content="ja_JP">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= file.data.title %>">
+  <meta name="twitter:description" content="<%= pageDescription %>">
+  <meta name="twitter:image" content="<%= pageOgImage %>">
+  <!-- favicon -->
+  <link rel="icon" href="<%= assetsDir %>assets/images/common/favicon.ico">
+  <link rel="apple-touch-icon" href="<%= assetsDir %>assets/images/common/apple-touch-icon.png">
   <!-- link -->  
   <% if(file.data.vendorcss){ 
     file.data.vendorcss.forEach(cssItem => { -%>
