@@ -99,8 +99,8 @@
         }
 
         // Init ScrollHint
-        if ($('.js_scrollable, .has-fixed-layout').length && typeof ScrollHint !== 'undefined') {
-            new ScrollHint('.js_scrollable, .has-fixed-layout', {
+        if ($('.js-scrollable, .has-fixed-layout').length && typeof ScrollHint !== 'undefined') {
+            new ScrollHint('.js-scrollable, .has-fixed-layout', {
                 scrollHintIconAppendClass: 'scroll-hint-icon-white',
                 applyToParents: true,
                 i18n: {
