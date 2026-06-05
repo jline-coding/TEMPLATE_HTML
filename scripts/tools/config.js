@@ -162,7 +162,7 @@ export function getScssDirsInfo(filePath) {
         if (absPath === target || absPath.startsWith(target + '/') || absPath.startsWith(target + '\\')) {
             return {
                 scssDir: RENEW_SCSS_DIRS[i],
-                cssRels: RENEW_CSS_DIRS[i]
+                cssRels: [RENEW_CSS_DIRS[i]]
             };
         }
     }
