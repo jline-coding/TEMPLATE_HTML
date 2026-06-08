@@ -1,3 +1,15 @@
+// jQuery 4 compatibility polyfill for Slick.js
+// $.type() was removed in jQuery 4, Slick still depends on it
+if (typeof $.type === 'undefined') {
+  $.type = function (obj) {
+    if (obj === null) return 'null';
+    if (obj === undefined) return 'undefined';
+    return Object.prototype.toString.call(obj)
+      .replace(/^\[object\s|\]$/g, '')
+      .toLowerCase();
+  };
+}
+
 (function ($) {
     let scroll_pos1 = 0;
     // Inview
