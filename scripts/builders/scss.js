@@ -11,9 +11,15 @@ import {
 } from '../tools/config.js';
 import { norm, ensureDir, walkSync } from '../tools/utils.js';
 
-const postcssPlugins = isWatch
-  ? [autoprefixer({ cascade: false })]
-  : [sortMediaQueries({ sort: 'mobile-first' }), autoprefixer({ cascade: false }), cssnano()];
+const postcssPlugins = [
+  sortMediaQueries({ sort: 'mobile-first' }),
+  autoprefixer({ cascade: false }),
+  cssnano({
+    preset: ['default', {
+      discardComments: { removeAll: true }
+    }]
+  })
+];
 
 export async function buildScss(changedFile) {
   let entryFiles = [];
@@ -74,6 +80,10 @@ async function compileScssFile(filePath) {
       writeFileSync(cssPath, processed.css, 'utf8');
       if (isWatch && processed.map) {
         writeFileSync(mapPath, processed.map.toString(), 'utf8');
+      } else {
+        if (existsSync(mapPath)) {
+          try { unlinkSync(mapPath); } catch {}
+        }
       }
       console.log(`[scss] ${norm(rel)} → ${norm(relative(DIST, cssPath))}`);
     }
