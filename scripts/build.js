@@ -57,10 +57,10 @@ async function fullBuild() {
   // Run tasks
   const errors = [];
   if (isRenew) {
-    try { buildGeneralCopy(); } catch (e) { errors.push(['generalCopy', e]); }
+    try { await buildGeneralCopy(); } catch (e) { errors.push(['generalCopy', e]); }
     try { await buildScss(); } catch (e) { errors.push(['scss', e]); }
   } else {
-    try { buildGeneralCopy(); } catch (e) { errors.push(['generalCopy', e]); }
+    try { await buildGeneralCopy(); } catch (e) { errors.push(['generalCopy', e]); }
     try { await buildEjs(); } catch (e) { errors.push(['ejs', e]); }
     try { await buildScss(); } catch (e) { errors.push(['scss', e]); }
     try { buildJs(); } catch (e) { errors.push(['js', e]); }
@@ -205,7 +205,7 @@ async function startWatch() {
       
       if (isRenew) {
         if (ext === '.scss') { await buildScss(fp); needsScssReload = true; }
-        else if (ext !== '.ejs' && ext !== '.map') { buildGeneralCopy(fp); needsFullReload = true; }
+        else if (ext !== '.ejs' && ext !== '.map') { await buildGeneralCopy(fp); needsFullReload = true; }
         continue;
       }
 
@@ -222,7 +222,7 @@ async function startWatch() {
         else if (norm(fp).startsWith(norm(resolve(VIDEOS_DIR)))) buildVideos(fp);
         needsFullReload = true;
       } else if (!['.map'].includes(ext)) {
-        buildGeneralCopy(fp);
+        await buildGeneralCopy(fp);
         needsFullReload = true;
       }
     }

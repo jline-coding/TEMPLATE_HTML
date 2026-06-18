@@ -29,10 +29,11 @@ export function isHandledBySpecificBuilder(filepath) {
   return false;
 }
 
-export function buildGeneralCopy(changedFile) {
+export async function buildGeneralCopy(changedFile) {
   if (!existsSync(PAGES_DIR)) return;
 
   const skipExts = ['.scss', '.ejs', '.map'];
+  const convertExts = ['.jpg', '.jpeg', '.png'];
 
   function shouldCopy(f) {
     if (skipExts.includes(extname(f).toLowerCase())) return false;
@@ -42,6 +43,9 @@ export function buildGeneralCopy(changedFile) {
 
   if (changedFile) {
     if (!shouldCopy(changedFile)) return;
+
+    const ext = extname(changedFile).toLowerCase();
+    const isImageToConvert = isRenew && convertExts.includes(ext);
 
     let baseRel = relative(PAGES_DIR, changedFile);
     let afterAssets = baseRel;
@@ -55,16 +59,42 @@ export function buildGeneralCopy(changedFile) {
       for (const prefix of ASSETS_OUT_PREFIXES) {
         const rel = prefix ? `${prefix}/${afterAssets}` : afterAssets;
         const dest = resolve(DIST, rel);
-        ensureDir(dirname(dest));
-        writeFileSync(dest, readFileSync(changedFile));
-        console.log(`[copy] ${norm(rel)}`);
+        if (isImageToConvert) {
+          const webpDest = dest.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+          try {
+            ensureDir(dirname(webpDest));
+            const buffer = readFileSync(changedFile);
+            const processed = await sharp(buffer).webp({ quality: 90 }).toBuffer();
+            writeFileSync(webpDest, processed);
+            console.log(`[renew-webp] converted: ${norm(relative(DIST, webpDest))}`);
+          } catch (e) {
+            console.error(`[renew-webp] Error converting ${changedFile}: ${e.message}`);
+          }
+        } else {
+          ensureDir(dirname(dest));
+          writeFileSync(dest, readFileSync(changedFile));
+          console.log(`[copy] ${norm(rel)}`);
+        }
       }
     } else {
       for (const prefix of PAGE_OUT_PREFIXES) {
         const dest = resolve(DIST, prefix, baseRel);
-        ensureDir(dirname(dest));
-        writeFileSync(dest, readFileSync(changedFile));
-        console.log(`[copy] ${norm(relative(DIST, dest))}`);
+        if (isImageToConvert) {
+          const webpDest = dest.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+          try {
+            ensureDir(dirname(webpDest));
+            const buffer = readFileSync(changedFile);
+            const processed = await sharp(buffer).webp({ quality: 90 }).toBuffer();
+            writeFileSync(webpDest, processed);
+            console.log(`[renew-webp] converted: ${norm(relative(DIST, webpDest))}`);
+          } catch (e) {
+            console.error(`[renew-webp] Error converting ${changedFile}: ${e.message}`);
+          }
+        } else {
+          ensureDir(dirname(dest));
+          writeFileSync(dest, readFileSync(changedFile));
+          console.log(`[copy] ${norm(relative(DIST, dest))}`);
+        }
       }
     }
     return;
@@ -73,6 +103,9 @@ export function buildGeneralCopy(changedFile) {
   const allFiles = walkSync(PAGES_DIR, shouldCopy);
 
   for (const file of allFiles) {
+    const ext = extname(file).toLowerCase();
+    const isImageToConvert = isRenew && convertExts.includes(ext);
+
     let baseRel = relative(PAGES_DIR, file);
     let afterAssets = baseRel;
     let isAsset = false;
@@ -85,19 +118,49 @@ export function buildGeneralCopy(changedFile) {
       for (const prefix of ASSETS_OUT_PREFIXES) {
         const rel = prefix ? `${prefix}/${afterAssets}` : afterAssets;
         const dest = resolve(DIST, rel);
-        if (isNewer(file, dest)) {
-          ensureDir(dirname(dest));
-          writeFileSync(dest, readFileSync(file));
-          console.log(`[copy] ${norm(rel)}`);
+        if (isImageToConvert) {
+          const webpDest = dest.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+          if (isNewer(file, webpDest)) {
+            ensureDir(dirname(webpDest));
+            try {
+              const buffer = readFileSync(file);
+              const processed = await sharp(buffer).webp({ quality: 90 }).toBuffer();
+              writeFileSync(webpDest, processed);
+              console.log(`[renew-webp] converted: ${norm(relative(DIST, webpDest))}`);
+            } catch (e) {
+              console.error(`[renew-webp] Error converting ${file}: ${e.message}`);
+            }
+          }
+        } else {
+          if (isNewer(file, dest)) {
+            ensureDir(dirname(dest));
+            writeFileSync(dest, readFileSync(file));
+            console.log(`[copy] ${norm(rel)}`);
+          }
         }
       }
     } else {
       for (const prefix of PAGE_OUT_PREFIXES) {
         const dest = resolve(DIST, prefix, baseRel);
-        if (isNewer(file, dest)) {
-          ensureDir(dirname(dest));
-          writeFileSync(dest, readFileSync(file));
-          console.log(`[copy] ${norm(relative(DIST, dest))}`);
+        if (isImageToConvert) {
+          const webpDest = dest.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+          if (isNewer(file, webpDest)) {
+            ensureDir(dirname(webpDest));
+            try {
+              const buffer = readFileSync(file);
+              const processed = await sharp(buffer).webp({ quality: 90 }).toBuffer();
+              writeFileSync(webpDest, processed);
+              console.log(`[renew-webp] converted: ${norm(relative(DIST, webpDest))}`);
+            } catch (e) {
+              console.error(`[renew-webp] Error converting ${file}: ${e.message}`);
+            }
+          }
+        } else {
+          if (isNewer(file, dest)) {
+            ensureDir(dirname(dest));
+            writeFileSync(dest, readFileSync(file));
+            console.log(`[copy] ${norm(relative(DIST, dest))}`);
+          }
         }
       }
     }
