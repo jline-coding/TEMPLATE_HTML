@@ -1,1 +1,0 @@
-mfpConfigs["SizeAjustPx"] = null;
