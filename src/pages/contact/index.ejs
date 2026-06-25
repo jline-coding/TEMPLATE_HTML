@@ -3,7 +3,7 @@ layout: _default
 title: CONTACT
 description: 
 vendorcss: ['mCustomScrollbar/jquery.mCustomScrollbar','jquery/jquery-ui.min']
-vendorjs: ['mCustomScrollbar/jquery.mCustomScrollbar','jquery/jquery-ui.min','ajaxzip3/ajaxzip3']
+vendorjs: ['mCustomScrollbar/jquery.mCustomScrollbar','jquery/jquery-ui.min','yubinbango/yubinbango']
 css: ['contact']
 js: ['contact']
 page: contact
@@ -12,7 +12,8 @@ page: contact
 <main class="p-contact">
     <div class="p-contact__inner">
         <div class="l-container">
-            <form id="mailformpro" action="mailformpro/mailformpro.cgi" method="POST" class="c-form">
+            <form id="mailformpro" action="mailformpro/mailformpro.cgi" method="POST" class="c-form h-adr">
+                <span class="p-country-name" style="display:none;">Japan</span>
                 <div class="c-form__body">
                     <div class="c-form__item">
                         <div class="c-form__ttl">
@@ -113,7 +114,7 @@ page: contact
                             <p class="c-form__txt16 c-txt16">ダミーテキストが入ります。ダミーテキストが入ります。</p>
                         </div>
                         <div class="c-form__content">
-                            <input class="c-input" type="text" name="郵便番号" placeholder="記入例）0000000" required="required" onkeyup="AjaxZip3.zip2addr(this,'','住所','住所');">
+                            <input class="c-input p-postal-code" type="text" name="郵便番号" placeholder="記入例）0000000" required="required">
                             <p class="c-form__txt14 c-txt14">※ダミーテキストが入ります。ダミーテキストが入ります。</p>
                         </div>
                     </div>
@@ -123,7 +124,7 @@ page: contact
                         </div>
                         <div class="c-form__content">
                             <div class="c-form__child">
-                                <input class="c-input" type="text" name="住所" placeholder="ダミーテキストが入ります。" required="required">
+                                <input class="c-input p-region p-locality p-street-address" type="text" name="住所" placeholder="ダミーテキストが入ります。" required="required">
                             </div>
                         </div>
                     </div>
