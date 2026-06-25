@@ -187,10 +187,10 @@ div#mfp_loading_screen {
 	position: absolute;
 }
 .mfp_err {
-  color: #d9534f;
-  font-size: 13px;
-  margin-top: 8px;
+  color: var(--red);
+  @extend %fz-14;
   display: block;
+  width: 100%;
 }
 
 .wpcf7-form {
