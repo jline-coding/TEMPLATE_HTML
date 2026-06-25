@@ -304,10 +304,10 @@ push @Modules,'logger';			## アクセス解析ログモジュール
 $config{'multiple'} = "\n";
 
 ## 表示調整 単一行表示
-$config{'singleline'} = "[ %s ] %s\n";
+$config{'singleline'} = "%s: %s\n";
 
 ## 表示調整 複数行表示
-$config{'multiline'} = "[ %s ]\n%s\n\n";
+$config{'multiline'} = "%s:\n%s\n\n";
 
 ## 未入力の項目を含める(1: on / 0: off)
 $config{'blankfield'} = 0;
