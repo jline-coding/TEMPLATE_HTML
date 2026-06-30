@@ -14,8 +14,8 @@
       if (pagesIdx !== -1) {
         canonicalPath = relPath.substring(pagesIdx + '/pages'.length);
       }
-      canonicalPath = canonicalPath.replace(/\.ejs$/, '');
-      canonicalPath = canonicalPath.replace(/\/index$/, '/');
+      canonicalPath = canonicalPath.replace(/\.ejs$/, '.html');
+      canonicalPath = canonicalPath.replace(/\/index\.html$/, '/');
       canonicalPath = canonicalPath.replace(/^\//, '');
     }
     
