@@ -257,7 +257,7 @@ push @Modules,'logger';			## アクセス解析ログモジュール
 #push @Modules,'PayPal';		## PayPal決済
 #push @Modules,'SMTP';			## SMTP送信
 #push @Modules,'SMTPS';			## SMTPS送信
-#push @Modules,'SimpleMailHead';## シンプルメールヘッダ
+push @Modules,'SimpleMailHead';## シンプルメールヘッダ
 #push @Modules,'MAILHEAD';		## メールヘッダのカスタマイズ
 #push @Modules,'mailauth';		## メールアドレス認証
 #push @Modules,'reqonce';		## 一度きりの送信
