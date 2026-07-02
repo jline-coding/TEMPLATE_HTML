@@ -46,7 +46,7 @@ $config{'SerialBoost'} = 0;
 $config{'ThanksPage'} = '../thanks.html?no=%s';
 
 ## 設置者に届くメールの件名
-$config{'subject'} = 'お問い合わせフォームから';
+$config{'subject'} = '【自動送信】お問い合わせフォームよりお問い合わせがありました';
 
 ## 設置者に届くメールの本文整形
 $_TEXT{'posted'} = <<'__posted_body__';
@@ -61,7 +61,7 @@ __posted_body__
 ## 自動返信メールの件名 (有効にする場合は下記の行頭#を外してください。)
 ## ※※※！！！※※※！！！※※※！！！※※※！！！※※※！！！※※※
 
-$config{"ReturnSubject"} = 'お問い合わせを受け付けました｜*company name';
+$config{"ReturnSubject"} = '【自動返信】お問い合わせを受け付けました｜*company name';
 
 ## 自動返信メールの本文
 $_TEXT{'responder'} = <<'__return_body__';
@@ -75,11 +75,13 @@ $_TEXT{'responder'} = <<'__return_body__';
 <_resbody_>
 ━━━━━━━━━━━━━━━━━━
 
-頂戴いたしましたお問い合わせにつきましては、内容を確認の上、
-後ほどご回答いたします。
-なお、お問い合わせの内容によっては、ご回答まで数日かかる場合
-やご回答いたしかねる場合がございます。
-恐れ入りますが、予めご了承くださいますようお願いいたします。
+この度は、お問い合わせいただき誠にありがとうございます。
+
+お問い合わせ内容を確認のうえ、担当者より改めてご連絡いたします。
+
+なお、内容によりご回答までに数日お時間をいただく場合や、
+ご回答いたしかねる場合がございます。
+あらかじめご了承くださいますようお願いいたします。
 
 
 ———————————————————————
@@ -257,7 +259,7 @@ push @Modules,'logger';			## アクセス解析ログモジュール
 #push @Modules,'PayPal';		## PayPal決済
 #push @Modules,'SMTP';			## SMTP送信
 #push @Modules,'SMTPS';			## SMTPS送信
-push @Modules,'SimpleMailHead';## シンプルメールヘッダ
+#push @Modules,'SimpleMailHead';## シンプルメールヘッダ
 #push @Modules,'MAILHEAD';		## メールヘッダのカスタマイズ
 #push @Modules,'mailauth';		## メールアドレス認証
 #push @Modules,'reqonce';		## 一度きりの送信
