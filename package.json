@@ -28,7 +28,7 @@
     "postcss-sort-media-queries": "^5.2.0",
     "prettier": "^3.8.1",
     "sass-embedded": "^1.85.1",
-    "sharp": "^0.33.5",
+    "sharp": "^0.35.0",
     "vitest": "^4.1.4"
   }
 }
