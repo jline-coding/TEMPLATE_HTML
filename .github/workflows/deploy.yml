@@ -1,35 +1,36 @@
-name: Deploy To Server
+﻿name: Deploy To Server
 
 on:
   push:
     branches:
-      - master    # Deploy production khi push lên main
-      - staging # Deploy lên server test khi push lên staging
-  workflow_dispatch: # Cho phép chạy thủ công từ GitHub UI
+      - master    # Deploy production khi push lÃªn main
+      - staging # Deploy lÃªn server test khi push lÃªn staging
+  workflow_dispatch: # Cho phÃ©p cháº¡y thá»§ cÃ´ng tá»« GitHub UI
 
 concurrency:
   group: deploy-${{ github.repository }}-${{ github.ref_name }}
-  cancel-in-progress: false # Bắt buộc xếp hàng, không cho 2 người chạy cùng lúc
+  cancel-in-progress: false # Báº¯t buá»™c xáº¿p hÃ ng, khÃ´ng cho 2 ngÆ°á»i cháº¡y cÃ¹ng lÃºc
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Kéo Source Code
+      - name: ðŸ“¥ KÃ©o Source Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 1 # Manifest-based: khong can lich su git
+          lfs: true
 
-      - name: 🔍 Đọc cấu hình Deploy
+      - name: ðŸ” Äá»c cáº¥u hÃ¬nh Deploy
         id: config
         run: |
-          # Phát hiện nhánh → xác định môi trường
+          # PhÃ¡t hiá»‡n nhÃ¡nh â†’ xÃ¡c Ä‘á»‹nh mÃ´i trÆ°á»ng
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
 
-          # 🛡️ Chỉ cho phép deploy từ master hoặc staging
+          # ðŸ›¡ï¸ Chá»‰ cho phÃ©p deploy tá»« master hoáº·c staging
           if [ "$BRANCH_NAME" != "master" ] && [ "$BRANCH_NAME" != "staging" ]; then
-            echo "❌ LỖI: Không được deploy từ nhánh [$BRANCH_NAME]!"
-            echo "   Chỉ cho phép: master (production) hoặc staging (test)."
+            echo "âŒ Lá»–I: KhÃ´ng Ä‘Æ°á»£c deploy tá»« nhÃ¡nh [$BRANCH_NAME]!"
+            echo "   Chá»‰ cho phÃ©p: master (production) hoáº·c staging (test)."
             exit 1
           fi
 
@@ -40,65 +41,65 @@ jobs:
           fi
           echo "DEPLOY_BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
           echo "DEPLOY_ENV=$DEPLOY_ENV" >> $GITHUB_ENV
-          echo "📌 Nhánh: $BRANCH_NAME → Môi trường: $DEPLOY_ENV"
+          echo "ðŸ“Œ NhÃ¡nh: $BRANCH_NAME â†’ MÃ´i trÆ°á»ng: $DEPLOY_ENV"
 
-          # Đọc cấu hình chung
+          # Äá»c cáº¥u hÃ¬nh chung
           BUILD_CMD=$(jq -r '.build_command // "npm run build"' deploy-config.json)
 
-          # Đọc deploy_method từ môi trường (mặc định: ftp)
+          # Äá»c deploy_method tá»« mÃ´i trÆ°á»ng (máº·c Ä‘á»‹nh: ftp)
           DEPLOY_METHOD=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].deploy_method // "ftp"' deploy-config.json)
           echo "DEPLOY_METHOD=$DEPLOY_METHOD" >> $GITHUB_ENV
-          echo "📦 Phương thức: $DEPLOY_METHOD"
+          echo "ðŸ“¦ PhÆ°Æ¡ng thá»©c: $DEPLOY_METHOD"
 
-          # Đọc server từ đúng môi trường (chỉ cần khi FTP hoặc Rsync)
+          # Äá»c server tá»« Ä‘Ãºng mÃ´i trÆ°á»ng (chá»‰ cáº§n khi FTP hoáº·c Rsync)
           SERVER_NAME=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].server // ""' deploy-config.json | tr 'a-z' 'A-Z')
-          echo "🖥️ Server: ${SERVER_NAME:-'(không dùng FTP)'}"
+          echo "ðŸ–¥ï¸ Server: ${SERVER_NAME:-'(khÃ´ng dÃ¹ng FTP)'}"
 
           echo "SERVER_NAME=$SERVER_NAME" >> $GITHUB_ENV
           echo "BUILD_CMD=$BUILD_CMD" >> $GITHUB_ENV
 
-          # 🛡️ Validate BUILD_CMD (chỉ cho phép npm/npx commands)
+          # ðŸ›¡ï¸ Validate BUILD_CMD (chá»‰ cho phÃ©p npm/npx commands)
           if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
-            echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
-            echo "   Chỉ cho phép các lệnh bắt đầu bằng 'npm ' hoặc 'npx '."
+            echo "âŒ Lá»–I: BUILD_CMD khÃ´ng há»£p lá»‡: '$BUILD_CMD'"
+            echo "   Chá»‰ cho phÃ©p cÃ¡c lá»‡nh báº¯t Ä‘áº§u báº±ng 'npm ' hoáº·c 'npx '."
             exit 1
           fi
 
-      # ── Chế độ ZIP: Bỏ qua toàn bộ (chỉ cần tạo tag để release) ──
-      - name: ℹ️ Bỏ qua deploy (chế độ ZIP)
+      # â”€â”€ Cháº¿ Ä‘á»™ ZIP: Bá» qua toÃ n bá»™ (chá»‰ cáº§n táº¡o tag Ä‘á»ƒ release) â”€â”€
+      - name: â„¹ï¸ Bá» qua deploy (cháº¿ Ä‘á»™ ZIP)
         if: env.DEPLOY_METHOD == 'zip'
         run: |
-          echo "╔══════════════════════════════════════════════════╗"
-          echo "║  📦 Môi trường [${{ env.DEPLOY_ENV }}] đang ở chế độ ZIP  ║"
-          echo "║  → Bỏ qua FTP deploy.                           ║"
-          echo "║  → Tạo tag (vd: git tag v1.0.0) để tạo Release. ║"
-          echo "╚══════════════════════════════════════════════════╝"
+          echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+          echo "â•‘  ðŸ“¦ MÃ´i trÆ°á»ng [${{ env.DEPLOY_ENV }}] Ä‘ang á»Ÿ cháº¿ Ä‘á»™ ZIP  â•‘"
+          echo "â•‘  â†’ Bá» qua FTP deploy.                           â•‘"
+          echo "â•‘  â†’ Táº¡o tag (vd: git tag v1.0.0) Ä‘á»ƒ táº¡o Release. â•‘"
+          echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 
-      # ── Chế độ FTP: Build + Deploy lên server ──
-      - name: ⚙️ Cài đặt Node.js
+      # â”€â”€ Cháº¿ Ä‘á»™ FTP: Build + Deploy lÃªn server â”€â”€
+      - name: âš™ï¸ CÃ i Ä‘áº·t Node.js
         if: env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: 📦 Cài đặt dependencies dự án (nếu cần build)
+      - name: ðŸ“¦ CÃ i Ä‘áº·t dependencies dá»± Ã¡n (náº¿u cáº§n build)
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
         run: npm install --no-package-lock
 
-      - name: 🧪 Chạy Unit Tests
+      - name: ðŸ§ª Cháº¡y Unit Tests
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
         run: npm run test
 
-      - name: 🔨 Build dự án
+      - name: ðŸ”¨ Build dá»± Ã¡n
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
         run: ${{ env.BUILD_CMD }}
 
-      - name: 📦 Cài đặt thư viện deploy
+      - name: ðŸ“¦ CÃ i Ä‘áº·t thÆ° viá»‡n deploy
         if: env.DEPLOY_METHOD == 'ftp'
         run: npm install --no-save basic-ftp apache-crypt
 
-      - name: 🚀 Chạy Script Deploy (FTP)
+      - name: ðŸš€ Cháº¡y Script Deploy (FTP)
         if: env.DEPLOY_METHOD == 'ftp'
         run: node .github/scripts/deploy.cjs
         env:
@@ -112,14 +113,14 @@ jobs:
           FTP_DIR: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').ftp_dir }}
           FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').ftp_git }}
 
-      # ── Chế độ SSH: Triển khai qua SSH rsync ──
-      - name: 🔑 Cài đặt SSH Key cho Deploy
+      # â”€â”€ Cháº¿ Ä‘á»™ SSH: Triá»ƒn khai qua SSH rsync â”€â”€
+      - name: ðŸ”‘ CÃ i Ä‘áº·t SSH Key cho Deploy
         if: env.DEPLOY_METHOD == 'ssh'
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').private_key }}
 
-      - name: 🚀 Chạy Script Deploy (SSH)
+      - name: ðŸš€ Cháº¡y Script Deploy (SSH)
         if: env.DEPLOY_METHOD == 'ssh'
         run: bash .github/scripts/deploy-rsync.sh
         env:
@@ -132,7 +133,7 @@ jobs:
           ROOT_PATH: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').root_path }}
           FTP_GIT: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)] || '{}').ftp_git }}
 
-      - name: 🏥 Health Check (Basic)
+      - name: ðŸ¥ Health Check (Basic)
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh') && success()
         run: |
           # Try to guess domain from SSH_HOST or FTP HOST
@@ -144,21 +145,21 @@ jobs:
           SITE_URL="https://${DOMAIN}/${WEB_PATH}/${PROJECT_DIR}"
           SITE_URL=$(echo "$SITE_URL" | sed 's|//|/|g' | sed 's|https:/|https://|')
           
-          echo "🔍 Kiểm tra URL dự kiến: $SITE_URL"
+          echo "ðŸ” Kiá»ƒm tra URL dá»± kiáº¿n: $SITE_URL"
           HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" -I -k "$SITE_URL" || echo "FAILED")
           
           if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ] || [ "$HTTP_STATUS" = "401" ]; then
-            echo "✅ Health Check OK: Nhận HTTP $HTTP_STATUS"
+            echo "âœ… Health Check OK: Nháº­n HTTP $HTTP_STATUS"
           else
-            echo "⚠️ CẢNH BÁO: Không thể truy cập URL dự kiến (HTTP $HTTP_STATUS)."
-            echo "   Có thể URL chưa được public hoặc cấu hình directory không khớp domain."
-            echo "   Vui lòng kiểm tra trang web thủ công!"
+            echo "âš ï¸ Cáº¢NH BÃO: KhÃ´ng thá»ƒ truy cáº­p URL dá»± kiáº¿n (HTTP $HTTP_STATUS)."
+            echo "   CÃ³ thá»ƒ URL chÆ°a Ä‘Æ°á»£c public hoáº·c cáº¥u hÃ¬nh directory khÃ´ng khá»›p domain."
+            echo "   Vui lÃ²ng kiá»ƒm tra trang web thá»§ cÃ´ng!"
           fi
 
-      - name: ❌ Lỗi Deploy
+      - name: âŒ Lá»—i Deploy
         if: failure()
         run: |
-          echo "❌ Quá trình deploy thất bại!"
-          echo "👉 Kiểm tra log các bước trước đó trên GitHub Actions."
-          echo "TODO: Có thể tích hợp Slack/Discord webhook tại đây."
+          echo "âŒ QuÃ¡ trÃ¬nh deploy tháº¥t báº¡i!"
+          echo "ðŸ‘‰ Kiá»ƒm tra log cÃ¡c bÆ°á»›c trÆ°á»›c Ä‘Ã³ trÃªn GitHub Actions."
+          echo "TODO: CÃ³ thá»ƒ tÃ­ch há»£p Slack/Discord webhook táº¡i Ä‘Ã¢y."
           exit 1

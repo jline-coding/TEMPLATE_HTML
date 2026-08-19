@@ -1,32 +1,34 @@
-# ──────────────────────────────────────────────────────────
-# 📦 TỰ ĐỘNG TẠO RELEASE KHI DEVELOPER PUSH TAG MỚI
-# ──────────────────────────────────────────────────────────
-# Cách dùng:
+﻿# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ðŸ“¦ Tá»° Äá»˜NG Táº O RELEASE KHI DEVELOPER PUSH TAG Má»šI
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# CÃ¡ch dÃ¹ng:
 #   git tag v1.0.0
 #   git push origin v1.0.0
 #
-# Kết quả: GitHub tự động build → nén ZIP → tạo Release
-# Admin/PM chỉ cần vào mục Releases trên GitHub tải file ZIP sạch.
-# ──────────────────────────────────────────────────────────
+# Káº¿t quáº£: GitHub tá»± Ä‘á»™ng build â†’ nÃ©n ZIP â†’ táº¡o Release
+# Admin/PM chá»‰ cáº§n vÃ o má»¥c Releases trÃªn GitHub táº£i file ZIP sáº¡ch.
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-name: 📦 Create Release on Tag
+name: ðŸ“¦ Create Release on Tag
 
 on:
   push:
     tags:
-      - 'v*'  # Chỉ chạy khi push tag bắt đầu bằng "v" (vd: v1.0.0, v2.1.3)
+      - 'v*'  # Chá»‰ cháº¡y khi push tag báº¯t Ä‘áº§u báº±ng "v" (vd: v1.0.0, v2.1.3)
 
 permissions:
-  contents: write  # Cần quyền write để tạo Release và upload file
+  contents: write  # Cáº§n quyá»n write Ä‘á»ƒ táº¡o Release vÃ  upload file
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Kéo Source Code
+      - name: ðŸ“¥ KÃ©o Source Code
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
-      - name: 🔍 Đọc cấu hình Build
+      - name: ðŸ” Äá»c cáº¥u hÃ¬nh Build
         id: config
         run: |
           BUILD_CMD=$(jq -r '.build_command // "npm run build"' deploy-config.json)
@@ -36,135 +38,135 @@ jobs:
           echo "SOURCE_FOLDER=$SOURCE_FOLDER" >> $GITHUB_ENV
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
 
-          # 🛡️ Validate BUILD_CMD (chỉ cho phép npm/npx commands)
+          # ðŸ›¡ï¸ Validate BUILD_CMD (chá»‰ cho phÃ©p npm/npx commands)
           if ! echo "$BUILD_CMD" | grep -qE '^(npm |npx )'; then
-            echo "❌ LỖI: BUILD_CMD không hợp lệ: '$BUILD_CMD'"
+            echo "âŒ Lá»–I: BUILD_CMD khÃ´ng há»£p lá»‡: '$BUILD_CMD'"
             exit 1
           fi
 
-      - name: 🏷️ Lấy thông tin Tag
+      - name: ðŸ·ï¸ Láº¥y thÃ´ng tin Tag
         id: tag_info
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-          echo "📌 Tag: $TAG_NAME"
+          echo "ðŸ“Œ Tag: $TAG_NAME"
 
-      - name: ⚙️ Cài đặt Node.js
+      - name: âš™ï¸ CÃ i Ä‘áº·t Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: 📦 Cài đặt dependencies (nếu cần build)
+      - name: ðŸ“¦ CÃ i Ä‘áº·t dependencies (náº¿u cáº§n build)
         run: npm install --no-package-lock
 
-      - name: 🧪 Chạy Unit Tests
+      - name: ðŸ§ª Cháº¡y Unit Tests
         run: npm run test
 
-      - name: 🔨 Build dự án
+      - name: ðŸ”¨ Build dá»± Ã¡n
         run: ${{ env.BUILD_CMD }}
 
-      - name: 🔍 Lấy bản Release trước đó (Nếu có)
+      - name: ðŸ” Láº¥y báº£n Release trÆ°á»›c Ä‘Ã³ (Náº¿u cÃ³)
         id: prev_release
         run: |
-          # Dùng GitHub CLI để lấy thông tin Release mới nhất
+          # DÃ¹ng GitHub CLI Ä‘á»ƒ láº¥y thÃ´ng tin Release má»›i nháº¥t
           PREV_TAG=$(gh release view --json tagName -q ".tagName" 2>/dev/null || echo "")
           if [ -n "$PREV_TAG" ]; then
-            echo "📌 Đã tìm thấy bản Release trước đó: $PREV_TAG"
+            echo "ðŸ“Œ ÄÃ£ tÃ¬m tháº¥y báº£n Release trÆ°á»›c Ä‘Ã³: $PREV_TAG"
             
-            # Tìm tên file ZIP gốc (loại trừ file có chữ diff_data)
+            # TÃ¬m tÃªn file ZIP gá»‘c (loáº¡i trá»« file cÃ³ chá»¯ diff_data)
             FULL_ZIP=$(gh release view "$PREV_TAG" --json assets -q '.assets[].name | select(test("diff_data") | not) | select(endswith(".zip"))' | head -n 1)
             
             if [ -n "$FULL_ZIP" ]; then
-              echo "⬇️ Tải file: $FULL_ZIP"
+              echo "â¬‡ï¸ Táº£i file: $FULL_ZIP"
               gh release download "$PREV_TAG" -p "$FULL_ZIP" --dir prev_release
               
-              # Giải nén vào thư mục public_old
+              # Giáº£i nÃ©n vÃ o thÆ° má»¥c public_old
               mkdir -p public_old
               unzip -q "prev_release/$FULL_ZIP" -d public_old
               echo "HAS_PREV_RELEASE=true" >> $GITHUB_ENV
             fi
           else
-            echo "ℹ️ Đây là Release đầu tiên, không có bản cũ để so sánh."
+            echo "â„¹ï¸ ÄÃ¢y lÃ  Release Ä‘áº§u tiÃªn, khÃ´ng cÃ³ báº£n cÅ© Ä‘á»ƒ so sÃ¡nh."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ✂️ Trích xuất các file thay đổi (Diff)
+      - name: âœ‚ï¸ TrÃ­ch xuáº¥t cÃ¡c file thay Ä‘á»•i (Diff)
         if: env.HAS_PREV_RELEASE == 'true'
         run: |
           mkdir -p public_diff
-          # So sánh nội dung file (-c) giữa bản mới và bản cũ, cờ -m giúp loại bỏ thư mục rỗng
+          # So sÃ¡nh ná»™i dung file (-c) giá»¯a báº£n má»›i vÃ  báº£n cÅ©, cá» -m giÃºp loáº¡i bá» thÆ° má»¥c rá»—ng
           rsync -rcvm --compare-dest="$(pwd)/public_old/" "$(pwd)/$SOURCE_FOLDER/" "$(pwd)/public_diff/"
           
-          # Dọn dẹp các file rác/không cần thiết khỏi thư mục diff để đếm chính xác
+          # Dá»n dáº¹p cÃ¡c file rÃ¡c/khÃ´ng cáº§n thiáº¿t khá»i thÆ° má»¥c diff Ä‘á»ƒ Ä‘áº¿m chÃ­nh xÃ¡c
           find public_diff -type f -name '.DS_Store' -delete 2>/dev/null || true
           find public_diff -type f -name '*.map' -delete 2>/dev/null || true
           rm -rf public_diff/.deploy
           
-          # Xóa toàn bộ các thư mục rỗng (nếu có) do quá trình build tạo ra
+          # XÃ³a toÃ n bá»™ cÃ¡c thÆ° má»¥c rá»—ng (náº¿u cÃ³) do quÃ¡ trÃ¬nh build táº¡o ra
           find public_diff -type d -empty -delete 2>/dev/null || true
           
-          # Kiểm tra xem có file nào thực sự thay đổi không (bỏ qua thư mục rỗng)
+          # Kiá»ƒm tra xem cÃ³ file nÃ o thá»±c sá»± thay Ä‘á»•i khÃ´ng (bá» qua thÆ° má»¥c rá»—ng)
           CHANGE_COUNT=$(find public_diff -type f | wc -l)
           if [ "$CHANGE_COUNT" -gt "0" ]; then
             DIFF_ZIP_NAME="${PROJECT_DIR}_diff_data_${TAG_NAME}.zip"
             
-            # Nén thư mục diff
+            # NÃ©n thÆ° má»¥c diff
             cd public_diff
             zip -r "../$DIFF_ZIP_NAME" .
             cd ..
             
             DIFF_ZIP_SIZE=$(du -h "$DIFF_ZIP_NAME" | cut -f1)
-            echo "📦 Đã tạo file Diff: $DIFF_ZIP_NAME ($CHANGE_COUNT file thay đổi, kích thước: $DIFF_ZIP_SIZE)"
+            echo "ðŸ“¦ ÄÃ£ táº¡o file Diff: $DIFF_ZIP_NAME ($CHANGE_COUNT file thay Ä‘á»•i, kÃ­ch thÆ°á»›c: $DIFF_ZIP_SIZE)"
           else
-            echo "ℹ️ Không có sự thay đổi nào về file tĩnh hợp lệ so với bản trước."
+            echo "â„¹ï¸ KhÃ´ng cÃ³ sá»± thay Ä‘á»•i nÃ o vá» file tÄ©nh há»£p lá»‡ so vá»›i báº£n trÆ°á»›c."
           fi
 
-      - name: 📁 Nén thành file ZIP (Bản Full)
+      - name: ðŸ“ NÃ©n thÃ nh file ZIP (Báº£n Full)
         run: |
           ZIP_NAME="${PROJECT_DIR}_${TAG_NAME}.zip"
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
 
-          # Nén thư mục source (public/) thành ZIP sạch, giữ lại .htaccess
+          # NÃ©n thÆ° má»¥c source (public/) thÃ nh ZIP sáº¡ch, giá»¯ láº¡i .htaccess
           cd "$SOURCE_FOLDER"
           zip -r "../$ZIP_NAME" . -x '.deploy/*' '.DS_Store' '*.map'
           cd ..
 
           ZIP_SIZE=$(du -h "$ZIP_NAME" | cut -f1)
-          echo "📦 File: $ZIP_NAME ($ZIP_SIZE)"
+          echo "ðŸ“¦ File: $ZIP_NAME ($ZIP_SIZE)"
 
-      - name: 🚀 Tạo GitHub Release
+      - name: ðŸš€ Táº¡o GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG_NAME }}
-          name: "🚀 Release ${{ env.TAG_NAME }}"
+          name: "ðŸš€ Release ${{ env.TAG_NAME }}"
           body: |
-            ## 📦 Release `${{ env.TAG_NAME }}`
+            ## ðŸ“¦ Release `${{ env.TAG_NAME }}`
 
-            **Dự án / プロジェクト**: `${{ env.PROJECT_DIR }}`
-            **Ngày tạo / 作成日時**: ${{ github.event.head_commit.timestamp || 'N/A' }}
-            **Người tạo / 作成者**: @${{ github.actor }}
-
-            ---
-
-            ### 🇻🇳 📥 Hướng dẫn
-            1. Tải file **`.zip`** bên dưới mục **Assets**
-               - Bản **`${{ env.PROJECT_DIR }}_${{ env.TAG_NAME }}.zip`**: Chứa toàn bộ source code sạch (bản đầy đủ).
-               - Bản **`${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip`** *(nếu có)*: Chỉ chứa các file đã được chỉnh sửa/thêm mới so với bản phát hành trước đó.
-            2. Giải nén và bàn giao cho khách hàng.
-
-            > ⚠️ **Lưu ý:** File ZIP chỉ chứa code đã build sạch (thư mục `${{ env.SOURCE_FOLDER }}/`), không chứa `node_modules` hay source code gốc.
+            **Dá»± Ã¡n / ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ**: `${{ env.PROJECT_DIR }}`
+            **NgÃ y táº¡o / ä½œæˆæ—¥æ™‚**: ${{ github.event.head_commit.timestamp || 'N/A' }}
+            **NgÆ°á»i táº¡o / ä½œæˆè€…**: @${{ github.actor }}
 
             ---
 
-            ### 🇯🇵 📥 ダウンロードと使用方法
-            1. 下記の **Assets** から **`.zip`** ファイルをダウンロードしてください。
-               - **`${{ env.PROJECT_DIR }}_${{ env.TAG_NAME }}.zip`**: 全てのクリーンなソースコードが含まれています（フルバージョン）。
-               - **`${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip`** *(ある場合)*: 前回のリリース以降に修正・追加されたファイルのみが含まれています（差分データ）。
-            2. 解凍して、お客様に納品してください。
+            ### ðŸ‡»ðŸ‡³ ðŸ“¥ HÆ°á»›ng dáº«n
+            1. Táº£i file **`.zip`** bÃªn dÆ°á»›i má»¥c **Assets**
+               - Báº£n **`${{ env.PROJECT_DIR }}_${{ env.TAG_NAME }}.zip`**: Chá»©a toÃ n bá»™ source code sáº¡ch (báº£n Ä‘áº§y Ä‘á»§).
+               - Báº£n **`${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip`** *(náº¿u cÃ³)*: Chá»‰ chá»©a cÃ¡c file Ä‘Ã£ Ä‘Æ°á»£c chá»‰nh sá»­a/thÃªm má»›i so vá»›i báº£n phÃ¡t hÃ nh trÆ°á»›c Ä‘Ã³.
+            2. Giáº£i nÃ©n vÃ  bÃ n giao cho khÃ¡ch hÃ ng.
 
-            > ⚠️ **注意:** ZIPファイルには、ビルド済みのクリーンなコード（`${{ env.SOURCE_FOLDER }}/` フォルダ）のみが含まれており、`node_modules` や元のソースコードは含まれていません。
+            > âš ï¸ **LÆ°u Ã½:** File ZIP chá»‰ chá»©a code Ä‘Ã£ build sáº¡ch (thÆ° má»¥c `${{ env.SOURCE_FOLDER }}/`), khÃ´ng chá»©a `node_modules` hay source code gá»‘c.
+
+            ---
+
+            ### ðŸ‡¯ðŸ‡µ ðŸ“¥ ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¨ä½¿ç”¨æ–¹æ³•
+            1. ä¸‹è¨˜ã® **Assets** ã‹ã‚‰ **`.zip`** ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ã¦ãã ã•ã„ã€‚
+               - **`${{ env.PROJECT_DIR }}_${{ env.TAG_NAME }}.zip`**: å…¨ã¦ã®ã‚¯ãƒªãƒ¼ãƒ³ãªã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ï¼ˆãƒ•ãƒ«ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼‰ã€‚
+               - **`${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip`** *(ã‚ã‚‹å ´åˆ)*: å‰å›žã®ãƒªãƒªãƒ¼ã‚¹ä»¥é™ã«ä¿®æ­£ãƒ»è¿½åŠ ã•ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã®ã¿ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ï¼ˆå·®åˆ†ãƒ‡ãƒ¼ã‚¿ï¼‰ã€‚
+            2. è§£å‡ã—ã¦ã€ãŠå®¢æ§˜ã«ç´å“ã—ã¦ãã ã•ã„ã€‚
+
+            > âš ï¸ **æ³¨æ„:** ZIPãƒ•ã‚¡ã‚¤ãƒ«ã«ã¯ã€ãƒ“ãƒ«ãƒ‰æ¸ˆã¿ã®ã‚¯ãƒªãƒ¼ãƒ³ãªã‚³ãƒ¼ãƒ‰ï¼ˆ`${{ env.SOURCE_FOLDER }}/` ãƒ•ã‚©ãƒ«ãƒ€ï¼‰ã®ã¿ãŒå«ã¾ã‚Œã¦ãŠã‚Šã€`node_modules` ã‚„å…ƒã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã¯å«ã¾ã‚Œã¦ã„ã¾ã›ã‚“ã€‚
           files: |
             ${{ env.ZIP_NAME }}
             ${{ env.PROJECT_DIR }}_diff_data_${{ env.TAG_NAME }}.zip
