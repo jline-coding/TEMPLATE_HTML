@@ -1,8 +1,4 @@
 :where(.inview) {
-    visibility: hidden;
-}
-
-:where(.inview.inview-opacity) {
     opacity: 0;
 }
 
