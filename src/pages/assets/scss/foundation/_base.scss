@@ -53,7 +53,7 @@ a {
 
 }
 
-.pc {
+.is-pc {
     display: none !important;
 
     @include mq(md) {
@@ -62,7 +62,7 @@ a {
 }
 
 
-.sp {
+.is-sp {
     display: block !important;
 
     @include mq(md) {

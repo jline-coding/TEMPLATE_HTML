@@ -777,20 +777,20 @@ a:hover {
   }
 }
 
-.pc {
+.is-pc {
   display: none !important;
 }
 @media screen and (min-width: 768px) {
-  .pc {
+  .is-pc {
     display: block !important;
   }
 }
 
-.sp {
+.is-sp {
   display: block !important;
 }
 @media screen and (min-width: 768px) {
-  .sp {
+  .is-sp {
     display: none !important;
   }
 }
@@ -1427,11 +1427,11 @@ component > Other
 component > Popup
 ------------------------------
 */
-:where(.inview) {
+:where(.js-inview) {
   visibility: hidden;
 }
 
-:where(.inview.inview-opacity) {
+:where(.js-inview.inview-opacity) {
   opacity: 0;
 }
 

@@ -102,7 +102,7 @@ var inview = (function (exports) {
       this.delay = option.delay || 200;
       this.spaceSync = option.spaceSync || 0;
       this.duration = option.duration || 1;
-      this.classView = option.class || "inview";
+      this.classView = option.class || "js-inview";
       this.animateBy = option.animateBy || "css";
       this.areaView = __spreadValues({
         top: 0,
@@ -440,7 +440,7 @@ var inview = (function (exports) {
   class inview {
     constructor(observer = {}) {
       this.observer = observer.method || "intersection";
-      this.class = observer.class || "inview";
+      this.class = observer.class || "js-inview";
       this.option = __spreadValues({ class: this.class }, observer);
       this.tool = (() => {
         document.querySelectorAll("." + this.class).forEach((ele, index) => {
