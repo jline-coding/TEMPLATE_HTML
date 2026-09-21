@@ -2,11 +2,11 @@
     /**
      * クッキー操作
      */
-    var COOKIECTRL = {
+    const COOKIECTRL = {
       get: function(name) {
-        var cookies = document.cookie.split(';');
-        for (var index = 0, length = cookies.length; index < length; index += 1) {
-          var temp = cookies[index].replace(/\s/g, '').split('=');
+        const cookies = document.cookie.split(';');
+        for (let index = 0, length = cookies.length; index < length; index += 1) {
+          const temp = cookies[index].replace(/\s/g, '').split('=');
           if (temp[0] === name) {
             return decodeURIComponent(temp[1]);
           }
@@ -14,12 +14,12 @@
         return null;
       },
       set: function(name, value, expires, path, domain, secure) {
-        var d = document;
-        var today = new Date();
+        const d = document;
+        const today = new Date();
         if (expires) {
           expires = expires * 1000 * 60 * 60 * 24;
         }
-        var expires_date = new Date(today.getTime() + (expires));
+        const expires_date = new Date(today.getTime() + (expires));
         d.cookie = name + '=' + encodeURIComponent(value) +
           ((expires) ? ';expires=' + expires_date.toUTCString() : '') +
           ((path) ? ';path=' + path : '') +
@@ -27,7 +27,7 @@
           ((secure) ? ';secure' : '');
       },
       del: function(name, path, domain) {
-        var d = document;
+        const d = document;
         if (this.get(name)) {
           d.cookie = name + '=' +
             ((path) ? ';path=' + path : '') +
@@ -37,13 +37,13 @@
       }
     };
 
-    var body = document.querySelector('body');
-    var wrap = document.querySelector('div[data-gdpr="wrap"]');
-    var button = document.querySelector('a[data-gdpr="button"]');
-    var COOKIE_NAME = 'dinc_cookieAccepted';
-    var GDPR = 'gdpr';
+    const body = document.querySelector('body');
+    const wrap = document.querySelector('div[data-gdpr="wrap"]');
+    const button = document.querySelector('a[data-gdpr="button"]');
+    const COOKIE_NAME = 'dinc_cookieAccepted';
+    const GDPR = 'gdpr';
 
-    var getClassList = function() {
+    const getClassList = function() {
       return Array.prototype.slice.call(body.classList);
     };
 
@@ -54,14 +54,14 @@
     } else {
       // GDPR表示あり
       // body要素のclass属性値に「gdpr」を付加する
-      var classes = getClassList();
+      const classes = getClassList();
       classes.push(GDPR);
       body.className = classes.join(' ');
 
       // ボタンをクリックされた際の動作
       button.addEventListener('click', function() {
         // body要素のclass属性値から「gdpr」を削除する
-        var classes = getClassList();
+        const classes = getClassList();
         body.className = classes.filter(function(className) {
           return className !== GDPR;
         }).join(' ');

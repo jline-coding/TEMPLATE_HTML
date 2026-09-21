@@ -4,13 +4,13 @@
     });
 
     $(function() {
-        var defaultText = '添付する';
+        const defaultText = '添付する';
 
         $('.js-file input[type="file"]').on('change', function() {
-            var file = $(this)[0].files[0];
-            var $wrapper = $(this).closest('.js-file');
-            var $content = $wrapper.find('.js-file__content');
-            var $clearBtn = $wrapper.find('.js-file-clear');
+            const file = $(this)[0].files[0];
+            const $wrapper = $(this).closest('.js-file');
+            const $content = $wrapper.find('.js-file__content');
+            const $clearBtn = $wrapper.find('.js-file-clear');
 
             if (file) {
                 $content.text(file.name).addClass('is-active');
@@ -22,9 +22,9 @@
         });
 
         $('.js-file-clear').on('click', function() {
-            var $wrapper = $(this).closest('.js-file');
-            var $input = $wrapper.find('input[type="file"]');
-            var $content = $wrapper.find('.js-file__content');
+            const $wrapper = $(this).closest('.js-file');
+            const $input = $wrapper.find('input[type="file"]');
+            const $content = $wrapper.find('.js-file__content');
 
             $input.val('');
             $content.text(defaultText).removeClass('is-active');

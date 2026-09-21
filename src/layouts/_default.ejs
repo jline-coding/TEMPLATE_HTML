@@ -7,10 +7,10 @@
   <meta name="format-detection" content="telephone=no, address=no, email=no">
   <%
     // Build canonical path from file's relative position
-    var canonicalPath = '/';
+    let canonicalPath = '/';
     if (file && file.path) {
-      var relPath = file.path.replace(/\\/g, '/');
-      var pagesIdx = relPath.indexOf('/pages/');
+      const relPath = file.path.replace(/\\/g, '/');
+      const pagesIdx = relPath.indexOf('/pages/');
       if (pagesIdx !== -1) {
         canonicalPath = relPath.substring(pagesIdx + '/pages'.length);
       }
@@ -19,13 +19,13 @@
       canonicalPath = canonicalPath.replace(/^\//, '');
     }
     
-    var baseDomain = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl : '';
+    let baseDomain = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl : '';
     if (baseDomain && !baseDomain.endsWith('/')) baseDomain += '/';
-    var pageUrl = baseDomain ? (baseDomain + canonicalPath) : '';
-    var pageDescription = file.data.description || '';
-    var pageOgImage = baseDomain ? (baseDomain + 'assets/images/common/ogp.jpg') : '';
-    var pageOgType = 'website';
-    var pageSiteName = '';
+    const pageUrl = baseDomain ? (baseDomain + canonicalPath) : '';
+    const pageDescription = file.data.description || '';
+    const pageOgImage = baseDomain ? (baseDomain + 'assets/images/common/ogp.jpg') : '';
+    const pageOgType = 'website';
+    const pageSiteName = '';
   -%>
   <title><%= file.data.title %></title>
   <meta name="description" content="<%= pageDescription %>">
@@ -94,10 +94,10 @@
 <% } else { -%>
       <%- include(`${componentsDir}/${footerEjs}`,{assetsDir}); -%>
 <% } -%>
-    <div data-gdpr="wrap" id="cookiewrap">
-      <div class="inner">
-        <p class="close"><a href="javascript:void(0)" data-gdpr="button" style="display: inline-block;">同意する</a></p>
-        <p class="txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「プライバシーポリシー」をご覧ください。</p>
+    <div data-gdpr="wrap" id="cookiewrap" class="c-cookiewrap">
+      <div class="c-cookiewrap__inner">
+        <p class="c-cookiewrap__close"><a href="javascript:void(0)" data-gdpr="button" style="display: inline-block;">同意する</a></p>
+        <p class="c-cookiewrap__txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href="" class="c-cookiewrap__link">プライバシーポリシー</a>」をご覧ください。</p>
       </div>      
     </div>
   </div>
