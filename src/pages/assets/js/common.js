@@ -18,6 +18,9 @@ if (typeof $.type === 'undefined') {
     const $totop = $('.c-totop');
     const $toggle = $('.c-toggle');
     const $gnavi = $('.c-gnavi');
+    const $gnaviSubParent = $('.c-gnavi-list__item.is-sub');
+    const $gnaviSubLink = $gnaviSubParent.children('.c-gnavi-link');
+    const $gnaviSub = $gnaviSubParent.children('.c-gnavi-sub');
 
     let scroll_pos1 = 0;
     // Inview
@@ -104,7 +107,32 @@ if (typeof $.type === 'undefined') {
             $this.toggleClass("active");
 
             $gnavi.stop().slideToggle("fast");
-            isActive ? removeFixedBodyModal() : addFixedBodyModal();
+            if (isActive) {
+                removeFixedBodyModal();
+                $gnaviSubParent.removeClass("is-open");
+                $gnaviSub.hide();
+            } else {
+                addFixedBodyModal();
+            }
+        });
+
+        // Submenu accordion toggle on SP
+        $gnaviSubLink.on("click", function (e) {
+            if (!window.matchMedia('(min-width: 768px)').matches) {
+                e.preventDefault();
+                const $this = $(this);
+                const $parent = $this.parent();
+                const $targetSub = $parent.children('.c-gnavi-sub');
+                const isOpen = $parent.hasClass("is-open");
+
+                // Toggle menu hiện tại
+                $parent.toggleClass("is-open", !isOpen);
+                $targetSub.stop().slideToggle(300);
+
+                // Đóng các submenu khác nếu có nhiều mục submenu
+                const $otherParents = $gnaviSubParent.not($parent).filter('.is-open');
+                $otherParents.removeClass("is-open").children('.c-gnavi-sub').stop().slideUp(300);
+            }
         });
 
         // Initial scroll state
@@ -164,9 +192,11 @@ if (typeof $.type === 'undefined') {
     // On Resize
     // =============================
     $window.on('resize', debounce(function () {
-        if ($window.width() > 767) {
+        if (window.matchMedia('(min-width: 768px)').matches) {
             $gnavi.removeAttr("style");
             $toggle.removeClass("active");
+            $gnaviSub.removeAttr("style");
+            $gnaviSubParent.removeClass("is-open");
             if ($body.hasClass('overflow_modal')) {
                 removeFixedBodyModal();
             }

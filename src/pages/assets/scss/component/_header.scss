@@ -28,7 +28,7 @@ component > header
         position: relative;
         z-index: 9;
         @include mq(md) {
-            width: 300px;
+            width: clamped(220,300);
         }
     }
     &__inner{
@@ -43,13 +43,18 @@ component > header
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 30px;
+            gap: clamped(20,30);
         }
     }
     &-btns{
         display: none;
         @include mq(md) {
             display: block;
+        }
+        &__content{
+            @include mq(md) {
+                width: clamped(180,320);
+            }
         }
     }
 }

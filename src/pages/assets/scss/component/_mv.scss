@@ -8,7 +8,7 @@ component > MV
 .c-mv{
     position: relative;
     z-index: 1;
-    margin-top: 100px;
+    margin-top: 60px;
     @include mq(md) {
         margin-top: 104px;
     }
@@ -27,7 +27,7 @@ component > MV
         }
     }
     &__inner{
-        padding: 60px 0 60px;
+        padding: 80px 0 ;
         @include mq(md) {
             padding: 100px 0 100px;
         }
