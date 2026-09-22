@@ -76,7 +76,7 @@
     <% }); } -%>
 </head>
 <body>
-  <div id="wrapper" class="body-wrapper">
+  <div id="wrapper" class="l-wrapper">
 <% const headerName = (file && file.data && file.data.header) ? file.data.header : 'header'; -%>
 <% const headerParts = headerName.split('/'); -%>
 <% const headerEjs = headerParts.slice(0, -1).concat('_' + headerParts[headerParts.length - 1]).join('/'); -%>
@@ -96,7 +96,7 @@
 <% } -%>
     <div data-gdpr="wrap" id="cookiewrap" class="c-cookiewrap">
       <div class="c-cookiewrap__inner">
-        <p class="c-cookiewrap__close"><a href="javascript:void(0)" data-gdpr="button" style="display: inline-block;">同意する</a></p>
+        <p class="c-cookiewrap__close"><a href="javascript:void(0)" data-gdpr="button" >同意する</a></p>
         <p class="c-cookiewrap__txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href="" class="c-cookiewrap__link">プライバシーポリシー</a>」をご覧ください。</p>
       </div>      
     </div>

@@ -7,7 +7,7 @@
         const defaultText = '添付する';
 
         $('.js-file input[type="file"]').on('change', function() {
-            const file = $(this)[0].files[0];
+            const file = this.files[0];
             const $wrapper = $(this).closest('.js-file');
             const $content = $wrapper.find('.js-file__content');
             const $clearBtn = $wrapper.find('.js-file-clear');
@@ -55,8 +55,9 @@
     $.datepicker.setDefaults($.datepicker.regional['ja']);
 
     $(function() {
-        if ($('.js-datepicker').length) {
-            $('.js-datepicker').datepicker();
+        const $datepicker = $('.js-datepicker');
+        if ($datepicker.length) {
+            $datepicker.datepicker();
         }
     });
 

@@ -11,6 +11,14 @@ if (typeof $.type === 'undefined') {
 }
 
 (function ($) {
+    const $window = $(window);
+    const $body = $('body');
+    const $htmlBody = $('html, body');
+    const $header = $('.c-header');
+    const $totop = $('.c-totop');
+    const $toggle = $('.c-toggle');
+    const $gnavi = $('.c-gnavi');
+
     let scroll_pos1 = 0;
     // Inview
     const movement = new inview.observer({
@@ -24,15 +32,15 @@ if (typeof $.type === 'undefined') {
     // Helper: Body lock/unlock (Modal)
     // =============================
     function addFixedBodyModal() {
-        scroll_pos1 = $(window).scrollTop();
-        $('body')
+        scroll_pos1 = $window.scrollTop();
+        $body
             .addClass('overflow_modal')
             .css({ top: -scroll_pos1 + 'px' });
     }
 
     function removeFixedBodyModal() {
-        $('body').removeClass('overflow_modal').css({ top: '' });
-        $(window).scrollTop(scroll_pos1);
+        $body.removeClass('overflow_modal').css({ top: '' });
+        $window.scrollTop(scroll_pos1);
     }
 
     // =============================
@@ -50,15 +58,15 @@ if (typeof $.type === 'undefined') {
     // Scroll Behavior
     // =============================
     function handleScroll() {
-        const scrollTop = $(window).scrollTop();
+        const scrollTop = $window.scrollTop();
 
         // Header active & ToTop visibility
         if (scrollTop > 50) {
-            $(".c-totop").css("transform", "translateY(0)");
-            $(".c-header").addClass("active");
+            $totop.css("transform", "translateY(0)");
+            $header.addClass("active");
         } else {
-            $(".c-totop").removeAttr("style");
-            $(".c-header").removeClass("active");
+            $totop.removeAttr("style");
+            $header.removeClass("active");
         }
     }
 
@@ -68,29 +76,34 @@ if (typeof $.type === 'undefined') {
     $(function () {
         // Smooth anchor scroll
         $('a[href^="#"]').on('click', function (e) {
-            const hash = $(this).attr("href");
+            const $this = $(this);
+            const hash = $this.attr("href");
             if (hash === "#") return;
-            const target = $(hash);
-            if (target.length) {
+            const $target = $(hash);
+            if ($target.length) {
                 e.preventDefault();
-                const offset = target.offset().top - ($('.c-header').outerHeight() + 30);
-                $('html, body').animate({ scrollTop: offset }, 600);
+                const offset = $target.offset().top - ($header.outerHeight() + 30);
+                $htmlBody.animate({ scrollTop: offset }, 600);
             }
         });
 
         // Auto scroll to anchor if URL has hash
         const hash = location.hash;
-        if (hash && $(hash).length) {
-            const offset = $(hash).offset().top - ($('.c-header').outerHeight() + 30);
-            $('html, body').animate({ scrollTop: offset }, 600);
+        if (hash) {
+            const $target = $(hash);
+            if ($target.length) {
+                const offset = $target.offset().top - ($header.outerHeight() + 30);
+                $htmlBody.animate({ scrollTop: offset }, 600);
+            }
         }
 
         // Menu toggle
-        $(".c-toggle").on("click", function () {
-            const isActive = $(this).hasClass("active");
-            $(this).toggleClass("active");
+        $toggle.on("click", function () {
+            const $this = $(this);
+            const isActive = $this.hasClass("active");
+            $this.toggleClass("active");
 
-            $(".c-gnavi").stop().slideToggle("fast");
+            $gnavi.stop().slideToggle("fast");
             isActive ? removeFixedBodyModal() : addFixedBodyModal();
         });
 
@@ -101,7 +114,7 @@ if (typeof $.type === 'undefined') {
     // =============================
     // On Window Load
     // =============================
-    $(window).on('load', function () {
+    $window.on('load', function () {
         // Init AOS
         if (typeof AOS !== 'undefined') {
             AOS.init({
@@ -145,16 +158,16 @@ if (typeof $.type === 'undefined') {
     // =============================
     // On Scroll
     // =============================
-    $(window).on('scroll', debounce(handleScroll, 50));
+    $window.on('scroll', debounce(handleScroll, 50));
 
     // =============================
     // On Resize
     // =============================
-    $(window).on('resize', debounce(function () {
-        if ($(window).width() > 767) {
-            $(".c-gnavi").removeAttr("style");
-            $(".c-toggle").removeClass("active");
-            if ($('body').hasClass('overflow_modal')) {
+    $window.on('resize', debounce(function () {
+        if ($window.width() > 767) {
+            $gnavi.removeAttr("style");
+            $toggle.removeClass("active");
+            if ($body.hasClass('overflow_modal')) {
                 removeFixedBodyModal();
             }
         }
