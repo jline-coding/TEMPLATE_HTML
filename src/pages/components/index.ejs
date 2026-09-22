@@ -1,0 +1,443 @@
+---
+layout: _default
+title: Title1321
+description: 
+vendorcss: ['slick/slick']
+vendorjs: ['slick/slick.min']
+css: []
+js: []
+page: componets
+---
+<script>
+    if (!window.sessionStorage.getItem("storage_loading")) {
+        document.documentElement.classList.add("is-loading");    
+        window.sessionStorage.setItem("storage_loading", new Date().getTime().toString());    
+    }
+</script>
+<style>
+    .p-component{
+        position: relative;
+        z-index: 1;
+    }
+    .p-component::after{
+        content: "";
+        width: 100%;
+        height: 100%;
+        background-color: var(--primary);
+        opacity: 0.05;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+    }
+    .p-component__texts{
+        display: grid;
+        grid-gap: 20px;
+        margin-bottom: 60px;
+    }
+    .p-component__titles{
+        display: grid;
+        grid-gap: 20px;
+        margin-bottom: 60px;
+    }
+    .p-component__btns{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 60px;
+    }
+    .p-component__grids{
+        margin-bottom: 60px;
+        display: grid;
+        grid-gap: 60px;
+    }
+    .p-component__flexs{
+        margin-bottom: 60px;
+        display: grid;
+        grid-gap: 60px;
+    }
+    .p-component__tbls{
+        margin-bottom: 60px;
+        display: grid;
+        grid-gap: 60px;
+    }
+    .p-component__lists{
+        margin-bottom: 60px;
+        display: grid;
+        grid-gap: 60px;
+    }
+</style>
+<main class="p-component">   
+    <div class="c-loading">
+        <div class="c-loading__inner">
+            <div class="c-loading__content">
+                <div class="c-loading__item"></div>
+                <div class="c-loading__item"></div>
+            </div>
+        </div>
+    </div>   
+    <section class="c-mv">
+        <figure class="c-mv__bg">
+            <img src="../assets/images/common/img_dummy.webp" alt="">
+        </figure>
+        <div class="l-container">
+            <div class="c-mv__inner">
+                <h1 class="c-mv-title">
+                    <span class="c-mv-title__en">title</span>
+                    <span class="c-mv-title__jp">タイトル</span>
+                </h1>
+            </div>
+        </div>
+    </section>
+    <div class="l-container">
+        <ul class="c-bread">
+            <li class="c-bread__item">
+                <a href="../" class="c-bread__link">top</a>
+            </li>
+            <li class="c-bread__item">コンポーネント</li>
+        </ul>
+    </div>
+    <div class="l-container">
+        <div class="p-component__titles">
+            <h2 class="c-title">
+                <span class="c-title__en">title</span>
+                <span class="c-title__jp">タイトル</span>
+            </h2>
+            <h2 class="c-ttl36">タイトルコンテンツ</h2>
+            <h2 class="c-ttl36 c-ttl36--line">タイトルコンテンツ</h2>
+            <h2 class="c-ttl36 c-ttl36--dot">タイトルコンテンツ</h2>
+
+
+            <h2 class="c-ttl34">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl32">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl30">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl28">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl26">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl24">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl22">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl20">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl18">タイトルコンテンツ</h2>
+
+
+
+            <h2 class="c-ttl16">タイトルコンテンツ</h2>
+        </div>
+        <div class="p-component__texts">
+            <p class="c-txt24">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+            <p class="c-txt22">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+            <p class="c-txt20">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+            <p class="c-txt18">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+            <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+            <p class="c-txt14">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+            <p class="c-txt12">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+        </div>
+        <div class="p-component__btns">
+            <a href="" class="c-btn">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+            <a href="" class="c-btn c-btn--arrow">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+            <a href="" class="c-btn c-btn--arrow-center">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+            <a href="" class="c-btn c-btn--arrow-between">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+        </div>
+        <div class="p-component__btns">
+            <a href="" class="c-btn c-btn--reverse">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+            <a href="" class="c-btn c-btn--arrow c-btn--reverse">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+            <a href="" class="c-btn c-btn--arrow-center c-btn--reverse">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+            <a href="" class="c-btn c-btn--arrow-between c-btn--reverse">
+                <span class="c-btn__content">ボタン</span>
+            </a>
+        </div>
+        <div class="p-component__links">
+            <a href="" class="c-link">リンク</a>
+            <a href="" class="c-link c-link--blank">リンク</a>
+        </div>
+        <div class="p-component__grids">
+            <div class="l-grid">
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+            </div>
+            <div class="l-grid l-grid--cl3">
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+            </div>
+            <div class="l-grid l-grid--cl4">
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-grid__item">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <div class="p-component__flexs">
+            <div class="l-flex">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+            <div class="l-flex l-flex--reverse">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+            <div class="l-flex l-flex--middle">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+            <div class="l-flex l-flex--reverse l-flex--middle">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+
+            <div class="l-flex l-flex--center">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+            <div class="l-flex l-flex--center l-flex--reverse">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+            <div class="l-flex l-flex--center l-flex--middle">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+            <div class="l-flex l-flex--center l-flex--reverse l-flex--middle">
+                <div class="l-flex__left">
+                    <figure>
+                        <img src="../assets/images/common/img_dummy.webp" alt="">
+                    </figure>
+                </div>
+                <div class="l-flex__right">
+                    <h2 class="c-ttl24">ダミーテキスト。</h2>
+                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                </div>
+            </div>
+            
+        </div>
+        <div class="p-component__tbls">
+            <div class="l-tbl">
+                <div class="l-tbl__item">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="l-tbl">
+                <div class="l-tbl__item l-tbl__item--middle">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item l-tbl__item--middle">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item l-tbl__item--middle">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item l-tbl__item--middle">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+                <div class="l-tbl__item l-tbl__item--middle">
+                    <div class="l-tbl__left">
+                        <h2 class="c-ttl16">ダミーテキスト。</h2>
+                    </div>
+                    <div class="l-tbl__right">
+                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-component__lists">
+            <ul class="c-list-dot">
+                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+            </ul>
+            <ul class="c-list-number">
+                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+            </ul>
+            <ul class="c-list-star">
+                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+            </ul>
+        </div>
+    </div>
+</main>

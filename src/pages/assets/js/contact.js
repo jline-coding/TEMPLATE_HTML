@@ -14,10 +14,10 @@
 
             if (file) {
                 $content.text(file.name).addClass('is-active');
-                $clearBtn.show();
+                $clearBtn.addClass('is-active').show();
             } else {
                 $content.text(defaultText).removeClass('is-active');
-                $clearBtn.hide();
+                $clearBtn.removeClass('is-active').hide();
             }
         });
 
@@ -28,7 +28,7 @@
 
             $input.val('');
             $content.text(defaultText).removeClass('is-active');
-            $(this).hide();
+            $(this).removeClass('is-active').hide();
         });
     });
    

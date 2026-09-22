@@ -6,4 +6,50 @@ component > footer
 ------------------------------
 */
 
-.c-footer {}
+.c-footer {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 40px 0 20px;
+    @include mq(md) {
+        padding: 40px 0 20px;
+    }
+    &__inner{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        @include mq(md) {
+            flex-wrap: nowrap;
+            justify-content: space-between;
+        }
+    }
+    &-logo{
+        flex-shrink: 0;
+        width: 200px;
+        @extend %fz-28;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        @include mq(md) {
+            width: 300px;
+        }
+    }
+    &-link{
+        @extend %fz-16;
+    }
+    &-list{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        @include mq(md) {
+            gap: 20px;
+        }
+    }
+    &-copy{
+        @extend %fz-14;
+        text-align: center;
+        margin-top: 20px;
+        @include mq(md) {
+            margin-top: 20px;
+        }
+    }
+}

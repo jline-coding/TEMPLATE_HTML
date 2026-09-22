@@ -5,3 +5,42 @@
 component > List
 ------------------------------
 */
+
+.c-list-dot{
+    &__item{
+        display: flex;
+        gap: 5px;
+        align-items: flex-start;
+        &::before{
+            content: "・";
+            display: block;
+            flex-shrink: 0;
+        }
+    }
+}
+.c-list-number{
+    counter-reset: number;
+    &__item{
+        display: flex;
+        gap: 5px;
+        align-items: flex-start;
+        &::before{
+            counter-increment: number;
+            content: counter(number) ".";
+            display: block;
+            flex-shrink: 0;
+        }
+    }
+}
+.c-list-star{
+    &__item{
+        display: flex;
+        gap: 5px;
+        align-items: flex-start;
+        &::before{
+            content: "※";
+            display: block;
+            flex-shrink: 0;
+        }
+    }
+}

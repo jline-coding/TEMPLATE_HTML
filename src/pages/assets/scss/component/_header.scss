@@ -6,7 +6,53 @@ component > header
 ------------------------------
 */
 
-.c-header {}
+.c-header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    padding: 10px 20px;
+    background-color: var(--primary);
+    color: var(--white);
+    @include mq(md) {
+        padding: 20px 40px;
+    }
+    &-logo{
+        flex-shrink: 0;
+        width: 200px;
+        @extend %fz-28;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        position: relative;
+        z-index: 9;
+        @include mq(md) {
+            width: 300px;
+        }
+    }
+    &__inner{
+        @include mq(md) {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+    &__content{
+        @include mq(md) {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 30px;
+        }
+    }
+    &-btns{
+        display: none;
+        @include mq(md) {
+            display: block;
+        }
+    }
+}
 
 .c-toggle {
     position: absolute;
@@ -19,7 +65,6 @@ component > header
     background-color: var(--green);
     border-radius: 0 0 0 5px;
     z-index: 11;
-
     @include mq(md) {
         display: none;
     }

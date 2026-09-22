@@ -1,19 +1,47 @@
 <header class="c-header">
     <div class="c-header__inner">  
-        <% if(file.data.page === 'top'){%><h1 class="c-header__logo"><% }else{ %><div class="c-header__logo"><% } %> 
-            <a href="" class="c-header__logo__link">
-                logo
+        <% if(file.data.page === 'top'){%><h1 class="c-header-logo"><% }else{ %><div class="c-header-logo"><% } %> 
+            <a href="<%= assetsDir %>" class="c-header-logo__link">
+                <img src="<%= assetsDir %>assets/images/common/img_logo.webp" alt="">
             </a>
-            <span class="c-header__logo__caption">site</span>
         <% if(file.data.page === 'top'){%></h1><% }else{ %></div><% } %> 
-        
-        <div class="c-header__btn">
-            <a href="" class="c-btn">btn</a>
+        <div class="c-header__content">
+            <div class="c-gnavi">
+                <div class="c-gnavi__inner">
+                    <ul class="c-gnavi-list">
+                        <li class="c-gnavi-list__item">
+                            <a href="<%= assetsDir %>" class="c-gnavi-link">会社</a>
+                        </li>
+                        <li class="c-gnavi-list__item">
+                            <a href="<%= assetsDir %>" class="c-gnavi-link">私たちについて</a>
+                        </li>
+                        <li class="c-gnavi-list__item is-sub">
+                            <a href="<%= assetsDir %>" class="c-gnavi-link">サービス</a>
+                            <ul class="c-gnavi-sub">
+                                <li class="c-gnavi-sub__item">
+                                    <a href="" class="c-gnavi-sub-link">サービス01</a>
+                                </li>
+                                <li class="c-gnavi-sub__item">
+                                    <a href="" class="c-gnavi-sub-link">サービス02</a>
+                                </li>
+                                <li class="c-gnavi-sub__item">
+                                    <a href="" class="c-gnavi-sub-link">サービス03</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="c-gnavi-list__item is-btn">
+                            <a href="<%= assetsDir %>" class="c-btn c-btn--reverse">お問い合わせ</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="c-header-btns">
+                <a href="<%= assetsDir %>" class="c-btn c-btn--reverse">お問い合わせ</a>
+            </div>
         </div>
     </div>
     <div class="c-toggle">
         <span class="c-toggle__line"></span>
-        <span class="c-toggle__txt">MENU</span>
     </div>
 </header>
 <!--▲ Content area ▲-->
