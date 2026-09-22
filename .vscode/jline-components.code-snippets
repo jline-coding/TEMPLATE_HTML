@@ -1,0 +1,284 @@
+{
+  "c-btn (Standard Button)": {
+    "prefix": "c-btn",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-btn\">",
+      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "FLOCSS Standard Button (component/_btn.scss)"
+  },
+  "c-btn--arrow (Button with Arrow)": {
+    "prefix": "c-btn-arrow",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow\">",
+      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "FLOCSS Button with Right Arrow"
+  },
+  "c-btn--arrow-center (Button with Centered Arrow)": {
+    "prefix": "c-btn-arrow-center",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow-center\">",
+      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "FLOCSS Button with Arrow aligned center"
+  },
+  "c-btn--arrow-between (Button with Space-Between Arrow)": {
+    "prefix": "c-btn-arrow-between",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow-between\">",
+      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "FLOCSS Button with Arrow aligned space-between"
+  },
+  "c-btn--reverse (Button Reverse Color)": {
+    "prefix": "c-btn-reverse",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-btn c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "FLOCSS Button Reverse style"
+  },
+  "c-btn--arrow c-btn--reverse (Button Reverse with Arrow)": {
+    "prefix": "c-btn-reverse-arrow",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "FLOCSS Button Reverse style with Arrow"
+  },
+  "c-title (EN/JP Bilingual Heading)": {
+    "prefix": "c-title",
+    "body": [
+      "<h2 class=\"c-title\">",
+      "\t<span class=\"c-title__en\">${1:ENGLISH TITLE}</span>",
+      "\t<span class=\"c-title__jp\">${2:日本語タイトル}</span>",
+      "</h2>"
+    ],
+    "description": "FLOCSS Bilingual Title EN/JP (component/_titles.scss)"
+  },
+  "c-ttl (Heading with Custom Size)": {
+    "prefix": "c-ttl",
+    "body": [
+      "<h2 class=\"c-ttl${1|36,34,32,30,28,26,24,22,20,18,16|}\">${2:タイトルコンテンツ}</h2>"
+    ],
+    "description": "FLOCSS Heading with selectable font-size"
+  },
+  "c-ttl36--line (Heading with Underline)": {
+    "prefix": "c-ttl36-line",
+    "body": [
+      "<h2 class=\"c-ttl36 c-ttl36--line\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "FLOCSS Heading 36px with line accent"
+  },
+  "c-ttl36--dot (Heading with Dot Accent)": {
+    "prefix": "c-ttl36-dot",
+    "body": [
+      "<h2 class=\"c-ttl36 c-ttl36--dot\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "FLOCSS Heading 36px with dot accent"
+  },
+  "c-txt (Text Paragraph)": {
+    "prefix": "c-txt",
+    "body": [
+      "<p class=\"c-txt${1|16,14,12,18,20,22,24|}\">${2:ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "FLOCSS Paragraph Text with selectable font-size (component/_texts.scss)"
+  },
+  "c-link (Standard Link)": {
+    "prefix": "c-link",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-link\">${2:リンク}</a>"
+    ],
+    "description": "FLOCSS Standard Link (component/_links.scss)"
+  },
+  "c-link--blank (External Link)": {
+    "prefix": "c-link-blank",
+    "body": [
+      "<a href=\"${1:#}\" class=\"c-link c-link--blank\" target=\"_blank\" rel=\"noopener noreferrer\">${2:リンク}</a>"
+    ],
+    "description": "FLOCSS External Link with icon"
+  },
+  "l-grid (2 Columns Grid)": {
+    "prefix": "l-grid",
+    "body": [
+      "<div class=\"l-grid\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"${1:./assets/images/common/img_dummy.webp}\" alt=\"${2:}\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"${3:./assets/images/common/img_dummy.webp}\" alt=\"${4:}\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "FLOCSS 2-Column Grid (layout/_grids.scss)"
+  },
+  "l-grid--cl3 (3 Columns Grid)": {
+    "prefix": "l-grid3",
+    "body": [
+      "<div class=\"l-grid l-grid--cl3\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure><img src=\"${1:./assets/images/common/img_dummy.webp}\" alt=\"${2:}\"></figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure><img src=\"${3:./assets/images/common/img_dummy.webp}\" alt=\"${4:}\"></figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure><img src=\"${5:./assets/images/common/img_dummy.webp}\" alt=\"${6:}\"></figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "FLOCSS 3-Column Grid (layout/_grids.scss)"
+  },
+  "l-grid--cl4 (4 Columns Grid)": {
+    "prefix": "l-grid4",
+    "body": [
+      "<div class=\"l-grid l-grid--cl4\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure><img src=\"${1:./assets/images/common/img_dummy.webp}\" alt=\"${2:}\"></figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure><img src=\"${3:./assets/images/common/img_dummy.webp}\" alt=\"${4:}\"></figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure><img src=\"${5:./assets/images/common/img_dummy.webp}\" alt=\"${6:}\"></figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure><img src=\"${7:./assets/images/common/img_dummy.webp}\" alt=\"${8:}\"></figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "FLOCSS 4-Column Grid (layout/_grids.scss)"
+  },
+  "l-flex (2 Columns Flex Left/Right)": {
+    "prefix": "l-flex",
+    "body": [
+      "<div class=\"l-flex${1| , l-flex--middle, l-flex--reverse, l-flex--reverse l-flex--middle, l-flex--center, l-flex--center l-flex--middle|}\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"${2:./assets/images/common/img_dummy.webp}\" alt=\"${3:}\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">${4:タイトル}</h2>",
+      "\t\t<p class=\"c-txt16\">${5:ダミーテキスト。ダミーテキスト。}</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "FLOCSS 2-Column Flex (layout/_flexs.scss)"
+  },
+  "l-tbl (Table Item Definition)": {
+    "prefix": "l-tbl",
+    "body": [
+      "<div class=\"l-tbl\">",
+      "\t<div class=\"l-tbl__item${1| , l-tbl__item--middle|}\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">${2:項目名}</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">${3:ダミーテキスト。ダミーテキスト。}</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item${1| , l-tbl__item--middle|}\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">${4:項目名}</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">${5:ダミーテキスト。ダミーテキスト。}</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "FLOCSS Table List (layout/_tbls.scss)"
+  },
+  "c-list-dot (Dot List)": {
+    "prefix": "c-list-dot",
+    "body": [
+      "<ul class=\"c-list-dot\">",
+      "\t<li class=\"c-list-dot__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-dot__item\">${2:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-dot__item\">${3:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "FLOCSS Dot Bullet List (component/_lists.scss)"
+  },
+  "c-list-number (Number List)": {
+    "prefix": "c-list-num",
+    "body": [
+      "<ul class=\"c-list-number\">",
+      "\t<li class=\"c-list-number__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-number__item\">${2:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-number__item\">${3:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "FLOCSS Numbered List (component/_lists.scss)"
+  },
+  "c-list-star (Star List)": {
+    "prefix": "c-list-star",
+    "body": [
+      "<ul class=\"c-list-star\">",
+      "\t<li class=\"c-list-star__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-star__item\">${2:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-star__item\">${3:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "FLOCSS Star Bullet List (component/_lists.scss)"
+  },
+  "c-mv (Main Visual Banner)": {
+    "prefix": "c-mv",
+    "body": [
+      "<section class=\"c-mv\">",
+      "\t<figure class=\"c-mv__bg\">",
+      "\t\t<img src=\"${1:../assets/images/common/img_dummy.webp}\" alt=\"${2:}\">",
+      "\t</figure>",
+      "\t<div class=\"l-container\">",
+      "\t\t<div class=\"c-mv__inner\">",
+      "\t\t\t<h1 class=\"c-mv-title\">",
+      "\t\t\t\t<span class=\"c-mv-title__en\">${3:TITLE}</span>",
+      "\t\t\t\t<span class=\"c-mv-title__jp\">${4:タイトル}</span>",
+      "\t\t\t</h1>",
+      "\t\t</div>",
+      "\t</div>",
+      "</section>"
+    ],
+    "description": "FLOCSS Main Visual Banner (component/_mv.scss)"
+  },
+  "c-bread (Breadcrumb Navigation)": {
+    "prefix": "c-bread",
+    "body": [
+      "<div class=\"l-container\">",
+      "\t<ul class=\"c-bread\">",
+      "\t\t<li class=\"c-bread__item\">",
+      "\t\t\t<a href=\"${1:../}\" class=\"c-bread__link\">top</a>",
+      "\t\t</li>",
+      "\t\t<li class=\"c-bread__item\">${2:現在のページ}</li>",
+      "\t</ul>",
+      "</div>"
+    ],
+    "description": "FLOCSS Breadcrumbs (component/_bread.scss)"
+  },
+  "c-loading (Loading Spinner)": {
+    "prefix": "c-loading",
+    "body": [
+      "<div class=\"c-loading\">",
+      "\t<div class=\"c-loading__inner\">",
+      "\t\t<div class=\"c-loading__content\">",
+      "\t\t\t<div class=\"c-loading__item\"></div>",
+      "\t\t\t<div class=\"c-loading__item\"></div>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "FLOCSS Page Loading Animation (component/_loading.scss)"
+  }
+}

@@ -6,7 +6,7 @@ layout > container
 */
 
 .l-container {
-    width: unset;
+    width: 100%;
     padding: 0 20px;
 
 }
@@ -15,7 +15,7 @@ layout > container
     %_container {
         box-sizing: border-box;
         margin: 0 auto;
-        width: auto;
+        width: 100%;
     }
 
     .l-container {

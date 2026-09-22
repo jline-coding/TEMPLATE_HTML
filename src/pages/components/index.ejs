@@ -1,12 +1,12 @@
 ---
 layout: _default
-title: Title1321
-description: 
-vendorcss: ['slick/slick']
-vendorjs: ['slick/slick.min']
+title: Component Library & Design System
+description: FLOCSS Component Library for JLINE - Full-width layout & modular includes
+vendorcss: []
+vendorjs: []
 css: []
 js: []
-page: componets
+page: components
 ---
 <script>
     if (!window.sessionStorage.getItem("storage_loading")) {
@@ -14,430 +14,967 @@ page: componets
         window.sessionStorage.setItem("storage_loading", new Date().getTime().toString());    
     }
 </script>
+
 <style>
-    .p-component{
-        position: relative;
-        z-index: 1;
+/* ==========================================================================
+   COMPONENT SHOWCASE - FULL WIDTH & PROFESSIONAL SIDEBAR
+   Design tokens:
+   - Primary: var(--primary, #e60012)
+   - Base Dark: var(--base, #3E3E3E)
+   - Scoped under .cs- to avoid leaking into the main website styles
+   ========================================================================== */
+
+/* Hide default site header, footer & cookie banner on Component page for Full-width App view */
+.c-header, .c-footer, .c-cookiewrap {
+    display: none !important;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc;
+}
+
+.l-wrapper {
+    overflow: visible !important;
+}
+
+/* Full-Width App Layout without container */
+.cs-app {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--base, #3E3E3E);
+    position: relative;
+}
+
+/* ==========================================
+   FIXED SIDEBAR (290px)
+   ========================================== */
+.cs-sidebar {
+    width: 290px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.cs-sidebar__header {
+    padding: 24px 20px 18px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.cs-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.cs-brand__icon {
+    width: 32px;
+    height: 32px;
+    background: var(--primary, #e60012);
+    color: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(230, 0, 18, 0.25);
+}
+
+.cs-brand__text {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.cs-brand__sub {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Search Box */
+.cs-search {
+    position: relative;
+}
+
+.cs-search__input {
+    width: 100%;
+    padding: 9px 12px 9px 34px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1e293b;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.cs-search__input:focus {
+    background: #fff;
+    border-color: var(--primary, #e60012);
+    box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.15);
+}
+
+.cs-search__icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+/* Nav Menu */
+.cs-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 12px;
+}
+
+.cs-nav::-webkit-scrollbar {
+    width: 5px;
+}
+.cs-nav::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.cs-nav__group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    padding: 8px 10px 4px;
+    margin: 8px 0 2px;
+}
+
+.cs-nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.cs-nav__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.cs-nav__link:hover {
+    background: #f8fafc;
+    color: var(--primary, #e60012);
+    transform: translateX(3px);
+}
+
+.cs-nav__link.is-active {
+    background: rgba(230, 0, 18, 0.08);
+    color: var(--primary, #e60012);
+    font-weight: 700;
+    border-left: 3px solid var(--primary, #e60012);
+}
+
+.cs-nav__badge {
+    font-size: 10px;
+    font-family: Consolas, monospace;
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.cs-sidebar__footer {
+    padding: 14px 18px;
+    border-top: 1px solid #f1f5f9;
+    background: #f8fafc;
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.cs-sidebar__footer strong {
+    color: var(--primary, #e60012);
+}
+
+/* ==========================================
+   MAIN WORKSPACE (FULL WIDTH)
+   ========================================== */
+.cs-main {
+    flex: 1;
+    min-width: 0;
+    padding: 30px 40px 100px;
+}
+
+.cs-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 24px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.cs-topbar__title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px;
+}
+
+.cs-topbar__desc {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+.cs-topbar__stats {
+    display: flex;
+    gap: 12px;
+}
+
+.cs-stat-pill {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.cs-stat-pill strong {
+    color: var(--primary, #e60012);
+}
+
+/* Section Header */
+.cs-section {
+    scroll-margin-top: 24px;
+    margin-bottom: 50px;
+}
+
+.cs-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.cs-section__title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid var(--primary, #e60012);
+    padding-left: 12px;
+}
+
+.cs-section__file {
+    font-size: 12px;
+    font-family: Consolas, monospace;
+    background: #fff;
+    color: #475569;
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Component Grid - 1 card per row */
+.cs-grid-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.cs-grid-cards--full {
+    grid-template-columns: 1fr;
+}
+
+/* ==========================================
+   COMPONENT CARD
+   ========================================== */
+.cs-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.cs-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+}
+
+.cs-card__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cs-card__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cs-card__class-tag {
+    font-size: 11px;
+    font-family: Consolas, monospace;
+    background: #fee2e2;
+    color: var(--primary, #e60012);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.cs-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* Action Buttons */
+.cs-btn-action {
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.cs-btn-action--copy {
+    background: var(--primary, #e60012);
+    color: #fff;
+}
+.cs-btn-action--copy:hover {
+    background: #c5000f;
+}
+
+.cs-btn-action--secondary {
+    background: #fff;
+    color: #475569;
+    border-color: #cbd5e1;
+}
+.cs-btn-action--secondary:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #94a3b8;
+}
+
+/* Preview Area */
+.cs-card__preview {
+    padding: 20px;
+    background: #ffffff;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+
+.cs-card__preview--left {
+    justify-content: flex-start;
+}
+
+.cs-card__preview--dark {
+    background: #1e293b;
+    color: #fff;
+}
+
+.cs-card__preview .c-mv {
+    margin-top: 0;
+}
+
+/* Code Accordion */
+.cs-card__code {
+    display: none;
+    background: #0f172a;
+    padding: 14px 16px;
+    border-top: 1px solid #1e293b;
+}
+
+.cs-card__code.is-open {
+    display: block;
+}
+
+.cs-card__code pre {
+    margin: 0;
+    color: #e2e8f0;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Floating Toast */
+.cs-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f172a;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 99999;
+    transform: translateY(100px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-left: 4px solid var(--primary, #e60012);
+}
+
+.cs-toast.is-show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* User original styles for layout helpers if needed */
+.p-component__btns { display: flex; flex-wrap: wrap; gap: 15px; }
+.p-component__titles { display: grid; gap: 16px; }
+.p-component__texts { display: grid; gap: 14px; }
+.p-component__grids { display: grid; gap: 30px; }
+.p-component__flexs { display: grid; gap: 30px; }
+.p-component__tbls { display: grid; gap: 30px; }
+.p-component__lists { display: grid; gap: 24px; }
+
+@media (max-width: 991px) {
+    .cs-app {
+        flex-direction: column;
     }
-    .p-component::after{
-        content: "";
+    .cs-sidebar {
         width: 100%;
-        height: 100%;
-        background-color: var(--primary);
-        opacity: 0.05;
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: -1;
+        height: auto;
+        gap: 15px;
+        position: static;
     }
-    .p-component__texts{
-        display: grid;
-        grid-gap: 20px;
-        margin-bottom: 60px;
-    }
-    .p-component__titles{
-        display: grid;
-        grid-gap: 20px;
-        margin-bottom: 60px;
-    }
-    .p-component__btns{
-        display: flex;
+    .cs-topbar{
         flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        margin-bottom: 60px;
     }
-    .p-component__grids{
-        margin-bottom: 60px;
-        display: grid;
-        grid-gap: 60px;
+    .cs-main {
+        padding: 20px 16px;
     }
-    .p-component__flexs{
-        margin-bottom: 60px;
-        display: grid;
-        grid-gap: 60px;
+    .cs-grid-cards {
+        grid-template-columns: 1fr;
     }
-    .p-component__tbls{
-        margin-bottom: 60px;
-        display: grid;
-        grid-gap: 60px;
-    }
-    .p-component__lists{
-        margin-bottom: 60px;
-        display: grid;
-        grid-gap: 60px;
-    }
+}
 </style>
-<main class="p-component">   
-    <div class="c-loading">
-        <div class="c-loading__inner">
-            <div class="c-loading__content">
-                <div class="c-loading__item"></div>
-                <div class="c-loading__item"></div>
+
+<div class="cs-app">
+    <!-- =======================================================
+         FIXED SIDEBAR (FULL HEIGHT)
+         ======================================================= -->
+    <aside class="cs-sidebar">
+        <div class="cs-sidebar__header">
+            <div class="cs-brand">
+                <div class="cs-brand__icon">J</div>
+                <div>
+                    <div class="cs-brand__text">JLINE COMPONENT</div>
+                    <div class="cs-brand__sub">Design System & Code Library</div>
+                </div>
+            </div>
+            <div class="cs-search">
+                <span class="cs-search__icon">🔍</span>
+                <input type="text" id="cs-filter-input" class="cs-search__input" placeholder="Filter components..." autocomplete="off">
             </div>
         </div>
-    </div>   
-    <section class="c-mv">
-        <figure class="c-mv__bg">
-            <img src="../assets/images/common/img_dummy.webp" alt="">
-        </figure>
-        <div class="l-container">
-            <div class="c-mv__inner">
-                <h1 class="c-mv-title">
-                    <span class="c-mv-title__en">title</span>
-                    <span class="c-mv-title__jp">タイトル</span>
-                </h1>
-            </div>
-        </div>
-    </section>
-    <div class="l-container">
-        <ul class="c-bread">
-            <li class="c-bread__item">
-                <a href="../" class="c-bread__link">top</a>
-            </li>
-            <li class="c-bread__item">コンポーネント</li>
-        </ul>
-    </div>
-    <div class="l-container">
-        <div class="p-component__titles">
-            <h2 class="c-title">
-                <span class="c-title__en">title</span>
-                <span class="c-title__jp">タイトル</span>
-            </h2>
-            <h2 class="c-ttl36">タイトルコンテンツ</h2>
-            <h2 class="c-ttl36 c-ttl36--line">タイトルコンテンツ</h2>
-            <h2 class="c-ttl36 c-ttl36--dot">タイトルコンテンツ</h2>
 
-
-            <h2 class="c-ttl34">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl32">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl30">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl28">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl26">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl24">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl22">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl20">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl18">タイトルコンテンツ</h2>
-
-
-
-            <h2 class="c-ttl16">タイトルコンテンツ</h2>
-        </div>
-        <div class="p-component__texts">
-            <p class="c-txt24">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            <p class="c-txt22">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            <p class="c-txt20">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            <p class="c-txt18">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            <p class="c-txt14">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            <p class="c-txt12">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-        </div>
-        <div class="p-component__btns">
-            <a href="" class="c-btn">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-            <a href="" class="c-btn c-btn--arrow">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-            <a href="" class="c-btn c-btn--arrow-center">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-            <a href="" class="c-btn c-btn--arrow-between">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-        </div>
-        <div class="p-component__btns">
-            <a href="" class="c-btn c-btn--reverse">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-            <a href="" class="c-btn c-btn--arrow c-btn--reverse">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-            <a href="" class="c-btn c-btn--arrow-center c-btn--reverse">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-            <a href="" class="c-btn c-btn--arrow-between c-btn--reverse">
-                <span class="c-btn__content">ボタン</span>
-            </a>
-        </div>
-        <div class="p-component__links">
-            <a href="" class="c-link">リンク</a>
-            <a href="" class="c-link c-link--blank">リンク</a>
-        </div>
-        <div class="p-component__grids">
-            <div class="l-grid">
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-            </div>
-            <div class="l-grid l-grid--cl3">
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-            </div>
-            <div class="l-grid l-grid--cl4">
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-grid__item">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-            </div>
-        </div>
-        <div class="p-component__flexs">
-            <div class="l-flex">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-            <div class="l-flex l-flex--reverse">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-            <div class="l-flex l-flex--middle">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-            <div class="l-flex l-flex--reverse l-flex--middle">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-
-            <div class="l-flex l-flex--center">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-            <div class="l-flex l-flex--center l-flex--reverse">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-            <div class="l-flex l-flex--center l-flex--middle">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-            <div class="l-flex l-flex--center l-flex--reverse l-flex--middle">
-                <div class="l-flex__left">
-                    <figure>
-                        <img src="../assets/images/common/img_dummy.webp" alt="">
-                    </figure>
-                </div>
-                <div class="l-flex__right">
-                    <h2 class="c-ttl24">ダミーテキスト。</h2>
-                    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                </div>
-            </div>
-            
-        </div>
-        <div class="p-component__tbls">
-            <div class="l-tbl">
-                <div class="l-tbl__item">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-            </div>
-            <div class="l-tbl">
-                <div class="l-tbl__item l-tbl__item--middle">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item l-tbl__item--middle">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item l-tbl__item--middle">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item l-tbl__item--middle">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-                <div class="l-tbl__item l-tbl__item--middle">
-                    <div class="l-tbl__left">
-                        <h2 class="c-ttl16">ダミーテキスト。</h2>
-                    </div>
-                    <div class="l-tbl__right">
-                        <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="p-component__lists">
-            <ul class="c-list-dot">
-                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+        <nav class="cs-nav">
+            <div class="cs-nav__group-title">Layout & Structure</div>
+            <ul class="cs-nav__list">
+                <li><a href="#sec-loading" class="cs-nav__link"><span>01. Loading</span> <span class="cs-nav__badge">_loading.ejs</span></a></li>
+                <li><a href="#sec-mv" class="cs-nav__link"><span>02. Main Visual</span> <span class="cs-nav__badge">_mv.ejs</span></a></li>
+                <li><a href="#sec-bread" class="cs-nav__link"><span>03. Breadcrumb</span> <span class="cs-nav__badge">_bread.ejs</span></a></li>
+                <li><a href="#sec-grids" class="cs-nav__link"><span>04. Grid Layout</span> <span class="cs-nav__badge">_grids.ejs</span></a></li>
+                <li><a href="#sec-flexs" class="cs-nav__link"><span>05. Flex Layout</span> <span class="cs-nav__badge">_flexs.ejs</span></a></li>
+                <li><a href="#sec-tbls" class="cs-nav__link"><span>06. Tables</span> <span class="cs-nav__badge">_tbls.ejs</span></a></li>
             </ul>
-            <ul class="c-list-number">
-                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
+
+            <div class="cs-nav__group-title">Typography & Elements</div>
+            <ul class="cs-nav__list">
+                <li><a href="#sec-titles" class="cs-nav__link"><span>07. Headings & Titles</span> <span class="cs-nav__badge">_titles.ejs</span></a></li>
+                <li><a href="#sec-texts" class="cs-nav__link"><span>08. Typography Texts</span> <span class="cs-nav__badge">_texts.ejs</span></a></li>
+                <li><a href="#sec-btns" class="cs-nav__link"><span>09. Buttons</span> <span class="cs-nav__badge">_btns.ejs</span></a></li>
+                <li><a href="#sec-links" class="cs-nav__link"><span>10. Links</span> <span class="cs-nav__badge">_links.ejs</span></a></li>
+                <li><a href="#sec-lists" class="cs-nav__link"><span>11. Lists</span> <span class="cs-nav__badge">_lists.ejs</span></a></li>
             </ul>
-            <ul class="c-list-star">
-                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-                <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-            </ul>
+        </nav>
+
+        <div class="cs-sidebar__footer">
+            💡 <strong>Dev Tip:</strong> Edit directly in <code>src/pages/components/_*.ejs</code>. This page auto-includes and reloads!
         </div>
-    </div>
-</main>
+    </aside>
+
+    <!-- =======================================================
+         MAIN WORKSPACE: FULL WIDTH & MODULAR INCLUDES
+         ======================================================= -->
+    <main class="cs-main">
+        <header class="cs-topbar">
+            <div>
+                <h1 class="cs-topbar__title">FLOCSS Component Library</h1>
+                <p class="cs-topbar__desc">All components are imported from modular <code>_*.ejs</code> files. Copy any individual snippet with a single click.</p>
+            </div>
+            <div class="cs-topbar__stats">
+                <div class="cs-stat-pill">Modules: <strong>11 files</strong></div>
+                <div class="cs-stat-pill">Components: <strong>38 items</strong></div>
+            </div>
+        </header>
+
+        <!-- 01. LOADING -->
+        <section id="sec-loading" class="cs-section" data-title="01. Loading Animation" data-file="_loading.ejs" data-type="single">
+            <div class="cs-raw-content">
+                <%- include('./_loading') %>
+            </div>
+        </section>
+
+        <!-- 02. MAIN VISUAL -->
+        <section id="sec-mv" class="cs-section" data-title="02. Main Visual Banner" data-file="_mv.ejs" data-type="single">
+            <div class="cs-raw-content">
+                <%- include('./_mv') %>
+            </div>
+        </section>
+
+        <!-- 03. BREADCRUMB -->
+        <section id="sec-bread" class="cs-section" data-title="03. Breadcrumb Navigation" data-file="_bread.ejs" data-type="single">
+            <div class="cs-raw-content">
+                <%- include('./_bread') %>
+            </div>
+        </section>
+
+        <!-- 04. GRIDS -->
+        <section id="sec-grids" class="cs-section" data-title="04. Grid Layouts" data-file="_grids.ejs" data-type="grids">
+            <div class="cs-raw-content">
+                <%- include('./_grids') %>
+            </div>
+        </section>
+
+        <!-- 05. FLEX LAYOUTS -->
+        <section id="sec-flexs" class="cs-section" data-title="05. Flex Layouts (8 Variations)" data-file="_flexs.ejs" data-type="flexs">
+            <div class="cs-raw-content">
+                <%- include('./_flexs') %>
+            </div>
+        </section>
+
+        <!-- 06. TABLES -->
+        <section id="sec-tbls" class="cs-section" data-title="06. Table Definition Lists" data-file="_tbls.ejs" data-type="tables">
+            <div class="cs-raw-content">
+                <%- include('./_tbls') %>
+            </div>
+        </section>
+
+        <!-- 07. HEADINGS & TITLES -->
+        <section id="sec-titles" class="cs-section" data-title="07. Headings & Titles" data-file="_titles.ejs" data-type="titles">
+            <div class="cs-raw-content">
+                <%- include('./_titles') %>
+            </div>
+        </section>
+
+        <!-- 08. TYPOGRAPHY & TEXTS -->
+        <section id="sec-texts" class="cs-section" data-title="08. Typography Texts" data-file="_texts.ejs" data-type="texts">
+            <div class="cs-raw-content">
+                <%- include('./_texts') %>
+            </div>
+        </section>
+
+        <!-- 09. BUTTONS -->
+        <section id="sec-btns" class="cs-section" data-title="09. Buttons" data-file="_btns.ejs" data-type="btns">
+            <div class="cs-raw-content">
+                <%- include('./_btns') %>
+            </div>
+        </section>
+
+        <!-- 10. LINKS -->
+        <section id="sec-links" class="cs-section" data-title="10. Links" data-file="_links.ejs" data-type="links">
+            <div class="cs-raw-content">
+                <%- include('./_links') %>
+            </div>
+        </section>
+
+        <!-- 11. LISTS -->
+        <section id="sec-lists" class="cs-section" data-title="11. Lists" data-file="_lists.ejs" data-type="lists">
+            <div class="cs-raw-content">
+                <%- include('./_lists') %>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Floating Toast -->
+<div id="cs-toast" class="cs-toast">
+    <span>✅</span>
+    <span id="cs-toast-msg">Copied HTML snippet to clipboard!</span>
+</div>
+
+<script>
+/* ==========================================================================
+   AUTO-CONVERT INCLUDED FILES INTO MODULAR CARDS
+   - Parses directly from included _*.ejs files
+   - Edit partial files and this showcase updates dynamically!
+   ========================================================================== */
+(function() {
+    let toastTimeout = null;
+
+    window.showToast = function(msg) {
+        const toast = document.getElementById('cs-toast');
+        const toastMsg = document.getElementById('cs-toast-msg');
+        if (!toast || !toastMsg) return;
+        toastMsg.textContent = msg;
+        toast.classList.add('is-show');
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('is-show');
+        }, 2200);
+    };
+
+    window.copyRaw = function(text) {
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`Copied class: ".${text}"`);
+            });
+        }
+    };
+
+    window.copySnippetFromCard = function(btn) {
+        const card = btn.closest('.cs-card');
+        if (!card) return;
+        const codeBlock = card.querySelector('.cs-card__code pre code');
+        let htmlToCopy = '';
+        if (codeBlock) {
+            htmlToCopy = codeBlock.textContent.trim();
+        } else {
+            const preview = card.querySelector('.cs-card__preview');
+            if (preview) htmlToCopy = preview.innerHTML.trim();
+        }
+
+        if (htmlToCopy) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(htmlToCopy).then(() => {
+                    showToast('Copied HTML snippet to clipboard!');
+                });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = htmlToCopy;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('Copied HTML snippet to clipboard!');
+            }
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            btn.style.background = '#10b981';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+            }, 1200);
+        }
+    };
+
+    window.toggleCodeAccordion = function(btn) {
+        const card = btn.closest('.cs-card');
+        if (!card) return;
+        const code = card.querySelector('.cs-card__code');
+        if (!code) return;
+        code.classList.toggle('is-open');
+        btn.textContent = code.classList.contains('is-open') ? 'Hide Code' : 'Code';
+    };
+
+    // Helper to build dynamic Card element
+    function buildCard(el, title, classTag, isFull = false, isDark = false, isLeft = false) {
+        const card = document.createElement('div');
+        card.className = 'cs-card';
+        card.setAttribute('data-search', `${title} ${classTag}`.toLowerCase());
+
+        // Escape HTML for code block
+        const cleanHtml = el.outerHTML;
+        const escaped = cleanHtml
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        card.innerHTML = `
+            <div class="cs-card__toolbar">
+                <span class="cs-card__title">${title} <span class="cs-card__class-tag">.${classTag}</span></span>
+                <div class="cs-card__actions">
+                    <button type="button" class="cs-btn-action cs-btn-action--copy" onclick="copySnippetFromCard(this)">📋 Copy HTML</button>
+                    <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="copyRaw('${classTag}')">Class</button>
+                    <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="toggleCodeAccordion(this)">Code</button>
+                </div>
+            </div>
+            <div class="cs-card__preview ${isDark ? 'cs-card__preview--dark' : ''} ${isLeft ? 'cs-card__preview--left' : ''}"></div>
+            <div class="cs-card__code">
+                <pre><code>${escaped}</code></pre>
+            </div>
+        `;
+
+        card.querySelector('.cs-card__preview').appendChild(el);
+        return card;
+    }
+
+    // Transform included content blocks into individual Cards
+    function transformSections() {
+        const sections = document.querySelectorAll('.cs-section');
+
+        sections.forEach(sec => {
+            const title = sec.getAttribute('data-title') || '';
+            const file = sec.getAttribute('data-file') || '';
+            const type = sec.getAttribute('data-type') || 'single';
+            const raw = sec.querySelector('.cs-raw-content');
+            if (!raw) return;
+
+            // Create Section Header
+            const header = document.createElement('div');
+            header.className = 'cs-section__header';
+            header.innerHTML = `
+                <h2 class="cs-section__title">${title}</h2>
+                <span class="cs-section__file">📁 ${file}</span>
+            `;
+
+            const isFull = true;
+            const gridCards = document.createElement('div');
+            gridCards.className = 'cs-grid-cards cs-grid-cards--full';
+
+            if (type === 'single') {
+                const child = raw.firstElementChild;
+                if (child) {
+                    const tag = child.className || child.tagName.toLowerCase();
+                    const card = buildCard(child, title, tag, true, false, true);
+                    gridCards.appendChild(card);
+                }
+            } else if (type === 'btns') {
+                const buttons = Array.from(raw.querySelectorAll('a.c-btn'));
+                buttons.forEach((btn, idx) => {
+                    const cls = btn.className;
+                    const isDark = cls.includes('--reverse');
+                    let name = `Button #${idx + 1}`;
+                    if (cls.includes('--arrow-between')) name = 'Button Arrow Between';
+                    else if (cls.includes('--arrow-center')) name = 'Button Arrow Center';
+                    else if (cls.includes('--arrow')) name = 'Button with Arrow';
+                    else if (cls.includes('--reverse')) name = 'Button Reverse';
+                    else name = 'Button Standard';
+
+                    if (isDark && !name.includes('Reverse')) name += ' (Reverse)';
+                    const card = buildCard(btn, name, cls, false, isDark, false);
+                    gridCards.appendChild(card);
+                });
+            } else if (type === 'titles') {
+                const titles = Array.from(raw.querySelectorAll('.c-title, [class*="c-ttl"]'));
+                titles.forEach(ttl => {
+                    const cls = ttl.className;
+                    let name = 'Heading';
+                    if (cls.includes('c-title')) name = 'Bilingual Title EN/JP';
+                    else if (cls.includes('--line')) name = 'Heading 36px Line';
+                    else if (cls.includes('--dot')) name = 'Heading 36px Dot';
+                    else {
+                        const m = cls.match(/c-ttl(\d+)/);
+                        name = m ? `Heading ${m[1]}px` : 'Heading';
+                    }
+                    const card = buildCard(ttl, name, cls, false, false, true);
+                    gridCards.appendChild(card);
+                });
+            } else if (type === 'texts') {
+                const texts = Array.from(raw.querySelectorAll('[class*="c-txt"]'));
+                texts.forEach(txt => {
+                    const cls = txt.className;
+                    const m = cls.match(/c-txt(\d+)/);
+                    const name = m ? `Text ${m[1]}px` : 'Paragraph';
+                    const card = buildCard(txt, name, cls, false, false, true);
+                    gridCards.appendChild(card);
+                });
+            } else if (type === 'links') {
+                const links = Array.from(raw.querySelectorAll('a.c-link'));
+                links.forEach(lnk => {
+                    const cls = lnk.className;
+                    const isBlank = cls.includes('--blank');
+                    const name = isBlank ? 'External Link (Blank)' : 'Standard Link';
+                    const card = buildCard(lnk, name, cls, false, false, true);
+                    gridCards.appendChild(card);
+                });
+            } else if (type === 'grids') {
+                const grids = Array.from(raw.querySelectorAll('.l-grid'));
+                grids.forEach((grd, idx) => {
+                    const cls = grd.className;
+                    let name = '2 Columns Grid';
+                    if (cls.includes('--cl3')) name = '3 Columns Grid';
+                    else if (cls.includes('--cl4')) name = '4 Columns Grid';
+                    const card = buildCard(grd, name, cls, true, false, false);
+                    gridCards.appendChild(card);
+                });
+            } else if (type === 'flexs') {
+                const flexWrappers = Array.from(raw.querySelectorAll('.l-container, .l-flex'));
+                const items = [];
+                flexWrappers.forEach(el => {
+                    if (el.classList.contains('l-container') && el.querySelector('.l-flex')) {
+                        items.push(el);
+                    } else if (el.classList.contains('l-flex') && !el.closest('.l-container')) {
+                        items.push(el);
+                    }
+                });
+                items.forEach((item, idx) => {
+                    const flx = item.classList.contains('l-flex') ? item : item.querySelector('.l-flex');
+                    const cls = flx ? flx.className : item.className;
+                    let name = `Flex #${idx + 1}`;
+                    if (cls.includes('--center') && cls.includes('--reverse') && cls.includes('--middle')) name = 'Flex Center + Reverse + Middle';
+                    else if (cls.includes('--center') && cls.includes('--middle')) name = 'Flex Center + Middle';
+                    else if (cls.includes('--center') && cls.includes('--reverse')) name = 'Flex Center + Reverse';
+                    else if (cls.includes('--center')) name = 'Flex Center';
+                    else if (cls.includes('--reverse') && cls.includes('--middle')) name = 'Flex Reverse + Middle';
+                    else if (cls.includes('--middle')) name = 'Flex Middle';
+                    else if (cls.includes('--reverse')) name = 'Flex Reverse';
+                    else name = 'Flex Standard';
+
+                    const card = buildCard(item, name, cls, true, false, false);
+                    gridCards.appendChild(card);
+                });
+            } else if (type === 'tables') {
+                const tables = Array.from(raw.querySelectorAll('.l-tbl'));
+                tables.forEach((tbl, idx) => {
+                    const hasMiddle = tbl.querySelector('.l-tbl__item--middle');
+                    const name = hasMiddle ? 'Table List Middle (Vertical Center)' : 'Table List Standard';
+                    const cls = hasMiddle ? 'l-tbl .l-tbl__item--middle' : 'l-tbl';
+                    const card = buildCard(tbl, name, cls, true, false, false);
+                    gridCards.appendChild(card);
+                });
+            } else if (type === 'lists') {
+                const lists = Array.from(raw.querySelectorAll('ul[class*="c-list"]'));
+                lists.forEach(lst => {
+                    const cls = lst.className;
+                    let name = 'List';
+                    if (cls.includes('-dot')) name = 'Bullet List (Dot)';
+                    else if (cls.includes('-number')) name = 'Numbered List';
+                    else if (cls.includes('-star')) name = 'Star Bullet List';
+                    const card = buildCard(lst, name, cls, true, false, true);
+                    gridCards.appendChild(card);
+                });
+            }
+
+            // Remove raw container and append header + cards
+            raw.remove();
+            sec.appendChild(header);
+            sec.appendChild(gridCards);
+        });
+    }
+
+    // Execute transformation
+    transformSections();
+
+    // Live Search
+    const searchInput = document.getElementById('cs-filter-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const val = e.target.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.cs-card');
+            const sections = document.querySelectorAll('.cs-section');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const searchMeta = (card.getAttribute('data-search') || '').toLowerCase();
+                if (text.includes(val) || searchMeta.includes(val)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            sections.forEach(sec => {
+                const visible = sec.querySelectorAll('.cs-card:not([style*="display: none"])');
+                sec.style.display = (visible.length === 0 && val !== '') ? 'none' : '';
+            });
+        });
+    }
+
+    // Highlight active sidebar link on scroll
+    const navLinks = document.querySelectorAll('.cs-nav__link');
+    const sections = document.querySelectorAll('.cs-section');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        const scrollPos = window.scrollY + 80;
+        sections.forEach(section => {
+            const top = section.offsetTop;
+            const height = section.offsetHeight;
+            if (scrollPos >= top && scrollPos < top + height) {
+                current = '#' + section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('is-active');
+            if (link.getAttribute('href') === current) {
+                link.classList.add('is-active');
+            }
+        });
+    });
+})();
+</script>
