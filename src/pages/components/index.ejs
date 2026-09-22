@@ -713,7 +713,11 @@ body {
             htmlToCopy = codeBlock.textContent.trim();
         } else {
             const preview = card.querySelector('.cs-card__preview');
-            if (preview) htmlToCopy = preview.innerHTML.trim();
+            if (preview) {
+                const container = preview.querySelector('.l-container');
+                const target = (container && container.firstElementChild) ? container.firstElementChild : preview.firstElementChild || preview;
+                htmlToCopy = target.outerHTML || target.innerHTML.trim();
+            }
         }
 
         if (htmlToCopy) {
@@ -752,12 +756,21 @@ body {
 
     // Helper to build dynamic Card element
     function buildCard(el, title, classTag, isFull = false, isDark = false, isLeft = false) {
+        // If element is wrapped in .l-container, target the inner component for snippet and class badge
+        let snippetEl = el;
+        let effectiveTag = classTag;
+
+        if (el.classList && el.classList.contains('l-container') && el.firstElementChild) {
+            snippetEl = el.firstElementChild;
+            effectiveTag = snippetEl.className || snippetEl.tagName.toLowerCase();
+        }
+
         const card = document.createElement('div');
         card.className = 'cs-card';
-        card.setAttribute('data-search', `${title} ${classTag}`.toLowerCase());
+        card.setAttribute('data-search', `${title} ${effectiveTag}`.toLowerCase());
 
-        // Escape HTML for code block
-        const cleanHtml = el.outerHTML;
+        // Escape HTML for code block (without outer l-container)
+        const cleanHtml = snippetEl.outerHTML;
         const escaped = cleanHtml
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -765,10 +778,10 @@ body {
 
         card.innerHTML = `
             <div class="cs-card__toolbar">
-                <span class="cs-card__title">${title} <span class="cs-card__class-tag">.${classTag}</span></span>
+                <span class="cs-card__title">${title} <span class="cs-card__class-tag">.${effectiveTag}</span></span>
                 <div class="cs-card__actions">
                     <button type="button" class="cs-btn-action cs-btn-action--copy" onclick="copySnippetFromCard(this)">📋 Copy HTML</button>
-                    <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="copyRaw('${classTag}')">Class</button>
+                    <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="copyRaw('${effectiveTag}')">Class</button>
                     <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="toggleCodeAccordion(this)">Code</button>
                 </div>
             </div>
