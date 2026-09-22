@@ -1,6 +1,6 @@
 {
   "source_folder": "public",
-  "project_dir": "template_test_ssh",
+  "project_dir": "template_test_html",
   "build_command": "npm run build",
   "env": {
     "MODE": "new",
