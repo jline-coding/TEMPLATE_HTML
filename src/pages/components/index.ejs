@@ -319,15 +319,26 @@ body {
     gap: 6px;
 }
 
-/* Component Grid - 1 card per row */
-.cs-grid-cards {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
+/* Component Grid & Card Groups */
+.cs-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
 }
 
-.cs-grid-cards--full {
-    grid-template-columns: 1fr;
+.cs-group--full {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.cs-group--inline-block {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
 }
 
 /* ==========================================
@@ -349,6 +360,17 @@ body {
     box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
 }
 
+.cs-card--full {
+    width: 100%;
+}
+
+.cs-card--inline-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+}
+
 .cs-card__toolbar {
     display: flex;
     align-items: center;
@@ -357,27 +379,16 @@ body {
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
     gap: 12px;
-    flex-wrap: wrap;
 }
 
 .cs-card__title {
     font-size: 13px;
     font-weight: 700;
     color: #1e293b;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.cs-card__class-tag {
-    font-size: 11px;
-    font-family: Consolas, monospace;
-    background: #fee2e2;
-    color: var(--primary, #e60012);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .cs-card__actions {
@@ -385,6 +396,7 @@ body {
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
+    margin-left: auto;
 }
 
 /* Action Buttons */
@@ -424,26 +436,55 @@ body {
 
 /* Preview Area */
 .cs-card__preview {
-    padding: 20px;
+    padding: 24px 20px;
     background: #ffffff;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     min-height: 60px;
 }
 
-.cs-card__preview--left {
-    justify-content: flex-start;
+.cs-card--inline-block .cs-card__preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
 }
 
-.cs-card__preview--dark {
-    background: #1e293b;
-    color: #fff;
+.cs-card__preview--left,
+.cs-card--inline-block .cs-card__preview--left {
+    justify-content: flex-start;
 }
 
 .cs-card__preview .c-mv {
     margin-top: 0;
+}
+
+/* Card Footer with centered class badge */
+.cs-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.cs-card__class-tag {
+    font-size: 11px;
+    font-family: Consolas, monospace;
+    background: #fee2e2;
+    color: var(--primary, #e60012);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-block;
+}
+
+.cs-card__class-tag:hover {
+    background: #fecaca;
+    transform: translateY(-1px);
 }
 
 /* Code Accordion */
@@ -497,8 +538,10 @@ body {
     opacity: 1;
 }
 
-/* User original styles for layout helpers if needed */
-.p-component__btns { display: flex; flex-wrap: wrap; gap: 15px; }
+/* Unified component wrapper helpers */
+.p-component__item { display: block; width: 100%; }
+.p-component__item--inline-block { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.p-component__btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .p-component__titles { display: grid; gap: 16px; }
 .p-component__texts { display: grid; gap: 14px; }
 .p-component__grids { display: grid; gap: 30px; }
@@ -522,7 +565,9 @@ body {
     .cs-main {
         padding: 20px 16px;
     }
-    .cs-grid-cards {
+    .cs-group--inline-block,
+    .p-component__item--inline-block,
+    .p-component__btns {
         grid-template-columns: 1fr;
     }
 }
@@ -548,122 +593,70 @@ body {
         </div>
 
         <nav class="cs-nav">
-            <div class="cs-nav__group-title">Layout & Structure</div>
+            <% 
+              const rawComps = typeof componentModules !== 'undefined' ? componentModules : [];
+              const uiComps = rawComps.filter(c => !c.isLayout);
+              const layoutComps = rawComps.filter(c => c.isLayout);
+              const comps = [...uiComps, ...layoutComps];
+              let globalIdx = 1;
+            %>
+            <% if (uiComps.length > 0) { %>
+            <div class="cs-nav__group-title">Components (c-*)</div>
             <ul class="cs-nav__list">
-                <li><a href="#sec-loading" class="cs-nav__link"><span>01. Loading</span> <span class="cs-nav__badge">_loading.ejs</span></a></li>
-                <li><a href="#sec-mv" class="cs-nav__link"><span>02. Main Visual</span> <span class="cs-nav__badge">_mv.ejs</span></a></li>
-                <li><a href="#sec-bread" class="cs-nav__link"><span>03. Breadcrumb</span> <span class="cs-nav__badge">_bread.ejs</span></a></li>
-                <li><a href="#sec-grids" class="cs-nav__link"><span>04. Grid Layout</span> <span class="cs-nav__badge">_grids.ejs</span></a></li>
-                <li><a href="#sec-flexs" class="cs-nav__link"><span>05. Flex Layout</span> <span class="cs-nav__badge">_flexs.ejs</span></a></li>
-                <li><a href="#sec-tbls" class="cs-nav__link"><span>06. Tables</span> <span class="cs-nav__badge">_tbls.ejs</span></a></li>
+                <% uiComps.forEach(comp => { %>
+                <li>
+                    <a href="#sec-<%= comp.name %>" class="cs-nav__link">
+                        <span><%= String(globalIdx++).padStart(2, '0') %>. <%= comp.title %></span>
+                        <span class="cs-nav__badge"><%= comp.file %></span>
+                    </a>
+                </li>
+                <% }); %>
             </ul>
+            <% } %>
 
-            <div class="cs-nav__group-title">Typography & Elements</div>
+            <% if (layoutComps.length > 0) { %>
+            <div class="cs-nav__group-title">Layout & Structure (l-*)</div>
             <ul class="cs-nav__list">
-                <li><a href="#sec-titles" class="cs-nav__link"><span>07. Headings & Titles</span> <span class="cs-nav__badge">_titles.ejs</span></a></li>
-                <li><a href="#sec-texts" class="cs-nav__link"><span>08. Typography Texts</span> <span class="cs-nav__badge">_texts.ejs</span></a></li>
-                <li><a href="#sec-btns" class="cs-nav__link"><span>09. Buttons</span> <span class="cs-nav__badge">_btns.ejs</span></a></li>
-                <li><a href="#sec-links" class="cs-nav__link"><span>10. Links</span> <span class="cs-nav__badge">_links.ejs</span></a></li>
-                <li><a href="#sec-lists" class="cs-nav__link"><span>11. Lists</span> <span class="cs-nav__badge">_lists.ejs</span></a></li>
+                <% layoutComps.forEach(comp => { %>
+                <li>
+                    <a href="#sec-<%= comp.name %>" class="cs-nav__link">
+                        <span><%= String(globalIdx++).padStart(2, '0') %>. <%= comp.title %></span>
+                        <span class="cs-nav__badge"><%= comp.file %></span>
+                    </a>
+                </li>
+                <% }); %>
             </ul>
+            <% } %>
         </nav>
 
         <div class="cs-sidebar__footer">
-            💡 <strong>Dev Tip:</strong> Edit directly in <code>src/pages/components/_*.ejs</code>. This page auto-includes and reloads!
+            💡 <strong>Dev Tip:</strong> Thêm hoặc sửa bất kỳ file <code>src/pages/components/_*.ejs</code>. Mọi file và class mới đều tự động xuất hiện!
         </div>
     </aside>
 
     <!-- =======================================================
-         MAIN WORKSPACE: FULL WIDTH & MODULAR INCLUDES
+         MAIN WORKSPACE: FULL WIDTH & DYNAMIC MODULAR INCLUDES
          ======================================================= -->
     <main class="cs-main">
         <header class="cs-topbar">
             <div>
                 <h1 class="cs-topbar__title">FLOCSS Component Library</h1>
-                <p class="cs-topbar__desc">All components are imported from modular <code>_*.ejs</code> files. Copy any individual snippet with a single click.</p>
+                <p class="cs-topbar__desc">Tất cả component được nạp động từ các file <code>_*.ejs</code>. Click vào bất kỳ thẻ class hoặc nút copy để sử dụng.</p>
             </div>
             <div class="cs-topbar__stats">
-                <div class="cs-stat-pill">Modules: <strong>11 files</strong></div>
-                <div class="cs-stat-pill">Components: <strong>38 items</strong></div>
+                <div class="cs-stat-pill">Modules: <strong><%= comps.length %> files</strong></div>
+                <div class="cs-stat-pill" id="cs-total-components">Components: <strong>...</strong></div>
             </div>
         </header>
 
-        <!-- 01. LOADING -->
-        <section id="sec-loading" class="cs-section" data-title="01. Loading Animation" data-file="_loading.ejs" data-type="single">
+        <% comps.forEach((comp, idx) => { %>
+        <!-- <%= String(idx + 1).padStart(2, '0') %>. <%= comp.title.toUpperCase() %> -->
+        <section id="sec-<%= comp.name %>" class="cs-section" data-title="<%= String(idx + 1).padStart(2, '0') %>. <%= comp.title %>" data-file="<%= comp.file %>">
             <div class="cs-raw-content">
-                <%- include('./_loading') %>
+                <%- comp.content %>
             </div>
         </section>
-
-        <!-- 02. MAIN VISUAL -->
-        <section id="sec-mv" class="cs-section" data-title="02. Main Visual Banner" data-file="_mv.ejs" data-type="single">
-            <div class="cs-raw-content">
-                <%- include('./_mv') %>
-            </div>
-        </section>
-
-        <!-- 03. BREADCRUMB -->
-        <section id="sec-bread" class="cs-section" data-title="03. Breadcrumb Navigation" data-file="_bread.ejs" data-type="single">
-            <div class="cs-raw-content">
-                <%- include('./_bread') %>
-            </div>
-        </section>
-
-        <!-- 04. GRIDS -->
-        <section id="sec-grids" class="cs-section" data-title="04. Grid Layouts" data-file="_grids.ejs" data-type="grids">
-            <div class="cs-raw-content">
-                <%- include('./_grids') %>
-            </div>
-        </section>
-
-        <!-- 05. FLEX LAYOUTS -->
-        <section id="sec-flexs" class="cs-section" data-title="05. Flex Layouts (8 Variations)" data-file="_flexs.ejs" data-type="flexs">
-            <div class="cs-raw-content">
-                <%- include('./_flexs') %>
-            </div>
-        </section>
-
-        <!-- 06. TABLES -->
-        <section id="sec-tbls" class="cs-section" data-title="06. Table Definition Lists" data-file="_tbls.ejs" data-type="tables">
-            <div class="cs-raw-content">
-                <%- include('./_tbls') %>
-            </div>
-        </section>
-
-        <!-- 07. HEADINGS & TITLES -->
-        <section id="sec-titles" class="cs-section" data-title="07. Headings & Titles" data-file="_titles.ejs" data-type="titles">
-            <div class="cs-raw-content">
-                <%- include('./_titles') %>
-            </div>
-        </section>
-
-        <!-- 08. TYPOGRAPHY & TEXTS -->
-        <section id="sec-texts" class="cs-section" data-title="08. Typography Texts" data-file="_texts.ejs" data-type="texts">
-            <div class="cs-raw-content">
-                <%- include('./_texts') %>
-            </div>
-        </section>
-
-        <!-- 09. BUTTONS -->
-        <section id="sec-btns" class="cs-section" data-title="09. Buttons" data-file="_btns.ejs" data-type="btns">
-            <div class="cs-raw-content">
-                <%- include('./_btns') %>
-            </div>
-        </section>
-
-        <!-- 10. LINKS -->
-        <section id="sec-links" class="cs-section" data-title="10. Links" data-file="_links.ejs" data-type="links">
-            <div class="cs-raw-content">
-                <%- include('./_links') %>
-            </div>
-        </section>
-
-        <!-- 11. LISTS -->
-        <section id="sec-lists" class="cs-section" data-title="11. Lists" data-file="_lists.ejs" data-type="lists">
-            <div class="cs-raw-content">
-                <%- include('./_lists') %>
-            </div>
-        </section>
+        <% }); %>
 
     </main>
 </div>
@@ -695,12 +688,34 @@ body {
         }, 2200);
     };
 
+    function fallbackCopy(text, toastMsg) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
+            if (toastMsg) showToast(toastMsg);
+        } catch (e) {
+            console.error('Copy failed', e);
+        }
+        document.body.removeChild(ta);
+    }
+
     window.copyRaw = function(text) {
         if (!text) return;
+        const toCopy = text.trim();
+        const displayLabel = toCopy.includes(' ') ? toCopy : (toCopy.startsWith('.') ? toCopy : '.' + toCopy);
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast(`Copied class: ".${text}"`);
+            navigator.clipboard.writeText(toCopy).then(() => {
+                showToast(`Copied: "${displayLabel}"`);
+            }).catch(() => {
+                fallbackCopy(toCopy, `Copied: "${displayLabel}"`);
             });
+        } else {
+            fallbackCopy(toCopy, `Copied: "${displayLabel}"`);
         }
     };
 
@@ -721,18 +736,16 @@ body {
         }
 
         if (htmlToCopy) {
+            htmlToCopy = normalizeIndentation(htmlToCopy);
+            htmlToCopy = htmlToCopy.replace(/\bhref=["']#["']/gi, 'href=""');
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(htmlToCopy).then(() => {
                     showToast('Copied HTML snippet to clipboard!');
+                }).catch(() => {
+                    fallbackCopy(htmlToCopy, 'Copied HTML snippet to clipboard!');
                 });
             } else {
-                const ta = document.createElement('textarea');
-                ta.value = htmlToCopy;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                showToast('Copied HTML snippet to clipboard!');
+                fallbackCopy(htmlToCopy, 'Copied HTML snippet to clipboard!');
             }
 
             const originalText = btn.innerHTML;
@@ -754,38 +767,107 @@ body {
         btn.textContent = code.classList.contains('is-open') ? 'Hide Code' : 'Code';
     };
 
+    // Prevent demo links inside card previews from reloading or navigating away
+    document.addEventListener('click', function(e) {
+        const previewLink = e.target.closest('.cs-card__preview a');
+        if (previewLink) {
+            e.preventDefault();
+        }
+    });
+
     // Helper to build dynamic Card element
-    function buildCard(el, title, classTag, isFull = false, isDark = false, isLeft = false) {
+    
+    function normalizeIndentation(html) {
+        if (!html) return '';
+        const trimmed = html.trim();
+        const lines = trimmed.split(/\r?\n/);
+        if (lines.length <= 1) return trimmed;
+
+        const lastLine = lines[lines.length - 1];
+        const lastMatch = lastLine.match(/^(\s+)</);
+        let baseIndent = '';
+
+        if (lastMatch) {
+            baseIndent = lastMatch[1];
+        } else {
+            let minLen = Infinity;
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.trim().length > 0) {
+                    const m = line.match(/^(\s*)/);
+                    const len = m ? m[1].length : 0;
+                    if (len < minLen) {
+                        minLen = len;
+                        baseIndent = m[1];
+                    }
+                }
+            }
+        }
+
+        if (baseIndent.length > 0) {
+            return lines.map((line, idx) => {
+                if (idx === 0) return line.trimStart();
+                if (line.startsWith(baseIndent)) {
+                    return line.slice(baseIndent.length);
+                }
+                return line.trimStart();
+            }).join('\n');
+        }
+
+        return trimmed;
+    }
+
+    function buildCard(el, title, fullClass, isInline = false, isLeft = false) {
         // If element is wrapped in .l-container, target the inner component for snippet and class badge
         let snippetEl = el;
-        let effectiveTag = classTag;
+        let effectiveClass = fullClass;
 
         if (el.classList && el.classList.contains('l-container') && el.firstElementChild) {
             snippetEl = el.firstElementChild;
-            effectiveTag = snippetEl.className || snippetEl.tagName.toLowerCase();
+            effectiveClass = snippetEl.className || fullClass;
         }
 
-        const card = document.createElement('div');
-        card.className = 'cs-card';
-        card.setAttribute('data-search', `${title} ${effectiveTag}`.toLowerCase());
+        effectiveClass = (effectiveClass || '').trim().replace(/\s+/g, ' ');
 
-        // Escape HTML for code block (without outer l-container)
-        const cleanHtml = snippetEl.outerHTML;
+        // Normalize href="#" to href="" on preview DOM
+        if (snippetEl.tagName === 'A' && snippetEl.getAttribute('href') === '#') {
+            snippetEl.setAttribute('href', '');
+        }
+        snippetEl.querySelectorAll('a[href="#"]').forEach(a => a.setAttribute('href', ''));
+
+        const card = document.createElement('div');
+        card.className = `cs-card ${isInline ? 'cs-card--inline-block' : 'cs-card--full'}`;
+        card.setAttribute('data-search', `${title} ${effectiveClass}`.toLowerCase());
+
+        // Escape HTML for code block
+        let cleanHtml = snippetEl.outerHTML;
+        cleanHtml = cleanHtml.replace(/\bhref=["']#["']/gi, 'href=""');
+        cleanHtml = normalizeIndentation(cleanHtml);
         const escaped = cleanHtml
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
 
+        // Build individual badges for each class token so all classes are displayed
+        const classTokens = effectiveClass.split(/\s+/).filter(Boolean);
+        const badgesHtml = classTokens.map(c => {
+            const cleanC = c.replace(/^\./, '');
+            return `<span class="cs-card__class-tag" title="Click to copy .${cleanC}" onclick="event.stopPropagation(); copyRaw('${cleanC}')">.${cleanC}</span>`;
+        }).join(' ');
+
         card.innerHTML = `
             <div class="cs-card__toolbar">
-                <span class="cs-card__title">${title} <span class="cs-card__class-tag">.${effectiveTag}</span></span>
+                <span class="cs-card__title">${title}</span>
                 <div class="cs-card__actions">
                     <button type="button" class="cs-btn-action cs-btn-action--copy" onclick="copySnippetFromCard(this)">📋 Copy HTML</button>
-                    <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="copyRaw('${effectiveTag}')">Class</button>
+                    <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="copyRaw('${effectiveClass}')">Class</button>
                     <button type="button" class="cs-btn-action cs-btn-action--secondary" onclick="toggleCodeAccordion(this)">Code</button>
                 </div>
             </div>
-            <div class="cs-card__preview ${isDark ? 'cs-card__preview--dark' : ''} ${isLeft ? 'cs-card__preview--left' : ''}"></div>
+            <div class="cs-card__preview${isLeft ? ' cs-card__preview--left' : ''}"></div>
+            <div class="cs-card__footer">
+                ${badgesHtml}
+            </div>
             <div class="cs-card__code">
                 <pre><code>${escaped}</code></pre>
             </div>
@@ -795,14 +877,148 @@ body {
         return card;
     }
 
-    // Transform included content blocks into individual Cards
+    // Helper to format friendly title from class
+    function formatComponentTitle(cls) {
+        if (!cls) return 'Component';
+        let clean = cls.replace(/^c-/, '').replace(/^l-/, '');
+        if (clean.includes('--cl3')) return 'Grid (3 Columns)';
+        if (clean.includes('--cl4')) return 'Grid (4 Columns)';
+        if (clean.includes('--cl5')) return 'Grid (5 Columns)';
+        if (clean.includes('--middle') && clean.includes('--reverse')) return 'Flex (Reverse + Middle)';
+        if (clean.includes('--equal')) return 'Flex Equal 50/50';
+        if (clean.includes('--reverse')) return clean.includes('btn') ? 'Button Reverse' : 'Flex Reverse';
+        if (clean.includes('--arrow-between')) return 'Button Arrow Between';
+        if (clean.includes('--arrow-center')) return 'Button Arrow Center';
+        if (clean.includes('--arrow')) return 'Button with Arrow';
+        if (clean.includes('--blank')) return 'Link External (Blank)';
+        if (clean.includes('--line')) return 'Heading Line';
+        if (clean.includes('--dot')) return 'Heading Dot';
+        if (cls.startsWith('c-ttl')) {
+            const m = cls.match(/c-ttl(\d+)/);
+            if (m) return `Heading ${m[1]}px`;
+        }
+        if (cls.startsWith('c-txt')) {
+            const m = cls.match(/c-txt(\d+)/);
+            if (m) return `Text ${m[1]}px`;
+        }
+        return clean.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+
+    // Helper to find immediately preceding HTML comment before an element
+    function getPrecedingComment(node) {
+        if (!node) return null;
+        let prev = node.previousSibling;
+        while (prev) {
+            if (prev.nodeType === 8) { // Comment node
+                let text = (prev.nodeValue || '').trim();
+                text = text.replace(/^[\s*#-]+/, '').replace(/[\s*#-]+$/, '').trim();
+                if (text && !text.startsWith('[') && !text.startsWith('vite') && !text.startsWith('webpack')) {
+                    return text;
+                }
+            } else if (prev.nodeType === 1) { // Hit preceding element -> stop
+                break;
+            } else if (prev.nodeType === 3 && prev.nodeValue && prev.nodeValue.trim() !== '') {
+                break;
+            }
+            prev = prev.previousSibling;
+        }
+        return null;
+    }
+
+    // Universal Component Extractor: extracts any element with c-* or l-*
+    function extractComponentItems(raw) {
+        const items = [];
+        const seenElements = new Set();
+
+        function processNode(node, currentWrapper = null) {
+            if (!node || node.nodeType !== 1) return;
+
+            const classStr = node.className || '';
+            let wrapper = currentWrapper;
+
+            // Check if node is a component wrapper (p-component__item, etc.)
+            if (typeof classStr === 'string' && classStr.includes('p-component__')) {
+                wrapper = node;
+                Array.from(node.children).forEach(child => processNode(child, wrapper));
+                return;
+            }
+
+            // Multi-child l-container wrapper
+            if (node.classList.contains('l-container') && node.children.length > 1) {
+                Array.from(node.children).forEach(child => processNode(child, wrapper));
+                return;
+            }
+
+            // Check if element is wrapped in a single-child .l-container
+            let snippetTarget = node;
+            if (node.classList && node.classList.contains('l-container') && node.children.length === 1) {
+                snippetTarget = node.firstElementChild;
+            }
+
+            const classList = Array.from(snippetTarget.classList || []);
+            const flocssClass = classList.find(c => /^[cl]-[a-zA-Z0-9_-]+/.test(c) && c !== 'l-container' && !c.startsWith('p-component') && !c.includes('__')) ||
+                                classList.find(c => /^[cl]-[a-zA-Z0-9_-]+/.test(c) && c !== 'l-container' && !c.startsWith('p-component'));
+
+            if (flocssClass) {
+                if (!seenElements.has(snippetTarget)) {
+                    seenElements.add(snippetTarget);
+                    const comment = getPrecedingComment(snippetTarget) || 
+                                  getPrecedingComment(node) || 
+                                  (node.parentElement && node.parentElement !== raw ? getPrecedingComment(node.parentElement) : null);
+                    
+                    const isInline = wrapper ? (
+                        wrapper.classList.contains('p-component__item--inline-block') || 
+                        (typeof wrapper.className === 'string' && wrapper.className.includes('inline-block'))
+                    ) : false;
+
+                    items.push({
+                        domElement: node,
+                        snippetElement: snippetTarget,
+                        tagClass: flocssClass,
+                        fullClass: snippetTarget.className,
+                        commentTitle: comment,
+                        isInline: isInline,
+                        wrapperNode: wrapper
+                    });
+                }
+                return;
+            }
+
+            // If this node didn't directly match, check its children
+            Array.from(node.children).forEach(child => processNode(child, wrapper));
+        }
+
+        Array.from(raw.children).forEach(child => processNode(child, null));
+
+        // Fallback: if nothing matched at all, take the first child
+        if (items.length === 0 && raw.firstElementChild) {
+            const el = raw.firstElementChild;
+            const inner = el.querySelector('[class*="c-"], [class*="l-"]') || el;
+            const cls = Array.from(inner.classList || []).find(c => /^[cl]-/.test(c)) || 'component';
+            const isInline = el.classList.contains('p-component__item--inline-block') || 
+                            (typeof el.className === 'string' && el.className.includes('inline-block'));
+            items.push({
+                domElement: el,
+                snippetElement: inner,
+                tagClass: cls,
+                fullClass: inner.className || '',
+                commentTitle: getPrecedingComment(el),
+                isInline: isInline,
+                wrapperNode: el
+            });
+        }
+
+        return items;
+    }
+
+    // Transform included content blocks into individual Cards dynamically
     function transformSections() {
         const sections = document.querySelectorAll('.cs-section');
+        let totalItems = 0;
 
         sections.forEach(sec => {
             const title = sec.getAttribute('data-title') || '';
             const file = sec.getAttribute('data-file') || '';
-            const type = sec.getAttribute('data-type') || 'single';
             const raw = sec.querySelector('.cs-raw-content');
             if (!raw) return;
 
@@ -814,129 +1030,54 @@ body {
                 <span class="cs-section__file">📁 ${file}</span>
             `;
 
-            const isFull = true;
-            const gridCards = document.createElement('div');
-            gridCards.className = 'cs-grid-cards cs-grid-cards--full';
+            const cardsContainer = document.createElement('div');
+            cardsContainer.className = 'cs-cards-container';
 
-            if (type === 'single') {
-                const child = raw.firstElementChild;
-                if (child) {
-                    const tag = child.className || child.tagName.toLowerCase();
-                    const card = buildCard(child, title, tag, true, false, true);
-                    gridCards.appendChild(card);
+            const items = extractComponentItems(raw);
+
+            let currentGroup = null;
+            let currentWrapper = null;
+            let currentIsInline = null;
+
+            items.forEach((item) => {
+                const isInline = !!item.isInline;
+                const wrapper = item.wrapperNode;
+
+                const shouldNewGroup = !currentGroup || 
+                    (wrapper ? wrapper !== currentWrapper : (currentWrapper !== null || isInline !== currentIsInline));
+
+                if (shouldNewGroup) {
+                    currentGroup = document.createElement('div');
+                    currentGroup.className = isInline ? 'cs-group cs-group--inline-block' : 'cs-group cs-group--full';
+                    cardsContainer.appendChild(currentGroup);
+                    currentWrapper = wrapper;
+                    currentIsInline = isInline;
                 }
-            } else if (type === 'btns') {
-                const buttons = Array.from(raw.querySelectorAll('a.c-btn'));
-                buttons.forEach((btn, idx) => {
-                    const cls = btn.className;
-                    const isDark = cls.includes('--reverse');
-                    let name = `Button #${idx + 1}`;
-                    if (cls.includes('--arrow-between')) name = 'Button Arrow Between';
-                    else if (cls.includes('--arrow-center')) name = 'Button Arrow Center';
-                    else if (cls.includes('--arrow')) name = 'Button with Arrow';
-                    else if (cls.includes('--reverse')) name = 'Button Reverse';
-                    else name = 'Button Standard';
 
-                    if (isDark && !name.includes('Reverse')) name += ' (Reverse)';
-                    const card = buildCard(btn, name, cls, false, isDark, false);
-                    gridCards.appendChild(card);
-                });
-            } else if (type === 'titles') {
-                const titles = Array.from(raw.querySelectorAll('.c-title, [class*="c-ttl"]'));
-                titles.forEach(ttl => {
-                    const cls = ttl.className;
-                    let name = 'Heading';
-                    if (cls.includes('c-title')) name = 'Bilingual Title EN/JP';
-                    else if (cls.includes('--line')) name = 'Heading 36px Line';
-                    else if (cls.includes('--dot')) name = 'Heading 36px Dot';
-                    else {
-                        const m = cls.match(/c-ttl(\d+)/);
-                        name = m ? `Heading ${m[1]}px` : 'Heading';
-                    }
-                    const card = buildCard(ttl, name, cls, false, false, true);
-                    gridCards.appendChild(card);
-                });
-            } else if (type === 'texts') {
-                const texts = Array.from(raw.querySelectorAll('[class*="c-txt"]'));
-                texts.forEach(txt => {
-                    const cls = txt.className;
-                    const m = cls.match(/c-txt(\d+)/);
-                    const name = m ? `Text ${m[1]}px` : 'Paragraph';
-                    const card = buildCard(txt, name, cls, false, false, true);
-                    gridCards.appendChild(card);
-                });
-            } else if (type === 'links') {
-                const links = Array.from(raw.querySelectorAll('a.c-link'));
-                links.forEach(lnk => {
-                    const cls = lnk.className;
-                    const isBlank = cls.includes('--blank');
-                    const name = isBlank ? 'External Link (Blank)' : 'Standard Link';
-                    const card = buildCard(lnk, name, cls, false, false, true);
-                    gridCards.appendChild(card);
-                });
-            } else if (type === 'grids') {
-                const grids = Array.from(raw.querySelectorAll('.l-grid'));
-                grids.forEach((grd, idx) => {
-                    const cls = grd.className;
-                    let name = '2 Columns Grid';
-                    if (cls.includes('--cl3')) name = '3 Columns Grid';
-                    else if (cls.includes('--cl4')) name = '4 Columns Grid';
-                    const card = buildCard(grd, name, cls, true, false, false);
-                    gridCards.appendChild(card);
-                });
-            } else if (type === 'flexs') {
-                const flexWrappers = Array.from(raw.querySelectorAll('.l-container, .l-flex'));
-                const items = [];
-                flexWrappers.forEach(el => {
-                    if (el.classList.contains('l-container') && el.querySelector('.l-flex')) {
-                        items.push(el);
-                    } else if (el.classList.contains('l-flex') && !el.closest('.l-container')) {
-                        items.push(el);
-                    }
-                });
-                items.forEach((item, idx) => {
-                    const flx = item.classList.contains('l-flex') ? item : item.querySelector('.l-flex');
-                    const cls = flx ? flx.className : item.className;
-                    let name = `Flex #${idx + 1}`;
-                    if (cls.includes('--center') && cls.includes('--reverse') && cls.includes('--middle')) name = 'Flex Center + Reverse + Middle';
-                    else if (cls.includes('--center') && cls.includes('--middle')) name = 'Flex Center + Middle';
-                    else if (cls.includes('--center') && cls.includes('--reverse')) name = 'Flex Center + Reverse';
-                    else if (cls.includes('--center')) name = 'Flex Center';
-                    else if (cls.includes('--reverse') && cls.includes('--middle')) name = 'Flex Reverse + Middle';
-                    else if (cls.includes('--middle')) name = 'Flex Middle';
-                    else if (cls.includes('--reverse')) name = 'Flex Reverse';
-                    else name = 'Flex Standard';
+                const fullCls = (item.fullClass || item.tagClass || '').trim();
+                const name = item.commentTitle || formatComponentTitle(fullCls);
+                const isLeft = fullCls.includes('c-txt') || fullCls.includes('c-ttl') || fullCls.includes('c-title') || fullCls.includes('c-link');
+                const card = buildCard(item.domElement, name, fullCls, isInline, isLeft);
+                currentGroup.appendChild(card);
+                totalItems++;
+            });
 
-                    const card = buildCard(item, name, cls, true, false, false);
-                    gridCards.appendChild(card);
-                });
-            } else if (type === 'tables') {
-                const tables = Array.from(raw.querySelectorAll('.l-tbl'));
-                tables.forEach((tbl, idx) => {
-                    const hasMiddle = tbl.querySelector('.l-tbl__item--middle');
-                    const name = hasMiddle ? 'Table List Middle (Vertical Center)' : 'Table List Standard';
-                    const cls = hasMiddle ? 'l-tbl .l-tbl__item--middle' : 'l-tbl';
-                    const card = buildCard(tbl, name, cls, true, false, false);
-                    gridCards.appendChild(card);
-                });
-            } else if (type === 'lists') {
-                const lists = Array.from(raw.querySelectorAll('ul[class*="c-list"]'));
-                lists.forEach(lst => {
-                    const cls = lst.className;
-                    let name = 'List';
-                    if (cls.includes('-dot')) name = 'Bullet List (Dot)';
-                    else if (cls.includes('-number')) name = 'Numbered List';
-                    else if (cls.includes('-star')) name = 'Star Bullet List';
-                    const card = buildCard(lst, name, cls, true, false, true);
-                    gridCards.appendChild(card);
-                });
+            if (items.length === 0) {
+                const emptyNotice = document.createElement('div');
+                emptyNotice.className = 'cs-card cs-card--full';
+                emptyNotice.innerHTML = '<div class="cs-card__preview" style="color: #94a3b8; font-style: italic; padding: 20px; text-align: center;">Chưa có component nào trong module này. Hãy thêm class FLOCSS (c-* hoặc l-*) để hiển thị.</div>';
+                cardsContainer.appendChild(emptyNotice);
             }
 
-            // Remove raw container and append header + cards
             raw.remove();
             sec.appendChild(header);
-            sec.appendChild(gridCards);
+            sec.appendChild(cardsContainer);
         });
+
+        const totalBadge = document.getElementById('cs-total-components');
+        if (totalBadge) {
+            totalBadge.innerHTML = `Components: <strong>${totalItems} items</strong>`;
+        }
     }
 
     // Execute transformation
@@ -961,33 +1102,87 @@ body {
             });
 
             sections.forEach(sec => {
+                const groups = sec.querySelectorAll('.cs-group');
+                groups.forEach(grp => {
+                    const visibleInGroup = grp.querySelectorAll('.cs-card:not([style*="display: none"])');
+                    grp.style.display = (visibleInGroup.length === 0 && val !== '') ? 'none' : '';
+                });
                 const visible = sec.querySelectorAll('.cs-card:not([style*="display: none"])');
                 sec.style.display = (visible.length === 0 && val !== '') ? 'none' : '';
             });
         });
     }
 
-    // Highlight active sidebar link on scroll
+    // Highlight active sidebar link on scroll & smooth anchor scroll
     const navLinks = document.querySelectorAll('.cs-nav__link');
     const sections = document.querySelectorAll('.cs-section');
+    let isSmoothScrolling = false;
+    let scrollTimeout = null;
 
-    window.addEventListener('scroll', () => {
-        let current = '';
-        const scrollPos = window.scrollY + 80;
-        sections.forEach(section => {
-            const top = section.offsetTop;
-            const height = section.offsetHeight;
-            if (scrollPos >= top && scrollPos < top + height) {
-                current = '#' + section.getAttribute('id');
-            }
-        });
+    // Smooth click handler - completely eliminates anchor stutter / jitter
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (!href || !href.startsWith('#')) return;
+            const target = document.querySelector(href);
+            if (!target) return;
 
-        navLinks.forEach(link => {
-            link.classList.remove('is-active');
-            if (link.getAttribute('href') === current) {
-                link.classList.add('is-active');
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            // 1. Immediately activate clicked item (no lag, no flash)
+            navLinks.forEach(l => l.classList.remove('is-active'));
+            this.classList.add('is-active');
+
+            // 2. Lock scroll spy during smooth animation
+            isSmoothScrolling = true;
+
+            // 3. Smooth scroll directly to target section
+            const targetTop = target.getBoundingClientRect().top + window.pageYOffset - 24;
+            window.scrollTo({
+                top: Math.max(0, targetTop),
+                behavior: 'smooth'
+            });
+
+            if (window.history && window.history.pushState) {
+                window.history.pushState(null, '', href);
             }
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isSmoothScrolling = false;
+            }, 750);
         });
     });
+
+    // Passive, optimized ScrollSpy without layout thrashing
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (isSmoothScrolling) return;
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                let current = '';
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 140 && rect.bottom > 60) {
+                        current = '#' + section.getAttribute('id');
+                    }
+                });
+
+                if (current) {
+                    navLinks.forEach(link => {
+                        if (link.getAttribute('href') === current) {
+                            link.classList.add('is-active');
+                        } else {
+                            link.classList.remove('is-active');
+                        }
+                    });
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
 })();
 </script>

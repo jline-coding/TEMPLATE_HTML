@@ -1,57 +1,622 @@
 {
-  "c-btn (Standard Button)": {
+  "c-bread (Breadcrumb Navigation (Thanh điều hướng phân cấp trang))": {
+    "prefix": "c-bread",
+    "body": [
+      "<ul class=\"c-bread\">",
+      "\t<li class=\"c-bread__item\">",
+      "\t\t<a href=\"\" class=\"c-bread__link\">top</a>",
+      "\t</li>",
+      "\t<li class=\"c-bread__item\">コンポーネント</li>",
+      "</ul>"
+    ],
+    "description": "Breadcrumb Navigation (Thanh điều hướng phân cấp trang) (c-bread) from _bread.ejs"
+  },
+  "c-btn (Button Standard (Nút bấm mặc định))": {
     "prefix": "c-btn",
     "body": [
-      "<a href=\"${1:#}\" class=\"c-btn\">",
-      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "<a href=\"\" class=\"c-btn\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
       "</a>"
     ],
-    "description": "FLOCSS Standard Button (component/_btn.scss)"
+    "description": "Button Standard (Nút bấm mặc định) (c-btn) from _btns.ejs"
   },
-  "c-btn--arrow (Button with Arrow)": {
+  "c-btn c-btn--arrow (Button with Arrow (Nút có mũi tên phải))": {
     "prefix": "c-btn-arrow",
     "body": [
-      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow\">",
-      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "<a href=\"\" class=\"c-btn c-btn--arrow\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
       "</a>"
     ],
-    "description": "FLOCSS Button with Right Arrow"
+    "description": "Button with Arrow (Nút có mũi tên phải) (c-btn c-btn--arrow) from _btns.ejs"
   },
-  "c-btn--arrow-center (Button with Centered Arrow)": {
+  "c-btn c-btn--arrow-center (Button Arrow Center (Nút mũi tên sát chữ ở giữa))": {
     "prefix": "c-btn-arrow-center",
     "body": [
-      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow-center\">",
-      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "<a href=\"\" class=\"c-btn c-btn--arrow-center\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
       "</a>"
     ],
-    "description": "FLOCSS Button with Arrow aligned center"
+    "description": "Button Arrow Center (Nút mũi tên sát chữ ở giữa) (c-btn c-btn--arrow-center) from _btns.ejs"
   },
-  "c-btn--arrow-between (Button with Space-Between Arrow)": {
+  "c-btn c-btn--arrow-between (Button Arrow Between (Nút mũi tên dạt hai bên viền))": {
     "prefix": "c-btn-arrow-between",
     "body": [
-      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow-between\">",
-      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "<a href=\"\" class=\"c-btn c-btn--arrow-between\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
       "</a>"
     ],
-    "description": "FLOCSS Button with Arrow aligned space-between"
+    "description": "Button Arrow Between (Nút mũi tên dạt hai bên viền) (c-btn c-btn--arrow-between) from _btns.ejs"
   },
-  "c-btn--reverse (Button Reverse Color)": {
+  "c-btn c-btn--reverse (Button Reverse (Nút nền trắng viền đỏ cho nền tối))": {
     "prefix": "c-btn-reverse",
     "body": [
-      "<a href=\"${1:#}\" class=\"c-btn c-btn--reverse\">",
-      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "<a href=\"\" class=\"c-btn c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
       "</a>"
     ],
-    "description": "FLOCSS Button Reverse style"
+    "description": "Button Reverse (Nút nền trắng viền đỏ cho nền tối) (c-btn c-btn--reverse) from _btns.ejs"
   },
-  "c-btn--arrow c-btn--reverse (Button Reverse with Arrow)": {
-    "prefix": "c-btn-reverse-arrow",
+  "c-btn c-btn--arrow c-btn--reverse (Button Reverse with Arrow (Nút nền trắng có mũi tên phải))": {
+    "prefix": "c-btn-arrow-reverse",
     "body": [
-      "<a href=\"${1:#}\" class=\"c-btn c-btn--arrow c-btn--reverse\">",
-      "\t<span class=\"c-btn__content\">${2:ボタン}</span>",
+      "<a href=\"\" class=\"c-btn c-btn--arrow c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
       "</a>"
     ],
-    "description": "FLOCSS Button Reverse style with Arrow"
+    "description": "Button Reverse with Arrow (Nút nền trắng có mũi tên phải) (c-btn c-btn--arrow c-btn--reverse) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow-center c-btn--reverse (Button Reverse Arrow Center (Nút nền trắng mũi tên sát chữ))": {
+    "prefix": "c-btn-arrow-center-reverse",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow-center c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Reverse Arrow Center (Nút nền trắng mũi tên sát chữ) (c-btn c-btn--arrow-center c-btn--reverse) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow-between c-btn--reverse (Button Reverse Arrow Between (Nút nền trắng mũi tên dạt hai bên))": {
+    "prefix": "c-btn-arrow-between-reverse",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow-between c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Reverse Arrow Between (Nút nền trắng mũi tên dạt hai bên) (c-btn c-btn--arrow-between c-btn--reverse) from _btns.ejs"
+  },
+  "c-abc (Custom Component (Demo class tự do))": {
+    "prefix": "c-abc",
+    "body": [
+      "<a href=\"\" class=\"c-abc\">${1:test}</a>"
+    ],
+    "description": "Custom Component (Demo class tự do) (c-abc) from _btns.ejs"
+  },
+  "l-flex (Flex Standard (2 cột: Cột trái 400px, Cột phải nội dung))": {
+    "prefix": "l-flex",
+    "body": [
+      "<div class=\"l-flex\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Standard (2 cột: Cột trái 400px, Cột phải nội dung) (l-flex) from _flexs.ejs"
+  },
+  "l-flex l-flex--reverse (Flex Reverse (2 cột: Đảo vị trí cột ảnh sang phải))": {
+    "prefix": "l-flex-reverse",
+    "body": [
+      "<div class=\"l-flex l-flex--reverse\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Reverse (2 cột: Đảo vị trí cột ảnh sang phải) (l-flex l-flex--reverse) from _flexs.ejs"
+  },
+  "l-flex l-flex--middle (Flex Middle (2 cột: Căn giữa theo chiều dọc))": {
+    "prefix": "l-flex-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Middle (2 cột: Căn giữa theo chiều dọc) (l-flex l-flex--middle) from _flexs.ejs"
+  },
+  "l-flex l-flex--reverse l-flex--middle (Flex Reverse Middle (2 cột: Đảo ảnh sang phải + Căn giữa dọc))": {
+    "prefix": "l-flex-reverse-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--reverse l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Reverse Middle (2 cột: Đảo ảnh sang phải + Căn giữa dọc) (l-flex l-flex--reverse l-flex--middle) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal (Flex Equal 50/50 (2 cột chia đều 50% - 50%))": {
+    "prefix": "l-flex-equal",
+    "body": [
+      "<div class=\"l-flex l-flex--equal\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 (2 cột chia đều 50% - 50%) (l-flex l-flex--equal) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal l-flex--reverse (Flex Equal 50/50 Reverse (2 cột 50% - 50% đảo ảnh sang phải))": {
+    "prefix": "l-flex-equal-reverse",
+    "body": [
+      "<div class=\"l-flex l-flex--equal l-flex--reverse\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 Reverse (2 cột 50% - 50% đảo ảnh sang phải) (l-flex l-flex--equal l-flex--reverse) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal l-flex--middle (Flex Equal 50/50 Middle (2 cột 50% - 50% căn giữa dọc))": {
+    "prefix": "l-flex-equal-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--equal l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 Middle (2 cột 50% - 50% căn giữa dọc) (l-flex l-flex--equal l-flex--middle) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal l-flex--reverse l-flex--middle (Flex Equal 50/50 Reverse Middle (2 cột 50% - 50% đảo ảnh phải + Căn giữa dọc))": {
+    "prefix": "l-flex-equal-reverse-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--equal l-flex--reverse l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 Reverse Middle (2 cột 50% - 50% đảo ảnh phải + Căn giữa dọc) (l-flex l-flex--equal l-flex--reverse l-flex--middle) from _flexs.ejs"
+  },
+  "l-grid (Grid 2 Columns (Bố cục lưới 2 cột))": {
+    "prefix": "l-grid",
+    "body": [
+      "<div class=\"l-grid\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Grid 2 Columns (Bố cục lưới 2 cột) (l-grid) from _grids.ejs"
+  },
+  "l-grid l-grid--cl3 (Grid 3 Columns (Bố cục lưới 3 cột))": {
+    "prefix": "l-grid-cl3",
+    "body": [
+      "<div class=\"l-grid l-grid--cl3\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Grid 3 Columns (Bố cục lưới 3 cột) (l-grid l-grid--cl3) from _grids.ejs"
+  },
+  "l-grid l-grid--cl4 (Grid 4 Columns (Bố cục lưới 4 cột))": {
+    "prefix": "l-grid-cl4",
+    "body": [
+      "<div class=\"l-grid l-grid--cl4\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Grid 4 Columns (Bố cục lưới 4 cột) (l-grid l-grid--cl4) from _grids.ejs"
+  },
+  "c-link (Link Standard (Liên kết văn bản nội bộ))": {
+    "prefix": "c-link",
+    "body": [
+      "<a href=\"\" class=\"c-link\">${1:リンク}</a>"
+    ],
+    "description": "Link Standard (Liên kết văn bản nội bộ) (c-link) from _links.ejs"
+  },
+  "c-link c-link--blank (Link External Blank (Liên kết ngoài mở tab mới))": {
+    "prefix": "c-link-blank",
+    "body": [
+      "<a href=\"\" class=\"c-link c-link--blank\">${1:リンク}</a>"
+    ],
+    "description": "Link External Blank (Liên kết ngoài mở tab mới) (c-link c-link--blank) from _links.ejs"
+  },
+  "c-list-dot (Bullet List Dot (Danh sách dấu chấm ・))": {
+    "prefix": "c-list-dot",
+    "body": [
+      "<ul class=\"c-list-dot\">",
+      "\t<li class=\"c-list-dot__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-dot__item\">${2:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "Bullet List Dot (Danh sách dấu chấm ・) (c-list-dot) from _lists.ejs"
+  },
+  "c-list-number (Numbered List (Danh sách đánh số thứ tự 1. 2. 3.))": {
+    "prefix": "c-list-number",
+    "body": [
+      "<ul class=\"c-list-number\">",
+      "\t<li class=\"c-list-number__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-number__item\">${2:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "Numbered List (Danh sách đánh số thứ tự 1. 2. 3.) (c-list-number) from _lists.ejs"
+  },
+  "c-list-star (Star Note List (Danh sách ghi chú dấu sao ※))": {
+    "prefix": "c-list-star",
+    "body": [
+      "<ul class=\"c-list-star\">",
+      "\t<li class=\"c-list-star__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-star__item\">${2:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "Star Note List (Danh sách ghi chú dấu sao ※) (c-list-star) from _lists.ejs"
+  },
+  "c-mv (Main Visual Banner (Banner đầu trang với ảnh nền và tiêu đề song ngữ))": {
+    "prefix": "c-mv",
+    "body": [
+      "<section class=\"c-mv\">",
+      "\t<figure class=\"c-mv__bg\">",
+      "\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t</figure>",
+      "\t<div class=\"l-container\">",
+      "\t\t<div class=\"c-mv__inner\">",
+      "\t\t\t<h1 class=\"c-mv-title\">",
+      "\t\t\t\t<span class=\"c-mv-title__en\">title1</span>",
+      "\t\t\t\t<span class=\"c-mv-title__jp\">タイトル</span>",
+      "\t\t\t</h1>",
+      "\t\t</div>",
+      "\t</div>",
+      "</section>"
+    ],
+    "description": "Main Visual Banner (Banner đầu trang với ảnh nền và tiêu đề song ngữ) (c-mv) from _mv.ejs"
+  },
+  "l-tbl (Table Standard (Bảng thông tin 2 cột - Tiêu đề căn đỉnh))": {
+    "prefix": "l-tbl",
+    "body": [
+      "<div class=\"l-tbl\">",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Table Standard (Bảng thông tin 2 cột - Tiêu đề căn đỉnh) (l-tbl) from _tbls.ejs"
+  },
+  "l-tbl (Table Middle (Bảng thông tin 2 cột - Tiêu đề căn giữa hàng dọc))": {
+    "prefix": "l-tbl",
+    "body": [
+      "<div class=\"l-tbl\">",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Table Middle (Bảng thông tin 2 cột - Tiêu đề căn giữa hàng dọc) (l-tbl) from _tbls.ejs"
+  },
+  "c-txt24 (Paragraph 24px (Đoạn văn mô tả lớn / Lead Text))": {
+    "prefix": "c-txt24",
+    "body": [
+      "<p class=\"c-txt24\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 24px (Đoạn văn mô tả lớn / Lead Text) (c-txt24) from _texts.ejs"
+  },
+  "c-txt22 (Paragraph 22px (Đoạn văn nổi bật 22px))": {
+    "prefix": "c-txt22",
+    "body": [
+      "<p class=\"c-txt22\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 22px (Đoạn văn nổi bật 22px) (c-txt22) from _texts.ejs"
+  },
+  "c-txt20 (Paragraph 20px (Đoạn văn dẫn nhập 20px))": {
+    "prefix": "c-txt20",
+    "body": [
+      "<p class=\"c-txt20\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 20px (Đoạn văn dẫn nhập 20px) (c-txt20) from _texts.ejs"
+  },
+  "c-txt18 (Paragraph 18px (Đoạn văn thân bài lớn 18px))": {
+    "prefix": "c-txt18",
+    "body": [
+      "<p class=\"c-txt18\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 18px (Đoạn văn thân bài lớn 18px) (c-txt18) from _texts.ejs"
+  },
+  "c-txt16 (Paragraph 16px (Đoạn văn chuẩn mặc định / Body Base))": {
+    "prefix": "c-txt16",
+    "body": [
+      "<p class=\"c-txt16\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 16px (Đoạn văn chuẩn mặc định / Body Base) (c-txt16) from _texts.ejs"
+  },
+  "c-txt14 (Paragraph 14px (Đoạn văn chú thích phụ / Sub Text))": {
+    "prefix": "c-txt14",
+    "body": [
+      "<p class=\"c-txt14\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 14px (Đoạn văn chú thích phụ / Sub Text) (c-txt14) from _texts.ejs"
+  },
+  "c-txt12 (Paragraph 12px (Đoạn văn chú thích nhỏ / Caption))": {
+    "prefix": "c-txt12",
+    "body": [
+      "<p class=\"c-txt12\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 12px (Đoạn văn chú thích nhỏ / Caption) (c-txt12) from _texts.ejs"
+  },
+  "c-txt (Text with Selectable Size)": {
+    "prefix": "c-txt",
+    "body": [
+      "<p class=\"c-txt${1|24,22,20,18,16,14,12|}\">${2:ダミーテキスト。}</p>"
+    ],
+    "description": "FLOCSS Paragraph with selectable font-size"
+  },
+  "c-title (Title Bilingual EN/JP (Tiêu đề song ngữ Anh - Nhật))": {
+    "prefix": "c-title",
+    "body": [
+      "<h2 class=\"c-title\">",
+      "\t<span class=\"c-title__en\">title</span>",
+      "\t<span class=\"c-title__jp\">タイトル</span>",
+      "</h2>"
+    ],
+    "description": "Title Bilingual EN/JP (Tiêu đề song ngữ Anh - Nhật) (c-title) from _titles.ejs"
+  },
+  "c-ttl36 (Heading 36px (Tiêu đề chính 36px))": {
+    "prefix": "c-ttl36",
+    "body": [
+      "<h2 class=\"c-ttl36\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 36px (Tiêu đề chính 36px) (c-ttl36) from _titles.ejs"
+  },
+  "c-ttl36 c-ttl36--line (Heading 36px with Line (Tiêu đề 36px có đường gạch chân))": {
+    "prefix": "c-ttl36-line",
+    "body": [
+      "<h2 class=\"c-ttl36 c-ttl36--line\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 36px with Line (Tiêu đề 36px có đường gạch chân) (c-ttl36 c-ttl36--line) from _titles.ejs"
+  },
+  "c-ttl36 c-ttl36--dot (Heading 36px with Dot (Tiêu đề 36px có dấu chấm đầu dòng))": {
+    "prefix": "c-ttl36-dot",
+    "body": [
+      "<h2 class=\"c-ttl36 c-ttl36--dot\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 36px with Dot (Tiêu đề 36px có dấu chấm đầu dòng) (c-ttl36 c-ttl36--dot) from _titles.ejs"
+  },
+  "c-ttl34 (Heading 34px (Tiêu đề phân cấp 34px))": {
+    "prefix": "c-ttl34",
+    "body": [
+      "<h2 class=\"c-ttl34\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 34px (Tiêu đề phân cấp 34px) (c-ttl34) from _titles.ejs"
+  },
+  "c-ttl32 (Heading 32px (Tiêu đề phân cấp 32px))": {
+    "prefix": "c-ttl32",
+    "body": [
+      "<h2 class=\"c-ttl32\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 32px (Tiêu đề phân cấp 32px) (c-ttl32) from _titles.ejs"
+  },
+  "c-ttl30 (Heading 30px (Tiêu đề phân cấp 30px))": {
+    "prefix": "c-ttl30",
+    "body": [
+      "<h2 class=\"c-ttl30\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 30px (Tiêu đề phân cấp 30px) (c-ttl30) from _titles.ejs"
+  },
+  "c-ttl28 (Heading 28px (Tiêu đề phân cấp 28px))": {
+    "prefix": "c-ttl28",
+    "body": [
+      "<h2 class=\"c-ttl28\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 28px (Tiêu đề phân cấp 28px) (c-ttl28) from _titles.ejs"
+  },
+  "c-ttl26 (Heading 26px (Tiêu đề phân cấp 26px))": {
+    "prefix": "c-ttl26",
+    "body": [
+      "<h2 class=\"c-ttl26\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 26px (Tiêu đề phân cấp 26px) (c-ttl26) from _titles.ejs"
+  },
+  "c-ttl24 (Heading 24px (Tiêu đề phân cấp 24px))": {
+    "prefix": "c-ttl24",
+    "body": [
+      "<h2 class=\"c-ttl24\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 24px (Tiêu đề phân cấp 24px) (c-ttl24) from _titles.ejs"
+  },
+  "c-ttl22 (Heading 22px (Tiêu đề phân cấp 22px))": {
+    "prefix": "c-ttl22",
+    "body": [
+      "<h2 class=\"c-ttl22\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 22px (Tiêu đề phân cấp 22px) (c-ttl22) from _titles.ejs"
+  },
+  "c-ttl20 (Heading 20px (Tiêu đề phân cấp 20px))": {
+    "prefix": "c-ttl20",
+    "body": [
+      "<h2 class=\"c-ttl20\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 20px (Tiêu đề phân cấp 20px) (c-ttl20) from _titles.ejs"
+  },
+  "c-ttl18 (Heading 18px (Tiêu đề phân cấp 18px))": {
+    "prefix": "c-ttl18",
+    "body": [
+      "<h2 class=\"c-ttl18\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 18px (Tiêu đề phân cấp 18px) (c-ttl18) from _titles.ejs"
+  },
+  "c-ttl16 (Heading 16px (Tiêu đề phân cấp 16px))": {
+    "prefix": "c-ttl16",
+    "body": [
+      "<h2 class=\"c-ttl16\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 16px (Tiêu đề phân cấp 16px) (c-ttl16) from _titles.ejs"
+  },
+  "c-ttl (Heading with Selectable Size)": {
+    "prefix": "c-ttl",
+    "body": [
+      "<h2 class=\"c-ttl${1|36,34,32,30,28,26,24,22,20,18,16|}\">${2:タイトルコンテンツ}</h2>"
+    ],
+    "description": "FLOCSS Heading with selectable font-size"
   },
   "c-title (EN/JP Bilingual Heading)": {
     "prefix": "c-title",
@@ -62,223 +627,5 @@
       "</h2>"
     ],
     "description": "FLOCSS Bilingual Title EN/JP (component/_titles.scss)"
-  },
-  "c-ttl (Heading with Custom Size)": {
-    "prefix": "c-ttl",
-    "body": [
-      "<h2 class=\"c-ttl${1|36,34,32,30,28,26,24,22,20,18,16|}\">${2:タイトルコンテンツ}</h2>"
-    ],
-    "description": "FLOCSS Heading with selectable font-size"
-  },
-  "c-ttl36--line (Heading with Underline)": {
-    "prefix": "c-ttl36-line",
-    "body": [
-      "<h2 class=\"c-ttl36 c-ttl36--line\">${1:タイトルコンテンツ}</h2>"
-    ],
-    "description": "FLOCSS Heading 36px with line accent"
-  },
-  "c-ttl36--dot (Heading with Dot Accent)": {
-    "prefix": "c-ttl36-dot",
-    "body": [
-      "<h2 class=\"c-ttl36 c-ttl36--dot\">${1:タイトルコンテンツ}</h2>"
-    ],
-    "description": "FLOCSS Heading 36px with dot accent"
-  },
-  "c-txt (Text Paragraph)": {
-    "prefix": "c-txt",
-    "body": [
-      "<p class=\"c-txt${1|16,14,12,18,20,22,24|}\">${2:ダミーテキスト。ダミーテキスト。}</p>"
-    ],
-    "description": "FLOCSS Paragraph Text with selectable font-size (component/_texts.scss)"
-  },
-  "c-link (Standard Link)": {
-    "prefix": "c-link",
-    "body": [
-      "<a href=\"${1:#}\" class=\"c-link\">${2:リンク}</a>"
-    ],
-    "description": "FLOCSS Standard Link (component/_links.scss)"
-  },
-  "c-link--blank (External Link)": {
-    "prefix": "c-link-blank",
-    "body": [
-      "<a href=\"${1:#}\" class=\"c-link c-link--blank\" target=\"_blank\" rel=\"noopener noreferrer\">${2:リンク}</a>"
-    ],
-    "description": "FLOCSS External Link with icon"
-  },
-  "l-grid (2 Columns Grid)": {
-    "prefix": "l-grid",
-    "body": [
-      "<div class=\"l-grid\">",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure>",
-      "\t\t\t<img src=\"${1:./assets/images/common/img_dummy.webp}\" alt=\"${2:}\">",
-      "\t\t</figure>",
-      "\t</div>",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure>",
-      "\t\t\t<img src=\"${3:./assets/images/common/img_dummy.webp}\" alt=\"${4:}\">",
-      "\t\t</figure>",
-      "\t</div>",
-      "</div>"
-    ],
-    "description": "FLOCSS 2-Column Grid (layout/_grids.scss)"
-  },
-  "l-grid--cl3 (3 Columns Grid)": {
-    "prefix": "l-grid3",
-    "body": [
-      "<div class=\"l-grid l-grid--cl3\">",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure><img src=\"${1:./assets/images/common/img_dummy.webp}\" alt=\"${2:}\"></figure>",
-      "\t</div>",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure><img src=\"${3:./assets/images/common/img_dummy.webp}\" alt=\"${4:}\"></figure>",
-      "\t</div>",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure><img src=\"${5:./assets/images/common/img_dummy.webp}\" alt=\"${6:}\"></figure>",
-      "\t</div>",
-      "</div>"
-    ],
-    "description": "FLOCSS 3-Column Grid (layout/_grids.scss)"
-  },
-  "l-grid--cl4 (4 Columns Grid)": {
-    "prefix": "l-grid4",
-    "body": [
-      "<div class=\"l-grid l-grid--cl4\">",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure><img src=\"${1:./assets/images/common/img_dummy.webp}\" alt=\"${2:}\"></figure>",
-      "\t</div>",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure><img src=\"${3:./assets/images/common/img_dummy.webp}\" alt=\"${4:}\"></figure>",
-      "\t</div>",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure><img src=\"${5:./assets/images/common/img_dummy.webp}\" alt=\"${6:}\"></figure>",
-      "\t</div>",
-      "\t<div class=\"l-grid__item\">",
-      "\t\t<figure><img src=\"${7:./assets/images/common/img_dummy.webp}\" alt=\"${8:}\"></figure>",
-      "\t</div>",
-      "</div>"
-    ],
-    "description": "FLOCSS 4-Column Grid (layout/_grids.scss)"
-  },
-  "l-flex (2 Columns Flex Left/Right)": {
-    "prefix": "l-flex",
-    "body": [
-      "<div class=\"l-flex${1| , l-flex--middle, l-flex--reverse, l-flex--reverse l-flex--middle, l-flex--center, l-flex--center l-flex--middle|}\">",
-      "\t<div class=\"l-flex__left\">",
-      "\t\t<figure>",
-      "\t\t\t<img src=\"${2:./assets/images/common/img_dummy.webp}\" alt=\"${3:}\">",
-      "\t\t</figure>",
-      "\t</div>",
-      "\t<div class=\"l-flex__right\">",
-      "\t\t<h2 class=\"c-ttl24\">${4:タイトル}</h2>",
-      "\t\t<p class=\"c-txt16\">${5:ダミーテキスト。ダミーテキスト。}</p>",
-      "\t</div>",
-      "</div>"
-    ],
-    "description": "FLOCSS 2-Column Flex (layout/_flexs.scss)"
-  },
-  "l-tbl (Table Item Definition)": {
-    "prefix": "l-tbl",
-    "body": [
-      "<div class=\"l-tbl\">",
-      "\t<div class=\"l-tbl__item${1| , l-tbl__item--middle|}\">",
-      "\t\t<div class=\"l-tbl__left\">",
-      "\t\t\t<h2 class=\"c-ttl16\">${2:項目名}</h2>",
-      "\t\t</div>",
-      "\t\t<div class=\"l-tbl__right\">",
-      "\t\t\t<p class=\"c-txt16\">${3:ダミーテキスト。ダミーテキスト。}</p>",
-      "\t\t</div>",
-      "\t</div>",
-      "\t<div class=\"l-tbl__item${1| , l-tbl__item--middle|}\">",
-      "\t\t<div class=\"l-tbl__left\">",
-      "\t\t\t<h2 class=\"c-ttl16\">${4:項目名}</h2>",
-      "\t\t</div>",
-      "\t\t<div class=\"l-tbl__right\">",
-      "\t\t\t<p class=\"c-txt16\">${5:ダミーテキスト。ダミーテキスト。}</p>",
-      "\t\t</div>",
-      "\t</div>",
-      "</div>"
-    ],
-    "description": "FLOCSS Table List (layout/_tbls.scss)"
-  },
-  "c-list-dot (Dot List)": {
-    "prefix": "c-list-dot",
-    "body": [
-      "<ul class=\"c-list-dot\">",
-      "\t<li class=\"c-list-dot__item\">${1:ダミーテキスト。}</li>",
-      "\t<li class=\"c-list-dot__item\">${2:ダミーテキスト。}</li>",
-      "\t<li class=\"c-list-dot__item\">${3:ダミーテキスト。}</li>",
-      "</ul>"
-    ],
-    "description": "FLOCSS Dot Bullet List (component/_lists.scss)"
-  },
-  "c-list-number (Number List)": {
-    "prefix": "c-list-num",
-    "body": [
-      "<ul class=\"c-list-number\">",
-      "\t<li class=\"c-list-number__item\">${1:ダミーテキスト。}</li>",
-      "\t<li class=\"c-list-number__item\">${2:ダミーテキスト。}</li>",
-      "\t<li class=\"c-list-number__item\">${3:ダミーテキスト。}</li>",
-      "</ul>"
-    ],
-    "description": "FLOCSS Numbered List (component/_lists.scss)"
-  },
-  "c-list-star (Star List)": {
-    "prefix": "c-list-star",
-    "body": [
-      "<ul class=\"c-list-star\">",
-      "\t<li class=\"c-list-star__item\">${1:ダミーテキスト。}</li>",
-      "\t<li class=\"c-list-star__item\">${2:ダミーテキスト。}</li>",
-      "\t<li class=\"c-list-star__item\">${3:ダミーテキスト。}</li>",
-      "</ul>"
-    ],
-    "description": "FLOCSS Star Bullet List (component/_lists.scss)"
-  },
-  "c-mv (Main Visual Banner)": {
-    "prefix": "c-mv",
-    "body": [
-      "<section class=\"c-mv\">",
-      "\t<figure class=\"c-mv__bg\">",
-      "\t\t<img src=\"${1:../assets/images/common/img_dummy.webp}\" alt=\"${2:}\">",
-      "\t</figure>",
-      "\t<div class=\"l-container\">",
-      "\t\t<div class=\"c-mv__inner\">",
-      "\t\t\t<h1 class=\"c-mv-title\">",
-      "\t\t\t\t<span class=\"c-mv-title__en\">${3:TITLE}</span>",
-      "\t\t\t\t<span class=\"c-mv-title__jp\">${4:タイトル}</span>",
-      "\t\t\t</h1>",
-      "\t\t</div>",
-      "\t</div>",
-      "</section>"
-    ],
-    "description": "FLOCSS Main Visual Banner (component/_mv.scss)"
-  },
-  "c-bread (Breadcrumb Navigation)": {
-    "prefix": "c-bread",
-    "body": [
-      "<div class=\"l-container\">",
-      "\t<ul class=\"c-bread\">",
-      "\t\t<li class=\"c-bread__item\">",
-      "\t\t\t<a href=\"${1:../}\" class=\"c-bread__link\">top</a>",
-      "\t\t</li>",
-      "\t\t<li class=\"c-bread__item\">${2:現在のページ}</li>",
-      "\t</ul>",
-      "</div>"
-    ],
-    "description": "FLOCSS Breadcrumbs (component/_bread.scss)"
-  },
-  "c-loading (Loading Spinner)": {
-    "prefix": "c-loading",
-    "body": [
-      "<div class=\"c-loading\">",
-      "\t<div class=\"c-loading__inner\">",
-      "\t\t<div class=\"c-loading__content\">",
-      "\t\t\t<div class=\"c-loading__item\"></div>",
-      "\t\t\t<div class=\"c-loading__item\"></div>",
-      "\t\t</div>",
-      "\t</div>",
-      "</div>"
-    ],
-    "description": "FLOCSS Page Loading Animation (component/_loading.scss)"
   }
 }

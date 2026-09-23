@@ -8,6 +8,7 @@
     "build": "node scripts/build.js",
     "clean": "node scripts/clean.js",
     "link": "node scripts/link.js",
+    "snippets": "node scripts/sync-snippets.js",
     "test": "vitest run"
   },
   "author": "",

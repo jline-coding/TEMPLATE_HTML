@@ -32,51 +32,270 @@ component > title
 .c-ttl16{
     font-weight: 700;
     @extend %fz-16;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl18{
     font-weight: 700;
     @extend %fz-18;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl20{
     font-weight: 700;
     @extend %fz-20;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl22{
     font-weight: 700;
     @extend %fz-22;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl24{
     font-weight: 700;
     @extend %fz-24;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl26{
     font-weight: 700;
     @extend %fz-26;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl28{
     font-weight: 700;
     @extend %fz-28;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl30{
     font-weight: 700;
     @extend %fz-30;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl32{
     font-weight: 700;
     @extend %fz-32;
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl34{
     font-weight: 700;
     @extend %fz-34;
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.05em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
 
 .c-ttl36{

@@ -22,6 +22,7 @@ import {
   buildGeneralCopy, buildJs, buildVendor, buildImages, buildVideos,
   isHandledBySpecificBuilder
 } from './builders/assets.js';
+import { syncSnippets } from './sync-snippets.js';
 
 // ─────────────────────────────────────────────
 // Full Build Pipeline
@@ -68,6 +69,9 @@ async function fullBuild() {
     try { await buildImages(); } catch (e) { errors.push(['images', e]); }
     try { buildVideos(); } catch (e) { errors.push(['videos', e]); }
   }
+
+  // Sync VS Code snippets from components safely
+  try { syncSnippets({ quiet: true }); } catch { /* ignore */ }
 
   if (errors.length > 0) {
     console.error(`\n⚠️ Build completed with ${errors.length} error(s):`);
@@ -214,6 +218,9 @@ async function startWatch() {
         needsScssReload = true;
       } else if (ext === '.ejs') {
         await buildEjs(fp);
+        if (norm(fp).includes('/pages/components/')) {
+          try { syncSnippets({ compact: true }); } catch { /* ignore */ }
+        }
         needsFullReload = true;
       } else if (isHandledBySpecificBuilder(fp)) {
         if (norm(fp).startsWith(norm(resolve(JS_DIR)))) buildJs(fp);
@@ -268,6 +275,12 @@ async function startWatch() {
           const outPath = resolve(DIST, rel.replace(/_([^\\/]+)\.ejs$/, '$1.php'));
           if (existsSync(outPath)) try { unlinkSync(outPath); } catch {}
           try { removeEmptyDirs(DIST); } catch {}
+        }
+        if (basename(fp).startsWith('_') || fp.includes(LAYOUTS_DIR)) {
+          await buildEjs();
+        }
+        if (norm(fp).includes('/pages/components/')) {
+          try { syncSnippets({ compact: true }); } catch { /* ignore */ }
         }
         needsFullReload = true;
       } else if (isHandledBySpecificBuilder(fp)) {

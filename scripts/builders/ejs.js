@@ -1,5 +1,5 @@
 import { resolve, dirname, basename, extname, relative, posix } from 'path';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, rmSync } from 'fs';
 import ejs from 'ejs';
 import matter from 'gray-matter';
 import beautify from 'js-beautify';
@@ -43,6 +43,16 @@ export async function formatCode(code, destExt) {
 export async function buildEjs(changedFile) {
   // Re-scan include dirs to detect runtime changes (rename, add, delete)
   refreshIncludeDirs();
+
+  // In production build (!isWatch), guarantee components/ is completely removed
+  if (!isWatch) {
+    for (const prefix of PAGE_OUT_PREFIXES) {
+      const compDist = resolve(DIST, prefix, 'components');
+      if (existsSync(compDist)) {
+        try { rmSync(compDist, { recursive: true, force: true }); } catch {}
+      }
+    }
+  }
   if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE) {
     try {
       const transpileEjsToPhp = (str, relToRoot) => {
@@ -92,6 +102,10 @@ export async function buildEjs(changedFile) {
     const ext = extname(f);
     const name = basename(f);
     const relPath = norm(relative(PAGES_DIR, f));
+    // Dev-only: only build component showcase in watch/dev mode
+    if (!isWatch && (relPath === 'components' || relPath.startsWith('components/'))) {
+      return false;
+    }
     return ext === '.ejs' && !name.startsWith('_') && !relPath.startsWith('assets/');
   });
 
@@ -102,6 +116,10 @@ export async function buildEjs(changedFile) {
     const isPartialOrLayout = changedBase.startsWith('_') || changedNorm.includes('/layouts/') || isInIncludeDir;
 
     if (!isPartialOrLayout && changedNorm.includes('/pages/')) {
+      const relPath = norm(relative(PAGES_DIR, changedFile));
+      if (!isWatch && (relPath === 'components' || relPath.startsWith('components/'))) {
+        return;
+      }
       await renderEjsFile(changedFile);
       return;
     }
@@ -190,6 +208,51 @@ async function renderEjsFile(filePath) {
     const firstIncludeDirName = INCLUDE_DIRS['components'] ? 'components' : (Object.keys(INCLUDE_DIRS)[0] || 'components');
     const firstIncludeDirPath = INCLUDE_DIRS[firstIncludeDirName] || '';
 
+    // Auto-discover all component files in src/pages/components/ (showcase page only)
+    const isComponentShowcase = filePath.replace(/\\/g, '/').includes('/pages/components/');
+    const pagesCompDir = resolve(PAGES_DIR, 'components');
+    let componentModules = [];
+    if (isComponentShowcase && existsSync(pagesCompDir)) {
+      const order = ['loading', 'mv', 'bread', 'titles', 'texts', 'btns', 'links', 'lists', 'grids', 'flexs', 'tbls'];
+      componentModules = readdirSync(pagesCompDir)
+        .filter(f => f.startsWith('_') && f.endsWith('.ejs'))
+        .sort((a, b) => {
+          const aName = basename(a, '.ejs').replace(/^_/, '');
+          const bName = basename(b, '.ejs').replace(/^_/, '');
+          const aIdx = order.indexOf(aName);
+          const bIdx = order.indexOf(bName);
+          if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+          if (aIdx !== -1) return -1;
+          if (bIdx !== -1) return 1;
+          return aName.localeCompare(bName);
+        })
+        .map(f => {
+          const name = basename(f, '.ejs').replace(/^_/, '');
+          const raw = readFileSync(resolve(pagesCompDir, f), 'utf8');
+          const isLayout = f.startsWith('_l-') || ['grids', 'flexs', 'tbls'].includes(name) || (raw.includes('l-') && !raw.includes('c-'));
+          const title = name.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+          let renderedContent = raw;
+          try {
+            renderedContent = ejs.render(raw, {
+              assetsDir: '../',
+              layoutsDir: LAYOUTS_DIR,
+              includeComponent,
+              ext: OUTPUT_EXT,
+              siteUrl: SITE_URL
+            });
+          } catch {
+            renderedContent = raw;
+          }
+          return {
+            file: f,
+            name,
+            title,
+            isLayout,
+            content: renderedContent
+          };
+        });
+    }
+
     const pageHtml = ejs.render(content, {
       file: { data: frontData, path: filePath },
       assetsDir,
@@ -201,6 +264,7 @@ async function renderEjsFile(filePath) {
       phpInclude: USE_PHP_INCLUDE,
       siteUrl: SITE_URL,
       includeComponent,
+      componentModules,
     }, {
       filename: filePath,
     });
