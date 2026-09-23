@@ -191,38 +191,32 @@ function normalizeIndentation(html) {
   const lines = trimmed.split(/\r?\n/);
   if (lines.length <= 1) return trimmed;
 
-  const lastLine = lines[lines.length - 1];
-  const lastMatch = lastLine.match(/^(\s+)</);
-  let baseIndent = '';
-
-  if (lastMatch) {
-    baseIndent = lastMatch[1];
-  } else {
-    let minLen = Infinity;
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.trim().length > 0) {
-        const m = line.match(/^(\s*)/);
-        const len = m ? m[1].length : 0;
-        if (len < minLen) {
-          minLen = len;
-          baseIndent = m[1];
-        }
-      }
+  let minIndent = Infinity;
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.trim().length === 0) continue;
+    const m = line.match(/^(\s*)/);
+    const len = m ? m[1].length : 0;
+    if (len < minIndent) {
+      minIndent = len;
     }
   }
 
-  if (baseIndent.length > 0) {
-    return lines.map((line, idx) => {
-      if (idx === 0) return line.trimStart();
-      if (line.startsWith(baseIndent)) {
-        return line.slice(baseIndent.length);
-      }
-      return line.trimStart();
-    }).join('\n');
+  if (minIndent === Infinity || minIndent === 0) {
+    return lines.map(l => l.trimEnd()).join('\n').trim();
   }
 
-  return trimmed;
+  const result = [lines[0].trim()];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.trim().length === 0) {
+      result.push('');
+    } else {
+      result.push(line.slice(minIndent).trimEnd());
+    }
+  }
+
+  return result.join('\n').trim();
 }
 
 function formatSnippetBody(rawHtml, tagName, mainClass, classStr) {
