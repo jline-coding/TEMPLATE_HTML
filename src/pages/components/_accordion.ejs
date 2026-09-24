@@ -1,0 +1,44 @@
+<div class="p-component__item">
+    <!-- Accordion Details (HTML5標準 details/summary アコーディオン) -->
+    <details class="c-accordion">
+        <summary class="c-accordion__head">
+            <span class="c-accordion__title">アコーディオンタイトル（HTML5 detailsタグ）</span>
+            <span class="c-accordion__icon"></span>
+        </summary>
+        <div class="c-accordion__body">
+            <div class="c-accordion__content">
+                <p>ダミーテキストが入ります。ブラウザのページ内検索（Ctrl+F）を実行すると、閉じているアコーディオンも自動的に展開されてハイライトされます。</p>
+            </div>
+        </div>
+    </details>
+</div>
+
+<div class="p-component__item">
+    <!-- Accordion Standard (hidden="until-found"対応 標準アコーディオン) -->
+    <div class="c-accordion">
+        <button type="button" class="c-accordion__head">
+            <span class="c-accordion__title">アコーディオンタイトル（hidden="until-found"対応）</span>
+            <span class="c-accordion__icon"></span>
+        </button>
+        <div class="c-accordion__body" hidden="until-found">
+            <div class="c-accordion__content">
+                <p>ダミーテキストが入ります。hidden="until-found"とbeforematchイベントにより、ページ内検索（Ctrl+F）時に未表示のコンテンツでも即座に検索・展開されます。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-component__item">
+    <!-- Accordion Plus Icon (プラス・マイナスアイコン アコーディオン) -->
+    <div class="c-accordion">
+        <button type="button" class="c-accordion__head">
+            <span class="c-accordion__title">アコーディオンタイトル（プラス・マイナスアイコン）</span>
+            <span class="c-accordion__icon c-accordion__icon--plus"></span>
+        </button>
+        <div class="c-accordion__body" hidden="until-found">
+            <div class="c-accordion__content">
+                <p>ダミーテキストが入ります。ダミーテキストが入ります。ダミーテキストが入ります。ダミーテキストが入ります。</p>
+            </div>
+        </div>
+    </div>
+</div>

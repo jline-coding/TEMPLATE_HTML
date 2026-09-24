@@ -1,5 +1,21 @@
 :where(.js-inview) {
     opacity: 0;
+
+    // In-page search (Ctrl+F) support: reveal instantly if focused/matched inside
+    &:focus-within {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+.js-fadeani {
+    &:focus-within {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
 }
 
 .fadeIn,

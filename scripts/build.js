@@ -270,7 +270,7 @@ async function startWatch() {
           }
           try { removeEmptyDirs(DIST); } catch {}
         } else if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE && !fp.includes(LAYOUTS_DIR) && basename(fp).startsWith('_')) {
-          // Xóa file PHP partial tương ứng trong thư mục public
+          // Remove corresponding PHP partial file in public directory
           const rel = relative(SRC, fp);
           const outPath = resolve(DIST, rel.replace(/_([^\\/]+)\.ejs$/, '$1.php'));
           if (existsSync(outPath)) try { unlinkSync(outPath); } catch {}

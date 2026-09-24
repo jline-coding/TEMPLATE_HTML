@@ -125,13 +125,147 @@ if (typeof $.type === 'undefined') {
                 const $targetSub = $parent.children('.c-gnavi-sub');
                 const isOpen = $parent.hasClass("is-open");
 
-                // Toggle menu hiện tại
                 $parent.toggleClass("is-open", !isOpen);
-                $targetSub.stop().slideToggle(300);
+                if (!isOpen) {
+                    $targetSub.removeAttr('hidden').stop().slideDown(300);
+                } else {
+                    $targetSub.stop().slideUp(300, function () {
+                        $(this).attr('hidden', 'until-found').css('display', '');
+                    });
+                }
 
-                // Đóng các submenu khác nếu có nhiều mục submenu
+                // Close other open submenus
                 const $otherParents = $gnaviSubParent.not($parent).filter('.is-open');
-                $otherParents.removeClass("is-open").children('.c-gnavi-sub').stop().slideUp(300);
+                $otherParents.removeClass("is-open").children('.c-gnavi-sub').stop().slideUp(300, function () {
+                    $(this).attr('hidden', 'until-found').css('display', '');
+                });
+            }
+        });
+
+        // =============================
+        // In-Page Search (Ctrl+F) & Accordion Controller
+        // =============================
+        // 1. Accordions with hidden="until-found" and beforematch
+        const customAccordions = document.querySelectorAll('.c-accordion:not(details), .js-accordion:not(details)');
+        customAccordions.forEach(function (accordion, idx) {
+            const head = accordion.querySelector('.c-accordion__head, .js-accordion__head');
+            const body = accordion.querySelector('.c-accordion__body, .js-accordion__body');
+            if (!head || !body) return;
+
+            const isOpen = accordion.classList.contains('is-open');
+            const uid = body.id || ('accordion-panel-' + idx);
+            body.id = uid;
+            head.setAttribute('aria-controls', uid);
+            head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+            if (!isOpen) {
+                body.setAttribute('hidden', 'until-found');
+            }
+
+            // Auto-expand when matched by in-page search (Ctrl+F)
+            body.addEventListener('beforematch', function () {
+                accordion.classList.add('is-open');
+                head.setAttribute('aria-expanded', 'true');
+                $(body).css('display', '');
+            });
+
+            // Smooth toggle click
+            head.addEventListener('click', function (e) {
+                e.preventDefault();
+                const willOpen = !accordion.classList.contains('is-open');
+                accordion.classList.toggle('is-open', willOpen);
+                head.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+
+                if (willOpen) {
+                    body.removeAttribute('hidden');
+                    $(body).hide().slideDown(250);
+                } else {
+                    $(body).slideUp(250, function () {
+                        body.setAttribute('hidden', 'until-found');
+                        $(body).css('display', '');
+                    });
+                }
+            });
+        });
+
+        // 2. Progressive enhancement for standard <details class="c-accordion"> elements
+        const detailAccordions = document.querySelectorAll('details.c-accordion, details.js-accordion');
+        detailAccordions.forEach(function (details) {
+            const summary = details.querySelector('.c-accordion__head, summary');
+            const body = details.querySelector('.c-accordion__body');
+            if (!summary || !body) return;
+
+            let isAnimating = false;
+            summary.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (isAnimating) return;
+
+                if (details.open) {
+                    isAnimating = true;
+                    $(body).slideUp(250, function () {
+                        details.open = false;
+                        $(body).css('display', '');
+                        isAnimating = false;
+                    });
+                } else {
+                    isAnimating = true;
+                    details.open = true;
+                    $(body).hide().slideDown(250, function () {
+                        isAnimating = false;
+                    });
+                }
+            });
+        });
+
+        // 3. Header submenu: in-page search (Ctrl+F) support
+        document.querySelectorAll('.c-gnavi-sub').forEach(function (sub) {
+            sub.addEventListener('beforematch', function () {
+                const parent = sub.closest('.c-gnavi-list__item, .c-gnavi__item') || sub.parentElement;
+                if (parent) {
+                    parent.classList.add('is-open');
+                }
+                sub.removeAttribute('hidden');
+
+                if (window.matchMedia('(min-width: 768px)').matches) {
+                    sub.style.opacity = '1';
+                    sub.style.contentVisibility = 'visible';
+                    sub.style.pointerEvents = 'auto';
+                    sub.style.transform = 'translateX(-50%) translateY(0)';
+                } else {
+                    const gnavi = sub.closest('.c-gnavi');
+                    if (gnavi && !gnavi.classList.contains('is-open')) {
+                        $toggle.addClass('active');
+                        $gnavi.show();
+                    }
+                    $(sub).show();
+                }
+            });
+        });
+
+        // Click outside on desktop to reset opened submenu
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.c-gnavi-list__item.is-sub').length) {
+                if (window.matchMedia('(min-width: 768px)').matches) {
+                    $gnaviSubParent.filter('.is-open').each(function () {
+                        const $item = $(this);
+                        $item.removeClass('is-open');
+                        const $sub = $item.children('.c-gnavi-sub');
+                        $sub.attr('hidden', 'until-found');
+                        $sub.removeAttr('style');
+                    });
+                }
+            }
+        });
+
+        // 4. Inview / scroll animation: auto-reveal immediately when focused by in-page search
+        document.addEventListener('focusin', function (e) {
+            const fadeEl = e.target.closest('.js-fadeani, .js-inview, [data-aos]');
+            if (fadeEl) {
+                fadeEl.classList.add('active', 'is-inview', 'aos-animate');
+                if (fadeEl.style) {
+                    fadeEl.style.opacity = '1';
+                    fadeEl.style.transform = 'none';
+                }
             }
         });
 
