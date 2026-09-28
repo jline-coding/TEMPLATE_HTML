@@ -1,0 +1,60 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > header
+------------------------------
+*/
+
+.c-header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    padding: 10px 20px;
+    background-color: var(--primary);
+    color: var(--white);
+    @include mq(md) {
+        padding: 20px 40px;
+    }
+    &-logo{
+        flex-shrink: 0;
+        width: 200px;
+        @extend %fz-28;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        position: relative;
+        z-index: 9;
+        @include mq(md) {
+            width: clamped(220,300);
+        }
+    }
+    &__inner{
+        @include mq(md) {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+    &__content{
+        @include mq(md) {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: clamped(20,30);
+        }
+    }
+    &-btns{
+        display: none;
+        @include mq(md) {
+            display: block;
+        }
+        &__content{
+            @include mq(md) {
+                width: clamped(180,320);
+            }
+        }
+    }
+}

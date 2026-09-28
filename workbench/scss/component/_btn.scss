@@ -1,0 +1,267 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > btn
+------------------------------
+*/
+.c-btn{
+    border: 1px solid var(--primary);
+    background-color: var(--primary);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    min-height: 56px;
+    width: 260px;
+    @extend %fz-18;
+    line-height: 1.6;
+    font-weight: 700;
+    padding: 10px 20px;
+    @include mq(md) {
+        border: 2px solid var(--primary);
+        min-height: 64px;
+        gap: 15px;
+        width: 320px;
+    }
+    &:hover{
+        @include mq(md) {
+            opacity: 1;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            background-color: var(--white);
+            &::after{
+                border-color: var(--primary);
+            }
+        }
+    }
+    &--arrow{
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        @include mq(md) {
+            gap: 10px;
+        }
+        .c-btn__content{
+            width: 100%;
+        }
+        &::after{
+            content: "";
+            width: 8px;
+            height: 8px;
+            display: block;
+            flex-shrink: 0;
+            border-top: 2px solid var(--white);
+            border-right: 2px solid var(--white);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+            transition: 0.5s;
+            @include mq(md) {
+                width: 12px;
+                height: 12px;
+            }
+        }
+    }
+    &--arrow-center{
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        @include mq(md) {
+            gap: 10px;
+        }
+        &::after{
+            content: "";
+            width: 8px;
+            height: 8px;
+            display: block;
+            flex-shrink: 0;
+            border-top: 2px solid var(--white);
+            border-right: 2px solid var(--white);
+            transform: rotate(45deg);
+            transition: 0.5s;
+            @include mq(md) {
+                width: 12px;
+                height: 12px;
+            }
+        }
+    }
+    &--arrow-between{
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        @include mq(md) {
+            gap: 10px;
+        }
+        &::after{
+            content: "";
+            width: 8px;
+            height: 8px;
+            display: block;
+            flex-shrink: 0;
+            border-top: 2px solid var(--white);
+            border-right: 2px solid var(--white);
+            transform: rotate(45deg);
+            transition: 0.5s;
+            @include mq(md) {
+                width: 12px;
+                height: 12px;
+            }
+        }
+    }
+    &--reverse{
+        background-color: var(--white);
+        color: var(--primary);
+        &::after{
+            border-color: var(--primary);
+        }
+        &:hover{
+            @include mq(md) {
+                opacity: 1;
+                color: var(--white);
+                background-color: var(--primary);
+                &::after{
+                    border-color: var(--white);
+                }
+            }
+        }
+    }
+    
+}
+
+.c-totop {
+    position: fixed;
+    right: 20px;
+    bottom: 60px;
+    display: block;
+    font-size: 0;
+    width: 45px;
+    height: 45px;
+    transform: translateY(150px);
+    transition: 0.5s;
+    font-size: 0;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    z-index: 9;
+    background: var(--primary);
+    border-radius: 40px;
+    border: 2px solid var(--white);
+    @include mq(md) {
+        right: 60px;
+        bottom: 69px;
+        width: 60px;
+        height: 60px;
+        border-radius: 60px;
+        border: 3px solid var(--white);
+    }
+
+    &::before {
+        position: absolute;
+        top: 50%;
+        left: 11px;
+        content: "";
+        width: 12px;
+        height: 3px;
+        background: var(--white);
+        transform: translateY(-50%) rotate(-45deg);
+        pointer-events: none;
+
+        @include mq(md) {
+            left: 15px;
+            width: 15px;
+        }
+    }
+
+    &::after {
+        position: absolute;
+        top: 50%;
+        right: 11px;
+        content: "";
+        width: 12px;
+        height: 3px;
+        transform: translateY(-50%) rotate(45deg);
+        pointer-events: none;
+        background: var(--white);
+
+        @include mq(md) {
+            right: 15px;
+            width: 15px;
+        }
+    }
+
+    &:hover {
+        @include mq(md) {
+            transform: translateY(-20px) !important;
+        }
+    }
+}
+
+.c-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: block;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    background-color: var(--green);
+    border-radius: 0 0 0 5px;
+    z-index: 11;
+    @include mq(md) {
+        display: none;
+    }
+
+    &::before {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        content: "";
+        width: 20px;
+        height: 2px;
+        border-radius: 100px;
+        background: var(--white);
+        transition: 0.5s;
+    }
+
+    &::after {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        content: "";
+        width: 20px;
+        height: 2px;
+        border-radius: 100px;
+        background: var(--white);
+        transition: 0.5s;
+    }
+
+    &__line {
+        position: absolute;
+        top: 29px;
+        left: 20px;
+        display: block;
+        width: 20px;
+        height: 2px;
+        border-radius: 100px;
+        background: var(--white);
+        transition: 0.5s;
+    }
+
+    &.active {
+        &::before {
+            width: 24px;
+            transform: translate(-2px, 9px) rotate(45deg);
+        }
+
+        &::after {
+            width: 24px;
+            transform: translate(-2px, -9px) rotate(-45deg);
+        }
+
+        .c-toggle__line {
+            opacity: 0;
+        }
+    }
+}

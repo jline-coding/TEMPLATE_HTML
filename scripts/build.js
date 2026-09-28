@@ -22,7 +22,11 @@ import {
   buildGeneralCopy, buildJs, buildVendor, buildImages, buildVideos,
   isHandledBySpecificBuilder
 } from './builders/assets.js';
+import { buildWorkbench, cleanWorkbench, buildWorkbenchScss } from './builders/workbench.js';
 import { syncSnippets } from './sync-snippets.js';
+import { WORKBENCH_DIR } from './tools/config.js';
+import { createApiMiddleware } from './tools/api-middleware.js';
+import { updateClientScssIndex } from './tools/component-service.js';
 
 // ─────────────────────────────────────────────
 // Full Build Pipeline
@@ -68,6 +72,13 @@ async function fullBuild() {
     try { buildVendor(); } catch (e) { errors.push(['vendor', e]); }
     try { await buildImages(); } catch (e) { errors.push(['images', e]); }
     try { buildVideos(); } catch (e) { errors.push(['videos', e]); }
+  }
+
+  // Developer Workbench Showcase (Dev-only)
+  if (isWatch && !isRenew) {
+    try { await buildWorkbench(); } catch (e) { errors.push(['workbench', e]); }
+  } else {
+    cleanWorkbench();
   }
 
   // Sync VS Code snippets from components safely
@@ -120,26 +131,29 @@ async function startWatch() {
     bsOptions.startPath = '/' + PAGE_OUT_PREFIXES[0];
   }
   const needsProxy = OUTPUT_EXT === '.php';
+  const apiMw = createApiMiddleware();
+  const middlewares = [apiMw];
+  if (OUTPUT_EXT === '.php') {
+    middlewares.push(function (req, res, next) {
+      if (req.url.includes('.php')) res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+      next();
+    });
+  }
 
   if (PROXY_URL && needsProxy) {
     const proxyHost = PROXY_URL.replace(/^https?:\/\//, '');
     bsOptions.proxy = `http://${proxyHost}`;
-    console.log(`[server] Proxy → http://${proxyHost}`);
+    bsOptions.middleware = middlewares;
+    console.log(`[server] Proxy → http://${proxyHost} (Workbench API middleware active)`);
   } else if (PROXY_URL && !needsProxy) {
-    bsOptions.server = { baseDir: DIST };
+    bsOptions.server = { baseDir: DIST, middleware: middlewares };
     console.log(`[server] Static server (PROXY_URL bỏ qua — output: ${OUTPUT_EXT})`);
   } else {
-    bsOptions.server = { baseDir: DIST };
+    bsOptions.server = { baseDir: DIST, middleware: middlewares };
     if (OUTPUT_EXT === '.php') {
       console.log(`[server] ⚠️  Static (thiếu PROXY_URL — .php hiển thị như HTML)`);
-      bsOptions.server.middleware = [
-        function (req, res, next) {
-          if (req.url.includes('.php')) res.setHeader('Content-Type', 'text/html; charset=UTF-8');
-          next();
-        }
-      ];
     } else {
-      console.log(`[server] Static server`);
+      console.log(`[server] Static server with Workbench API middleware active`);
     }
   }
 
@@ -199,9 +213,35 @@ async function startWatch() {
     router.add('change', getAbs(fp + '/__dir_trigger__.ejs'));
   });
 
+  // Watch Workbench for live component development
+  if (existsSync(WORKBENCH_DIR)) {
+    let wbDebounceTimer = null;
+    const wbWatcher = chokidarWatch('.', {
+      cwd: WORKBENCH_DIR,
+      ignoreInitial: true,
+      awaitWriteFinish: { stabilityThreshold: 150, pollInterval: 50 },
+    });
+    wbWatcher.on('all', (event, fp) => {
+      clearTimeout(wbDebounceTimer);
+      wbDebounceTimer = setTimeout(async () => {
+        try {
+          console.log(`[workbench] ${event}: ${fp}`);
+          await buildWorkbench({ force: true, port: chosenPort });
+          browserSync.reload();
+        } catch (e) {
+          console.error('[workbench] Rebuild error:', e.message);
+        }
+      }, 200);
+    });
+  }
+
   async function routeEvents(changed, added, unlinked) {
     let needsScssReload = false;
     let needsFullReload = false;
+    let needsEjsFullRebuild = false;
+    let needsWorkbenchRebuild = false;
+    let needsSnippetSync = false;
+    const ejsPagesToBuild = new Set();
 
     // Handle Adds + Changes
     for (const fp of [...added, ...changed]) {
@@ -215,11 +255,23 @@ async function startWatch() {
 
       if (ext === '.scss') {
         await buildScss(fp);
+        if (isWatch && !isRenew) {
+          try { await buildWorkbenchScss(); } catch {}
+        }
         needsScssReload = true;
       } else if (ext === '.ejs') {
-        await buildEjs(fp);
-        if (norm(fp).includes('/pages/components/')) {
-          try { syncSnippets({ compact: true }); } catch { /* ignore */ }
+        const normFp = norm(fp);
+        const baseName = basename(fp);
+        if (baseName.startsWith('_') || normFp.includes('/layouts/') || normFp.includes('__dir_trigger__')) {
+          needsEjsFullRebuild = true;
+        } else if (normFp.includes('/pages/')) {
+          ejsPagesToBuild.add(fp);
+        }
+        if (normFp.includes('/layouts/')) {
+          needsWorkbenchRebuild = true;
+        }
+        if (normFp.includes('/workbench/components/') || normFp.includes('/components/')) {
+          needsSnippetSync = true;
         }
         needsFullReload = true;
       } else if (isHandledBySpecificBuilder(fp)) {
@@ -240,7 +292,6 @@ async function startWatch() {
       
       if (isRenew) {
         if (ext === '.scss') {
-          // Simplified cleanup for renew SCSS
           needsScssReload = true;
         } else if (ext !== '.ejs' && ext !== '.map') {
           const rel = relative(PAGES_DIR, fp);
@@ -252,13 +303,23 @@ async function startWatch() {
         continue;
       }
 
-      if (ext === '.scss' && !basename(fp).startsWith('_')) {
-        const rel = relative(SCSS_DIR, fp);
-        for (const cssRel of CSS_OUTPUT_RELS) {
-          const cssOut = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
-          if (existsSync(cssOut)) try { unlinkSync(cssOut); } catch {}
-          if (existsSync(cssOut + '.map')) try { unlinkSync(cssOut + '.map'); } catch {}
-          try { removeEmptyDirs(dirname(cssOut)); } catch {}
+      if (ext === '.scss') {
+        const baseName = basename(fp);
+        if (baseName.startsWith('_') && baseName !== '_index.scss') {
+          // If partial SCSS is unlinked, automatically clean up @use in _index.scss
+          const compBase = baseName.replace(/^_/, '').replace(/\.scss$/, '');
+          const isLayout = norm(fp).includes('/layout/');
+          try {
+            updateClientScssIndex(compBase, 'remove', isLayout ? 'layout' : 'component');
+          } catch {}
+        } else if (!baseName.startsWith('_')) {
+          const rel = relative(SCSS_DIR, fp);
+          for (const cssRel of CSS_OUTPUT_RELS) {
+            const cssOut = resolve(DIST, cssRel, rel.replace(/\.scss$/, '.css'));
+            if (existsSync(cssOut)) try { unlinkSync(cssOut); } catch {}
+            if (existsSync(cssOut + '.map')) try { unlinkSync(cssOut + '.map'); } catch {}
+            try { removeEmptyDirs(dirname(cssOut)); } catch {}
+          }
         }
         needsScssReload = true;
       } else if (ext === '.ejs') {
@@ -270,17 +331,16 @@ async function startWatch() {
           }
           try { removeEmptyDirs(DIST); } catch {}
         } else if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE && !fp.includes(LAYOUTS_DIR) && basename(fp).startsWith('_')) {
-          // Remove corresponding PHP partial file in public directory
           const rel = relative(SRC, fp);
           const outPath = resolve(DIST, rel.replace(/_([^\\/]+)\.ejs$/, '$1.php'));
           if (existsSync(outPath)) try { unlinkSync(outPath); } catch {}
           try { removeEmptyDirs(DIST); } catch {}
         }
         if (basename(fp).startsWith('_') || fp.includes(LAYOUTS_DIR)) {
-          await buildEjs();
+          needsEjsFullRebuild = true;
         }
-        if (norm(fp).includes('/pages/components/')) {
-          try { syncSnippets({ compact: true }); } catch { /* ignore */ }
+        if (norm(fp).includes('/workbench/components/') || norm(fp).includes('/components/')) {
+          needsSnippetSync = true;
         }
         needsFullReload = true;
       } else if (isHandledBySpecificBuilder(fp)) {
@@ -323,13 +383,30 @@ async function startWatch() {
       }
     }
 
+    // Run Batched Operations Once
+    if (needsEjsFullRebuild) {
+      await buildEjs();
+    } else if (ejsPagesToBuild.size > 0) {
+      for (const p of ejsPagesToBuild) {
+        await buildEjs(p);
+      }
+    }
+
+    if (needsWorkbenchRebuild) {
+      try { await buildWorkbench({ port: chosenPort }); } catch {}
+    }
+    if (needsSnippetSync) {
+      try { syncSnippets({ compact: true }); } catch {}
+    }
+
     if (needsScssReload && !needsFullReload) browserSync.reload('*.css');
     else if (needsFullReload) browserSync.reload();
   }
 
   console.log('╔══════════════════════════════════════╗');
   console.log(`║   Watching for changes on :${chosenPort}...   ║`);
-  console.log('╚══════════════════════════════════════╝\n');
+  console.log('╚══════════════════════════════════════╝');
+  console.log(`[workbench] ⚡ Showcase: http://localhost:${chosenPort}/__workbench/\n`);
 }
 
 // ─────────────────────────────────────────────

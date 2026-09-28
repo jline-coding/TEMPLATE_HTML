@@ -134,12 +134,21 @@
     ],
     "description": "Button Reverse Arrow Between (反転 矢印両端配置ボタン) (c-btn c-btn--arrow-between c-btn--reverse) from _btns.ejs"
   },
-  "c-abc (Custom Component (カスタムコンポーネント))": {
-    "prefix": "c-abc",
+  "c-toggle (Toggle Hamburger (ハンバーガーメニュー ボタン))": {
+    "prefix": "c-toggle",
     "body": [
-      "<a href=\"\" class=\"c-abc\">${1:test}</a>"
+      "<div class=\"c-toggle\" onclick=\"this.classList.toggle('active')\">",
+      "\t<span class=\"c-toggle__line\"></span>",
+      "</div>"
     ],
-    "description": "Custom Component (カスタムコンポーネント) (c-abc) from _btns.ejs"
+    "description": "Toggle Hamburger (ハンバーガーメニュー ボタン) (c-toggle) from _btns.ejs"
+  },
+  "c-totop (Totop Pagetop (トップへ戻るボタン))": {
+    "prefix": "c-totop",
+    "body": [
+      "<a href=\"\" class=\"c-totop\">${1:pagetop}</a>"
+    ],
+    "description": "Totop Pagetop (トップへ戻るボタン) (c-totop) from _btns.ejs"
   },
   "l-flex (Flex Standard (2カラム 左画像400px・右テキスト))": {
     "prefix": "l-flex",
@@ -277,6 +286,73 @@
     ],
     "description": "Flex Equal 50/50 Reverse Middle (2カラム 均等50%・50% 画像右配置・上下中央揃え) (l-flex l-flex--equal l-flex--reverse l-flex--middle) from _flexs.ejs"
   },
+  "c-footer (Footer)": {
+    "prefix": "c-footer",
+    "body": [
+      "<footer class=\"c-footer\">",
+      "\t<div class=\"l-container\">",
+      "\t\t<div class=\"c-footer__inner\">",
+      "\t\t\t<div class=\"c-footer-logo\">",
+      "\t\t\t\t<a href=\"\" class=\"c-footer-logo__link\">",
+      "\t\t\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_logo.webp\" alt=\"\">",
+      "\t\t\t\t</a>",
+      "\t\t\t</div>",
+      "\t\t\t<ul class=\"c-footer-list\">",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t</ul>",
+      "\t\t</div>",
+      "\t\t<p class=\"c-footer-copy\">J-line Corporation ©copyright</p>",
+      "\t</div>",
+      "</footer>"
+    ],
+    "description": "FLOCSS (c-footer) from _footer.ejs"
+  },
+  "c-gnavi (Global Navigation (グローバルナビゲーション))": {
+    "prefix": "c-gnavi",
+    "body": [
+      "<nav class=\"c-gnavi\" style=\"position: relative; display: block; opacity: 1; pointer-events: all; width: 100%;\">",
+      "\t<div class=\"c-gnavi__inner\">",
+      "\t\t<ul class=\"c-gnavi-list\">",
+      "\t\t\t<li class=\"c-gnavi-list__item\">",
+      "\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">会社</a>",
+      "\t\t\t</li>",
+      "\t\t\t<li class=\"c-gnavi-list__item\">",
+      "\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">私たちについて</a>",
+      "\t\t\t</li>",
+      "\t\t\t<li class=\"c-gnavi-list__item is-sub\">",
+      "\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">サービス</a>",
+      "\t\t\t\t<ul class=\"c-gnavi-sub\" hidden=\"until-found\">",
+      "\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス01</a>",
+      "\t\t\t\t\t</li>",
+      "\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス02</a>",
+      "\t\t\t\t\t</li>",
+      "\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス03</a>",
+      "\t\t\t\t\t</li>",
+      "\t\t\t\t</ul>",
+      "\t\t\t</li>",
+      "\t\t\t<li class=\"c-gnavi-list__item is-btn\">",
+      "\t\t\t\t<a href=\"\" class=\"c-btn c-btn--reverse\">お問い合わせ</a>",
+      "\t\t\t</li>",
+      "\t\t</ul>",
+      "\t</div>",
+      "</nav>"
+    ],
+    "description": "Global Navigation (グローバルナビゲーション) (c-gnavi) from _gnavi.ejs"
+  },
   "l-grid (Grid 2 Columns (グリッド 2カラム))": {
     "prefix": "l-grid",
     "body": [
@@ -346,6 +422,58 @@
     ],
     "description": "Grid 4 Columns (グリッド 4カラム) (l-grid l-grid--cl4) from _grids.ejs"
   },
+  "c-header (Header)": {
+    "prefix": "c-header",
+    "body": [
+      "<header class=\"c-header\">",
+      "\t<div class=\"c-header__inner\">",
+      "\t\t<% if(file.data.page === 'top'){%><h1 class=\"c-header-logo\"><% }else{ %><div class=\"c-header-logo\"><% } %>",
+      "\t\t\t<a href=\"\" class=\"c-header-logo__link\">",
+      "\t\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_logo.webp\" alt=\"\">",
+      "\t\t\t</a>",
+      "\t\t<% if(file.data.page === 'top'){%></h1><% }else{ %></div><% } %>",
+      "\t\t<div class=\"c-header__content\">",
+      "\t\t\t<div class=\"c-gnavi\">",
+      "\t\t\t\t<div class=\"c-gnavi__inner\">",
+      "\t\t\t\t\t<ul class=\"c-gnavi-list\">",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">会社</a>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">私たちについて</a>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item is-sub\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">サービス</a>",
+      "\t\t\t\t\t\t\t<ul class=\"c-gnavi-sub\" hidden=\"until-found\">",
+      "\t\t\t\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス01</a>",
+      "\t\t\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス02</a>",
+      "\t\t\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス03</a>",
+      "\t\t\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t\t</ul>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item is-btn\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-btn c-btn--reverse\">お問い合わせ</a>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t</ul>",
+      "\t\t\t\t</div>",
+      "\t\t\t</div>",
+      "\t\t\t<div class=\"c-header-btns\">",
+      "\t\t\t\t<a href=\"\" class=\"c-btn c-btn--reverse c-header-btns__content\">お問い合わせ</a>",
+      "\t\t\t</div>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-toggle\">",
+      "\t\t<span class=\"c-toggle__line\"></span>",
+      "\t</div>",
+      "</header>"
+    ],
+    "description": "FLOCSS (c-header) from _header.ejs"
+  },
   "c-link (Link Standard (テキストリンク))": {
     "prefix": "c-link",
     "body": [
@@ -408,6 +536,56 @@
       "</section>"
     ],
     "description": "Main Visual Banner (メインビジュアル 背景画像＋2言語タイトル) (c-mv) from _mv.ejs"
+  },
+  "c-loading (Page Loading Animation (ロード画面アニメーション))": {
+    "prefix": "c-loading",
+    "body": [
+      "<div class=\"c-loading\" style=\"position: relative; height: 120px; opacity: 1; pointer-events: all; background: #222; border-radius: 8px; margin-bottom: 20px;\">",
+      "\t<div class=\"c-loading__inner\">",
+      "\t\t<div class=\"c-loading__content\">",
+      "\t\t\t<div class=\"c-loading__item\"></div>",
+      "\t\t\t<div class=\"c-loading__item\"></div>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Page Loading Animation (ロード画面アニメーション) (c-loading) from _other.ejs"
+  },
+  "c-cookiewrap (Cookie Consent Banner (Cookie 同意バナー GDPR))": {
+    "prefix": "c-cookiewrap",
+    "body": [
+      "<div class=\"c-cookiewrap\" style=\"position: relative; display: block; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff;\">",
+      "\t<div class=\"c-cookiewrap__inner\">",
+      "\t\t<p class=\"c-cookiewrap__close\"><a href=\"\" data-gdpr=\"button\">同意する</a></p>",
+      "\t\t<p class=\"c-cookiewrap__txt\">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href=\"\" class=\"c-cookiewrap__link\">プライバシーポリシー</a>」をご覧ください。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Cookie Consent Banner (Cookie 同意バナー GDPR) (c-cookiewrap) from _other.ejs"
+  },
+  "c-other-box (Miscellaneous Custom Components Container (その他のカスタムパーツ設定用エリア))": {
+    "prefix": "c-other-box",
+    "body": [
+      "<div class=\"c-other-box\" style=\"padding: 24px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; text-align: center;\">",
+      "\t<p style=\"font-size: 14px; color: #64748b; margin: 0;\">",
+      "\t\t🛠️ <strong>_other.scss / _other.ejs:</strong> Dùng để khai báo và định dạng các component đặc thù khác (loading screen, cookie banner, popup bổ trợ, v.v.) không thuộc các nhóm cơ bản.",
+      "\t</p>",
+      "</div>"
+    ],
+    "description": "Miscellaneous Custom Components Container (その他のカスタムパーツ設定用エリア) (c-other-box) from _other.ejs"
+  },
+  "c-sidebar (Sidebar)": {
+    "prefix": "c-sidebar",
+    "body": [
+      "<aside class=\"c-sidebar\">",
+      "\t<h3>Related Contents</h3>",
+      "\t<ul>",
+      "\t\t<li><a href=\"\">About us</a></li>",
+      "\t\t<li><a href=\"\">stesst</a></li>",
+      "\t</ul>",
+      "</aside>"
+    ],
+    "description": "FLOCSS (c-sidebar) from _sidebar.ejs"
   },
   "l-tbl (Table Standard (テーブル 上揃え))": {
     "prefix": "l-tbl",

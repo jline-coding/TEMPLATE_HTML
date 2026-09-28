@@ -1,0 +1,37 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > Gnavi
+------------------------------
+*/
+
+.c-bread{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 10px 0;
+    @include mq(md) {
+        padding: 15px 0;
+        gap: 10px;
+    }
+    &__item{
+        @extend %fz-14;
+        color: var(--primary);
+        text-transform: uppercase;
+    }
+    &__link{
+        @extend %fz-14;
+        color: var(--base);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 5px;
+        @include mq(md) {
+            gap: 10px;
+        }
+        &::after{
+            content: "-";
+        }
+    }
+}

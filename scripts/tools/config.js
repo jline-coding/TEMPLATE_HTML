@@ -18,6 +18,19 @@ export const SOURCE_FOLDER = (configData && configData.source_folder) ? configDa
 export const DIST = resolve(ROOT, SOURCE_FOLDER);
 export const LAYOUTS_DIR = resolve(SRC, 'layouts');
 
+export const WORKBENCH_DIR = resolve(ROOT, 'workbench');
+export const WORKBENCH_CATALOG_DIR = resolve(WORKBENCH_DIR, 'catalog');
+export const WORKBENCH_COMPONENTS_DIR = resolve(WORKBENCH_DIR, 'components');
+export const WORKBENCH_SCSS_DIR = resolve(WORKBENCH_DIR, 'scss/component');
+export const WORKBENCH_LAYOUT_DIR = resolve(WORKBENCH_DIR, 'scss/layout');
+export const WORKBENCH_JS_DIR = resolve(WORKBENCH_DIR, 'js');
+export const WORKBENCH_OUT_DIR = resolve(DIST, '__workbench');
+
+export const CLIENT_COMPONENTS_DIR = resolve(SRC, 'components');
+export const CLIENT_SCSS_DIR = resolve(SRC, 'pages/assets/scss/component');
+export const CLIENT_LAYOUT_DIR = resolve(SRC, 'pages/assets/scss/layout');
+export const CLIENT_JS_DIR = resolve(SRC, 'pages/assets/js/component');
+
 // Auto-discover include directories (all dirs in src/ except pages, layouts)
 const RESERVED_DIRS = new Set(['pages', 'layouts']);
 export const INCLUDE_DIRS = {};

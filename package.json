@@ -6,10 +6,14 @@
   "scripts": {
     "dev": "node scripts/build.js --watch",
     "build": "node scripts/build.js",
+    "add": "node scripts/add.js",
+    "remove": "node scripts/add.js --remove",
+    "save": "node scripts/save.js",
+    "export": "node scripts/save.js",
     "clean": "node scripts/clean.js",
     "link": "node scripts/link.js",
     "snippets": "node scripts/sync-snippets.js",
-    "test": "vitest run"
+    "test": "vitest run --fileParallelism=false"
   },
   "author": "",
   "license": "ISC",

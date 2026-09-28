@@ -14,8 +14,9 @@
       if (pagesIdx !== -1) {
         canonicalPath = relPath.substring(pagesIdx + '/pages'.length);
       }
-      canonicalPath = canonicalPath.replace(/\.ejs$/, '.html');
-      canonicalPath = canonicalPath.replace(/\/index\.html$/, '/');
+      const outExt = (typeof ext !== 'undefined' && ext) ? ext : '.html';
+      canonicalPath = canonicalPath.replace(/\.ejs$/, outExt);
+      canonicalPath = canonicalPath.replace(new RegExp('/index' + outExt.replace('.', '\\.') + '$'), '/');
       canonicalPath = canonicalPath.replace(/^\//, '');
     }
     

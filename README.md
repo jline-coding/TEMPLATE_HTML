@@ -385,3 +385,55 @@ Mục đích: Dành riêng cho các dự án upload lên Rakuten RMS và Gold, y
   npm run dev        # Chạy dev
   npm run build      # Khi chốt dự án
   ```
+
+---
+
+<h2 id="dual-environment">⚡ Dual-Environment: Workbench Sandbox & Two-Way Scaffolding</h2>
+
+### 🇻🇳 Tiếng Việt:
+Hệ thống kiến trúc song song 2 chiều hoàn chỉnh giữa **Site chính (`src/`)** và **Kho mẫu Dev (`workbench/`)**:
+1. **Môi trường Site chính (`src/`)**:
+   - Ban đầu hoàn toàn sạch sẽ, không chứa file component dư thừa.
+   - `npm run build` đảm bảo xuất bản ra `public/` với **ZERO BLOAT** (tự động xóa bỏ hoàn toàn thư mục `__workbench`).
+   - Khi dev viết component mới trên site, có thể xuất ngược vào kho mẫu bằng lệnh: `npm run save <name>`.
+2. **Kho Vũ Khí Dev (`workbench/`)**:
+   - **Kế thừa Single Source of Truth**: Tự động kế thừa toàn bộ `global`, `foundation`, `utilities`, `layout` và Google Fonts từ site chính (`src/`).
+   - **Phân nhóm chuyên nghiệp**: Được phân chia khoa học thành 4 nhóm rõ ràng:
+     - 🧭 **Header**: `_header.ejs`, `_header_01.ejs`, v.v.
+     - ⚓ **Footer**: `_footer.ejs`, `_footer_01.ejs`, v.v.
+     - 📐 **Layout & Structure**: `_sidebar.ejs`, `_grids.ejs`, `_flexs.ejs`, `_tbls.ejs`, `_mv.ejs`, v.v.
+     - 🧩 **UI Components**: `_accordion.ejs`, `_btns.ejs`, `_titles.ejs`, `_texts.ejs`, `_lists.ejs`, `_links.ejs`, `_bread.ejs`, v.v.
+3. **Web Showcase Tương Tác Trực Quan (`http://localhost:8686/__workbench/`)**:
+   - **1-Click Web Import**: Bấm trực tiếp nút `[ 🚀 Import vào Site ]` trên từng component. Hệ thống Dev Server API tự động copy đầy đủ EJS, SCSS (tự chèn `@use`), và JS liên quan vào site chính một cách chính xác tuyệt đối! Nút sẽ tự động chuyển sang `✓ Đã cài đặt` cùng nút `🗑 Gỡ bỏ`.
+   - **Thao tác sao chép tức thì**: Có sẵn các nút `[ 📋 Copy HTML ]`, `[ 🎨 Copy SCSS ]`, `[ ⚡ Copy JS ]` (nếu có script) và `[ ⚡ CLI ]`.
+   - **Code Drawer**: Bấm `Xem Code` để xem trực tiếp code HTML, SCSS, và JavaScript dạng tab chuyển đổi.
+   - **Responsive Switcher**: Xem trước và test tương tác linh hoạt trên Desktop, Tablet (768px), Mobile (375px).
+
+#### Bảng lệnh Terminal tiện lợi:
+```bash
+# 1. Quản lý từ Kho workbench -> Site chính (src/)
+npm run add                 # Xem danh mục toàn bộ component, nhóm phân loại & trạng thái cài đặt
+npm run add accordion       # Cài accordion vào site chính (EJS + SCSS + JS + tự inject @use)
+npm run add btns tbls       # Cài nhiều component cùng lúc
+npm run remove accordion    # Gỡ component và tự động dọn dẹp @use khỏi _index.scss
+
+# 2. Xuất từ Site chính (src/) -> Kho workbench
+npm run save                # Quét và liệt kê các component trong src/ có thể lưu vào workbench
+npm run save header_02      # Lưu component viết từ site chính vào workbench (đầy đủ EJS, SCSS, JS)
+npm run save card --as my-card  # Lưu với tên định danh mới trong kho mẫu
+
+# 3. Tiện ích khác
+npm run snippets            # Đồng bộ toàn bộ Snippets VS Code từ kho workbench
+npm run test                # Chạy kiểm thử tự động toàn bộ hệ thống
+```
+
+### 🇯🇵 日本語:
+サイト本番環境（`src/`）とテンプレートライブラリ（`workbench/`）の双方向連携システム：
+1. **クライアント本番環境 (`src/`)**: クリーンな初期状態。`npm run save <name>` によりサイトで作成したコンポーネントをワークベンチへ即座にエクスポート可能。
+2. **開発用ワークベンチ (`workbench/`)**:
+   - `src/` の共通設定（SCSS Foundation/Global/Utilities/Layout および Google Fonts）を完全継承。
+   - 4つのグループ（Header / Footer / Layout / UI Components）に体系化。
+3. **インタラクティブ・Webショーケース (`http://localhost:8686/__workbench/`)**:
+   - **1クリック Web Import**: ブラウザ上で `[ 🚀 Import vào Site ]` を押すだけで、関連するEJS、SCSS（`@use`自動挿入）、JSが正確にサイトへインポートされます。
+   - **コードコピー**: HTML、SCSS、JSの各コードを1クリックでコピー可能。
+   - **レスポンシブ検証**: Desktop / Tablet / Mobile のプレビュー切り替えに対応。
