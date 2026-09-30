@@ -1,0 +1,178 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > Accordion
+------------------------------
+In-page search (Ctrl+F) support:
+- HTML5 native <details>/<summary>
+- Or hidden="until-found" attribute with beforematch event
+------------------------------
+*/
+
+.c-accordion {
+    width: 100%;
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &:hover {
+        border-color: #cbd5e1;
+    }
+
+    &.is-open,
+    &[open] {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+        .c-accordion__icon {
+            transform: rotate(180deg);
+        }
+
+        .c-accordion__icon--plus {
+            transform: none;
+
+            &::after {
+                transform: translate(-50%, -50%) rotate(90deg);
+                opacity: 0;
+            }
+        }
+    }
+
+    // Header / Summary trigger
+    &__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        background: #f8fafc;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        text-align: left;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+        line-height: 1.5;
+        user-select: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        list-style: none;
+
+        // Hide default webkit summary marker
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::marker {
+            display: none;
+            content: "";
+        }
+
+        &:hover {
+            background-color: #f1f5f9;
+            color: var(--primary, #e60012);
+        }
+
+        @include mq(md) {
+            padding: 18px 24px;
+            font-size: 16px;
+        }
+    }
+
+    &__title {
+        flex: 1;
+        padding-right: 16px;
+    }
+
+    // Toggle Icon (Arrow or Plus)
+    &__icon {
+        position: relative;
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        // Arrow style (default)
+        &::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid #64748b;
+            border-bottom: 2px solid #64748b;
+            transform: translate(-50%, -70%) rotate(45deg);
+            transition: border-color 0.2s ease;
+        }
+
+        // Plus/Minus style modifier
+        &--plus {
+            &::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 14px;
+                height: 2px;
+                background-color: #64748b;
+                border: none;
+                transform: translate(-50%, -50%);
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 2px;
+                height: 14px;
+                background-color: #64748b;
+                transform: translate(-50%, -50%);
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+        }
+    }
+
+    // Body content wrapper
+    &__body {
+        border-top: 1px solid #f1f5f9;
+        background: #ffffff;
+
+        // W3C hidden="until-found" allows in-page search (Ctrl+F) inside hidden content
+        &[hidden="until-found"] {
+            display: none;
+        }
+
+        @supports (content-visibility: hidden) {
+            &[hidden="until-found"] {
+                display: block;
+                content-visibility: hidden;
+            }
+        }
+    }
+
+    &__content {
+        padding: 16px;
+        font-size: 14px;
+        line-height: 1.8;
+        color: #475569;
+
+        @include mq(md) {
+            padding: 20px 24px;
+            font-size: 15px;
+        }
+
+        > *:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

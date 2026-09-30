@@ -1,0 +1,32 @@
+@use "sass:math";
+@use "../global" as *;
+
+.l-tbl{
+    &__item{
+        border-top: 1px solid var(--gray);
+        padding: 20px 0;
+        @include mq(md) {
+            padding: 20px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        &:last-child{
+            border-bottom: 1px solid var(--gray);
+        }
+    }
+    .l-tbl__item--middle{
+        align-items: center;
+    }
+    &__left{
+        width: 100%;
+        flex-shrink: 0;
+        margin-bottom: 10px;
+        @include mq(md) {
+            margin-bottom: 0;
+            width: clamped(200,300);
+        }
+    }
+    &__right{
+        width: 100%;
+    }
+}
