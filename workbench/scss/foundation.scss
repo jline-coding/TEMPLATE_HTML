@@ -1,7 +1,0 @@
-@forward "../../src/pages/assets/scss/foundation";
-
-// Workbench Showroom Safety Isolation:
-// Guarantees that hidden="until-found" is NEVER suppressed by any author reset in src/
-[hidden="until-found"] {
-  display: revert !important;
-}
