@@ -457,9 +457,22 @@ async function runDeploy() {
         process.exit(1);
     }
 
-    // Validate source_folder has no path traversal
-    if (/\.\.\/|\.\.\\/.test(config.source_folder)) {
-        console.error(`[ERROR] source_folder "${config.source_folder}" contains path traversal!`);
+    // Validate source_folder: must be a safe directory name strictly inside repo root, no path traversal or forbidden roots
+    const forbiddenSourceDirs = new Set(['', '.', '..', 'src', 'scripts', '.git', 'node_modules', 'workbench']);
+    const normSource = path.normalize(config.source_folder).trim();
+    const resolvedSource = path.resolve(normSource);
+    const resolvedCwd = path.resolve(process.cwd());
+    const relSource = path.relative(resolvedCwd, resolvedSource);
+
+    if (
+        forbiddenSourceDirs.has(normSource.toLowerCase()) ||
+        !/^[a-zA-Z0-9_-]+$/.test(normSource) ||
+        !relSource ||
+        relSource.startsWith('..') ||
+        path.isAbsolute(relSource) ||
+        resolvedSource === resolvedCwd
+    ) {
+        console.error(`[ERROR] [SECURITY P0] source_folder "${config.source_folder}" is unsafe or contains path traversal!`);
         process.exit(1);
     }
 

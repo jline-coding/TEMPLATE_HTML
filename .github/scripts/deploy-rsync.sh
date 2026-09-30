@@ -60,6 +60,14 @@ if [ ! -d "$SOURCE_FOLDER" ]; then
     exit 1
 fi
 
+# 2a-1. PATH TRAVERSAL & CONFINEMENT PROTECTION: source_folder
+if [[ ! "$SOURCE_FOLDER" =~ ^[a-zA-Z0-9_-]+$ ]] || [[ "$SOURCE_FOLDER" =~ ^(src|scripts|\.git|node_modules|workbench)$ ]]; then
+    echo "[ERROR] CRITICAL: [SECURITY P0] source_folder \"$SOURCE_FOLDER\" chua ky tu hoac thu muc NGUY HIEM!"
+    echo "   Chi cho phep ten thu muc hop le (vd: public, dist) va khong duoc tro vao src, scripts, .git."
+    echo "   Server protection: auto-terminated."
+    exit 1
+fi
+
 # 2b. PATH TRAVERSAL PROTECTION: project_dir chỉ được chứa ký tự an toàn
 if [[ ! "$PROJECT_DIR" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
     echo "[ERROR] CRITICAL: project_dir \"$PROJECT_DIR\" chua ky tu NGUY HIEM!"

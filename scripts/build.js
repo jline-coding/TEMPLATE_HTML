@@ -157,7 +157,6 @@ async function startWatch() {
   };
 
   if (!isExternalAllowed) {
-    bsOptions.host = 'localhost';
     bsOptions.listen = '127.0.0.1';
   }
 
@@ -200,7 +199,11 @@ async function startWatch() {
     }
   }
 
-  browserSync.init(bsOptions);
+  browserSync.init(bsOptions, (err) => {
+    if (err) {
+      console.error('[server] BrowserSync error:', err.message);
+    }
+  });
 
   function getAbs(filepath) { return resolve(SRC, filepath); }
 
