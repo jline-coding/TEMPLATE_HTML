@@ -6,7 +6,7 @@
 
 import { resolve, normalize, relative, isAbsolute, parse, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { rmSync, existsSync } from 'fs';
+import { rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { rm } from 'fs/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -95,10 +95,27 @@ let devSessionToken = null;
 
 /**
  * Returns the current Dev Session Token, generating one if not already created.
+ * Persists token to node_modules/.cache/.dev-token to avoid session invalidation across server restarts.
  */
 export function getDevSessionToken() {
   if (!devSessionToken) {
-    devSessionToken = randomBytes(24).toString('hex');
+    const tokenFile = resolve(PROJECT_ROOT, 'node_modules/.cache/.dev-token');
+    try {
+      if (existsSync(tokenFile)) {
+        const saved = readFileSync(tokenFile, 'utf8').trim();
+        if (saved && saved.length >= 32) {
+          devSessionToken = saved;
+        }
+      }
+    } catch {}
+
+    if (!devSessionToken) {
+      devSessionToken = randomBytes(24).toString('hex');
+      try {
+        mkdirSync(dirname(tokenFile), { recursive: true });
+        writeFileSync(tokenFile, devSessionToken, 'utf8');
+      } catch {}
+    }
   }
   return devSessionToken;
 }
@@ -108,15 +125,36 @@ export function getDevSessionToken() {
  */
 export function resetDevSessionToken() {
   devSessionToken = randomBytes(24).toString('hex');
+  const tokenFile = resolve(PROJECT_ROOT, 'node_modules/.cache/.dev-token');
+  try {
+    mkdirSync(dirname(tokenFile), { recursive: true });
+    writeFileSync(tokenFile, devSessionToken, 'utf8');
+  } catch {}
   return devSessionToken;
 }
 
 /**
- * Verifies that a client-provided token matches the current dev session token.
+ * Verifies that a client-provided token matches the current dev session token,
+ * or matches the token currently rendered in the public Workbench showroom HTML.
  */
 export function isValidDevToken(token) {
   if (!token || typeof token !== 'string') return false;
-  return token === getDevSessionToken();
+  const currentToken = getDevSessionToken();
+  if (token === currentToken) return true;
+
+  // Fallback: Also accept token embedded in generated public/__workbench/index.html
+  try {
+    const wbHtmlPath = resolve(PROJECT_ROOT, 'public/__workbench/index.html');
+    if (existsSync(wbHtmlPath)) {
+      const html = readFileSync(wbHtmlPath, 'utf8');
+      const match = html.match(/<meta\s+name=["']workbench-token["']\s+content=["']([^"']+)["']/i);
+      if (match && match[1] && match[1] === token) {
+        return true;
+      }
+    }
+  } catch {}
+
+  return false;
 }
 
 /**

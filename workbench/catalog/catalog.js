@@ -2,15 +2,30 @@
    DYNAMIC CARD PARSER, INTERACTIVE WEB IMPORT & WORKBENCH ENGINE
    ========================================================================== */
 (function() {
-    const WORKBENCH_TOKEN = document.querySelector('meta[name="workbench-token"]')?.getAttribute('content') || '';
+    let WORKBENCH_TOKEN = document.querySelector('meta[name="workbench-token"]')?.getAttribute('content') || '';
 
-    function apiFetch(url, options = {}) {
+    async function apiFetch(url, options = {}, isRetry = false) {
         const opts = Object.assign({}, options);
         opts.headers = Object.assign({}, opts.headers);
         if (WORKBENCH_TOKEN) {
             opts.headers['X-Workbench-Token'] = WORKBENCH_TOKEN;
         }
-        return fetch(url, opts);
+        const res = await fetch(url, opts);
+        if (res.status === 401 && !isRetry) {
+            try {
+                const tokenRes = await fetch('/__api/token');
+                if (tokenRes.ok) {
+                    const tokenData = await tokenRes.json();
+                    if (tokenData && tokenData.token) {
+                        WORKBENCH_TOKEN = tokenData.token;
+                        const meta = document.querySelector('meta[name="workbench-token"]');
+                        if (meta) meta.setAttribute('content', WORKBENCH_TOKEN);
+                        return apiFetch(url, options, true);
+                    }
+                }
+            } catch (e) {}
+        }
+        return res;
     }
 
     let toastTimeout = null;

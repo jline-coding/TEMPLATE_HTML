@@ -643,6 +643,20 @@ export function mergeComponentScss(existingScss, incomingScss, compName, options
     }
   }
 
+  // 2a-2. Ensure standard component banner exists if not already present
+  const hasBanner = /\/\*![\s\S]*?component\s*>/i.test(merged);
+  if (!hasBanner) {
+    const banner = `/*!\ncomponent > ${norm}\n------------------------------\n*/\n`;
+    const lastUseMatches = Array.from(merged.matchAll(/@(use|forward)\s+[^;]+;/g));
+    if (lastUseMatches.length > 0) {
+      const lastMatch = lastUseMatches[lastUseMatches.length - 1];
+      const insertIdx = lastMatch.index + lastMatch[0].length;
+      merged = merged.slice(0, insertIdx).trimEnd() + '\n\n' + banner + '\n' + merged.slice(insertIdx).trimStart();
+    } else {
+      merged = banner + '\n' + merged.trimStart();
+    }
+  }
+
   // 2b. Extract pure rule content from incomingScss (without @use statements)
   let incomingRules = incomingScss
     .replace(/@(use|forward)\s+[^;]+;\r?\n?/g, '')

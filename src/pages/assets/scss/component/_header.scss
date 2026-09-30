@@ -1,6 +1,11 @@
 @use "sass:math";
 @use "../global" as *;
 
+/*!
+component > header
+------------------------------
+*/
+
 .c-header {
     position: fixed;
     left: 0;

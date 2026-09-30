@@ -431,17 +431,27 @@ export function installVariant(compName, variantData = {}, paths = getDefaultPat
     if (!incomingScss && fullWbScss) {
       incomingScss = sliceScssForClasses(fullWbScss, variantData.classStr);
     }
+    if (!incomingScss) {
+      incomingScss = fullWbScss;
+    }
 
-    let finalScss = incomingScss || '';
+    const existedBefore = existsSync(destScssPath);
+    const existing = existedBefore ? readFileSync(destScssPath, 'utf8') : '';
 
-    if (existsSync(destScssPath)) {
-      const existing = readFileSync(destScssPath, 'utf8');
+    if (existedBefore) {
       tx.recordModified(destScssPath, existing);
-      if (!isTemplateStub(existing)) {
-        finalScss = mergeVariantScss(existing, incomingScss, variantData.classStr);
-      }
     } else {
       tx.recordCreated(destScssPath);
+    }
+
+    let finalScss;
+    if (!existing.trim() || isTemplateStub(existing)) {
+      finalScss = mergeComponentScss(existing, incomingScss, norm);
+    } else if (variantData.classStr && variantData.classStr.includes('--')) {
+      const mergedVariant = mergeVariantScss(existing, incomingScss, variantData.classStr);
+      finalScss = mergeComponentScss(mergedVariant, '', norm);
+    } else {
+      finalScss = mergeComponentScss(existing, incomingScss, norm);
     }
 
     writeFileSync(destScssPath, finalScss.trim() + '\n', 'utf8');

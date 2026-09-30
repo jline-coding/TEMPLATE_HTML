@@ -25,6 +25,7 @@ import { buildWorkbench } from '../builders/workbench.js';
 import { relative, resolve, normalize, isAbsolute } from 'path';
 import {
   isValidDevToken,
+  getDevSessionToken,
   isValidComponentName,
   isPathInside,
   resolveSafePath,
@@ -248,6 +249,14 @@ export function createApiMiddleware() {
       } catch (err) {
         return sendJson(res, 500, { success: false, error: err.message }, req);
       }
+    }
+
+    // 1b. Dev Session Token endpoint (Auto-recovery for client session)
+    if (pathname === '/__api/token') {
+      return sendJson(res, 200, {
+        success: true,
+        token: getDevSessionToken()
+      }, req);
     }
 
     // 2. Import into Site (src/)

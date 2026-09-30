@@ -64,7 +64,16 @@ export function getClipboardText() {
  */
 export function parseComponentHtml(html) {
   if (!html || !html.trim()) return null;
-  const trimmed = html.trim();
+  let trimmed = html.trim();
+
+  // If wrapped in showroom container (e.g. <div class="p-component__item">...</div>), unwrap it first!
+  const showroomWrapperMatch = trimmed.match(/^<div\s+class=["'][^"']*p-component[^"']*["'][^>]*>([\s\S]*?)<\/div>$/i);
+  if (showroomWrapperMatch) {
+    trimmed = showroomWrapperMatch[1].trim();
+  }
+
+  // Strip leading HTML comments to reveal actual root element
+  trimmed = trimmed.replace(/^<!--[\s\S]*?-->\s*/, '');
 
   // Find root tag and class: <(div|section|header|footer|details|...) ... class="..."
   const tagMatch = trimmed.match(/^<([a-zA-Z0-9-]+)[^>]*class=["']([^"']+)["']/i);
@@ -75,7 +84,7 @@ export function parseComponentHtml(html) {
     const classAttr = tagMatch[2];
     const classes = classAttr.split(/\s+/).filter(Boolean);
     // Prioritize c-* or l-* class
-    const compClass = classes.find(c => /^[cl]-/.test(c)) || classes[0];
+    const compClass = classes.find(c => /^[cl]-/.test(c));
     if (compClass) {
       rootClass = compClass;
       // Extract base name: c-accordion__head -> accordion, c-header-01 -> header_01, l-flex -> flexs
@@ -98,6 +107,17 @@ export function parseComponentHtml(html) {
       if (['flex', 'grid', 'btn', 'text', 'title', 'list', 'tbl'].includes(compName)) {
         compName = compName + 's';
       }
+    }
+  }
+
+  // If still no c-* or l-* class, only then fall back to root tag class if present
+  if (!compName && tagMatch) {
+    const classAttr = tagMatch[2];
+    const classes = classAttr.split(/\s+/).filter(Boolean);
+    if (classes.length > 0) {
+      rootClass = classes[0];
+      let rawBase = rootClass.replace(/^[cl]-/, '').split(/__|--/)[0];
+      compName = normalizeName(rawBase);
     }
   }
 
@@ -256,23 +276,24 @@ export function findComponentScssInSite(compName, classesInput = []) {
     }
   }
 
-  // Pass 2: Deep Content Search: find WHICH EXACT FILE in site contains ANY class in this block
-  const targetClasses = Array.from(new Set([
-    ...classList,
-    ...classList.map(c => c.split(/__|--/)[0]),
+  // Pass 2: Deep Content Search: find WHICH EXACT FILE in site contains component classes
+  // Prioritize component root class (c-header) before inner child classes (c-btn)
+  const prioritizedClasses = Array.from(new Set([
     `c-${norm}`,
     `l-${norm}`,
-    norm
+    norm,
+    ...classList.map(c => c.split(/__|--/)[0]),
+    ...classList
   ].filter(Boolean)));
 
-  for (const dir of [CLIENT_SCSS_DIR, CLIENT_LAYOUT_DIR]) {
-    if (!existsSync(dir)) continue;
-    const files = readdirSync(dir).filter(f => f.startsWith('_') && f.endsWith('.scss') && f !== '_index.scss');
-    for (const file of files) {
-      const fullPath = resolve(dir, file);
-      const content = readFileSync(fullPath, 'utf8');
-      for (const targetClass of targetClasses) {
-        const classRegex = new RegExp('(?:^|\\n)[ \\t]*\\.' + targetClass.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])[^{]*\\{', 'm');
+  for (const targetClass of prioritizedClasses) {
+    const classRegex = new RegExp('(?:^|\\n)[ \\t]*\\.' + targetClass.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])[^{]*\\{', 'm');
+    for (const dir of [CLIENT_SCSS_DIR, CLIENT_LAYOUT_DIR]) {
+      if (!existsSync(dir)) continue;
+      const files = readdirSync(dir).filter(f => f.startsWith('_') && f.endsWith('.scss') && f !== '_index.scss');
+      for (const file of files) {
+        const fullPath = resolve(dir, file);
+        const content = readFileSync(fullPath, 'utf8');
         if (classRegex.test(content) && !isTemplateStub(content)) {
           const inLayout = dir === CLIENT_LAYOUT_DIR;
           return {
@@ -490,21 +511,21 @@ export async function exportSelectionToWorkbench(options = {}) {
     } catch {}
   }
 
-  // 1. If HTML is not provided directly, try reading from clipboard
-  if (!html) {
-    const clip = getClipboardText();
-    if (clip && (clip.includes('class=') && (clip.includes('c-') || clip.includes('l-')))) {
-      html = clip;
-    }
-  }
-
-  // 2. If still no HTML and file + line provided, extract from file
+  // 1. If HTML is not provided directly and file + line provided, extract from file
   if (!html && options.filePath && options.lineNumber) {
     try {
       const safePath = resolveSafePath(ROOT, options.filePath, 'exportSelectionToWorkbench filePath');
       html = extractTagBlockFromFile(safePath, options.lineNumber);
     } catch {
       html = null;
+    }
+  }
+
+  // 2. If still no HTML, try reading from clipboard
+  if (!html) {
+    const clip = getClipboardText();
+    if (clip && (clip.includes('class=') && (clip.includes('c-') || clip.includes('l-')))) {
+      html = clip;
     }
   }
 
@@ -551,6 +572,7 @@ export async function exportSelectionToWorkbench(options = {}) {
     if (existsSync(destScss)) {
       const existing = readFileSync(destScss, 'utf8');
       finalScss = mergeVariantScss(existing, componentScss, classQuery);
+      finalScss = mergeComponentScss(finalScss, '', targetName);
     } else {
       finalScss = mergeComponentScss('', componentScss, targetName);
     }
@@ -583,13 +605,18 @@ export async function exportSelectionToWorkbench(options = {}) {
     mkdirSync(WORKBENCH_COMPONENTS_DIR, { recursive: true });
   }
   const destEjs = resolve(WORKBENCH_COMPONENTS_DIR, `_${targetName}.ejs`);
-  const itemBlock = `<div class="p-component__item">\n    <!-- ${displayTitle} -->\n${html.split('\n').map(l => '    ' + l).join('\n')}\n</div>\n`;
+  const trimmedHtml = html.trim();
+  const isAlreadyWrapped = /^<div class=["']p-component__item["']>/i.test(trimmedHtml);
+  const itemBlock = isAlreadyWrapped
+    ? (trimmedHtml + '\n')
+    : `<div class="p-component__item">\n    <!-- ${displayTitle} -->\n${trimmedHtml.split('\n').map(l => '    ' + l).join('\n')}\n</div>\n`;
 
   let existingEjs = existsSync(destEjs) ? readFileSync(destEjs, 'utf8') : '';
   if (existingEjs.trim()) {
     const cleanExisting = stripEjsShowroomWrapper(existingEjs);
+    const cleanSnippet = stripEjsShowroomWrapper(trimmedHtml);
     const normExisting = cleanExisting.replace(/\s+/g, ' ').trim();
-    const normSnippet = html.replace(/\s+/g, ' ').trim();
+    const normSnippet = cleanSnippet.replace(/\s+/g, ' ').trim();
     const snippetMissing = !normExisting.includes(normSnippet);
     if (snippetMissing) {
       const body = existingEjs.trimEnd() + '\n\n' + itemBlock;
