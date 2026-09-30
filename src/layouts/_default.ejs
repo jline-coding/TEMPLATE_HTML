@@ -14,8 +14,9 @@
       if (pagesIdx !== -1) {
         canonicalPath = relPath.substring(pagesIdx + '/pages'.length);
       }
-      canonicalPath = canonicalPath.replace(/\.ejs$/, '.html');
-      canonicalPath = canonicalPath.replace(/\/index\.html$/, '/');
+      const outExt = (typeof ext !== 'undefined' && ext) ? ext : '.html';
+      canonicalPath = canonicalPath.replace(/\.ejs$/, outExt);
+      canonicalPath = canonicalPath.replace(new RegExp('/index' + outExt.replace('.', '\\.') + '$'), '/');
       canonicalPath = canonicalPath.replace(/^\//, '');
     }
     
@@ -78,28 +79,18 @@
 <body>
   <div id="wrapper" class="l-wrapper">
 <% const headerName = (file && file.data && file.data.header) ? file.data.header : 'header'; -%>
-<% const headerParts = headerName.split('/'); -%>
-<% const headerEjs = headerParts.slice(0, -1).concat('_' + headerParts[headerParts.length - 1]).join('/'); -%>
 <% if (ext === '.php' && phpInclude) { -%>
       <?php $assetsDir = '<%= assetsDir %>'; <% if (file.data && file.data.page) { %>$page = '<%= file.data.page %>'; <% } %>include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %><%= componentsDirName %>/<%= headerName %>.php'; ?>
 <% } else { -%>
-      <%- include(`${componentsDir}/${headerEjs}`,{assetsDir}); -%>
+      <%- includeComponent(headerName) -%>
 <% } -%>
     <%- contents %>    
 <% const footerName = (file && file.data && file.data.footer) ? file.data.footer : 'footer'; -%>
-<% const footerParts = footerName.split('/'); -%>
-<% const footerEjs = footerParts.slice(0, -1).concat('_' + footerParts[footerParts.length - 1]).join('/'); -%>
 <% if (ext === '.php' && phpInclude) { -%>
       <?php include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %><%= componentsDirName %>/<%= footerName %>.php'; ?>
 <% } else { -%>
-      <%- include(`${componentsDir}/${footerEjs}`,{assetsDir}); -%>
+      <%- includeComponent(footerName) -%>
 <% } -%>
-    <div data-gdpr="wrap" id="cookiewrap" class="c-cookiewrap">
-      <div class="c-cookiewrap__inner">
-        <p class="c-cookiewrap__close"><a href="javascript:void(0)" data-gdpr="button" >同意する</a></p>
-        <p class="c-cookiewrap__txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href="" class="c-cookiewrap__link">プライバシーポリシー</a>」をご覧ください。</p>
-      </div>      
-    </div>
   </div>
 </body>
 </html>

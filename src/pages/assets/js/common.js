@@ -10,147 +10,136 @@ if (typeof $.type === 'undefined') {
   };
 }
 
+/* ==========================================================================
+   Global Site Helpers & Utilities
+   ========================================================================== */
 (function ($) {
+    'use strict';
+
     const $window = $(window);
     const $body = $('body');
     const $htmlBody = $('html, body');
-    const $header = $('.c-header');
-    const $totop = $('.c-totop');
-    const $toggle = $('.c-toggle');
-    const $gnavi = $('.c-gnavi');
-    const $gnaviSubParent = $('.c-gnavi-list__item.is-sub');
-    const $gnaviSubLink = $gnaviSubParent.children('.c-gnavi-link');
-    const $gnaviSub = $gnaviSubParent.children('.c-gnavi-sub');
 
-    let scroll_pos1 = 0;
-    // Inview
-    const movement = new inview.observer({
-        aniDelay: 300,
-        optionView: { bottom: -50 },
-    });
+    let scrollPos = 0;
 
-    // run inview 
-    movement.init();
-    // =============================
-    // Helper: Body lock/unlock (Modal)
-    // =============================
-    function addFixedBodyModal() {
-        scroll_pos1 = $window.scrollTop();
-        $body
-            .addClass('overflow_modal')
-            .css({ top: -scroll_pos1 + 'px' });
-    }
-
-    function removeFixedBodyModal() {
-        $body.removeClass('overflow_modal').css({ top: '' });
-        $window.scrollTop(scroll_pos1);
-    }
-
-    // =============================
     // Helper: Debounce
-    // =============================
-    function debounce(func, wait = 100) {
+    $.debounce = function (func, wait = 100) {
         let timeout;
         return function () {
             clearTimeout(timeout);
             timeout = setTimeout(func, wait);
         };
+    };
+    window.debounce = $.debounce; // Backward compatibility
+
+    // Helper: Body lock/unlock (Modal)
+    $.addFixedBodyModal = function () {
+        scrollPos = $window.scrollTop();
+        $body
+            .addClass('overflow_modal')
+            .css({ top: -scrollPos + 'px' });
+    };
+    $.removeFixedBodyModal = function () {
+        $body.removeClass('overflow_modal').css({ top: '' });
+        $window.scrollTop(scrollPos);
+    };
+    window.addFixedBodyModal = $.addFixedBodyModal;
+    window.removeFixedBodyModal = $.removeFixedBodyModal;
+
+    // Inview Observer initialization
+    if (typeof inview !== 'undefined' && inview.observer) {
+        const movement = new inview.observer({
+            aniDelay: 300,
+            optionView: { bottom: -50 },
+        });
+        movement.init();
     }
 
-    // =============================
-    // Scroll Behavior
-    // =============================
-    function handleScroll() {
-        const scrollTop = $window.scrollTop();
-
-        // Header active & ToTop visibility
-        if (scrollTop > 50) {
-            $totop.css("transform", "translateY(0)");
-            $header.addClass("active");
-        } else {
-            $totop.removeAttr("style");
-            $header.removeClass("active");
-        }
-    }
-
-    // =============================
-    // On Document Ready
-    // =============================
+    // Global document ready interactions
     $(function () {
+        const $header = $('.c-header');
+
         // Smooth anchor scroll
-        $('a[href^="#"]').on('click', function (e) {
+        $(document).on('click', 'a[href^="#"]', function (e) {
             const $this = $(this);
-            const hash = $this.attr("href");
-            if (hash === "#") return;
+            const hash = $this.attr('href');
+            if (hash === '#') return;
             const $target = $(hash);
             if ($target.length) {
                 e.preventDefault();
-                const offset = $target.offset().top - ($header.outerHeight() + 30);
-                $htmlBody.animate({ scrollTop: offset }, 600);
+                const offset = $target.offset().top - (($header.length ? $header.outerHeight() : 0) + 30);
+                $htmlBody.stop().animate({ scrollTop: offset }, 600);
             }
         });
 
-        // Auto scroll to anchor if URL has hash
-        const hash = location.hash;
-        if (hash) {
-            const $target = $(hash);
-            if ($target.length) {
-                const offset = $target.offset().top - ($header.outerHeight() + 30);
-                $htmlBody.animate({ scrollTop: offset }, 600);
+        // Auto scroll to anchor if URL has hash (Safe against selector injection/syntax errors)
+        if (location.hash) {
+            try {
+                const targetId = decodeURIComponent(location.hash.substring(1));
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    const $target = $(targetEl);
+                    const offset = $target.offset().top - (($header.length ? $header.outerHeight() : 0) + 30);
+                    $htmlBody.stop().animate({ scrollTop: offset }, 600);
+                }
+            } catch (e) {
+                // Silently ignore malformed URI/hash
             }
         }
 
-        // Menu toggle
-        $toggle.on("click", function () {
-            const $this = $(this);
-            const isActive = $this.hasClass("active");
-            $this.toggleClass("active");
+        // Inview / scroll animation & Keyboard focus / Tab accessibility support
+        $(document).on('focusin', function (e) {
+            const $target = $(e.target);
 
-            $gnavi.stop().slideToggle("fast");
-            if (isActive) {
-                removeFixedBodyModal();
-                $gnaviSubParent.removeClass("is-open");
-                $gnaviSub.hide();
-            } else {
-                addFixedBodyModal();
+            // Auto-reveal fade/scroll animations if element receives focus (e.g. via Tab navigation)
+            const $fadeEl = $target.closest('.js-fadeani, .js-inview');
+            if ($fadeEl.length) {
+                $fadeEl.addClass('active is-inview').css({ opacity: 1, transform: 'none' });
+            }
+
+            // Keyboard Tab accessibility for collapsible blocks:
+            // Visual reveal is handled natively by pure CSS (:focus-within) with ZERO JS DOM mutation.
+            const $searchable = $target.closest('.js-searchable');
+            if ($searchable.length) {
+                $searchable.trigger('searchable:found', { target: $target });
             }
         });
 
-        // Submenu accordion toggle on SP
-        $gnaviSubLink.on("click", function (e) {
-            if (!window.matchMedia('(min-width: 768px)').matches) {
-                e.preventDefault();
-                const $this = $(this);
-                const $parent = $this.parent();
-                const $targetSub = $parent.children('.c-gnavi-sub');
-                const isOpen = $parent.hasClass("is-open");
+        // Native HTML5 Find-in-page support (beforematch event fired by browser Ctrl+F on searchable blocks)
+        $(document).on('beforematch', function (e) {
+            const $target = $(e.target);
+            const $fadeEl = $target.closest('.js-fadeani, .js-inview');
+            if ($fadeEl.length) {
+                $fadeEl.addClass('active is-inview').css({ opacity: 1, transform: 'none' });
+            }
 
-                // Toggle menu hiện tại
-                $parent.toggleClass("is-open", !isOpen);
-                $targetSub.stop().slideToggle(300);
+            // Auto-open mobile drawer if match is inside it
+            const $gnavi = $target.closest('.c-gnavi');
+            if ($gnavi.length && !$gnavi.hasClass('is-open')) {
+                $('.c-toggle').addClass('active');
+                $gnavi.addClass('is-open');
+                if (typeof $.addFixedBodyModal === 'function') {
+                    $.addFixedBodyModal();
+                }
+            }
 
-                // Đóng các submenu khác nếu có nhiều mục submenu
-                const $otherParents = $gnaviSubParent.not($parent).filter('.is-open');
-                $otherParents.removeClass("is-open").children('.c-gnavi-sub').stop().slideUp(300);
+            // If match is inside a submenu, mark its parent item as is-open
+            const $sub = $target.closest('.c-gnavi-sub');
+            if ($sub.length) {
+                $sub.parent('.c-gnavi-list__item.is-sub').addClass('is-open');
+                $sub.addClass('is-open').removeAttr('hidden').show();
+            }
+
+            const $searchable = $target.closest('.js-searchable, [hidden="until-found"]');
+            if ($searchable.length) {
+                $searchable.addClass('is-open').removeAttr('hidden');
+                $searchable.trigger('searchable:found', { target: $target });
             }
         });
-
-        // Initial scroll state
-        handleScroll();
     });
 
-    // =============================
     // On Window Load
-    // =============================
     $window.on('load', function () {
-        // Init AOS
-        if (typeof AOS !== 'undefined') {
-            AOS.init({
-                duration: 1000,
-                once: true,
-            });
-        }
-
         // Init ScrollHint
         if ($('.js-scrollable, .has-fixed-layout').length && typeof ScrollHint !== 'undefined') {
             new ScrollHint('.js-scrollable, .has-fixed-layout', {
@@ -163,45 +152,198 @@ if (typeof $.type === 'undefined') {
         }
 
         // Fade animation on scroll - add .active to .js-fadeani elements
-        const fadeEls = document.querySelectorAll('.js-fadeani');
-        if (fadeEls.length && 'IntersectionObserver' in window) {
-            const fadeObserver = new IntersectionObserver(function (entries, observer) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target);
+        const $fadeEls = $('.js-fadeani');
+        if ($fadeEls.length) {
+            function checkFadeElements() {
+                const windowBottom = $window.scrollTop() + $window.height();
+                $fadeEls.each(function () {
+                    const $el = $(this);
+                    if (!$el.hasClass('active')) {
+                        const elTop = $el.offset().top;
+                        if (windowBottom > elTop + 50) {
+                            $el.addClass('active');
+                        }
                     }
                 });
-            }, { threshold: 0.2 });
-
-            fadeEls.forEach(function (el) {
-                fadeObserver.observe(el);
-            });
+            }
+            checkFadeElements();
+            $window.on('scroll.fade resize.fade', typeof $.debounce === 'function' ? $.debounce(checkFadeElements, 50) : checkFadeElements);
         }
-
-        // header
-        handleScroll();
     });
 
-    // =============================
-    // On Scroll
-    // =============================
-    $window.on('scroll', debounce(handleScroll, 50));
+})(jQuery);
 
-    // =============================
-    // On Resize
-    // =============================
-    $window.on('resize', debounce(function () {
-        if (window.matchMedia('(min-width: 768px)').matches) {
-            $gnavi.removeAttr("style");
-            $toggle.removeClass("active");
-            $gnaviSub.removeAttr("style");
-            $gnaviSubParent.removeClass("is-open");
-            if ($body.hasClass('overflow_modal')) {
-                removeFixedBodyModal();
+/* ==========================================================================
+   [Component: header]
+   ========================================================================== */
+(function ($) {
+    'use strict';
+
+    $(function () {
+        const $window = $(window);
+        const $header = $('.c-header');
+        if (!$header.length) return;
+
+        function updateHeaderState() {
+            if ($window.scrollTop() > 50) {
+                $header.addClass('active');
+            } else {
+                $header.removeClass('active');
             }
         }
-        handleScroll();
-    }, 150));
 
+        updateHeaderState();
+        $window.on('scroll.header resize.header', typeof $.debounce === 'function' ? $.debounce(updateHeaderState, 50) : updateHeaderState);
+    });
+})(jQuery);
+
+/* ==========================================================================
+   [Component: totop]
+   ========================================================================== */
+(function ($) {
+    'use strict';
+
+    $(function () {
+        const $window = $(window);
+        const $totop = $('.c-totop');
+        if (!$totop.length) return;
+
+        function updateToTopState() {
+            if ($window.scrollTop() > 50) {
+                $totop.css('transform', 'translateY(0)');
+            } else {
+                $totop.removeAttr('style');
+            }
+        }
+
+        updateToTopState();
+        $window.on('scroll.totop resize.totop', typeof $.debounce === 'function' ? $.debounce(updateToTopState, 50) : updateToTopState);
+
+        $(document).on('click.totop', '.c-totop', function (e) {
+            e.preventDefault();
+            $('html, body').stop().animate({ scrollTop: 0 }, 600);
+        });
+    });
+})(jQuery);
+
+/* ==========================================================================
+   [Component: toggle]
+   ========================================================================== */
+(function ($) {
+    'use strict';
+
+    $(function () {
+        const $window = $(window);
+        let fallbackScrollPos = 0;
+
+        function lockBody() {
+            if (typeof $.addFixedBodyModal === 'function') {
+                $.addFixedBodyModal();
+            } else {
+                fallbackScrollPos = $window.scrollTop();
+                $('body').addClass('overflow_modal').css({ top: -fallbackScrollPos + 'px' });
+            }
+        }
+
+        function unlockBody() {
+            if (typeof $.removeFixedBodyModal === 'function') {
+                $.removeFixedBodyModal();
+            } else {
+                $('body').removeClass('overflow_modal').css({ top: '' });
+                $window.scrollTop(fallbackScrollPos);
+            }
+        }
+
+        // Delegated click event for menu toggle
+        $(document).on('click.toggle', '.c-toggle', function (e) {
+            e.preventDefault();
+            const $this = $(this);
+            const $gnavi = $('.c-gnavi');
+            const isActive = $this.hasClass('active');
+
+            $this.toggleClass('active');
+            $gnavi.toggleClass('is-open');
+
+            if (isActive) {
+                unlockBody();
+                $('.c-gnavi-list__item.is-sub').removeClass('is-open');
+                $('.c-gnavi-sub').removeClass('is-open').removeAttr('style').attr('hidden', 'until-found');
+            } else {
+                lockBody();
+            }
+        });
+
+        // Reset mobile menu when resizing back to desktop screen
+        $window.on('resize.toggle', typeof $.debounce === 'function' ? $.debounce(function () {
+            if ($window.width() >= 768) {
+                $('.c-toggle').removeClass('active');
+                $('.c-gnavi').removeClass('is-open').removeAttr('style');
+                unlockBody();
+            }
+        }, 100) : function () {
+            if ($window.width() >= 768) {
+                $('.c-toggle').removeClass('active');
+                $('.c-gnavi').removeClass('is-open').removeAttr('style');
+                unlockBody();
+            }
+        });
+    });
+})(jQuery);
+
+/* ==========================================================================
+   [Component: gnavi]
+   ========================================================================== */
+(function ($) {
+    'use strict';
+
+    $(function () {
+        const $window = $(window);
+
+        // Submenu accordion toggle for mobile screen
+        $(document).on('click.gnavi', '.c-gnavi-list__item.is-sub > .c-gnavi-link', function (e) {
+            if ($window.width() < 768) {
+                e.preventDefault();
+                const $link = $(this);
+                const $parent = $link.parent();
+                const $targetSub = $parent.children('.c-gnavi-sub');
+                const isOpen = $parent.hasClass('is-open');
+
+                $parent.toggleClass('is-open', !isOpen);
+                if (isOpen) {
+                    $targetSub.removeClass('is-open').stop().slideUp(300, function () {
+                        $(this).attr('hidden', 'until-found');
+                    });
+                } else {
+                    $targetSub.removeAttr('hidden').addClass('is-open').stop().slideDown(300);
+                }
+
+                // Close other open submenus
+                $('.c-gnavi-list__item.is-sub').not($parent).filter('.is-open')
+                    .removeClass('is-open')
+                    .children('.c-gnavi-sub')
+                    .removeClass('is-open')
+                    .stop()
+                    .slideUp(300, function () {
+                        $(this).attr('hidden', 'until-found');
+                    });
+            }
+        });
+
+        // Reset submenu styles when resizing back to desktop screen
+        $window.on('resize.gnavi', typeof $.debounce === 'function' ? $.debounce(function () {
+            if ($window.width() >= 768) {
+                $('.c-gnavi-list__item.is-sub').removeClass('is-open');
+                $('.c-gnavi-sub').removeAttr('hidden').removeClass('is-open').removeAttr('style');
+            } else {
+                $('.c-gnavi-list__item.is-sub:not(.is-open) .c-gnavi-sub').attr('hidden', 'until-found');
+            }
+        }, 100) : function () {
+            if ($window.width() >= 768) {
+                $('.c-gnavi-list__item.is-sub').removeClass('is-open');
+                $('.c-gnavi-sub').removeAttr('hidden').removeClass('is-open').removeAttr('style');
+            } else {
+                $('.c-gnavi-list__item.is-sub:not(.is-open) .c-gnavi-sub').attr('hidden', 'until-found');
+            }
+        });
+    });
 })(jQuery);

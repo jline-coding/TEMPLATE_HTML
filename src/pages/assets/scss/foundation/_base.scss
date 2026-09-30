@@ -70,3 +70,43 @@ a {
         display: none !important;
     }
 }
+
+// HTML5 W3C Standard: In-Page Searchable Collapsible (hidden="until-found")
+// Kept in DOM layout via content-visibility: hidden for native browser Ctrl+F indexing.
+// The browser automatically removes the hidden attribute and fires beforematch when matched.
+[hidden="until-found"] {
+    display: revert !important;
+    content-visibility: hidden !important;
+}
+
+@supports not (content-visibility: hidden) {
+    [hidden="until-found"] {
+        display: none !important;
+    }
+}
+
+// Optional CSS Utility for height-based searchables
+.js-searchable {
+    &:not(.is-open) {
+        display: block !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        border-top: none !important;
+        border-bottom: none !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    &:focus-within {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+}

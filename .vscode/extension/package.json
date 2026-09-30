@@ -1,0 +1,59 @@
+{
+  "name": "jline-workbench-tools",
+  "displayName": "JLINE Workbench Tools",
+  "description": "Export & Import components directly to/from Workbench Showroom via Right-Click, Alt+W or Alt+I",
+  "version": "1.1.0",
+  "publisher": "jline",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "jline.exportToWorkbench",
+        "title": "⚡ Export Component to Workbench",
+        "category": "Workbench"
+      },
+      {
+        "command": "jline.importFromWorkbench",
+        "title": "⚡ Import Component from Workbench",
+        "category": "Workbench"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "jline.exportToWorkbench",
+          "group": "1_modification@1",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "jline.importFromWorkbench",
+          "group": "1_modification@2",
+          "when": "editorTextFocus"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "jline.exportToWorkbench",
+        "key": "alt+w",
+        "mac": "alt+w",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "jline.importFromWorkbench",
+        "key": "alt+i",
+        "mac": "alt+i",
+        "when": "editorTextFocus"
+      }
+    ]
+  }
+}

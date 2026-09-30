@@ -1,0 +1,13 @@
+@use "../../global" as *;
+
+/*!
+page > company
+------------------------------
+*/
+
+.p-company {
+    padding: 60px 0;
+    @include mq(md) {
+        padding: 100px 0;
+    }
+}
