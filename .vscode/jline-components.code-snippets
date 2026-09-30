@@ -1,4 +1,5 @@
 {
+{
   "c-accordion (Accordion Details (HTML5標準 details/summary アコーディオン))": {
     "prefix": "c-accordion",
     "body": [
@@ -678,5 +679,134 @@
       "</h2>"
     ],
     "description": "FLOCSS Bilingual Title EN/JP (component/_titles.scss)"
+  },
+  "c-footer (Footer)": {
+    "prefix": "c-footer",
+    "body": [
+      "<footer class=\"c-footer\">",
+      "\t<div class=\"l-container\">",
+      "\t\t<div class=\"c-footer__inner\">",
+      "\t\t\t<div class=\"c-footer-logo\">",
+      "\t\t\t\t<a href=\"\" class=\"c-footer-logo__link\">",
+      "\t\t\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_logo.webp\" alt=\"\">",
+      "\t\t\t\t</a>",
+      "\t\t\t</div>",
+      "\t\t\t<ul class=\"c-footer-list\">",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t</ul>",
+      "\t\t</div>",
+      "\t\t<p class=\"c-footer-copy\">J-line Corporation ©copyright</p>",
+      "\t</div>",
+      "\t<a href=\"\" class=\"c-totop\">pagetop</a>",
+      "</footer>"
+    ],
+    "description": "FLOCSS (c-footer) from _footer.ejs"
+  },
+  "c-footer-01 (Footer 01)": {
+    "prefix": "c-footer-01",
+    "body": [
+      "<footer class=\"c-footer-01\">",
+      "\t<div class=\"c-footer__inner\">",
+      "\t\t<h2>Footer 01</h2>",
+      "\t\t<div class=\"c-footer__copy\">",
+      "\t\t\t<small>&copy; 2026 Custom Site</small>",
+      "\t\t</div>",
+      "\t</div>",
+      "</footer>"
+    ],
+    "description": "FLOCSS (c-footer-01) from _footer_01.ejs"
+  },
+  "c-header (Header)": {
+    "prefix": "c-header",
+    "body": [
+      "<header class=\"c-header\">",
+      "\t<div class=\"c-header__inner\">",
+      "\t\t<% if(file.data.page === 'top'){%><h1 class=\"c-header-logo\"><% }else{ %><div class=\"c-header-logo\"><% } %>",
+      "\t\t\t<a href=\"\" class=\"c-header-logo__link\">",
+      "\t\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_logo.webp\" alt=\"\">",
+      "\t\t\t</a>",
+      "\t\t<% if(file.data.page === 'top'){%></h1><% }else{ %></div><% } %>",
+      "\t\t<div class=\"c-header__content\">",
+      "\t\t\t<div class=\"c-gnavi\">",
+      "\t\t\t\t<div class=\"c-gnavi__inner\">",
+      "\t\t\t\t\t<ul class=\"c-gnavi-list\">",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">会社</a>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">私たちについて</a>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item is-sub\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-link\">サービス</a>",
+      "\t\t\t\t\t\t\t<ul class=\"c-gnavi-sub\">",
+      "\t\t\t\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス01</a>",
+      "\t\t\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス02</a>",
+      "\t\t\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t\t\t<li class=\"c-gnavi-sub__item\">",
+      "\t\t\t\t\t\t\t\t\t<a href=\"\" class=\"c-gnavi-sub-link\">サービス03</a>",
+      "\t\t\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t\t</ul>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t\t<li class=\"c-gnavi-list__item is-btn\">",
+      "\t\t\t\t\t\t\t<a href=\"\" class=\"c-btn c-btn--reverse\">お問い合わせ</a>",
+      "\t\t\t\t\t\t</li>",
+      "\t\t\t\t\t</ul>",
+      "\t\t\t\t</div>",
+      "\t\t\t</div>",
+      "\t\t\t<div class=\"c-header-btns\">",
+      "\t\t\t\t<a href=\"\" class=\"c-btn c-btn--reverse c-header-btns__content\">お問い合わせ</a>",
+      "\t\t\t</div>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-toggle\">",
+      "\t\t<span class=\"c-toggle__line\"></span>",
+      "\t</div>",
+      "</header>"
+    ],
+    "description": "FLOCSS (c-header) from _header.ejs"
+  },
+  "c-header-01 (HEADER 01)": {
+    "prefix": "c-header-01",
+    "body": [
+      "<header class=\"c-header-01\">",
+      "\t<div class=\"c-header__inner\">",
+      "\t\t<h2>Header 011111</h2>",
+      "\t\t<a href=\"\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</a>",
+      "\t</div>",
+      "</header>"
+    ],
+    "description": "HEADER 01 (c-header-01) from _header_01.ejs"
+  },
+  "c-sidebar (Sidebar)": {
+    "prefix": "c-sidebar",
+    "body": [
+      "<aside class=\"c-sidebar\">",
+      "\t<h3>Related Contents</h3>",
+      "\t<ul>",
+      "\t\t<li><a href=\"\">About us</a></li>",
+      "\t\t<li><a href=\"\">stesst</a></li>",
+      "\t</ul>",
+      "</aside>"
+    ],
+    "description": "FLOCSS (c-sidebar) from _sidebar.ejs"
+  }
+}
+
   }
 }
