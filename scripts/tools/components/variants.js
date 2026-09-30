@@ -563,3 +563,127 @@ export function removeVariantFromScss(scssContent, remainingEjs, classStr) {
 
   return updatedScss.replace(/\n\s*\n\s*\n+/g, '\n\n').trim() + '\n';
 }
+
+/**
+ * Safely merges incoming component SCSS into an existing or new destination file
+ * - 100% non-destructive: Preserves all existing developer code in the file
+ * - Automatically ensures required @use statements are placed at the top of the file
+ * - If component block already exists: cleanly updates that block in place
+ * - If component block does not exist: safely appends to the END OF THE FILE
+ * 
+ * @param {string} existingScss - Current contents of destScss (or empty string if file is new)
+ * @param {string} incomingScss - SCSS content from workbench to install
+ * @param {string} compName - Normalized component name (e.g. 'header')
+ * @param {Object} [options={}] - Options (e.g. { force: false })
+ * @returns {string} Fully merged, clean, valid SCSS code
+ */
+export function mergeComponentScss(existingScss, incomingScss, compName, options = {}) {
+  const norm = normalizeName(compName);
+
+  // 1. If destination file is completely empty or new:
+  if (!existingScss || !existingScss.trim()) {
+    let result = '';
+    const useStatements = incomingScss.match(/@(use|forward)\s+[^;]+;/g) || [];
+    const hasMath = useStatements.some(u => u.includes('sass:math'));
+    const hasGlobal = useStatements.some(u => u.includes('../global') || u.includes('./global'));
+
+    const headerUses = [];
+    if (!hasMath) headerUses.push('@use "sass:math";');
+    if (!hasGlobal) headerUses.push('@use "../global" as *;');
+    headerUses.push(...useStatements);
+
+    const uniqueUses = Array.from(new Set(headerUses));
+    result += uniqueUses.join('\n') + '\n\n';
+
+    const hasBanner = /\/\*![\s\S]*?component\s*>/i.test(incomingScss);
+    if (!hasBanner) {
+      result += `/*!\ncomponent > ${norm}\n------------------------------\n*/\n\n`;
+    }
+
+    const bodyRules = incomingScss
+      .replace(/@(use|forward)\s+[^;]+;\r?\n?/g, '')
+      .trim();
+
+    result += bodyRules + '\n';
+    return result;
+  }
+
+  // 2. If destination file already exists:
+  let merged = existingScss;
+
+  // 2a. Extract @use statements from incomingScss and ensure standard uses exist
+  const incomingUses = incomingScss.match(/@(use|forward)\s+[^;]+;/g) || [];
+  const missingUses = [];
+
+  const hasMath = /@use\s+["']sass:math["']/.test(merged);
+  const hasGlobal = /@use\s+["']\.\.?\/global["']/.test(merged);
+  if (!hasMath) missingUses.push('@use "sass:math";');
+  if (!hasGlobal) missingUses.push('@use "../global" as *;');
+
+  for (const useStmt of incomingUses) {
+    const useTarget = useStmt.match(/@(use|forward)\s+["']([^"']+)["']/)?.[2];
+    if (useTarget) {
+      const alreadyHas = new RegExp(`@(use|forward)\\s+["']${useTarget.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&')}["']`).test(merged);
+      if (!alreadyHas && !missingUses.includes(useStmt)) {
+        missingUses.push(useStmt);
+      }
+    } else if (!merged.includes(useStmt) && !missingUses.includes(useStmt)) {
+      missingUses.push(useStmt);
+    }
+  }
+
+  if (missingUses.length > 0) {
+    const lastUseMatches = Array.from(merged.matchAll(/@(use|forward)\s+[^;]+;/g));
+    if (lastUseMatches.length > 0) {
+      const lastMatch = lastUseMatches[lastUseMatches.length - 1];
+      const insertIdx = lastMatch.index + lastMatch[0].length;
+      merged = merged.slice(0, insertIdx) + '\n' + missingUses.join('\n') + merged.slice(insertIdx);
+    } else {
+      merged = missingUses.join('\n') + '\n\n' + merged;
+    }
+  }
+
+  // 2b. Extract pure rule content from incomingScss (without @use statements)
+  let incomingRules = incomingScss
+    .replace(/@(use|forward)\s+[^;]+;\r?\n?/g, '')
+    .trim();
+
+  if (!incomingRules) {
+    return merged;
+  }
+
+  // 2c. Check if existing file is just a template stub (only @use statements and comments)
+  // PRESERVE the entire existing content (including user banner / comments), and append rules!
+  if (isTemplateStub(merged)) {
+    if (merged.includes('/*!') && incomingRules.startsWith('/*!')) {
+      incomingRules = incomingRules.replace(/^\/\*![\s\S]*?\*\/\s*/, '');
+    }
+    return merged.trimEnd() + '\n\n' + incomingRules.trim() + '\n';
+  }
+
+  // 2d. Check if component block already exists in existing file
+  const baseSelectorRegex = new RegExp(`(?:^|\\n)([ \\t]*\\.(?:c|l)-${norm.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&')}(?![a-zA-Z0-9_-])[^{]*\\{)`, 'm');
+  const selectorMatch = merged.match(baseSelectorRegex);
+
+  if (selectorMatch) {
+    const startIdx = selectorMatch.index + (selectorMatch[0].length - selectorMatch[1].length);
+    const braceIdx = merged.indexOf('{', startIdx);
+    if (braceIdx !== -1) {
+      const endIdx = findMatchingBrace(merged, braceIdx);
+      if (endIdx !== -1) {
+        // Cleanly replace only the component block in place, preserving everything else in the file!
+        if (incomingRules.startsWith('/*!')) {
+          incomingRules = incomingRules.replace(/^\/\*![\s\S]*?\*\/\s*/, '');
+        }
+        merged = merged.slice(0, startIdx).trimEnd() + '\n\n' + incomingRules + '\n\n' + merged.slice(endIdx).trimStart();
+        return merged.trimEnd() + '\n';
+      }
+    }
+  }
+
+  // 2e. Component does not exist in file yet: Safely APPEND to the end of the file!
+  if (merged.includes('/*!') && incomingRules.startsWith('/*!')) {
+    incomingRules = incomingRules.replace(/^\/\*![\s\S]*?\*\/\s*/, '');
+  }
+  return merged.trimEnd() + '\n\n' + incomingRules.trim() + '\n';
+}

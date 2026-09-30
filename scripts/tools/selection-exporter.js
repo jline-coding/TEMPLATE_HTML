@@ -32,8 +32,11 @@ import {
   isTemplateStub,
   sliceScssForClasses,
   mergeVariantScss,
+  mergeComponentScss,
   mergeComponentJs,
   sliceJsForComponent,
+  stripEjsShowroomWrapper,
+  getComponentJsRange,
   parseComponentMetadata
 } from './component-service.js';
 import { syncSnippets } from '../sync-snippets.js';
@@ -333,15 +336,18 @@ export function findComponentJsInSite(compName, classesInput = []) {
       const fullPath = resolve(assetsJsDir, f);
       const content = readFileSync(fullPath, 'utf8');
       for (const nameCandidate of candidateNames) {
-        const sliced = sliceJsForComponent(content, nameCandidate);
-        if (sliced && sliced !== content.trim()) {
-          return {
-            fileName: f,
-            filePath: fullPath,
-            sourceFile: `src/pages/assets/js/${f}`,
-            content: sliced,
-            isShared: f === 'common.js' || f === 'top.js'
-          };
+        const hasRange = getComponentJsRange(content, nameCandidate);
+        if (hasRange) {
+          const sliced = sliceJsForComponent(content, nameCandidate);
+          if (sliced) {
+            return {
+              fileName: f,
+              filePath: fullPath,
+              sourceFile: `src/pages/assets/js/${f}`,
+              content: sliced,
+              isShared: f === 'common.js' || f === 'top.js'
+            };
+          }
         }
       }
     }
@@ -414,24 +420,35 @@ export function findComponentJsInSite(compName, classesInput = []) {
                 continue;
               }
 
+              const hasModuleMarker = new RegExp(`\\[Component(?:\\s*Module)?:\\s*${norm}\\]`, 'i').test(extracted);
+
               // Must have actual event binding or function targeting the selector
               const hasDirectInteraction = selectors.some(s => {
                 const escaped = s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                return new RegExp(`${escaped}[^\\n;]*?\\.(?:on|addEventListener|click|toggleClass|slideToggle)\\b`).test(extracted) ||
-                       new RegExp(`\\$\\(['"]${escaped}['"]\\)\\.(?:on|addEventListener|click|toggleClass|slideToggle)\\b`).test(extracted);
+                if (new RegExp(`${escaped}[^\\n;]*?\\.(?:on|addEventListener|click|toggleClass|slideToggle|find)\\b`).test(extracted)) return true;
+                if (new RegExp(`\\$\\(['"]${escaped}['"]\\)`).test(extracted)) {
+                  return /\.(?:on|addEventListener|click|toggleClass|slideToggle|animate|slideDown|slideUp)\b/.test(extracted);
+                }
+                return false;
               });
 
-              if (!hasDirectInteraction && !extracted.includes(`[Component Module: ${norm}]`)) {
+              if (!hasDirectInteraction && !hasModuleMarker) {
                 continue;
               }
 
               if (!extracted.startsWith('(function') && extracted.includes('$(')) {
                 extracted = `(function ($) {\n  ${extracted}\n})(typeof jQuery !== 'undefined' ? jQuery : window.$);`;
               }
+
+              let cleanExtracted = extracted;
+              if (!hasModuleMarker) {
+                cleanExtracted = `/* ==========================================================================\n   [Component: ${norm}]\n   ========================================================================== */\n${cleanExtracted}`;
+              }
+
               return {
                 fileName: f,
                 sourceFile: `src/pages/assets/js/${f}`,
-                content: `// [Component Module: ${norm}]\n` + extracted,
+                content: cleanExtracted,
                 isShared: f === 'common.js' || f === 'top.js'
               };
             }
@@ -498,21 +515,24 @@ export async function exportSelectionToWorkbench(options = {}) {
     };
   }
 
-  // 3. Auto-detect component name & category
+  // 3. Auto-detect component name from SCSS file or HTML root class
   const meta = parseComponentHtml(html);
-  const targetName = options.name ? normalizeName(options.name) : (meta?.compName || 'custom-component');
+  const rawTargetName = options.name ? normalizeName(options.name) : (meta?.compName || 'custom-component');
+
+  const blockClasses = (meta?.allClasses && meta.allClasses.length > 0)
+    ? meta.allClasses
+    : [meta?.rootClass || `c-${rawTargetName}`];
+
+  // Look up which SCSS file in site contains this component's class
+  const foundScss = findComponentScssInSite(rawTargetName, blockClasses);
+  const scssBaseName = foundScss ? basename(foundScss.fileName, '.scss').replace(/^_/, '') : null;
+  const targetName = options.name ? normalizeName(options.name) : (scssBaseName || rawTargetName);
   const category = meta?.category || getComponentCategory(targetName);
   const displayTitle = options.title || (targetName.charAt(0).toUpperCase() + targetName.slice(1));
 
   const savedFiles = [];
 
-  // 4. Save SCSS into workbench (Slice component-specific rules, avoid copying unrelated components in shared file!)
-  const blockClasses = (meta?.allClasses && meta.allClasses.length > 0)
-    ? meta.allClasses
-    : [meta?.rootClass || `c-${targetName}`];
-
-  const foundScss = findComponentScssInSite(targetName, blockClasses);
-  let customScssMeta = null;
+  // 4. Save SCSS into workbench (Append/merge component rules into corresponding file)
   if (foundScss && foundScss.content) {
     const scssCategory = foundScss.category || category;
     const targetWbScssDir = scssCategory === 'layout' ? WORKBENCH_LAYOUT_DIR : WORKBENCH_SCSS_DIR;
@@ -531,61 +551,34 @@ export async function exportSelectionToWorkbench(options = {}) {
     if (existsSync(destScss)) {
       const existing = readFileSync(destScss, 'utf8');
       finalScss = mergeVariantScss(existing, componentScss, classQuery);
+    } else {
+      finalScss = mergeComponentScss('', componentScss, targetName);
     }
 
     writeFileSync(destScss, finalScss.trimEnd() + '\n', 'utf8');
     savedFiles.push(`workbench/scss/${scssCategory === 'layout' ? 'layout' : 'component'}/${foundScss.fileName}`);
 
-    const scssBaseName = basename(foundScss.fileName, '.scss').replace(/^_/, '');
-    updateWorkbenchScss(scssBaseName, 'add', scssCategory);
-
-    // If the file name in site differs from component name, record it in frontmatter
-    if (foundScss.fileName !== `_${targetName}.scss` && foundScss.fileName !== `_${targetName}s.scss`) {
-      customScssMeta = foundScss.fileName;
-      // Clean up any obsolete artificially created SCSS file for this component name
-      const obsoleteScss = resolve(targetWbScssDir, `_${targetName}.scss`);
-      if (existsSync(obsoleteScss)) {
-        try {
-          rmSync(obsoleteScss, { force: true });
-          updateWorkbenchScss(targetName, 'remove', scssCategory);
-        } catch {}
-      }
-    }
+    const wbScssBase = basename(foundScss.fileName, '.scss').replace(/^_/, '');
+    updateWorkbenchScss(wbScssBase, 'add', scssCategory);
   }
 
-  // 5. Look up and mirror JS for this component if exists on site
+  // 5. Look up and mirror JS for this component into workbench
   const foundJs = findComponentJsInSite(targetName, blockClasses);
-  let customJsMeta = null;
   if (foundJs && foundJs.content) {
     if (!existsSync(WORKBENCH_JS_DIR)) {
       mkdirSync(WORKBENCH_JS_DIR, { recursive: true });
     }
     const destJs = resolve(WORKBENCH_JS_DIR, foundJs.fileName);
     let finalJs = foundJs.content.trimEnd() + '\n';
-    if (existsSync(destJs) && (foundJs.fileName === 'common.js' || foundJs.isShared)) {
+    if (existsSync(destJs)) {
       const existing = readFileSync(destJs, 'utf8');
       finalJs = mergeComponentJs(existing, foundJs.content, targetName);
     }
     writeFileSync(destJs, finalJs, 'utf8');
     savedFiles.push(`workbench/js/${foundJs.fileName}`);
-    customJsMeta = foundJs.fileName;
-
-    // Clean up any obsolete separate JS file for this component name
-    if (foundJs.fileName !== `${targetName}.js`) {
-      const obsoleteJs = resolve(WORKBENCH_JS_DIR, `${targetName}.js`);
-      if (existsSync(obsoleteJs)) {
-        try { rmSync(obsoleteJs, { force: true }); } catch {}
-      }
-    }
-  } else {
-    // If site does not have JS for this component, clean up any obsolete artificial JS in workbench
-    const obsoleteJs = resolve(WORKBENCH_JS_DIR, `${targetName}.js`);
-    if (existsSync(obsoleteJs)) {
-      try { rmSync(obsoleteJs, { force: true }); } catch {}
-    }
   }
 
-  // 6. Save/Append HTML to workbench/components/_<targetName>.ejs
+  // 6. Save/Append HTML to workbench/components/_<targetName>.ejs (Pure HTML/EJS, 100% clean, NO frontmatter)
   if (!existsSync(WORKBENCH_COMPONENTS_DIR)) {
     mkdirSync(WORKBENCH_COMPONENTS_DIR, { recursive: true });
   }
@@ -594,33 +587,16 @@ export async function exportSelectionToWorkbench(options = {}) {
 
   let existingEjs = existsSync(destEjs) ? readFileSync(destEjs, 'utf8') : '';
   if (existingEjs.trim()) {
-    const { meta: existingMeta, content: existingClean } = parseComponentMetadata(existingEjs);
-    const normExisting = existingClean.replace(/\s+/g, ' ').trim();
+    const cleanExisting = stripEjsShowroomWrapper(existingEjs);
+    const normExisting = cleanExisting.replace(/\s+/g, ' ').trim();
     const normSnippet = html.replace(/\s+/g, ' ').trim();
-    const mergedMeta = { ...existingMeta };
-    let metaChanged = false;
-    if (customScssMeta && mergedMeta.scss !== customScssMeta) {
-      mergedMeta.scss = customScssMeta;
-      metaChanged = true;
-    }
-    if (customJsMeta && mergedMeta.js !== customJsMeta) {
-      mergedMeta.js = customJsMeta;
-      metaChanged = true;
-    }
     const snippetMissing = !normExisting.includes(normSnippet);
-    if (snippetMissing || metaChanged) {
-      const yamlBlock = Object.keys(mergedMeta).length > 0
-        ? `---\n${Object.entries(mergedMeta).map(([k, v]) => `${k}: ${v}`).join('\n')}\n---\n`
-        : '';
-      const body = snippetMissing ? existingClean.trimEnd() + '\n\n' + itemBlock : existingClean.trim();
-      writeFileSync(destEjs, yamlBlock + body, 'utf8');
+    if (snippetMissing) {
+      const body = existingEjs.trimEnd() + '\n\n' + itemBlock;
+      writeFileSync(destEjs, body.trim() + '\n', 'utf8');
     }
   } else {
-    const metaEntries = [];
-    if (customScssMeta) metaEntries.push(`scss: ${customScssMeta}`);
-    if (customJsMeta) metaEntries.push(`js: ${customJsMeta}`);
-    const yamlHeader = metaEntries.length > 0 ? `---\n${metaEntries.join('\n')}\n---\n` : '';
-    writeFileSync(destEjs, yamlHeader + itemBlock, 'utf8');
+    writeFileSync(destEjs, itemBlock, 'utf8');
   }
   savedFiles.push(`workbench/components/_${targetName}.ejs`);
 

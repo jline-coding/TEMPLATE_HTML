@@ -9,7 +9,8 @@ import {
   parseComponentMetadata,
   generateComponentId,
   COMPONENT_DEPENDENCIES,
-  COMPONENT_SCHEMA_VERSION
+  COMPONENT_SCHEMA_VERSION,
+  resolveComponentDependencies
 } from './metadata.js';
 import {
   getDefaultPaths,
@@ -217,7 +218,10 @@ export function getRegistry(paths = getDefaultPaths()) {
     if (matchingJs) {
       const jsPath = resolve(paths.wbJsDir, matchingJs);
       if (existsSync(jsPath)) {
-        try { wbJsContent = readFileSync(jsPath, 'utf8'); } catch {}
+        try {
+          const raw = readFileSync(jsPath, 'utf8');
+          wbJsContent = sliceJsForComponent(raw, rawName);
+        } catch {}
       }
     }
 
@@ -234,8 +238,17 @@ export function getRegistry(paths = getDefaultPaths()) {
         }
       }
       if (existsSync(clientJsPath)) {
-        clientJsExists = true;
-        try { clientJsContent = readFileSync(clientJsPath, 'utf8'); } catch {}
+        try {
+          const raw = readFileSync(clientJsPath, 'utf8');
+          if (matchingJs === 'common.js' || matchingJs === 'top.js') {
+            const range = getComponentJsRange(raw, rawName);
+            clientJsExists = !!range;
+            clientJsContent = range ? sliceJsForComponent(raw, rawName) : '';
+          } else {
+            clientJsExists = true;
+            clientJsContent = raw;
+          }
+        } catch {}
       }
     }
 
@@ -281,7 +294,7 @@ export function getRegistry(paths = getDefaultPaths()) {
       }
     }
 
-    const deps = parsedMeta.dependencies || COMPONENT_DEPENDENCIES[rawName] || [];
+    const deps = resolveComponentDependencies(rawName, parsedMeta, wbEjsContent);
     const compTitle = parsedMeta.title || rawName.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const compId = parsedMeta.id || generateComponentId(rawName, category);
     const version = parsedMeta.version || '1.0.0';

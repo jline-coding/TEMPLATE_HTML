@@ -11,10 +11,13 @@ import {
   updateWorkbenchScss,
   sliceScssForClasses,
   mergeVariantScss,
+  mergeComponentScss,
+  findMatchingJs,
   isVariantInstalled,
   installVariant,
   COMPONENT_DEPENDENCIES,
   COMPONENT_SCHEMA_VERSION,
+  resolveComponentDependencies,
   generateComponentId,
   getAvailableJsFiles,
   appendJsToTargetFile,
@@ -125,6 +128,27 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
       expect(formatted).toContain('version: "1.0.0"');
       expect(formatted).toContain('schemaVersion: "1.0.0"');
       expect(formatted).toContain('<div class="c-hero">Hero</div>');
+    });
+
+    it('intelligently resolves dependencies across 3 tiers (Frontmatter > Auto-detection > Fallback)', () => {
+      // Tier 1: Explicit Frontmatter overrides everything
+      const explicitMeta = { dependencies: ['popup', 'slider'] };
+      expect(resolveComponentDependencies('custom', explicitMeta, '<a class="c-btn">Btn</a>')).toEqual(['popup', 'slider']);
+
+      // Tier 1: Explicit empty array means NO dependencies even if classes exist
+      const emptyMeta = { dependencies: [] };
+      expect(resolveComponentDependencies('header', emptyMeta, '<a class="c-btn">Btn</a>')).toEqual([]);
+
+      // Tier 2: Auto-detect classes from HTML content when not declared in frontmatter
+      const autoHtml = '<header class="c-header"><a class="c-btn">Contact</a><div class="c-header-gnavi"></div></header>';
+      expect(resolveComponentDependencies('header', {}, autoHtml)).toEqual(['btns']);
+
+      // Tier 2: Auto-detect multiple classes
+      const multiHtml = '<div class="c-banner"><a class="c-btn">Click</a><div class="c-modal">Popup</div></div>';
+      expect(resolveComponentDependencies('banner', {}, multiHtml)).toEqual(['btns', 'popup']);
+
+      // Tier 3: Fallback from dictionary when no frontmatter and no auto-detected classes
+      expect(resolveComponentDependencies('footer', {}, '<footer>Plain</footer>')).toEqual(['btns']);
     });
   });
 
@@ -272,6 +296,66 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
       expect(existsSync(backupDir)).toBe(true);
       expect(existsSync(resolve(backupDir, '_accordion.ejs'))).toBe(true);
       expect(existsSync(resolve(backupDir, '_accordion.scss'))).toBe(true);
+    });
+  });
+
+  describe('Non-Destructive SCSS & JS Safe Import Engine', () => {
+    it('mergeComponentScss preserves existing @use and header banner and appends incoming rules cleanly', () => {
+      const userStub = `@use "sass:math";\n@use "../global" as *;\n\n/*!\ncomponent > header\n------------------------------\n*/\n`;
+      const incomingScss = `@use "sass:math";\n@use "../global" as *;\n\n.c-header {\n    background: #fff;\n}\n`;
+
+      const result = mergeComponentScss(userStub, incomingScss, 'header');
+
+      expect(result).toContain('@use "sass:math";');
+      expect(result).toContain('@use "../global" as *;');
+      expect(result).toContain('component > header');
+      expect(result).toContain('.c-header {');
+      expect(result.trim().endsWith('}'));
+    });
+
+    it('mergeComponentScss generates required @use and banner when target file is brand new', () => {
+      const incomingScss = `.c-card {\n    padding: 10px;\n}\n`;
+      const result = mergeComponentScss('', incomingScss, 'card');
+
+      expect(result).toContain('@use "sass:math";');
+      expect(result).toContain('@use "../global" as *;');
+      expect(result).toContain('component > card');
+      expect(result).toContain('.c-card {');
+    });
+
+    it('mergeComponentScss appends to existing custom code without overwriting it', () => {
+      const existing = `@use "sass:math";\n@use "../global" as *;\n\n.my-custom-style {\n    color: red;\n}\n`;
+      const incoming = `.c-badge {\n    font-size: 12px;\n}\n`;
+
+      const result = mergeComponentScss(existing, incoming, 'badge');
+
+      expect(result).toContain('.my-custom-style');
+      expect(result).toContain('.c-badge');
+      expect(result.indexOf('.my-custom-style')).toBeLessThan(result.indexOf('.c-badge'));
+    });
+
+    it('findMatchingJs discovers component marker inside shared common.js', () => {
+      const testJsDir = resolve(sandboxDir, 'test-js');
+      mkdirSync(testJsDir, { recursive: true });
+      writeFileSync(resolve(testJsDir, 'common.js'), `/* [Component: header] */\nconsole.log('header');`, 'utf8');
+
+      const matched = findMatchingJs('header', testJsDir);
+      expect(matched).toBe('common.js');
+    });
+
+    it('appendJsToTargetFile appends component JS logic cleanly to target file', () => {
+      const jsDir = resolve(sandboxPaths.root, 'src/pages/assets/js');
+      mkdirSync(jsDir, { recursive: true });
+      const commonPath = resolve(jsDir, 'common.js');
+      writeFileSync(commonPath, `// Initial site JS\nconsole.log('init');\n`, 'utf8');
+
+      const appendRes = appendJsToTargetFile('common.js', 'header', `$('.c-header').show();`, sandboxPaths);
+      expect(appendRes.success).toBe(true);
+
+      const updated = readFileSync(commonPath, 'utf8');
+      expect(updated).toContain('// Initial site JS');
+      expect(updated).toContain('[Component: header]');
+      expect(updated).toContain("$('.c-header').show();");
     });
   });
 });

@@ -14,11 +14,11 @@ import matter from 'gray-matter';
 export const COMPONENT_SCHEMA_VERSION = '1.0.0';
 
 /**
- * Standard Component Dependencies Map
- * Declares prerequisite sub-components required for composite components
+ * Standard Component Dependencies Map (Fallback suggestion dictionary)
+ * Composite components can use this as fallback when not declared in frontmatter.
  */
 export const COMPONENT_DEPENDENCIES = {
-  header: ['gnavi', 'btns'],
+  header: ['btns'],
   footer: ['btns']
 };
 
@@ -32,6 +32,68 @@ export function normalizeName(input) {
   let name = input.trim();
   name = basename(name, extname(name));
   return name.replace(/^_+/, '').toLowerCase();
+}
+
+/**
+ * Resolves component dependencies using a 3-tier flexible resolution strategy:
+ * Tier 1 (Explicit): Declared in YAML Frontmatter (meta.dependencies)
+ * Tier 2 (Auto-detect): Intelligently scanned from HTML classes in EJS content
+ * Tier 3 (Fallback dictionary): Project-level suggestion fallback
+ *
+ * @param {string} compName - Normalized component name (e.g. 'header')
+ * @param {Object} [meta={}] - Parsed frontmatter metadata
+ * @param {string} [ejsContent=''] - Component EJS/HTML content for AST/regex scanning
+ * @returns {string[]} Array of normalized dependency component names
+ */
+export function resolveComponentDependencies(compName, meta = {}, ejsContent = '') {
+  const norm = normalizeName(compName);
+
+  // Tier 1: Explicit Frontmatter Declaration (Highest priority)
+  // If explicitly declared in frontmatter (even as empty array []), honor author intent!
+  if (meta && Array.isArray(meta.dependencies)) {
+    return meta.dependencies
+      .map(d => normalizeName(d))
+      .filter(d => d && d !== norm);
+  }
+
+  // Tier 2: Smart Auto-Detection based on HTML class usage inside ejsContent
+  const detected = new Set();
+  if (ejsContent && typeof ejsContent === 'string') {
+    // 1. Detect .c-btn / .c-btns (requires 'btns')
+    if (/\b(?:c-btn|c-btns)\b/.test(ejsContent) && !['btn', 'btns'].includes(norm)) {
+      detected.add('btns');
+    }
+    // 2. Detect standalone .c-gnavi (only if not an internal .c-header-gnavi)
+    if (/\bc-gnavi\b/.test(ejsContent) && !/\bc-header-gnavi\b/.test(ejsContent) && !['gnavi'].includes(norm)) {
+      detected.add('gnavi');
+    }
+    // 3. Detect .c-modal / .c-popup (requires 'popup')
+    if (/\b(?:c-modal|c-popup)\b/.test(ejsContent) && !['popup', 'modal'].includes(norm)) {
+      detected.add('popup');
+    }
+    // 4. Detect .c-slider / .js-slick (requires 'slider')
+    if (/\b(?:c-slider|js-slick)\b/.test(ejsContent) && !['slider', 'sliders'].includes(norm)) {
+      detected.add('slider');
+    }
+    // 5. Detect .c-tbl (requires 'tbl')
+    if (/\bc-tbl\b/.test(ejsContent) && !['tbl', 'table'].includes(norm)) {
+      detected.add('tbl');
+    }
+    // 6. Detect .c-bread (requires 'bread')
+    if (/\bc-bread\b/.test(ejsContent) && !['bread', 'breadcrumbs'].includes(norm)) {
+      detected.add('bread');
+    }
+  }
+
+  if (detected.size > 0) {
+    return Array.from(detected).filter(d => d !== norm);
+  }
+
+  // Tier 3: Fallback from COMPONENT_DEPENDENCIES map
+  const fallback = COMPONENT_DEPENDENCIES[norm] || [];
+  return fallback
+    .map(d => normalizeName(d))
+    .filter(d => d && d !== norm);
 }
 
 /**
@@ -87,10 +149,10 @@ export function parseComponentMetadata(content) {
     id: rawMeta.id || (rawMeta.name ? generateComponentId(rawMeta.name, rawMeta.category) : undefined),
     version: rawMeta.version || '1.0.0',
     title: rawMeta.title || '',
-    category: rawMeta.category || 'component',
+    category: rawMeta.category || undefined,
     scss: rawMeta.scss || undefined,
     js: rawMeta.js || undefined,
-    dependencies: Array.isArray(rawMeta.dependencies) ? rawMeta.dependencies : [],
+    dependencies: Array.isArray(rawMeta.dependencies) ? rawMeta.dependencies : undefined,
     ...rawMeta
   };
 
@@ -114,7 +176,7 @@ export function formatComponentMetadata(meta, content) {
     version: meta.version || '1.0.0',
     title: meta.title,
     category: meta.category || 'component',
-    dependencies: meta.dependencies || []
+    dependencies: Array.isArray(meta.dependencies) ? meta.dependencies : undefined
   };
 
   // Remove undefined keys

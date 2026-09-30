@@ -43,6 +43,8 @@
     const COOKIE_NAME = 'dinc_cookieAccepted';
     const GDPR = 'gdpr';
 
+    if (!wrap || !button) return;
+
     const getClassList = function() {
       return Array.prototype.slice.call(body.classList);
     };

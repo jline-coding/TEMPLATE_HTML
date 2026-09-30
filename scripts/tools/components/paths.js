@@ -5,7 +5,7 @@
  * Supports configurable root/directories for isolated testing.
  */
 
-import { existsSync, readdirSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import {
   ROOT,
@@ -105,12 +105,27 @@ export function findMatchingJs(normName, searchDir) {
   const candidates = [
     `${normName}.js`,
     `${normName}s.js`,
-    `${normName.replace(/s$/, '')}.js`
+    `${normName.replace(/s$/, '')}.js`,
+    `_${normName}.js`
   ];
   for (const c of candidates) {
     const p = resolve(searchDir, c);
     if (existsSync(p)) return c;
   }
+
+  // Scan JS files for component marker: [Component: <name>] or [Component Module: <name>]
+  try {
+    const files = readdirSync(searchDir).filter(f => f.endsWith('.js') && !f.endsWith('.min.js'));
+    const markerRegex = new RegExp(`\\[Component(?:\\s*Module)?:\\s*${normName}\\]`, 'i');
+    for (const f of files) {
+      const p = resolve(searchDir, f);
+      const content = readFileSync(p, 'utf8');
+      if (markerRegex.test(content)) {
+        return f;
+      }
+    }
+  } catch {}
+
   return null;
 }
 

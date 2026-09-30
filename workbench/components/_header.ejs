@@ -1,6 +1,3 @@
----
-js: common.js
----
 <div class="p-component__item">
     <!-- Header -->
     <header class="c-header">
@@ -11,30 +8,30 @@ js: common.js
                 </a>
             <% if(file.data.page === 'top'){%></h1><% }else{ %></div><% } %> 
             <div class="c-header__content">
-                <div class="c-gnavi">
-                    <div class="c-gnavi__inner">
-                        <ul class="c-gnavi-list">
-                            <li class="c-gnavi-list__item">
-                                <a href="<%= assetsDir %>" class="c-gnavi-link">会社</a>
+                <div class="c-header-gnavi" hidden="until-found">
+                    <div class="c-header-gnavi__inner">
+                        <ul class="c-header-gnavi__list">
+                            <li class="c-header-gnavi__item">
+                                <a href="<%= assetsDir %>" class="c-header-gnavi__link">会社</a>
                             </li>
-                            <li class="c-gnavi-list__item">
-                                <a href="<%= assetsDir %>" class="c-gnavi-link">私たちについて</a>
+                            <li class="c-header-gnavi__item">
+                                <a href="<%= assetsDir %>" class="c-header-gnavi__link">私たちについて</a>
                             </li>
-                            <li class="c-gnavi-list__item is-sub">
-                                <a href="<%= assetsDir %>" class="c-gnavi-link">サービス</a>
-                                <ul class="c-gnavi-sub" hidden="until-found">
-                                    <li class="c-gnavi-sub__item">
-                                        <a href="<%= assetsDir %>" class="c-gnavi-sub-link">サービス01</a>
+                            <li class="c-header-gnavi__item is-sub">
+                                <a href="<%= assetsDir %>" class="c-header-gnavi__link">サービス</a>
+                                <ul class="c-header-gnavi__sub" hidden="until-found">
+                                    <li class="c-header-gnavi__sub-item">
+                                        <a href="<%= assetsDir %>" class="c-header-gnavi__sub-link">サービス01</a>
                                     </li>
-                                    <li class="c-gnavi-sub__item">
-                                        <a href="<%= assetsDir %>" class="c-gnavi-sub-link">サービス02</a>
+                                    <li class="c-header-gnavi__sub-item">
+                                        <a href="<%= assetsDir %>" class="c-header-gnavi__sub-link">サービス02</a>
                                     </li>
-                                    <li class="c-gnavi-sub__item">
-                                        <a href="<%= assetsDir %>" class="c-gnavi-sub-link">サービス03</a>
+                                    <li class="c-header-gnavi__sub-item">
+                                        <a href="<%= assetsDir %>" class="c-header-gnavi__sub-link">サービス03</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="c-gnavi-list__item is-btn">
+                            <li class="c-header-gnavi__item is-btn">
                                 <a href="<%= assetsDir %>" class="c-btn c-btn--reverse">お問い合わせ</a>
                             </li>
                         </ul>
@@ -45,8 +42,8 @@ js: common.js
                 </div>
             </div>
         </div>
-        <div class="c-toggle">
-            <span class="c-toggle__line"></span>
+        <div class="c-header-toggle">
+            <span class="c-header-toggle__line"></span>
         </div>
     </header>
 </div>

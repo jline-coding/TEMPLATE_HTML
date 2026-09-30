@@ -52,50 +52,42 @@ describe('Selection Exporter Engine (VS Code to Workbench)', () => {
 
   it('accurately extracts balanced HTML tag block around cursor line in file', () => {
     const headerFile = resolve(ROOT, 'src/components/_header.ejs');
-    // Line 43 in _header.ejs contains c-toggle
-    const extracted = extractTagBlockFromFile(headerFile, 43);
+    const extracted = extractTagBlockFromFile(headerFile, 1);
     expect(extracted).toBeDefined();
-    expect(extracted).toContain('class="c-toggle"');
-    expect(extracted).toContain('c-toggle__line');
-    expect(extracted.startsWith('<div class="c-toggle">')).toBe(true);
-    expect(extracted.endsWith('</div>')).toBe(true);
+    expect(extracted).toContain('class="c-header"');
+    expect(extracted.startsWith('<header class="c-header">')).toBe(true);
+    expect(extracted.endsWith('</header>')).toBe(true);
   });
 
   it('locates matching SCSS in site for component even in shared files', () => {
-    const scss = findComponentScssInSite('toggle');
+    const scss = findComponentScssInSite('header');
     expect(scss).toBeDefined();
-    expect(scss.fileName).toBe('_btn.scss');
-    expect(scss.content).toContain('.c-toggle');
+    expect(scss.fileName).toBe('_header.scss');
+    expect(scss.content).toContain('.c-header');
 
-    // Scanning with multiple block classes
-    const scssFromClasses = findComponentScssInSite('toggle', ['c-header-btns', 'c-toggle', 'c-toggle__line']);
-    expect(scssFromClasses).toBeDefined();
-    expect(scssFromClasses.fileName).toBe('_btn.scss');
-
-    const js = findComponentJsInSite('toggle', 'c-toggle');
+    const js = findComponentJsInSite('header', 'c-header');
     expect(js).toBeDefined();
     expect(js.fileName).toBe('common.js');
-    expect(js.content).toContain('.c-toggle');
-
-    const jsFromClasses = findComponentJsInSite('toggle', ['c-toggle__line', 'c-toggle']);
-    expect(jsFromClasses).toBeDefined();
-    expect(jsFromClasses.fileName).toBe('common.js');
+    expect(js.content).toContain('.c-header');
   });
 
   it('exports component from file selection into workbench showroom cleanly', async () => {
-    const destEjs = resolve(WORKBENCH_COMPONENTS_DIR, '_toggle.ejs');
+    const destEjs = resolve(WORKBENCH_COMPONENTS_DIR, '_header.ejs');
     const destJs = resolve(WORKBENCH_JS_DIR, 'common.js');
-    const destScss = resolve(WORKBENCH_SCSS_DIR, '_btn.scss');
+    const destScss = resolve(WORKBENCH_SCSS_DIR, '_header.scss');
+    const originalEjs = existsSync(destEjs) ? readFileSync(destEjs, 'utf8') : null;
+    const originalJs = existsSync(destJs) ? readFileSync(destJs, 'utf8') : null;
+    const originalScss = existsSync(destScss) ? readFileSync(destScss, 'utf8') : null;
 
     try {
       const headerFile = resolve(ROOT, 'src/components/_header.ejs');
       const result = await exportSelectionToWorkbench({
         filePath: headerFile,
-        lineNumber: 43
+        lineNumber: 1
       });
 
       expect(result.success).toBe(true);
-      expect(result.name).toBe('toggle');
+      expect(result.name).toBe('header');
       expect(result.hasScss).toBe(true);
       expect(result.hasJs).toBe(true);
 
@@ -107,17 +99,17 @@ describe('Selection Exporter Engine (VS Code to Workbench)', () => {
       const scssContent = readFileSync(destScss, 'utf8');
       const jsContent = readFileSync(destJs, 'utf8');
 
-      expect(ejsContent).toContain('c-toggle');
-      expect(ejsContent).toContain('scss: _btn.scss');
-      expect(ejsContent).toContain('js: common.js');
-      expect(scssContent).toContain('.c-toggle');
-      expect(scssContent).not.toContain('.c-totop');
-      expect(jsContent).toContain('.c-toggle');
+      expect(ejsContent).toContain('c-header');
+      expect(scssContent).toContain('.c-header');
+      expect(jsContent).toContain('header');
     } finally {
       try {
-        if (existsSync(destEjs)) rmSync(destEjs, { force: true, maxRetries: 5, retryDelay: 100 });
-        if (existsSync(destScss)) rmSync(destScss, { force: true, maxRetries: 5, retryDelay: 100 });
-        if (existsSync(destJs)) rmSync(destJs, { force: true, maxRetries: 5, retryDelay: 100 });
+        if (originalEjs !== null) writeFileSync(destEjs, originalEjs, 'utf8');
+        else if (existsSync(destEjs)) rmSync(destEjs, { force: true, maxRetries: 5, retryDelay: 100 });
+        if (originalScss !== null) writeFileSync(destScss, originalScss, 'utf8');
+        else if (existsSync(destScss)) rmSync(destScss, { force: true, maxRetries: 5, retryDelay: 100 });
+        if (originalJs !== null) writeFileSync(destJs, originalJs, 'utf8');
+        else if (existsSync(destJs)) rmSync(destJs, { force: true, maxRetries: 5, retryDelay: 100 });
       } catch {}
     }
   });

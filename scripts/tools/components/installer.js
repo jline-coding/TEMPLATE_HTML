@@ -7,7 +7,7 @@
 
 import { existsSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync } from 'fs';
 import { resolve, basename } from 'path';
-import { normalizeName, COMPONENT_DEPENDENCIES } from './metadata.js';
+import { normalizeName, COMPONENT_DEPENDENCIES, parseComponentMetadata, resolveComponentDependencies } from './metadata.js';
 import {
   getDefaultPaths,
   getComponentCategory,
@@ -18,7 +18,8 @@ import {
   findMatchingJs
 } from './paths.js';
 import { resolveSafePath, isValidComponentName } from '../safety.js';
-import { isTemplateStub, sliceScssForClasses, mergeVariantScss } from './variants.js';
+import { isTemplateStub, sliceScssForClasses, mergeVariantScss, mergeComponentScss } from './variants.js';
+import { stripEjsShowroomWrapper, sliceJsForComponent, mergeComponentJs } from './registry.js';
 
 /**
  * Transaction Manager to track and rollback filesystem modifications
@@ -182,26 +183,20 @@ export function appendJsToTargetFile(targetFileName, compName, jsCode, paths = g
     }
   }
 
-  const marker = `// [Component Module: ${compName}]`;
-  if (existing.includes(marker)) {
-    return {
-      success: true,
-      alreadyExists: true,
-      file: `src/pages/assets/js/${cleanName}`,
-      message: `Mã JS của component "${compName}" đã có sẵn trong "assets/js/${cleanName}"`
-    };
+  // Ensure formatted with component header if not already present
+  let formattedJs = jsCode.trim();
+  const hasMarker = formattedJs.includes(`[Component: ${compName}]`) || formattedJs.includes(`[Component Module: ${compName}]`);
+  if (!hasMarker) {
+    formattedJs = `/* ==========================================================================\n   [Component: ${compName}]\n   ========================================================================== */\n${formattedJs}`;
   }
 
-  const title = compName.charAt(0).toUpperCase() + compName.slice(1);
-  const block = `\n\n// ==========================================\n${marker}\n// Features: Interactive logic for ${title}\n// ==========================================\n${jsCode.trim()}\n`;
-
-  existing = existing.trimEnd() + block;
-  writeFileSync(targetPath, existing, 'utf8');
+  const updated = mergeComponentJs(existing, formattedJs, compName);
+  writeFileSync(targetPath, updated, 'utf8');
 
   return {
     success: true,
     file: `src/pages/assets/js/${cleanName}`,
-    message: `Đã tích hợp JS vào cuối file "assets/js/${cleanName}"`
+    message: `Đã tích hợp JS vào file "assets/js/${cleanName}"`
   };
 }
 
@@ -229,7 +224,25 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
     // Discover component files in workbench
     const ejsFile = existsSync(resolve(paths.wbComponentsDir, `_${norm}.ejs`)) ? `_${norm}.ejs` : null;
     const scssFile = findMatchingScss(norm, targetWbScssDir) || findMatchingScss(norm, paths.wbScssDir);
-    const jsFile = findMatchingJs(norm, paths.wbJsDir);
+    let jsFile = findMatchingJs(norm, paths.wbJsDir);
+
+    let meta = {};
+    let rawEjs = '';
+    if (ejsFile) {
+      const srcEjsPath = resolve(paths.wbComponentsDir, ejsFile);
+      if (existsSync(srcEjsPath)) {
+        rawEjs = readFileSync(srcEjsPath, 'utf8');
+        meta = parseComponentMetadata(rawEjs).meta || {};
+      }
+    }
+
+    if (!jsFile && meta.js && existsSync(resolve(paths.wbJsDir, meta.js))) {
+      jsFile = meta.js;
+    }
+
+    if (!jsFile && options.targetJsFile && options.targetJsFile !== '__skip__' && options.targetJsFile !== 'none' && existsSync(resolve(paths.wbJsDir, options.targetJsFile))) {
+      jsFile = options.targetJsFile;
+    }
 
     if (!ejsFile && !scssFile && !jsFile) {
       throw new Error(`Component "${targetName}" không tồn tại trong Workbench`);
@@ -238,19 +251,25 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
     const installedFiles = [];
     const installedDependencies = [];
 
-    // Step 0: Dependency Installation (Auto-install required subcomponents)
-    const deps = COMPONENT_DEPENDENCIES[norm] || [];
+    // Step 0: Flexible & Intelligent Dependency Resolution (Frontmatter > Auto-detection > Fallback)
+    const deps = resolveComponentDependencies(norm, meta, rawEjs);
     for (const dep of deps) {
       if (dep !== norm) {
-        const depResult = installComponent(dep, { force: options.force, includeEjs: false }, paths, tx);
-        if (!depResult.success) {
-          throw new Error(`Cài đặt dependency thất bại [${dep}]: ${depResult.message || depResult.error}`);
+        const depCategory = getComponentCategory(dep);
+        const depWbScssDir = getWorkbenchScssDirForCategory(depCategory, paths);
+        const depEjs = existsSync(resolve(paths.wbComponentsDir, `_${dep}.ejs`));
+        const depScss = findMatchingScss(dep, depWbScssDir) || findMatchingScss(dep, paths.wbScssDir);
+        if (depEjs || depScss) {
+          const depResult = installComponent(dep, { force: options.force, includeEjs: false }, paths, tx);
+          if (!depResult.success) {
+            throw new Error(`Cài đặt dependency thất bại [${dep}]: ${depResult.message || depResult.error}`);
+          }
+          installedDependencies.push(dep);
         }
-        installedDependencies.push(dep);
       }
     }
 
-    // Step 1: Handle SCSS
+    // Step 1: Handle SCSS (100% Non-destructive: merge @use & append/merge rules, never overwrite existing developer code!)
     if (scssFile) {
       let srcScss = resolveSafePath(targetWbScssDir, scssFile, 'srcScss');
       let destDir = targetClientScssDir;
@@ -270,25 +289,18 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
       const destScss = resolveSafePath(destDir, destScssName, 'destScss');
 
       if (existsSync(srcScss)) {
-        if (existsSync(destScss) && !options.force) {
-          const existing = readFileSync(destScss, 'utf8');
-          const incoming = readFileSync(srcScss, 'utf8');
-          if (!isTemplateStub(existing) && existing.trim() !== incoming.trim()) {
-            return {
-              success: false,
-              conflict: true,
-              message: `File "${relBase}/${destScssName}" đã tồn tại và có nội dung tùy chỉnh. Dùng --force để ghi đè hoặc --as <tên_mới> để đổi tên tránh mất code!`
-            };
-          }
-        }
+        const existedBefore = existsSync(destScss);
+        const existing = existedBefore ? readFileSync(destScss, 'utf8') : '';
+        const incoming = readFileSync(srcScss, 'utf8');
 
-        if (existsSync(destScss)) {
-          tx.recordModified(destScss, readFileSync(destScss, 'utf8'));
+        if (existedBefore) {
+          tx.recordModified(destScss, existing);
         } else {
           tx.recordCreated(destScss);
         }
 
-        copyFileSync(srcScss, destScss);
+        const mergedScss = mergeComponentScss(existing, incoming, isCustomAlias ? alias : norm, options);
+        writeFileSync(destScss, mergedScss, 'utf8');
         installedFiles.push(`${relBase}/${destScssName}`);
 
         const scssBase = basename(destScssName, '.scss').replace(/^_/, '');
@@ -296,19 +308,24 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
       }
     }
 
-    // Step 2: Handle JS
+    // Step 2: Handle JS (100% Non-destructive: append/merge into target JS file like common.js)
     if (jsFile) {
       const srcJs = resolveSafePath(paths.wbJsDir, jsFile, 'srcJs');
       if (existsSync(srcJs)) {
-        const srcJsContent = readFileSync(srcJs, 'utf8');
+        let srcJsContent = readFileSync(srcJs, 'utf8');
+        const sliced = sliceJsForComponent(srcJsContent, norm);
+        if (sliced) {
+          srcJsContent = sliced;
+        }
 
-        if (options.targetJsFile && options.targetJsFile !== '__skip__' && options.targetJsFile !== 'none') {
-          const appendRes = appendJsToTargetFile(options.targetJsFile, norm, srcJsContent, paths, tx);
+        const targetFile = options.targetJsFile || meta.js || (jsFile === 'common.js' || jsFile === 'top.js' ? jsFile : null);
+        if (targetFile && targetFile !== '__skip__' && targetFile !== 'none') {
+          const appendRes = appendJsToTargetFile(targetFile, isCustomAlias ? alias : norm, srcJsContent, paths, tx);
           if (!appendRes.success) {
             throw new Error(appendRes.message);
           }
           installedFiles.push(appendRes.file);
-        } else if (options.targetJsFile === '__skip__' || options.targetJsFile === 'none') {
+        } else if (targetFile === '__skip__' || targetFile === 'none') {
           // Explicit skip
         } else {
           if (!existsSync(paths.clientJsDir)) {
@@ -317,31 +334,24 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
           const destJsName = isCustomAlias ? `${alias}.js` : jsFile;
           const destJs = resolveSafePath(paths.clientJsDir, destJsName, 'destJs');
 
-          if (existsSync(destJs) && !options.force) {
-            const existing = readFileSync(destJs, 'utf8');
-            if (existing.trim() !== srcJsContent.trim()) {
-              return {
-                success: false,
-                conflict: true,
-                message: `File "src/pages/assets/js/component/${destJsName}" đã tồn tại. Dùng --force để ghi đè hoặc --as <tên_mới> để đổi tên!`
-              };
-            }
-          }
+          const existedBefore = existsSync(destJs);
+          const existing = existedBefore ? readFileSync(destJs, 'utf8') : '';
 
-          if (existsSync(destJs)) {
-            tx.recordModified(destJs, readFileSync(destJs, 'utf8'));
+          if (existedBefore) {
+            tx.recordModified(destJs, existing);
           } else {
             tx.recordCreated(destJs);
           }
 
-          copyFileSync(srcJs, destJs);
+          const mergedJs = mergeComponentJs(existing, srcJsContent, isCustomAlias ? alias : norm);
+          writeFileSync(destJs, mergedJs, 'utf8');
           installedFiles.push(`src/pages/assets/js/component/${destJsName}`);
         }
       }
     }
 
-    // Step 3: Handle EJS
-    if (options.includeEjs || (['header', 'footer'].includes(category) && options.includeEjs !== false)) {
+    // Step 3: Handle EJS (Only writes file if explicitly requested with options.includeEjs, otherwise dev inserts via snippet)
+    if (options.includeEjs === true) {
       if (!existsSync(paths.clientComponentsDir)) {
         mkdirSync(paths.clientComponentsDir, { recursive: true });
       }
@@ -355,7 +365,9 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
         } else {
           tx.recordCreated(destEjs);
         }
-        copyFileSync(srcEjs, destEjs);
+        const rawEjs = readFileSync(srcEjs, 'utf8');
+        const cleanEjs = stripEjsShowroomWrapper(rawEjs);
+        writeFileSync(destEjs, cleanEjs, 'utf8');
         installedFiles.push(`src/components/${destEjsName}`);
       }
     }

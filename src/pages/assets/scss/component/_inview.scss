@@ -1,6 +1,12 @@
 :where(.js-inview) {
     opacity: 0;
 
+    &.is-inview,
+    &.active {
+        opacity: 1;
+        transform: none;
+    }
+
     // In-page search (Ctrl+F) support: reveal instantly if focused/matched inside
     &:focus-within {
         opacity: 1 !important;
