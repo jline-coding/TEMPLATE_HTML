@@ -14,8 +14,13 @@ try {
   }
 } catch (e) { /* ignore */ }
 
+import { assertSafeOutputDir } from './safety.js';
+
 export const SOURCE_FOLDER = (configData && configData.source_folder) ? configData.source_folder : 'public';
 export const DIST = resolve(ROOT, SOURCE_FOLDER);
+
+// P0 Path Safety Guard: Enforce strict directory confinement on boot
+assertSafeOutputDir(DIST, ROOT);
 export const LAYOUTS_DIR = resolve(SRC, 'layouts');
 
 export const WORKBENCH_DIR = resolve(ROOT, 'workbench');

@@ -405,19 +405,13 @@ Hệ thống kiến trúc song song 2 chiều hoàn chỉnh giữa **Site chính
      - 🧩 **UI Components**: `_accordion.ejs`, `_btns.ejs`, `_titles.ejs`, `_texts.ejs`, `_lists.ejs`, `_links.ejs`, `_bread.ejs`, v.v.
 3. **Web Showcase Tương Tác Trực Quan (`http://localhost:8686/__workbench/`)**:
    - **1-Click Web Import**: Bấm trực tiếp nút `[ 🚀 Import vào Site ]` trên từng component. Hệ thống Dev Server API tự động copy đầy đủ EJS, SCSS (tự chèn `@use`), và JS liên quan vào site chính một cách chính xác tuyệt đối! Nút sẽ tự động chuyển sang `✓ Đã cài đặt` cùng nút `🗑 Gỡ bỏ`.
-   - **Thao tác sao chép tức thì**: Có sẵn các nút `[ 📋 Copy HTML ]`, `[ 🎨 Copy SCSS ]`, `[ ⚡ Copy JS ]` (nếu có script) và `[ ⚡ CLI ]`.
+   - **Thao tác sao chép tức thì**: Có sẵn các nút `[ 📋 Copy HTML ]`, `[ 🎨 Copy SCSS ]`, `[ ⚡ Copy JS ]` (nếu có script).
    - **Code Drawer**: Bấm `Xem Code` để xem trực tiếp code HTML, SCSS, và JavaScript dạng tab chuyển đổi.
    - **Responsive Switcher**: Xem trước và test tương tác linh hoạt trên Desktop, Tablet (768px), Mobile (375px).
 
 #### Bảng lệnh Terminal tiện lợi:
 ```bash
-# 1. Quản lý từ Kho workbench -> Site chính (src/)
-npm run add                 # Xem danh mục toàn bộ component, nhóm phân loại & trạng thái cài đặt
-npm run add accordion       # Cài accordion vào site chính (EJS + SCSS + JS + tự inject @use)
-npm run add btns tbls       # Cài nhiều component cùng lúc
-npm run remove accordion    # Gỡ component và tự động dọn dẹp @use khỏi _index.scss
-
-# 2. Xuất từ Site chính (src/) -> Kho workbench
+# 1. Xuất từ Site chính (src/) -> Kho workbench
 npm run save                # Quét và liệt kê các component trong src/ có thể lưu vào workbench
 npm run save header_02      # Lưu component viết từ site chính vào workbench (đầy đủ EJS, SCSS, JS)
 npm run save card --as my-card  # Lưu với tên định danh mới trong kho mẫu

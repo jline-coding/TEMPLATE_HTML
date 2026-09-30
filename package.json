@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "node scripts/build.js --watch",
     "build": "node scripts/build.js",
-    "add": "node scripts/add.js",
-    "remove": "node scripts/add.js --remove",
     "save": "node scripts/save.js",
     "export": "node scripts/save.js",
+    "export:selection": "node scripts/export-selection.js",
+    "install:extension": "node scripts/tools/install-extension.js",
+    "postinstall": "node scripts/tools/install-extension.js",
     "clean": "node scripts/clean.js",
     "link": "node scripts/link.js",
     "snippets": "node scripts/sync-snippets.js",

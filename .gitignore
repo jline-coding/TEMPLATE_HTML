@@ -8,3 +8,8 @@
 .deploy_sha
 .deploy_manifest.json
 .env
+workbench/.backup/
+workbench__backup/
+workbench_backup/
+workbench copy/
+scratch/

@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "⚡ Workbench: Export Component to Workbench",
+      "type": "shell",
+      "command": "node scripts/export-selection.js \"${file}\" \"${lineNumber}\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📋 Workbench: Export from Clipboard",
+      "type": "shell",
+      "command": "node scripts/export-selection.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false,
+        "clear": true
+      }
+    }
+  ]
+}

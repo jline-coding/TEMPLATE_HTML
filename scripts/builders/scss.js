@@ -44,8 +44,20 @@ export async function buildScss(changedFile) {
     }
   }
 
+  const errors = [];
   for (const entry of entryFiles) {
-    await compileScssFile(entry);
+    try {
+      await compileScssFile(entry);
+    } catch (err) {
+      errors.push({ file: entry, error: err });
+    }
+  }
+
+  if (errors.length > 0) {
+    const summary = errors.map(e => `${basename(e.file)}: ${e.error.message}`).join('; ');
+    const err = new Error(`SCSS build failed (${errors.length} file(s)): ${summary}`);
+    err.details = errors;
+    throw err;
   }
 }
 
@@ -89,6 +101,7 @@ async function compileScssFile(filePath) {
     }
   } catch (err) {
     console.error(`[scss] Error compiling ${filePath}:`, err.message);
+    throw err;
   }
 }
 

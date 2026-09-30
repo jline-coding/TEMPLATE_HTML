@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="workbench-token" content="<%= (typeof devToken !== 'undefined' && devToken) ? devToken : '' %>">
   <title>Workbench Component Library & Design System</title>
   <link rel="stylesheet" href="./catalog.css">
   <link rel="stylesheet" href="./workbench.css">
@@ -10,7 +11,6 @@
   <%- siteFontLinks %>
   <script src="../assets/vendor/jquery/jquery-4.0.0.min.js" defer></script>
   <script src="../assets/js/inview.js" defer></script>
-  <script src="../assets/js/common.js" defer></script>
   <script src="./catalog.js" defer></script>
   <script src="./components.js" defer></script>
 </head>
@@ -65,7 +65,7 @@
                     <li data-nav-item="<%= comp.name %>">
                         <a href="#sec-<%= comp.name %>" class="cs-nav__link">
                             <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>"></span>
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
                                 <span><%= comp.title %></span>
                             </span>
                             <span class="cs-nav__badge"><%= comp.file %></span>
@@ -88,7 +88,7 @@
                     <li data-nav-item="<%= comp.name %>">
                         <a href="#sec-<%= comp.name %>" class="cs-nav__link">
                             <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>"></span>
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
                                 <span><%= comp.title %></span>
                             </span>
                             <span class="cs-nav__badge"><%= comp.file %></span>
@@ -111,7 +111,7 @@
                     <li data-nav-item="<%= comp.name %>">
                         <a href="#sec-<%= comp.name %>" class="cs-nav__link">
                             <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>"></span>
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
                                 <span><%= comp.title %></span>
                             </span>
                             <span class="cs-nav__badge"><%= comp.file %></span>
@@ -134,7 +134,7 @@
                     <li data-nav-item="<%= comp.name %>">
                         <a href="#sec-<%= comp.name %>" class="cs-nav__link">
                             <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>"></span>
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
                                 <span><%= comp.title %></span>
                             </span>
                             <span class="cs-nav__badge"><%= comp.file %></span>
@@ -146,11 +146,6 @@
             <% } %>
         </nav>
 
-        <div class="cs-sidebar__footer">
-            💡 <strong>1-Click Web Import:</strong><br>
-            Bấm nút <strong>[🚀 Import vào Site]</strong> trên từng component để tự động đưa toàn bộ HTML, SCSS &amp; JS vào site chính.<br>
-            Hoặc dùng CLI: <code>npm run add &lt;name&gt;</code>
-        </div>
     </aside>
 
     <!-- =======================================================
@@ -174,13 +169,29 @@
         </header>
 
         <div id="cs-viewport-container" class="cs-viewport-wrapper">
+            <% if (comps.length === 0) { %>
+            <div class="cs-empty-state" style="padding: 70px 24px; text-align: center; background: #ffffff; border-radius: 16px; margin: 40px auto; max-width: 680px; border: 1.5px dashed #cbd5e1; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="font-size: 56px; margin-bottom: 16px; line-height: 1;">📭</div>
+                <h2 style="font-size: 22px; font-weight: 700; color: #1e293b; margin-bottom: 10px;">Workbench Hiện Đang Trống</h2>
+                <p style="font-size: 14px; color: #64748b; line-height: 1.7; margin-bottom: 24px;">
+                    Tất cả component mẫu trong <code>workbench/</code> đã được dọn sạch theo yêu cầu.<br>
+                    Bạn có thể tự tạo file mới hoặc dùng chức năng <strong>Export Selection</strong> từ VS Code để đưa component vào thử nghiệm.
+                </p>
+                <div style="display: inline-flex; flex-direction: column; gap: 8px; text-align: left; font-size: 13px; color: #334155; background: #f8fafc; padding: 16px 22px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                    <div>📝 <strong>Cách 1 (Thủ công):</strong> Tạo file <code>workbench/components/_&lt;tên&gt;.ejs</code> và <code>workbench/scss/component/_&lt;tên&gt;.scss</code></div>
+                    <div>⚡ <strong>Cách 2 (Export từ Site):</strong> Chạy lệnh hoặc dùng VS Code Extension để export block HTML trực tiếp từ site vào Showroom</div>
+                </div>
+            </div>
+            <% } %>
             <% comps.forEach((comp, idx) => { %>
             <section id="sec-<%= comp.name %>" class="cs-section" 
                      data-name="<%= comp.name %>" 
                      data-title="<%= comp.title %>" 
                      data-file="<%= comp.file %>"
                      data-cat="<%= comp.category %>"
-                     data-installed="<%= comp.isInstalled ? 'true' : 'false' %>">
+                     data-installed="<%= comp.isInstalled ? 'true' : 'false' %>"
+                     data-sync-status="<%= comp.syncStatus || 'uninstalled' %>"
+                     data-has-js="<%= !!comp.jsContent ? 'true' : 'false' %>">
                 <textarea class="cs-raw-ejs" style="display:none;"><%= comp.rawContent %></textarea>
                 <% if (comp.scssContent) { %>
                 <textarea class="cs-raw-scss" style="display:none;"><%= comp.scssContent %></textarea>
@@ -197,10 +208,70 @@
     </main>
 </div>
 
+<!-- JavaScript Target Selection Modal -->
+<div id="cs-js-modal" class="cs-modal-backdrop" style="display:none;" onclick="if(event.target === this) closeJsModal();">
+    <div class="cs-modal">
+        <div class="cs-modal__header">
+            <div class="cs-modal__title-group">
+                <span class="cs-modal__icon">⚡</span>
+                <div>
+                    <h3 class="cs-modal__title">Tích Hợp JavaScript Cho Component</h3>
+                    <p class="cs-modal__subtitle" id="cs-js-modal-comp-name">Component</p>
+                </div>
+            </div>
+            <button type="button" class="cs-modal__close" onclick="closeJsModal()" title="Đóng">✕</button>
+        </div>
+        <div class="cs-modal__body">
+            <p class="cs-modal__desc">
+                Component này có module JavaScript đi kèm. Chọn file trong <code>assets/js/</code> để tự động tích hợp mã vào <strong>cuối file</strong> (được bọc độc lập, không ảnh hưởng code hiện có):
+            </p>
+            <div class="cs-js-file-list" id="cs-js-file-list">
+                <!-- Dynamically populated from /__api/js-files -->
+            </div>
+            
+            <div class="cs-js-custom-row">
+                <label class="cs-js-option cs-js-option--custom" id="cs-js-opt-custom" onclick="selectJsOption(this, '__custom__')">
+                    <input type="radio" name="cs-target-js" value="__custom__">
+                    <span class="cs-js-option__radio"></span>
+                    <span class="cs-js-option__icon">📄</span>
+                    <span class="cs-js-option__info">
+                        <span class="cs-js-option__name">Tạo file mới trong assets/js/:</span>
+                    </span>
+                    <input type="text" id="cs-custom-js-input" placeholder="custom.js" class="cs-js-custom-input" disabled onclick="event.stopPropagation()">
+                </label>
+            </div>
+
+            <div class="cs-js-skip-row">
+                <label class="cs-js-option cs-js-option--skip" id="cs-js-opt-skip" onclick="selectJsOption(this, '__skip__')">
+                    <input type="radio" name="cs-target-js" value="__skip__">
+                    <span class="cs-js-option__radio"></span>
+                    <span class="cs-js-option__icon">🚫</span>
+                    <span class="cs-js-option__info">
+                        <span class="cs-js-option__name">Không import JS</span>
+                        <span class="cs-js-option__desc">Chỉ import SCSS và HTML snippet</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="cs-modal__footer">
+            <button type="button" class="cs-modal-btn cs-modal-btn--cancel" onclick="closeJsModal()">Hủy</button>
+            <button type="button" class="cs-modal-btn cs-modal-btn--confirm" id="cs-js-modal-confirm-btn" onclick="confirmJsImport()">🚀 Xác Nhận Import</button>
+        </div>
+    </div>
+</div>
+
 <!-- Floating Toast -->
 <div id="cs-toast" class="cs-toast">
     <span id="cs-toast-icon">✅</span>
     <span id="cs-toast-msg">Copied snippet to clipboard!</span>
 </div>
+
+<!-- Back to Top Button -->
+<button type="button" id="cs-back-to-top" class="cs-back-to-top" aria-label="Lên đầu trang" title="Lên đầu trang" onclick="scrollToTop()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
+</button>
 </body>
 </html>

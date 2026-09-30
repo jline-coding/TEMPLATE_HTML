@@ -291,7 +291,13 @@ export function syncSnippets(options = {}) {
 
     for (const file of files) {
       const filePath = resolve(dir, file);
-      const content = readFileSync(filePath, 'utf8');
+      if (!existsSync(filePath)) continue;
+      let content = '';
+      try {
+        content = readFileSync(filePath, 'utf8');
+      } catch {
+        continue;
+      }
       const compName = basename(file, '.ejs').replace(/^_/, '');
       if (stats[compName] === undefined) stats[compName] = 0;
 

@@ -93,6 +93,7 @@ export async function buildEjs(changedFile) {
       }
     } catch (err) {
       console.error(`[ejs] Error extracting PHP header/footer:`, err.message);
+      throw err;
     }
   }
 
@@ -109,6 +110,8 @@ export async function buildEjs(changedFile) {
     return ext === '.ejs' && !name.startsWith('_') && !relPath.startsWith('assets/');
   });
 
+  const errors = [];
+
   if (changedFile) {
     const changedNorm = norm(changedFile);
     const changedBase = basename(changedFile);
@@ -120,13 +123,33 @@ export async function buildEjs(changedFile) {
       if (!isWatch && (relPath === 'components' || relPath.startsWith('components/'))) {
         return;
       }
-      await renderEjsFile(changedFile);
+      try {
+        await renderEjsFile(changedFile);
+      } catch (err) {
+        errors.push({ file: changedFile, error: err });
+      }
+      if (errors.length > 0) {
+        const err = new Error(`EJS render error in ${basename(changedFile)}: ${errors[0].error.message}`);
+        err.details = errors;
+        throw err;
+      }
       return;
     }
   }
 
   for (const file of ejsFiles) {
-    await renderEjsFile(file);
+    try {
+      await renderEjsFile(file);
+    } catch (err) {
+      errors.push({ file, error: err });
+    }
+  }
+
+  if (errors.length > 0) {
+    const summary = errors.map(e => `${basename(e.file)}: ${e.error.message}`).join('; ');
+    const err = new Error(`EJS build failed (${errors.length} file(s)): ${summary}`);
+    err.details = errors;
+    throw err;
   }
 }
 
@@ -137,10 +160,7 @@ async function renderEjsFile(filePath) {
 
     const relPath = norm(relative(PAGES_DIR, filePath));
     const depth = relPath.split('/').length - 1;
-    let assetsDir = './';
-    for (let i = 0; i < depth; i++) {
-      assetsDir += '../';
-    }
+    const assetsDir = depth === 0 ? './' : '../'.repeat(depth);
 
     const layoutName = frontData.layout || '_default';
     const layoutPath = resolve(LAYOUTS_DIR, `${layoutName}.ejs`);
@@ -188,7 +208,7 @@ async function renderEjsFile(filePath) {
         const compDir = dirname(innerPath);
         const compBase = basename(innerPath);
         const compPath = resolve(targetDirPath, compDir === '.' ? '' : compDir, `_${compBase}.ejs`);
-        if (!existsSync(compPath)) return `<!-- Component _${compBase}.ejs not found in ${targetDirName}/ -->`;
+        if (!existsSync(compPath)) return '';
         const compContent = readFileSync(compPath, 'utf8');
         return ejs.render(compContent, {
           file: { data: frontData, path: filePath },
@@ -299,5 +319,6 @@ async function renderEjsFile(filePath) {
     }
   } catch (err) {
     console.error(`[ejs] Error processing ${filePath}:`, err.message);
+    throw err;
   }
 }

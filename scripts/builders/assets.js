@@ -72,7 +72,7 @@ export async function buildGeneralCopy(changedFile) {
           }
         } else {
           ensureDir(dirname(dest));
-          writeFileSync(dest, readFileSync(changedFile));
+          copyFileSync(changedFile, dest);
           console.log(`[copy] ${norm(rel)}`);
         }
       }
@@ -92,7 +92,7 @@ export async function buildGeneralCopy(changedFile) {
           }
         } else {
           ensureDir(dirname(dest));
-          writeFileSync(dest, readFileSync(changedFile));
+          copyFileSync(changedFile, dest);
           console.log(`[copy] ${norm(relative(DIST, dest))}`);
         }
       }
@@ -134,7 +134,7 @@ export async function buildGeneralCopy(changedFile) {
         } else {
           if (isNewer(file, dest)) {
             ensureDir(dirname(dest));
-            writeFileSync(dest, readFileSync(file));
+            copyFileSync(file, dest);
             console.log(`[copy] ${norm(rel)}`);
           }
         }
@@ -158,7 +158,7 @@ export async function buildGeneralCopy(changedFile) {
         } else {
           if (isNewer(file, dest)) {
             ensureDir(dirname(dest));
-            writeFileSync(dest, readFileSync(file));
+            copyFileSync(file, dest);
             console.log(`[copy] ${norm(relative(DIST, dest))}`);
           }
         }
@@ -205,7 +205,7 @@ export function buildVendor(changedFile) {
     for (const destDir of VENDOR_OUT_DIRS) {
       const dest = resolve(destDir, rel);
       ensureDir(dirname(dest));
-      writeFileSync(dest, src);
+      copyFileSync(changedFile, dest);
       console.log(`[vendor] ${norm(relative(DIST, dest))}`);
     }
     return;
@@ -223,7 +223,7 @@ export function buildVendor(changedFile) {
       const dest = resolve(destDir, rel);
       if (isNewer(file, dest)) {
         ensureDir(dirname(dest));
-        writeFileSync(dest, src);
+        copyFileSync(file, dest);
         console.log(`[vendor] ${norm(relative(DIST, dest))}`);
       }
     }

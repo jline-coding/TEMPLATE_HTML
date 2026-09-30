@@ -14,11 +14,14 @@ import * as sass from 'sass-embedded';
 
 import {
   ROOT, DIST, isWatch, OUTPUT_EXT, SITE_URL, LAYOUTS_DIR,
-  WORKBENCH_DIR, WORKBENCH_CATALOG_DIR, WORKBENCH_COMPONENTS_DIR, WORKBENCH_OUT_DIR, WORKBENCH_JS_DIR
+  WORKBENCH_DIR, WORKBENCH_CATALOG_DIR, WORKBENCH_COMPONENTS_DIR, WORKBENCH_OUT_DIR, WORKBENCH_JS_DIR,
+  WORKBENCH_SCSS_DIR, WORKBENCH_LAYOUT_DIR,
+  CLIENT_SCSS_DIR, CLIENT_LAYOUT_DIR
 } from '../tools/config.js';
 import { ensureDir } from '../tools/utils.js';
+import { safeRmDirSync, getDevSessionToken } from '../tools/safety.js';
 import { syncSnippets } from '../sync-snippets.js';
-import { getRegistry } from '../tools/component-service.js';
+import { getRegistry, parseComponentMetadata } from '../tools/component-service.js';
 
 const CATALOG_EJS = resolve(WORKBENCH_CATALOG_DIR, 'catalog.ejs');
 const CATALOG_CSS = resolve(WORKBENCH_CATALOG_DIR, 'catalog.css');
@@ -31,7 +34,7 @@ const WORKBENCH_SCSS = resolve(WORKBENCH_DIR, 'workbench.scss');
 export function cleanWorkbench() {
   if (existsSync(WORKBENCH_OUT_DIR)) {
     try {
-      rmSync(WORKBENCH_OUT_DIR, { recursive: true, force: true });
+      safeRmDirSync(WORKBENCH_OUT_DIR, ROOT);
     } catch (e) {
       // Ignore
     }
@@ -40,12 +43,33 @@ export function cleanWorkbench() {
 
 /**
  * Compile Workbench SCSS preview
+ * Smart Priority: Prioritizes customized site SCSS (src/) if it has real rules,
+ * and seamlessly falls back to workbench/ templates for uninstalled/stub components.
  */
 export async function buildWorkbenchScss() {
-  if (!existsSync(WORKBENCH_SCSS)) return;
   try {
-    const result = await sass.compileAsync(WORKBENCH_SCSS, {
-      loadPaths: [WORKBENCH_DIR, resolve(ROOT, 'src/pages/assets/scss')],
+    let dynamicScss = `@use "sass:math";\n`;
+    dynamicScss += `@use "scss/global" as *;\n`;
+    dynamicScss += `@use "scss/foundation";\n`;
+    dynamicScss += `@use "scss/utilities";\n`;
+
+    const registry = getRegistry();
+    const scssImports = [];
+
+    // Strictly compile from canonical workbench/ repository (Pure Design System Sandbox)
+    for (const item of registry) {
+      if (item.scssFile) {
+        const inLayout = existsSync(resolve(WORKBENCH_LAYOUT_DIR, item.scssFile));
+        const cleanName = item.scssFile.replace(/^_/, '').replace(/\.scss$/, '');
+        const relPath = `scss/${inLayout ? 'layout' : 'component'}/${cleanName}`;
+        scssImports.push(`@use "${relPath}";`);
+      }
+    }
+
+    dynamicScss += '\n/* Canonical Component & Layout Modules */\n' + Array.from(new Set(scssImports)).join('\n') + '\n';
+
+    const result = await sass.compileStringAsync(dynamicScss, {
+      loadPaths: [WORKBENCH_DIR],
       style: 'expanded',
       sourceMap: false
     });
@@ -96,7 +120,8 @@ export async function buildWorkbench(options = {}) {
     .map(item => {
       const ejsPath = resolve(WORKBENCH_COMPONENTS_DIR, item.ejsFile);
       const raw = existsSync(ejsPath) ? readFileSync(ejsPath, 'utf8') : '';
-      let renderedContent = raw;
+      const { content: cleanRaw } = parseComponentMetadata(raw);
+      let renderedContent = cleanRaw;
 
       const mockFile = {
         data: {
@@ -109,7 +134,7 @@ export async function buildWorkbench(options = {}) {
       };
 
       try {
-        renderedContent = ejs.render(raw, {
+        renderedContent = ejs.render(cleanRaw, {
           file: mockFile,
           data: mockFile.data,
           assetsDir: '../',
@@ -177,7 +202,8 @@ export async function buildWorkbench(options = {}) {
       componentModules,
       siteFontLinks,
       assetsDir: '../assets/',
-      siteUrl: SITE_URL
+      siteUrl: SITE_URL,
+      devToken: getDevSessionToken()
     }, {
       filename: CATALOG_EJS
     });
