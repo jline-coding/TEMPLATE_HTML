@@ -1,0 +1,13 @@
+/node_modules
+/public
+
+# Deploy artifacts (generated on CI)
+.repo_lock
+.htpasswd
+.htaccess
+.deploy_sha
+.deploy_manifest.json
+.env
+
+# Auto-generated VS Code snippets
+.vscode/jline-components.code-snippets
