@@ -8,3 +8,6 @@
 .deploy_sha
 .deploy_manifest.json
 .env
+
+# Auto-generated VS Code snippets
+.vscode/jline-components.code-snippets
