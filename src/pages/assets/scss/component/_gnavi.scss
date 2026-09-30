@@ -1,0 +1,252 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > Gnavi
+------------------------------
+*/
+.c-gnavi {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 8;
+    width: 100%;
+    height: 100vh;
+    height: 100lvh;
+    display: none;
+    background-color: var(--primary);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    @include mq(md) {
+        display: block;
+        height: auto;
+        width: auto;
+        position: relative;
+        overflow-y: visible;
+    }
+    &-link{
+        font-size: rem(16);
+        font-weight: 500;
+        text-align: center;
+        display: block;
+        padding: 8px 0;
+        transition: opacity 0.3s ease;
+        @include mq(md) {
+            text-align: left;
+            font-size: clamped(18);
+            padding: 5px 0;
+        }
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+    
+    &-list{
+        @include mq(md) {
+            display: flex;
+            gap: 0 clamped(20,30);
+            align-items: center;
+            justify-content: flex-end;
+        }
+        &__item{
+            position: relative;
+            &.is-btn{
+                display: flex;
+                justify-content: center;
+                padding-top: 20px;
+                @include mq(md) {
+                    display: none;
+                }
+            }
+            &.is-sub{
+                position: relative;
+                @include mq(md) {
+                    padding-right: 20px;
+                }
+                .c-gnavi-link{
+                    padding: 10px 40px;
+                    @include mq(md) {
+                        padding: 5px 0;
+                    }
+                }
+                &::after{
+                    position: absolute;
+                    right: 25px;
+                    top: 25px;
+                    display: block;
+                    content: "";
+                    width: 8px;
+                    height: 8px;
+                    border-right: 2px solid var(--white);
+                    border-bottom: 2px solid var(--white);
+                    transform: translateY(-50%) rotate(45deg);
+                    transition: transform 0.3s ease;
+                    pointer-events: none;
+                    @include mq(md) {
+                        right: 2px;
+                        top: 50%;
+                        transform: translateY(-65%) rotate(45deg);
+                    }
+                }
+
+                &.is-open{
+                    &::after{
+                        transform: translateY(-30%) rotate(-135deg);
+                        @include mq(md) {
+                            transform: translateY(-35%) rotate(-135deg);
+                        }
+                    }
+                    @include mq(md) {
+                        .c-gnavi-sub{
+                            content-visibility: visible;
+                            opacity: 1;
+                            transform: translateX(-50%) translateY(0);
+                            pointer-events: auto;
+                        }
+                    }
+                }
+
+                @include mq(md) {
+                    &:hover,
+                    &:focus-within{
+                        &::after{
+                            transform: translateY(-35%) rotate(-135deg);
+                        }
+                        .c-gnavi-sub{
+                            content-visibility: visible;
+                            opacity: 1;
+                            transform: translateX(-50%) translateY(0);
+                            pointer-events: auto;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &__inner{
+        padding: 100px 0;
+        @include mq(md) {
+            padding: 0;
+        }
+    }
+
+    &-sub{
+        display: none;
+        position: relative;
+        background-color: rgba(0, 0, 0, 0.12);
+        margin: 8px 20px 12px;
+        border-radius: 4px;
+
+        // In-page search (Ctrl+F) support on SP
+        &[hidden="until-found"] {
+            display: none;
+        }
+
+        @supports (content-visibility: hidden) {
+            &[hidden="until-found"] {
+                display: block;
+                content-visibility: hidden;
+            }
+        }
+
+        @include mq(md) {
+            display: block;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            top: calc(100% + 20px);
+            width: 200px;
+            margin: 0;
+            background-color: var(--white);
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease, content-visibility 0.3s ease allow-discrete;
+            z-index: 20;
+
+            &[hidden="until-found"] {
+                display: block;
+                content-visibility: hidden;
+            }
+
+            // Keyboard Tab accessibility
+            &:focus-within {
+                content-visibility: visible;
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+                pointer-events: auto;
+            }
+
+            // Hover bridge
+            &::before{
+                content: "";
+                position: absolute;
+                bottom: 100%;
+                left: 0;
+                width: 100%;
+                height: 20px;
+            }
+
+            // Caret triangle
+            &::after{
+                content: "";
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%) translateY(1px);
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 0 6px 6px 6px;
+                border-color: transparent transparent var(--white) transparent;
+            }
+        }
+
+        &-link{
+            @extend %fz-16;
+            font-weight: 500;
+            text-align: center;
+            display: block;
+            background-color: transparent;
+            color: var(--white);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 12px 20px;
+            transition: background-color 0.25s ease, color 0.25s ease, padding-left 0.25s ease;
+
+            @include mq(md) {
+                text-align: left;
+                background-color: var(--white);
+                color: var(--base);
+                border-bottom: 1px solid #f0f0f0;
+                padding: 12px 20px;
+            }
+
+            &:hover{
+                background-color: rgba(255, 255, 255, 0.1);
+                @include mq(md) {
+                    background-color: var(--primary);
+                    color: var(--white);
+                    padding-left: 24px;
+                }
+            }
+        }
+
+        &__item:first-child{
+            .c-gnavi-sub-link{
+                @include mq(md) {
+                    border-radius: 6px 6px 0 0;
+                }
+            }
+        }
+
+        &__item:last-child{
+            .c-gnavi-sub-link{
+                border-bottom: none;
+                @include mq(md) {
+                    border-radius: 0 0 6px 6px;
+                }
+            }
+        }
+    }
+}

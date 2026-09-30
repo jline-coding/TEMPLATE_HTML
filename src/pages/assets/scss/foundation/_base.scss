@@ -1,0 +1,72 @@
+@use "../global" as *;
+
+/*!
+foundation > base
+------------------------------
+*/
+:root {
+    --base: #3E3E3E;
+    --primary: #e60012;
+    --black: #000;
+    --white: #fff;
+    --gray: #ccc;
+    --red: #f45a3e;
+}
+
+body {
+    line-height: 2;
+    @extend %fz-16;
+    font-weight: 400;
+    color: var(--base);
+    font-family: $font-family-base;
+    letter-spacing: 0.01em;
+}
+
+body.overflow_modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.l-wrapper {
+    position: relative;
+    display: block;
+    overflow: clip;
+}
+
+img {
+    width: 100%;
+}
+
+a {
+    cursor: pointer;
+    transition: 0.5s;
+
+    &:hover {
+        opacity: 1;
+
+        @include mq(md) {
+            text-decoration: none;
+            opacity: 0.8;
+        }
+    }
+
+}
+
+.is-pc {
+    display: none !important;
+
+    @include mq(md) {
+        display: block !important;
+    }
+}
+
+
+.is-sp {
+    display: block !important;
+
+    @include mq(md) {
+        display: none !important;
+    }
+}
