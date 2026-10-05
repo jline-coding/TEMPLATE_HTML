@@ -83,8 +83,8 @@ export function parseComponentHtml(html) {
   if (tagMatch) {
     const classAttr = tagMatch[2];
     const classes = classAttr.split(/\s+/).filter(Boolean);
-    // Prioritize c-* or l-* class
-    const compClass = classes.find(c => /^[cl]-/.test(c));
+    // Prioritize c-* or l-* class, ignoring animation hooks like c-inview and js-inview
+    const compClass = classes.find(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')) || classes.find(c => /^[cl]-/.test(c));
     if (compClass) {
       rootClass = compClass;
       // Extract base name: c-accordion__head -> accordion, c-header-01 -> header_01, l-flex -> flexs
@@ -97,12 +97,13 @@ export function parseComponentHtml(html) {
     }
   }
 
-  // Fallback: search for any c-* or l-* inside snippet
+  // Fallback: search for any c-* or l-* inside snippet (ignoring inview hooks)
   if (!compName) {
-    const anyCompMatch = trimmed.match(/class=["'][^"']*\b([cl]-([a-zA-Z0-9_-]+))/i);
-    if (anyCompMatch) {
-      rootClass = anyCompMatch[1];
-      let rawBase = anyCompMatch[2].split(/__|--/)[0];
+    const allCompMatches = Array.from(trimmed.matchAll(/class=["'][^"']*\b([cl]-([a-zA-Z0-9_-]+))/gi));
+    const validMatch = allCompMatches.find(m => !m[1].startsWith('c-inview') && !m[1].startsWith('js-inview')) || allCompMatches[0];
+    if (validMatch) {
+      rootClass = validMatch[1];
+      let rawBase = validMatch[2].split(/__|--/)[0];
       compName = normalizeName(rawBase);
       if (['flex', 'grid', 'btn', 'text', 'title', 'list', 'tbl'].includes(compName)) {
         compName = compName + 's';

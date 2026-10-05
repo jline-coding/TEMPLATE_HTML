@@ -1,18 +1,32 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="workbench-token" content="<%= (typeof devToken !== 'undefined' && devToken) ? devToken : '' %>">
-  <title>Workbench Component Library & Design System</title>
-  <link rel="stylesheet" href="./catalog.css">
-  <link rel="stylesheet" href="./workbench.css">
+  <title>Workbench Component Library &amp; Design System</title>
+
+  <script>
+    (function () {
+      var savedLang = 'vi';
+      try {
+        savedLang = localStorage.getItem('wb_lang') || 'vi';
+      } catch (_) {}
+      document.documentElement.setAttribute('data-lang', savedLang);
+      document.documentElement.setAttribute('lang', savedLang);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="./catalog.css?v=<%= (typeof devToken !== 'undefined' && devToken) ? devToken : '1' %>">
+  <link rel="stylesheet" href="./workbench.css?v=<%= (typeof devToken !== 'undefined' && devToken) ? devToken : '1' %>">
+  <link rel="stylesheet" href="../assets/vendor/slick/slick.css">
   <!-- Site Fonts (Auto-inherited from site layout) -->
   <%- siteFontLinks %>
   <script src="../assets/vendor/jquery/jquery-4.0.0.min.js" defer></script>
+  <script src="../assets/vendor/slick/slick.min.js" defer></script>
   <script src="../assets/js/inview.js" defer></script>
-  <script src="./catalog.js" defer></script>
-  <script src="./components.js" defer></script>
+  <script src="./catalog.js?v=<%= (typeof devToken !== 'undefined' && devToken) ? devToken : '1' %>" defer></script>
+  <script src="./components.js?v=<%= (typeof devToken !== 'undefined' && devToken) ? devToken : '1' %>" defer></script>
 </head>
 <body>
 
@@ -26,20 +40,38 @@
                 <div class="cs-brand__icon">⚡</div>
                 <div>
                     <div class="cs-brand__text">DEV WORKBENCH</div>
-                    <div class="cs-brand__sub">Design System & Component Registry</div>
+                    <div class="cs-brand__sub">
+                        <span class="lang-vi">Hệ Thống Thiết Kế &amp; Thư Viện Component</span>
+                        <span class="lang-ja">デザインシステム &amp; コンポーネントカタログ</span>
+                    </div>
                 </div>
             </div>
             <div class="cs-search">
                 <span class="cs-search__icon">🔍</span>
-                <input type="text" id="cs-filter-input" class="cs-search__input" placeholder="Lọc component..." autocomplete="off">
+                <input type="text" id="cs-filter-input" class="cs-search__input" placeholder="Lọc component..." data-placeholder-vi="Lọc component..." data-placeholder-ja="コンポーネントを検索..." autocomplete="off">
             </div>
             <!-- Quick Filter Tabs -->
             <div class="cs-cat-tabs">
-                <button type="button" class="cs-cat-tab is-active" data-cat="all" onclick="filterCategory('all', this)">Tất cả</button>
-                <button type="button" class="cs-cat-tab" data-cat="header" onclick="filterCategory('header', this)">🧭 Header</button>
-                <button type="button" class="cs-cat-tab" data-cat="footer" onclick="filterCategory('footer', this)">⚓ Footer</button>
-                <button type="button" class="cs-cat-tab" data-cat="layout" onclick="filterCategory('layout', this)">📐 Layout</button>
-                <button type="button" class="cs-cat-tab" data-cat="component" onclick="filterCategory('component', this)">🧩 Components</button>
+                <button type="button" class="cs-cat-tab is-active" data-cat="all" onclick="filterCategory('all', this)">
+                    <span class="lang-vi">Tất cả</span>
+                    <span class="lang-ja">すべて</span>
+                </button>
+                <button type="button" class="cs-cat-tab" data-cat="header" onclick="filterCategory('header', this)">
+                    <span class="lang-vi">🧭 Header</span>
+                    <span class="lang-ja">🧭 ヘッダー</span>
+                </button>
+                <button type="button" class="cs-cat-tab" data-cat="layout" onclick="filterCategory('layout', this)">
+                    <span class="lang-vi">📐 Layout</span>
+                    <span class="lang-ja">📐 レイアウト</span>
+                </button>
+                <button type="button" class="cs-cat-tab" data-cat="component" onclick="filterCategory('component', this)">
+                    <span class="lang-vi">🧩 Component</span>
+                    <span class="lang-ja">🧩 コンポーネント</span>
+                </button>
+                <button type="button" class="cs-cat-tab" data-cat="footer" onclick="filterCategory('footer', this)">
+                    <span class="lang-vi">⚓ Footer</span>
+                    <span class="lang-ja">⚓ フッター</span>
+                </button>
             </div>
         </div>
 
@@ -47,9 +79,9 @@
             <% 
               const comps = typeof componentModules !== 'undefined' ? componentModules : [];
               const headerComps = comps.filter(c => c.category === 'header');
-              const footerComps = comps.filter(c => c.category === 'footer');
               const layoutComps = comps.filter(c => c.category === 'layout');
               const uiComps = comps.filter(c => c.category === 'component');
+              const footerComps = comps.filter(c => c.category === 'footer');
               let globalIdx = 1;
             %>
 
@@ -57,15 +89,16 @@
             <% if (headerComps.length > 0) { %>
             <div class="cs-nav__group" data-nav-group="header">
                 <div class="cs-nav__group-title">
-                    <span>🧭 Header (<%= headerComps.length %>)</span>
+                    <span class="lang-vi">🧭 Header (<%= headerComps.length %>)</span>
+                    <span class="lang-ja">🧭 ヘッダー (<%= headerComps.length %>)</span>
                     <span class="cs-nav__group-badge">header</span>
                 </div>
                 <ul class="cs-nav__list">
                     <% headerComps.forEach(comp => { %>
                     <li data-nav-item="<%= comp.name %>">
                         <a href="#sec-<%= comp.name %>" class="cs-nav__link">
-                            <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
+                            <span class="cs-nav__link-left">
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? 'Đã cài / 導入済み' : 'Chưa cài / 未導入' %>"></span>
                                 <span><%= comp.title %></span>
                             </span>
                             <span class="cs-nav__badge"><%= comp.file %></span>
@@ -76,42 +109,20 @@
             </div>
             <% } %>
 
-            <!-- 2. Footer Group -->
-            <% if (footerComps.length > 0) { %>
-            <div class="cs-nav__group" data-nav-group="footer">
-                <div class="cs-nav__group-title">
-                    <span>⚓ Footer (<%= footerComps.length %>)</span>
-                    <span class="cs-nav__group-badge">footer</span>
-                </div>
-                <ul class="cs-nav__list">
-                    <% footerComps.forEach(comp => { %>
-                    <li data-nav-item="<%= comp.name %>">
-                        <a href="#sec-<%= comp.name %>" class="cs-nav__link">
-                            <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
-                                <span><%= comp.title %></span>
-                            </span>
-                            <span class="cs-nav__badge"><%= comp.file %></span>
-                        </a>
-                    </li>
-                    <% }); %>
-                </ul>
-            </div>
-            <% } %>
-
-            <!-- 3. Layout Group -->
+            <!-- 2. Layout Group -->
             <% if (layoutComps.length > 0) { %>
             <div class="cs-nav__group" data-nav-group="layout">
                 <div class="cs-nav__group-title">
-                    <span>📐 Layout & Structure (<%= layoutComps.length %>)</span>
+                    <span class="lang-vi">📐 Layout &amp; Cấu trúc (<%= layoutComps.length %>)</span>
+                    <span class="lang-ja">📐 レイアウト・構成 (<%= layoutComps.length %>)</span>
                     <span class="cs-nav__group-badge">layout</span>
                 </div>
                 <ul class="cs-nav__list">
                     <% layoutComps.forEach(comp => { %>
                     <li data-nav-item="<%= comp.name %>">
                         <a href="#sec-<%= comp.name %>" class="cs-nav__link">
-                            <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
+                            <span class="cs-nav__link-left">
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? 'Đã cài / 導入済み' : 'Chưa cài / 未導入' %>"></span>
                                 <span><%= comp.title %></span>
                             </span>
                             <span class="cs-nav__badge"><%= comp.file %></span>
@@ -122,19 +133,44 @@
             </div>
             <% } %>
 
-            <!-- 4. UI Components Group -->
+            <!-- 3. UI Components Group -->
             <% if (uiComps.length > 0) { %>
             <div class="cs-nav__group" data-nav-group="component">
                 <div class="cs-nav__group-title">
-                    <span>🧩 UI Components (<%= uiComps.length %>)</span>
+                    <span class="lang-vi">🧩 UI Components (<%= uiComps.length %>)</span>
+                    <span class="lang-ja">🧩 UI コンポーネント (<%= uiComps.length %>)</span>
                     <span class="cs-nav__group-badge">c-*</span>
                 </div>
                 <ul class="cs-nav__list">
                     <% uiComps.forEach(comp => { %>
                     <li data-nav-item="<%= comp.name %>">
                         <a href="#sec-<%= comp.name %>" class="cs-nav__link">
-                            <span style="display:flex;align-items:center;gap:6px;">
-                                <span class="cs-nav__status-dot <%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'is-installed is-diverged' : 'is-installed is-synced') : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? (comp.syncStatus === 'diverged' ? 'Site có thay đổi' : 'Đã đồng bộ') : 'Chưa cài' %>"></span>
+                            <span class="cs-nav__link-left">
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? 'Đã cài / 導入済み' : 'Chưa cài / 未導入' %>"></span>
+                                <span><%= comp.title %></span>
+                            </span>
+                            <span class="cs-nav__badge"><%= comp.file %></span>
+                        </a>
+                    </li>
+                    <% }); %>
+                </ul>
+            </div>
+            <% } %>
+
+            <!-- 4. Footer Group -->
+            <% if (footerComps.length > 0) { %>
+            <div class="cs-nav__group" data-nav-group="footer">
+                <div class="cs-nav__group-title">
+                    <span class="lang-vi">⚓ Footer (<%= footerComps.length %>)</span>
+                    <span class="lang-ja">⚓ フッター (<%= footerComps.length %>)</span>
+                    <span class="cs-nav__group-badge">footer</span>
+                </div>
+                <ul class="cs-nav__list">
+                    <% footerComps.forEach(comp => { %>
+                    <li data-nav-item="<%= comp.name %>">
+                        <a href="#sec-<%= comp.name %>" class="cs-nav__link">
+                            <span class="cs-nav__link-left">
+                                <span class="cs-nav__status-dot <%= comp.isInstalled ? 'is-installed' : '' %>" id="dot-<%= comp.name %>" title="<%= comp.isInstalled ? 'Đã cài / 導入済み' : 'Chưa cài / 未導入' %>"></span>
                                 <span><%= comp.title %></span>
                             </span>
                             <span class="cs-nav__badge"><%= comp.file %></span>
@@ -154,32 +190,55 @@
     <main class="cs-main">
         <header class="cs-topbar">
             <div>
-                <h1 class="cs-topbar__title">Workbench Component Catalog</h1>
-                <p class="cs-topbar__desc">Kho mẫu chuẩn độc lập dành cho dev. Xem trước trực quan, 1-click import chuẩn xác vào site chính.</p>
+                <h1 class="cs-topbar__title">
+                    <span class="lang-vi">Thư Viện Component Workbench</span>
+                    <span class="lang-ja">Workbench コンポーネントカタログ</span>
+                </h1>
             </div>
             <div class="cs-topbar__controls">
-                <div class="cs-viewport-switcher">
-                    <button type="button" class="cs-viewport-btn is-active" onclick="setViewport('desktop', this)">💻 Desktop</button>
-                    <button type="button" class="cs-viewport-btn" onclick="setViewport('tablet', this)">📱 Tablet 768px</button>
-                    <button type="button" class="cs-viewport-btn" onclick="setViewport('mobile', this)">📱 Mobile 375px</button>
+                <a href="./inview.html" class="cs-btn-inview" title="Xem Showcase &amp; Hướng dẫn Motion Inview / Inviewモーションの確認・解説">
+                    <span class="cs-btn-inview__icon">🎬</span>
+                    <span class="lang-vi">Mẫu Chuyển Động Inview</span>
+                    <span class="lang-ja">Inview モーション見本</span>
+                </a>
+                <div class="cs-stat-pill">
+                    <span class="lang-vi">Tổng module: <strong><%= comps.length %></strong></span>
+                    <span class="lang-ja">総モジュール: <strong><%= comps.length %></strong></span>
                 </div>
-                <div class="cs-stat-pill">Modules: <strong><%= comps.length %></strong></div>
-                <div class="cs-stat-pill" id="cs-installed-stat">Đã cài vào site: <strong>...</strong></div>
+                <div class="cs-stat-pill" id="cs-installed-stat">
+                    <span class="lang-vi">Đã cài vào site: <strong>...</strong></span>
+                    <span class="lang-ja">サイト導入済み: <strong>...</strong></span>
+                </div>
+                <div class="wb-lang-toggle" title="Chuyển đổi ngôn ngữ / 言語切替">
+                    <button type="button" class="wb-lang-btn is-active" data-lang-btn="vi">🇻🇳 VI</button>
+                    <button type="button" class="wb-lang-btn" data-lang-btn="ja">🇯🇵 JA</button>
+                </div>
             </div>
         </header>
 
-        <div id="cs-viewport-container" class="cs-viewport-wrapper">
+        <div class="cs-viewport-wrapper">
             <% if (comps.length === 0) { %>
-            <div class="cs-empty-state" style="padding: 70px 24px; text-align: center; background: #ffffff; border-radius: 16px; margin: 40px auto; max-width: 680px; border: 1.5px dashed #cbd5e1; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <div style="font-size: 56px; margin-bottom: 16px; line-height: 1;">📭</div>
-                <h2 style="font-size: 22px; font-weight: 700; color: #1e293b; margin-bottom: 10px;">Workbench Hiện Đang Trống</h2>
-                <p style="font-size: 14px; color: #64748b; line-height: 1.7; margin-bottom: 24px;">
-                    Tất cả component mẫu trong <code>workbench/</code> đã được dọn sạch theo yêu cầu.<br>
-                    Bạn có thể tự tạo file mới hoặc dùng chức năng <strong>Export Selection</strong> từ VS Code để đưa component vào thử nghiệm.
+            <div class="cs-empty-state">
+                <div class="cs-empty-state__icon">📭</div>
+                <h2 class="cs-empty-state__title">
+                    <span class="lang-vi">Workbench Hiện Đang Trống</span>
+                    <span class="lang-ja">Workbench は現在空です</span>
+                </h2>
+                <p class="cs-empty-state__desc">
+                    <span class="lang-vi">
+                        Tất cả component mẫu trong <code>workbench/</code> đã được dọn sạch theo yêu cầu.<br>
+                        Bạn có thể tự tạo file mới hoặc dùng chức năng <strong>Export Selection</strong> từ VS Code để đưa component vào thử nghiệm.
+                    </span>
+                    <span class="lang-ja">
+                        <code>workbench/</code> 内のサンプルコンポーネントはすべて整理されました。<br>
+                        新規ファイルを作成するか、VS Codeの <strong>Export Selection</strong> 機能を使ってテスト用コンポーネントを追加できます。
+                    </span>
                 </p>
-                <div style="display: inline-flex; flex-direction: column; gap: 8px; text-align: left; font-size: 13px; color: #334155; background: #f8fafc; padding: 16px 22px; border-radius: 10px; border: 1px solid #e2e8f0;">
-                    <div>📝 <strong>Cách 1 (Thủ công):</strong> Tạo file <code>workbench/components/_&lt;tên&gt;.ejs</code> và <code>workbench/scss/component/_&lt;tên&gt;.scss</code></div>
-                    <div>⚡ <strong>Cách 2 (Export từ Site):</strong> Chạy lệnh hoặc dùng VS Code Extension để export block HTML trực tiếp từ site vào Showroom</div>
+                <div class="cs-empty-state__guide">
+                    <div class="lang-vi">📝 <strong>Cách 1 (Thủ công):</strong> Tạo file <code>workbench/components/_&lt;tên&gt;.ejs</code> và <code>workbench/scss/component/_&lt;tên&gt;.scss</code></div>
+                    <div class="lang-ja">📝 <strong>方法1 (手動):</strong> <code>workbench/components/_&lt;名前&gt;.ejs</code> と <code>workbench/scss/component/_&lt;名前&gt;.scss</code> を作成</div>
+                    <div class="lang-vi">⚡ <strong>Cách 2 (Export từ Site):</strong> Chạy lệnh hoặc dùng VS Code Extension để export block HTML trực tiếp từ site vào Showroom</div>
+                    <div class="lang-ja">⚡ <strong>方法2 (サイトから抽出):</strong> コマンドまたはVS Code拡張機能でサイトのHTMLブロックを直接Showroomへ出力</div>
                 </div>
             </div>
             <% } %>
@@ -190,7 +249,6 @@
                      data-file="<%= comp.file %>"
                      data-cat="<%= comp.category %>"
                      data-installed="<%= comp.isInstalled ? 'true' : 'false' %>"
-                     data-sync-status="<%= comp.syncStatus || 'uninstalled' %>"
                      data-has-js="<%= !!comp.jsContent ? 'true' : 'false' %>">
                 <textarea class="cs-raw-ejs" style="display:none;"><%= comp.rawContent %></textarea>
                 <% if (comp.scssContent) { %>
@@ -215,15 +273,23 @@
             <div class="cs-modal__title-group">
                 <span class="cs-modal__icon">⚡</span>
                 <div>
-                    <h3 class="cs-modal__title">Tích Hợp JavaScript Cho Component</h3>
+                    <h3 class="cs-modal__title">
+                        <span class="lang-vi">Tích Hợp JavaScript Cho Component</span>
+                        <span class="lang-ja">コンポーネント用 JavaScript の統合</span>
+                    </h3>
                     <p class="cs-modal__subtitle" id="cs-js-modal-comp-name">Component</p>
                 </div>
             </div>
-            <button type="button" class="cs-modal__close" onclick="closeJsModal()" title="Đóng">✕</button>
+            <button type="button" class="cs-modal__close" onclick="closeJsModal()" title="Đóng / 閉じる">✕</button>
         </div>
         <div class="cs-modal__body">
             <p class="cs-modal__desc">
-                Component này có module JavaScript đi kèm. Chọn file trong <code>assets/js/</code> để tự động tích hợp mã vào <strong>cuối file</strong> (được bọc độc lập, không ảnh hưởng code hiện có):
+                <span class="lang-vi">
+                    Component này có module JavaScript đi kèm. Chọn file trong <code>assets/js/</code> để tự động tích hợp mã vào <strong>cuối file</strong> (được bọc độc lập, không ảnh hưởng code hiện có):
+                </span>
+                <span class="lang-ja">
+                    このコンポーネントには関連するJavaScriptが含まれています。<code>assets/js/</code> 内の対象ファイルを選択すると、安全に<strong>ファイルの末尾</strong>へ自動統合されます（独立スコープ化され既存コードに影響しません）:
+                </span>
             </p>
             <div class="cs-js-file-list" id="cs-js-file-list">
                 <!-- Dynamically populated from /__api/js-files -->
@@ -235,7 +301,10 @@
                     <span class="cs-js-option__radio"></span>
                     <span class="cs-js-option__icon">📄</span>
                     <span class="cs-js-option__info">
-                        <span class="cs-js-option__name">Tạo file mới trong assets/js/:</span>
+                        <span class="cs-js-option__name">
+                            <span class="lang-vi">Tạo file mới trong assets/js/:</span>
+                            <span class="lang-ja">assets/js/ に新規ファイル作成:</span>
+                        </span>
                     </span>
                     <input type="text" id="cs-custom-js-input" placeholder="custom.js" class="cs-js-custom-input" disabled onclick="event.stopPropagation()">
                 </label>
@@ -247,15 +316,27 @@
                     <span class="cs-js-option__radio"></span>
                     <span class="cs-js-option__icon">🚫</span>
                     <span class="cs-js-option__info">
-                        <span class="cs-js-option__name">Không import JS</span>
-                        <span class="cs-js-option__desc">Chỉ import SCSS và HTML snippet</span>
+                        <span class="cs-js-option__name">
+                            <span class="lang-vi">Không import JS</span>
+                            <span class="lang-ja">JSをインポートしない</span>
+                        </span>
+                        <span class="cs-js-option__desc">
+                            <span class="lang-vi">Chỉ import SCSS và HTML snippet</span>
+                            <span class="lang-ja">SCSSとHTMLスニペットのみインポート</span>
+                        </span>
                     </span>
                 </label>
             </div>
         </div>
         <div class="cs-modal__footer">
-            <button type="button" class="cs-modal-btn cs-modal-btn--cancel" onclick="closeJsModal()">Hủy</button>
-            <button type="button" class="cs-modal-btn cs-modal-btn--confirm" id="cs-js-modal-confirm-btn" onclick="confirmJsImport()">🚀 Xác Nhận Import</button>
+            <button type="button" class="cs-modal-btn cs-modal-btn--cancel" onclick="closeJsModal()">
+                <span class="lang-vi">Hủy</span>
+                <span class="lang-ja">キャンセル</span>
+            </button>
+            <button type="button" class="cs-modal-btn cs-modal-btn--confirm" id="cs-js-modal-confirm-btn" onclick="confirmJsImport()">
+                <span class="lang-vi">🚀 Xác Nhận Import</span>
+                <span class="lang-ja">🚀 インポート確定</span>
+            </button>
         </div>
     </div>
 </div>
@@ -267,7 +348,7 @@
 </div>
 
 <!-- Back to Top Button -->
-<button type="button" id="cs-back-to-top" class="cs-back-to-top" aria-label="Lên đầu trang" title="Lên đầu trang" onclick="scrollToTop()">
+<button type="button" id="cs-back-to-top" class="cs-back-to-top" aria-label="Lên đầu trang / トップへ戻る" title="Lên đầu trang / トップへ戻る" onclick="scrollToTop()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="19" x2="12" y2="5"></line>
         <polyline points="5 12 12 5 19 12"></polyline>

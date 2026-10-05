@@ -1,5 +1,3 @@
-
-
 /* ==========================================================================
    [Component: header]
    ========================================================================== */
@@ -12,171 +10,277 @@
     const $header = $('.c-header');
     if (!$header.length) return;
 
-    // Elements inside header (supports both new .c-header-* and fallback classes)
-    const $toggle = $header.find('.c-header-toggle, .c-toggle');
-    const $gnavi = $header.find('.c-header-gnavi, .c-gnavi');
-    const $subParent = $gnavi.find('.c-header-gnavi__item.is-sub, .c-gnavi-list__item.is-sub');
-    const $subLink = $subParent.children('.c-header-gnavi__link, .c-gnavi-link');
+    const $toggle = $header.find('.c-header-toggle');
+    const $gnavi = $header.find('.c-header-gnavi');
+    const $subItems = $gnavi.find('.c-header-gnavi__item.is-sub');
+    const $subLinks = $subItems.children('.c-header-gnavi__link');
 
     let scrollPos = 0;
 
-    // --- 1. Header scroll active state (RAF 60fps) ---
-    function updateScrollState() {
-        $header.toggleClass('active', $window.scrollTop() > 50);
-    }
-
-    let ticking = false;
+    // Header scroll active
     $window.on('scroll.header resize.header', function () {
-        if (!ticking) {
-            requestAnimationFrame(function () {
-                updateScrollState();
-                ticking = false;
-            });
-            ticking = true;
-        }
+        $header.toggleClass('is-active', $window.scrollTop() > 50);
     });
-    $window.on('load.header', updateScrollState);
-    $(updateScrollState);
+    $header.toggleClass('is-active', $window.scrollTop() > 50);
 
-    // --- 2. Body scroll lock (Preserves scroll position) ---
-    function lockBody() {
-        scrollPos = $window.scrollTop();
-        $body.addClass('overflow_modal').css({ top: -scrollPos + 'px' });
-    }
+    // Mobile menu toggle
+    $toggle.on('click.header', function (e) {
+        e.preventDefault();
+        const isOpen = $(this).hasClass('is-active');
 
-    function unlockBody() {
-        $body.removeClass('overflow_modal').css({ top: '' });
-        $window.scrollTop(scrollPos);
-    }
+        $(this).toggleClass('is-active', !isOpen);
+        $header.toggleClass('is-open', !isOpen);
 
-    // --- 3. Close submenu helper ---
-    function closeSub($items) {
-        $items.removeClass('is-open').children('.c-header-gnavi__sub, .c-gnavi-sub').each(function () {
-            const $sub = $(this);
-            $sub.css({ overflow: 'hidden' }).stop().animate({ height: 0 }, 300, function () {
-                $sub.attr('hidden', 'until-found').css({ height: '', overflow: '' });
-            });
-        });
-    }
-
-    // --- 4. Close mobile menu completely ---
-    function closeMenu() {
-        $toggle.removeClass('active');
-        $gnavi.removeClass('active is-open');
-        $header.removeClass('is-open');
-        if (window.matchMedia('(max-width: 767px)').matches) {
-            $gnavi.attr('hidden', 'until-found');
-        }
-        if ($body.hasClass('overflow_modal')) {
-            unlockBody();
-        }
-        closeSub($subParent);
-    }
-
-    // --- 5. Toggle mobile menu on button click ---
-    $toggle.on('click.header', function () {
-        const isActive = $(this).hasClass('active');
-
-        if (isActive) {
-            closeMenu();
+        if (!isOpen) {
+            scrollPos = $window.scrollTop();
+            $body.addClass('overflow_modal').css({ top: -scrollPos + 'px' });
         } else {
-            $gnavi.removeAttr('hidden');
-            $(this).addClass('active');
-            $gnavi.addClass('active is-open');
-            $header.addClass('is-open');
-            lockBody();
+            $body.removeClass('overflow_modal').css({ top: '' });
+            $window.scrollTop(scrollPos);
+            $subItems.removeClass('is-open').children('.c-header-gnavi__sub').slideUp(200);
         }
+
+        $gnavi.stop(true, true).slideToggle(300);
     });
 
-    // --- 6. Submenu accordion on SP (< 768px) ---
-    $subLink.on('click.header', function (e) {
-        if (window.matchMedia('(min-width: 768px)').matches) return;
+    // Submenu accordion (mobile only)
+    $subLinks.on('click.header', function (e) {
+        if ($window.width() >= 768) return;
         e.preventDefault();
 
         const $parent = $(this).parent();
-        const $targetSub = $parent.children('.c-header-gnavi__sub, .c-gnavi-sub');
+        const $targetSub = $parent.children('.c-header-gnavi__sub');
         const isOpen = $parent.hasClass('is-open');
 
+        $subItems.not($parent).filter('.is-open').removeClass('is-open')
+            .children('.c-header-gnavi__sub').stop(true, true).slideUp(200);
+
         $parent.toggleClass('is-open', !isOpen);
-        if (!isOpen) {
-            $targetSub.removeAttr('hidden');
-            const targetHeight = $targetSub.css({ height: 'auto' }).outerHeight();
-            $targetSub.css({ height: 0, overflow: 'hidden' })
-                .stop()
-                .animate({ height: targetHeight }, 300, function () {
-                    $(this).css({ height: '', overflow: '' });
-                });
-        } else {
-            $targetSub.css({ overflow: 'hidden' })
-                .stop()
-                .animate({ height: 0 }, 300, function () {
-                    $(this).attr('hidden', 'until-found').css({ height: '', overflow: '' });
-                });
-        }
-
-        // Close sibling submenus
-        closeSub($subParent.not($parent).filter('.is-open'));
+        $targetSub.stop(true, true).slideToggle(300);
     });
 
-    // --- 7. Auto close menu when clicking SP anchor links ---
+    // Close menu when clicking anchor link
     $gnavi.on('click.header', 'a[href^="#"]', function () {
-        if (window.matchMedia('(max-width: 767px)').matches) {
-            closeMenu();
+        if ($window.width() < 768 && $toggle.hasClass('is-active')) {
+            $toggle.trigger('click');
         }
     });
 
-    // --- 8. Ctrl+F / Native Find-in-page: auto reveal menu and submenu ---
-    function handleBeforeMatch(e) {
-        const target = e.target;
-        const $target = $(target);
-
-        // Check if the matched element is inside header navigation
-        const $gnaviMatch = $target.closest('.c-header-gnavi, .c-gnavi');
-        if ($gnaviMatch.length) {
-            // 1. If mobile menu is closed, automatically open it!
-            if (!$toggle.hasClass('active')) {
-                $toggle.addClass('active');
-                $gnavi.removeAttr('hidden').addClass('active is-open');
-                $header.addClass('is-open');
-                lockBody();
-            }
-
-            // 2. If matched text is inside a submenu, automatically open that submenu!
-            const $sub = $target.closest('.c-header-gnavi__sub, .c-gnavi-sub');
-            if ($sub.length) {
-                const $parent = $sub.closest('.c-header-gnavi__item, .c-gnavi-list__item');
-                $parent.addClass('is-open');
-                $sub.removeAttr('hidden').css({ height: '', overflow: '' });
-            }
-        }
-    }
-
-    document.addEventListener('beforematch', handleBeforeMatch, true);
-
-    // --- 9. Initial sync & reset states when resizing to desktop (>= 768px) ---
-    function syncGnaviState() {
-        if (window.matchMedia('(min-width: 768px)').matches) {
-            $gnavi.removeAttr('hidden');
-        } else {
-            if (!$toggle.hasClass('active')) {
-                $gnavi.attr('hidden', 'until-found');
-            }
-        }
-    }
-    syncGnaviState();
-
-    let resizeTimer;
+    // Reset when resizing to desktop
     $window.on('resize.header', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            if (window.matchMedia('(min-width: 768px)').matches) {
-                closeMenu();
-                $gnavi.removeAttr('hidden');
-                $subParent.children('.c-header-gnavi__sub, .c-gnavi-sub').removeAttr('style');
-            } else {
-                syncGnaviState();
+        if ($window.width() >= 768) {
+            $toggle.removeClass('is-active');
+            $header.removeClass('is-open');
+            $body.removeClass('overflow_modal').css({ top: '' });
+            $gnavi.removeAttr('style');
+            $subItems.removeClass('is-open').children('.c-header-gnavi__sub').removeAttr('style');
+        }
+    });
+})(window.jQuery || window.$);
+
+/* ==========================================================================
+   [Component: footer]
+   ========================================================================== */
+(function ($, window) {
+    if (!$) return;
+
+    const $window = $(window);
+    const $totop = $('.c-totop');
+
+    if (!$totop.length) return;
+
+    const ACTIVE_OFFSET = 50;
+    const SCROLL_DURATION = 600;
+
+    let ticking = false;
+
+    /**
+     * Update visibility.
+     */
+    function update() {
+        $totop.toggleClass(
+            'is-active',
+            $window.scrollTop() > ACTIVE_OFFSET
+        );
+    }
+
+    /**
+     * Limit scroll handling to one update per animation frame.
+     */
+    function requestUpdate() {
+        if (ticking) return;
+
+        ticking = true;
+
+        window.requestAnimationFrame(function () {
+            update();
+            ticking = false;
+        });
+    }
+
+    $window.on('scroll.totop', requestUpdate);
+
+    $totop.on('click.totop', function (event) {
+        event.preventDefault();
+
+        const $htmlBody = $('html, body');
+
+        $htmlBody.stop(true);
+
+        if (
+            window.matchMedia(
+                '(prefers-reduced-motion: reduce)'
+            ).matches
+        ) {
+            $htmlBody.scrollTop(0);
+            return;
+        }
+
+        $htmlBody.animate(
+            {
+                scrollTop: 0,
+            },
+            SCROLL_DURATION
+        );
+    });
+
+    update();
+
+})(window.jQuery, window);
+
+/* ==========================================================================
+   [Component: btn]
+   ========================================================================== */
+(function ($, window) {
+    if (!$) return;
+
+    const $window = $(window);
+    const $totop = $('.c-totop');
+
+    if (!$totop.length) return;
+
+    const ACTIVE_OFFSET = 50;
+    const SCROLL_DURATION = 600;
+
+    let ticking = false;
+
+    /**
+     * Update visibility.
+     */
+    function update() {
+        $totop.toggleClass(
+            'is-active',
+            $window.scrollTop() > ACTIVE_OFFSET
+        );
+    }
+
+    /**
+     * Limit scroll handling to one update per animation frame.
+     */
+    function requestUpdate() {
+        if (ticking) return;
+
+        ticking = true;
+
+        window.requestAnimationFrame(function () {
+            update();
+            ticking = false;
+        });
+    }
+
+    $window.on('scroll.totop', requestUpdate);
+
+    $totop.on('click.totop', function (event) {
+        event.preventDefault();
+
+        const $htmlBody = $('html, body');
+
+        $htmlBody.stop(true);
+
+        if (
+            window.matchMedia(
+                '(prefers-reduced-motion: reduce)'
+            ).matches
+        ) {
+            $htmlBody.scrollTop(0);
+            return;
+        }
+
+        $htmlBody.animate(
+            {
+                scrollTop: 0,
+            },
+            SCROLL_DURATION
+        );
+    });
+
+    update();
+
+})(window.jQuery, window);
+
+/* ==========================================================================
+   [Component: popup]
+   Accessible Modal & Popup Controller
+   ========================================================================== */
+(function ($) {
+    'use strict';
+    if (!$) return;
+
+    let scrollPos = 0;
+
+    function openPopup(target) {
+        if (!target) return;
+        const $overlay = $(target);
+        if (!$overlay.length) return;
+
+        scrollPos = $(window).scrollTop();
+        $('body').addClass('overflow_modal').css({ top: -scrollPos + 'px' });
+
+        $overlay
+            .addClass('is-active')
+            .attr('aria-hidden', 'false');
+
+        setTimeout(function () {
+            const $focusable = $overlay.find('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if ($focusable.length) {
+                $focusable.first().trigger('focus');
             }
         }, 150);
+    }
+
+    function closePopup(target) {
+        const $overlay = target ? $(target) : $('.c-popup-overlay.is-active');
+        if (!$overlay.length) return;
+
+        $overlay
+            .removeClass('is-active')
+            .attr('aria-hidden', 'true');
+
+        $('body').removeClass('overflow_modal').css({ top: '' });
+        $(window).scrollTop(scrollPos);
+    }
+
+    $(document).on('click', '.js-popup-open, [data-popup-target]', function (e) {
+        e.preventDefault();
+        const target = $(this).attr('data-popup-target') || $(this).attr('href');
+        openPopup(target);
     });
 
+    $(document).on('click', '.js-popup-close, .c-popup-overlay__backdrop, .c-popup__close, .c-popup__footer .c-btn--cancel', function (e) {
+        e.preventDefault();
+        const $overlay = $(this).closest('.c-popup-overlay');
+        closePopup($overlay);
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            const $active = $('.c-popup-overlay.is-active');
+            if ($active.length) {
+                closePopup($active);
+            }
+        }
+    });
+
+    window.appPopup = { open: openPopup, close: closePopup };
 })(window.jQuery || window.$);
+

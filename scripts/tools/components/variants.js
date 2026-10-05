@@ -124,8 +124,8 @@ export function sliceScssForClasses(fullScss, classStr) {
   const tokens = classStr.split(/\s+/).filter(Boolean);
 
   const candidateClasses = [
-    ...tokens.filter(c => /^[cl]-/.test(c)).map(c => c.split(/__|--/)[0]),
-    ...tokens.filter(c => /^[cl]-/.test(c)).map(c => c.split('--')[0])
+    ...tokens.filter(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')).map(c => c.split(/__|--/)[0]),
+    ...tokens.filter(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')).map(c => c.split('--')[0])
   ];
 
   const uniqueBases = Array.from(new Set(candidateClasses));
@@ -196,8 +196,8 @@ export function mergeVariantScss(existing, incoming, classStr) {
 
   const tokens = (classStr || '').split(/\s+/).filter(Boolean);
   const candidateClasses = [
-    ...tokens.filter(c => /^[cl]-/.test(c)).map(c => c.split(/__|--/)[0]),
-    ...tokens.filter(c => /^[cl]-/.test(c)).map(c => c.split('--')[0])
+    ...tokens.filter(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')).map(c => c.split(/__|--/)[0]),
+    ...tokens.filter(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')).map(c => c.split('--')[0])
   ];
   const uniqueBases = Array.from(new Set(candidateClasses));
   if (uniqueBases.length === 0 && tokens[0]) {
@@ -301,7 +301,7 @@ export function isVariantInstalled(compName, classStr, paths = getDefaultPaths()
   if (isTemplateStub(existing)) return false;
 
   const tokens = (classStr || '').split(/\s+/).filter(Boolean);
-  const mainClass = tokens.find(c => /^[cl]-/.test(c)) || tokens[0];
+  const mainClass = tokens.find(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')) || tokens.find(c => /^[cl]-/.test(c)) || tokens[0];
   if (!mainClass) return true;
 
   const baseBlockName = mainClass.split('--')[0];

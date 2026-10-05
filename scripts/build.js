@@ -129,7 +129,7 @@ async function startWatch() {
       const server = net.createServer();
       server.once('error', () => resolve(false));
       server.once('listening', () => { server.close(); resolve(true); });
-      server.listen(port, '127.0.0.1');
+      server.listen(port, 'localhost');
     });
   }
 
@@ -150,14 +150,14 @@ async function startWatch() {
 
   const bsOptions = {
     port: chosenPort,
-    open: false,
+    open: true,
     notify: false,
     ui: false,
     online: false
   };
 
   if (!isExternalAllowed) {
-    bsOptions.listen = '127.0.0.1';
+    bsOptions.listen = 'localhost';
   }
 
   if (PAGE_OUT_PREFIXES && PAGE_OUT_PREFIXES[0]) {
@@ -319,7 +319,7 @@ async function startWatch() {
         } else if (normFp.includes('/pages/')) {
           ejsPagesToBuild.add(fp);
         }
-        if (normFp.includes('/layouts/')) {
+        if (normFp.includes('/layouts/') || normFp.includes('/components/')) {
           needsWorkbenchRebuild = true;
         }
         if (normFp.includes('/workbench/components/') || normFp.includes('/components/')) {

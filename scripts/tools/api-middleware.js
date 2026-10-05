@@ -49,7 +49,6 @@ const MUTATION_ENDPOINTS = new Set([
   '/__api/remove',
   '/__api/save',
   '/__api/export',
-  '/__api/sync-from-site',
   '/__api/restore',
   '/__api/save-selection',
   '/__api/delete-workbench',
@@ -97,6 +96,11 @@ function parseRequestBody(req) {
 
 export function createApiMiddleware() {
   return async function apiMiddleware(req, res, next) {
+    if (req.url.startsWith('/__workbench/assets/')) {
+      req.url = req.url.replace('/__workbench/assets/', '/assets/');
+      return next();
+    }
+
     if (!req.url.startsWith('/__api/')) {
       return next();
     }
@@ -336,36 +340,13 @@ export function createApiMiddleware() {
       }
     }
 
-    // 1c. Component Diff Viewer API
-    if (pathname === '/__api/diff') {
-      try {
-        const registry = getRegistry();
-        const found = registry.find(r => r.name === queryComp);
-        if (!found) {
-          return sendJson(res, 404, { success: false, message: `Không tìm thấy component "${queryComp}"` });
-        }
-        return sendJson(res, 200, {
-          success: true,
-          component: found.name,
-          syncStatus: found.syncStatus,
-          diffDetails: found.diffDetails,
-          wbScss: found.scssContent || '',
-          clientScss: found.clientScssContent || '',
-          wbJs: found.jsContent || '',
-          clientJs: found.clientJsContent || ''
-        });
-      } catch (err) {
-        return sendJson(res, 500, { success: false, error: err.message });
-      }
-    }
-
-    // 4. Save/Export or Sync from Site (src/) to Workbench
-    if (pathname === '/__api/save' || pathname === '/__api/export' || pathname === '/__api/sync-from-site') {
+    // 4. Save/Export from Site (src/) to Workbench
+    if (pathname === '/__api/save' || pathname === '/__api/export') {
       if (!compName) {
         return sendJson(res, 400, { success: false, message: 'Thiếu tên component cần lưu/đồng bộ vào workbench' });
       }
       try {
-        const force = pathname === '/__api/sync-from-site' || bodyData.force === true || parsedUrl.searchParams.get('force') === 'true';
+        const force = bodyData.force === true || parsedUrl.searchParams.get('force') === 'true';
         const result = saveComponent(compName, { as: asAlias, force });
         if (result.success) {
           try { syncSnippets({ quiet: true }); } catch {}

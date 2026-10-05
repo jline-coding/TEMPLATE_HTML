@@ -1,5 +1,480 @@
 {
+  "c-box c-box--border (Border Box Container)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-box-border",
+    "body": [
+      "<div class=\"c-box c-box--border\">",
+      "\t<h4 class=\"c-ttl24\">境界線ボックス (.c-box--border)</h4>",
+      "\t<p class=\"c-txt15\">薄いグレーのボーダーで囲まれたすっきりとしたボックスです。コンテンツのグループ化や補足情報の枠囲みに最適です。</p>",
+      "</div>"
+    ],
+    "description": "Border Box Container (c-box c-box--border) from _boxs.ejs"
+  },
+  "c-box c-box--bg (Background Color Box)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-box-bg",
+    "body": [
+      "<div class=\"c-box c-box--bg\">",
+      "\t<h4 class=\"c-ttl24\">背景色ボックス (.c-box--bg)</h4>",
+      "\t<p class=\"c-txt15\">落ち着いたグレー背景のボックスです。重要なお知らせや前提条件の説明など、本文と区別したいエリアに活用できます。</p>",
+      "</div>"
+    ],
+    "description": "Background Color Box (c-box c-box--bg) from _boxs.ejs"
+  },
+  "c-box c-box--shadow (Shadow Card Box)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-box-shadow",
+    "body": [
+      "<div class=\"c-box c-box--shadow\">",
+      "\t<h4 class=\"c-ttl24\">シャドウカードボックス (.c-box--shadow)</h4>",
+      "\t<p class=\"c-txt15\">上品な浮き上がり感（ドロップシャドウ）を持たせたカード形式のボックスです。サービスカードやプラン比較に適しています。</p>",
+      "</div>"
+    ],
+    "description": "Shadow Card Box (c-box c-box--shadow) from _boxs.ejs"
+  },
+  "c-box c-box--shadow (Image Card Box)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-box-shadow",
+    "body": [
+      "<div class=\"c-box c-box--shadow\">",
+      "\t<div class=\"c-box__img\">",
+      "\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"カード画像\">",
+      "\t</div>",
+      "\t<h4 class=\"c-ttl24\">画像付きカード (.c-box--shadow)</h4>",
+      "\t<p class=\"c-txt15\">上部にサムネイル画像を配置したカードコンポーネントです。ブログ記事や事例一覧に最適です。</p>",
+      "</div>"
+    ],
+    "description": "Image Card Box (c-box c-box--shadow) from _boxs.ejs"
+  },
+  "c-box c-box--primary (Primary Accent Box)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-box-primary",
+    "body": [
+      "<div class=\"c-box c-box--primary\">",
+      "\t<h4 class=\"c-ttl24\">ブランドカラーアクセント枠 (.c-box--primary)</h4>",
+      "\t<p class=\"c-txt15\">ブランドカラーで強調された重要ボックスです。おすすめプランや特典のご案内に効果的です。</p>",
+      "</div>"
+    ],
+    "description": "Primary Accent Box (c-box c-box--primary) from _boxs.ejs"
+  },
+  "c-box c-box--alert (Alert Notice Box)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-box-alert",
+    "body": [
+      "<div class=\"c-box c-box--alert\">",
+      "\t<h4 class=\"c-ttl24\">※ 注意事項・お知らせ (.c-box--alert)</h4>",
+      "\t<p class=\"c-txt15\">左側に太いアクセントラインが入った注意喚起・お知らせ用のボックスです。申し込み期日や注意事項の提示に最適です。</p>",
+      "</div>"
+    ],
+    "description": "Alert Notice Box (c-box c-box--alert) from _boxs.ejs"
+  },
+  "c-bread (Bread)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-bread",
+    "body": [
+      "<ul class=\"c-bread\">",
+      "\t<li class=\"c-bread__item\">",
+      "\t\t<a href=\"\" class=\"c-bread__link\">TOP</a>",
+      "\t</li>",
+      "\t<li class=\"c-bread__item\">CONTACT</li>",
+      "</ul>"
+    ],
+    "description": "Bread (c-bread) from _bread.ejs"
+  },
+  "c-btn (Btn)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-btn",
+    "body": [
+      "<a href=\"\" class=\"c-btn\">${1:お問い合わせ}</a>"
+    ],
+    "description": "Btn (c-btn) from _btn.ejs"
+  },
+  "c-btn c-btn--arrow (Btn)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-btn-arrow",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow\">${1:お問い合わせ}</a>"
+    ],
+    "description": "Btn (c-btn c-btn--arrow) from _btn.ejs"
+  },
+  "c-btn c-btn--arrow-center (Btn)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-btn-arrow-center",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow-center\">${1:お問い合わせ}</a>"
+    ],
+    "description": "Btn (c-btn c-btn--arrow-center) from _btn.ejs"
+  },
+  "c-btn c-btn--reverse (Btn)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-btn-reverse",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--reverse\">${1:お問い合わせ}</a>"
+    ],
+    "description": "Btn (c-btn c-btn--reverse) from _btn.ejs"
+  },
+  "c-btn c-btn--reverse c-btn--arrow (Btn)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-btn-reverse-arrow",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--reverse c-btn--arrow\">${1:お問い合わせ}</a>"
+    ],
+    "description": "Btn (c-btn c-btn--reverse c-btn--arrow) from _btn.ejs"
+  },
+  "c-btn c-btn--reverse c-btn--arrow-center (Btn)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-btn-reverse-arrow-center",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--reverse c-btn--arrow-center\">${1:お問い合わせ}</a>"
+    ],
+    "description": "Btn (c-btn c-btn--reverse c-btn--arrow-center) from _btn.ejs"
+  },
+  "c-totop (Btn)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-totop",
+    "body": [
+      "<a href=\"\" class=\"c-totop\">${1:pagetop}</a>"
+    ],
+    "description": "Btn (c-totop) from _btn.ejs"
+  },
+  "c-box c-box--bg (Responsive Site Container)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-box-bg",
+    "body": [
+      "<div class=\"c-box c-box--bg\">",
+      "\t<h3 class=\"c-ttl24\">.l-container（最大幅 1200px 中央配置）</h3>",
+      "\t<p class=\"c-txt16\">サイト全体の横幅を制限し、左右に適切な余白（PC: 40px / SP: 20px）を確保するレイアウトコンテナです。</p>",
+      "</div>"
+    ],
+    "description": "Responsive Site Container (c-box c-box--bg) from _container.ejs"
+  },
+  "c-cookiewrap (Cookie)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-cookiewrap",
+    "body": [
+      "<div data-gdpr=\"wrap\" id=\"cookiewrap\" class=\"c-cookiewrap\">",
+      "\t<div class=\"c-cookiewrap__inner\">",
+      "\t\t<p class=\"c-cookiewrap__close\"><a href=\"\" data-gdpr=\"button\" >同意する</a></p>",
+      "\t\t<p class=\"c-cookiewrap__txt\">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href=\"\" class=\"c-cookiewrap__link\">プライバシーポリシー</a>」をご覧ください。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Cookie (c-cookiewrap) from _cookie.ejs"
+  },
+  "l-flex (2 Columns Flex (Left Image 400px + Right Text))": {
+    "scope": "html,ejs,php",
+    "prefix": "l-flex",
+    "body": [
+      "<div class=\"l-flex\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"レイアウト画像\">",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h3 class=\"c-ttl24\">企業の成長を支えるデジタルパートナー</h3>",
+      "\t\t<p class=\"c-txt15\">左側に固定幅400pxの画像エリア、右側に柔軟なテキストエリアを配置する王道の2カラムレイアウトです。PC時は横並び、SP時は縦積みに美しく自動変換されます。</p>",
+      "\t\t<p class=\"c-txt14\">※ 画像サイズや縦横比に合わせてフレキシブルに追従します。</p>",
+      "\t\t<div>",
+      "\t\t\t<a href=\"\" class=\"c-btn c-btn--arrow\">詳細を見る</a>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "2 Columns Flex (Left Image 400px + Right Text) (l-flex) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal (Equal 2 Columns Flex (50% / 50%))": {
+    "scope": "html,ejs,php",
+    "prefix": "l-flex-equal",
+    "body": [
+      "<div class=\"l-flex l-flex--equal\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"均等左画像\">",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<div class=\"c-box c-box--border\">",
+      "\t\t\t<h4 class=\"c-ttl24\">均等幅レイアウト (50% / 50%)</h4>",
+      "\t\t\t<p class=\"c-txt15\">左右対称のバランスで画像とテキストを展開するレイアウトです。会社紹介やサービス特徴の解説セクションに最適です。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Equal 2 Columns Flex (50% / 50%) (l-flex l-flex--equal) from _flexs.ejs"
+  },
+  "l-flex l-flex--middle (Middle Aligned Flex)": {
+    "scope": "html,ejs,php",
+    "prefix": "l-flex-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"中央揃え画像\">",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h3 class=\"c-ttl24\">垂直中央揃え (.l-flex--middle)</h3>",
+      "\t\t<p class=\"c-txt15\">左右のコンテンツの高低差があっても、常に垂直方向の中央揃えが美しく保持されます。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Middle Aligned Flex (l-flex l-flex--middle) from _flexs.ejs"
+  },
+  "l-flex l-flex--reverse (Reversed 2 Columns Flex (Right Image + Left Text))": {
+    "scope": "html,ejs,php",
+    "prefix": "l-flex-reverse",
+    "body": [
+      "<div class=\"l-flex l-flex--reverse\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<img src=\"./assets/images/top/img_dummy_01.webp\" alt=\"反転配置画像\">",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h3 class=\"c-ttl24\">反転配置レイアウト (.l-flex--reverse)</h3>",
+      "\t\t<p class=\"c-txt15\">PC閲覧時に配置方向を逆順（右側画像・左側テキスト）へと反転し、ジグザグに情報を伝えるセクション構成に最適です。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Reversed 2 Columns Flex (Right Image + Left Text) (l-flex l-flex--reverse) from _flexs.ejs"
+  },
+  "c-txt (Text with Selectable Size)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt",
+    "body": [
+      "<p class=\"c-txt${1|15,14|}\">${2:ダミーテキスト。}</p>"
+    ],
+    "description": "FLOCSS Paragraph with selectable font-size"
+  },
+  "c-footer (Footer)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-footer",
+    "body": [
+      "<footer class=\"c-footer\">",
+      "\t<div class=\"l-container\">",
+      "\t\t<div class=\"c-footer__inner\">",
+      "\t\t\t<div class=\"c-footer-logo\">",
+      "\t\t\t\t<a href=\"\" class=\"c-footer-logo__link\">",
+      "\t\t\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_logo.webp\" alt=\"\">",
+      "\t\t\t\t</a>",
+      "\t\t\t</div>",
+      "\t\t\t<ul class=\"c-footer-list\">",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t\t<li class=\"c-footer-list__item\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-footer-link\">リンク</a>",
+      "\t\t\t\t</li>",
+      "\t\t\t</ul>",
+      "\t\t</div>",
+      "\t\t<p class=\"c-footer-copy\">J-line Corporation ©copyright</p>",
+      "\t</div>",
+      "</footer>"
+    ],
+    "description": "Footer (c-footer) from _footer.ejs"
+  },
+  "c-form-group (Form Group with Input)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-form-group",
+    "body": [
+      "<div class=\"c-form-group\">",
+      "\t<label class=\"c-form-group__label\">",
+      "\t\tお名前",
+      "\t\t<span class=\"c-form-req\">必須</span>",
+      "\t</label>",
+      "\t<input type=\"text\" class=\"c-input\" placeholder=\"例：山田 太郎\" autocomplete=\"name\">",
+      "</div>"
+    ],
+    "description": "Form Group with Input (c-form-group) from _form.ejs"
+  },
+  "c-input (Form Text Input)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-input",
+    "body": [
+      "<input type=\"text\" class=\"c-input\" placeholder=\"テキストを入力してください\">"
+    ],
+    "description": "Form Text Input (c-input) from _form.ejs"
+  },
+  "c-select (Form Select Dropdown)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-select",
+    "body": [
+      "<select class=\"c-select\">",
+      "\t<option value=\"\">選択してください</option>",
+      "\t<option value=\"1\">サービス導入のご相談</option>",
+      "\t<option value=\"2\">お見積もり・費用について</option>",
+      "\t<option value=\"3\">採用・パートナーシップについて</option>",
+      "\t<option value=\"4\">その他</option>",
+      "</select>"
+    ],
+    "description": "Form Select Dropdown (c-select) from _form.ejs"
+  },
+  "c-textarea (Form Textarea)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-textarea",
+    "body": [
+      "<textarea class=\"c-textarea\" placeholder=\"お問い合わせ内容をご自由にご入力ください。\"></textarea>"
+    ],
+    "description": "Form Textarea (c-textarea) from _form.ejs"
+  },
+  "c-checkbox (Form Checkbox)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-checkbox",
+    "body": [
+      "<label class=\"c-checkbox\">",
+      "\t<input type=\"checkbox\" name=\"agree\" value=\"1\">",
+      "\t<span>利用規約に同意する</span>",
+      "</label>"
+    ],
+    "description": "Form Checkbox (c-checkbox) from _form.ejs"
+  },
+  "c-radio (Form Radio Button)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-radio",
+    "body": [
+      "<label class=\"c-radio\">",
+      "\t<input type=\"radio\" name=\"contact-method\" value=\"email\" checked>",
+      "\t<span>メール連絡を希望</span>",
+      "</label>"
+    ],
+    "description": "Form Radio Button (c-radio) from _form.ejs"
+  },
+  "c-form-req (Form Required Badge)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-form-req",
+    "body": [
+      "<span class=\"c-form-req\">必須</span>"
+    ],
+    "description": "Form Required Badge (c-form-req) from _form.ejs"
+  },
+  "c-form-opt (Form Optional Badge)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-form-opt",
+    "body": [
+      "<span class=\"c-form-opt\">任意</span>"
+    ],
+    "description": "Form Optional Badge (c-form-opt) from _form.ejs"
+  },
+  "c-gnavi (Horizontal Global Navigation Bar)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-gnavi",
+    "body": [
+      "<nav class=\"c-gnavi\">",
+      "\t<ul class=\"c-gnavi__list\">",
+      "\t\t<li class=\"c-gnavi__item\">",
+      "\t\t\t<a href=\"\" class=\"c-gnavi__link is-active\">ホーム</a>",
+      "\t\t</li>",
+      "\t\t<li class=\"c-gnavi__item\">",
+      "\t\t\t<a href=\"\" class=\"c-gnavi__link\">サービス案内</a>",
+      "\t\t</li>",
+      "\t\t<li class=\"c-gnavi__item\">",
+      "\t\t\t<a href=\"\" class=\"c-gnavi__link\">導入事例</a>",
+      "\t\t</li>",
+      "\t\t<li class=\"c-gnavi__item\">",
+      "\t\t\t<a href=\"\" class=\"c-gnavi__link\">会社概要</a>",
+      "\t\t</li>",
+      "\t\t<li class=\"c-gnavi__item\">",
+      "\t\t\t<a href=\"\" class=\"c-gnavi__link\">ニュース</a>",
+      "\t\t</li>",
+      "\t\t<li class=\"c-gnavi__item\">",
+      "\t\t\t<a href=\"\" class=\"c-gnavi__link\">お問い合わせ</a>",
+      "\t\t</li>",
+      "\t</ul>",
+      "</nav>"
+    ],
+    "description": "Horizontal Global Navigation Bar (c-gnavi) from _gnavi.ejs"
+  },
+  "l-grid (2 Columns Grid)": {
+    "scope": "html,ejs,php",
+    "prefix": "l-grid",
+    "body": [
+      "<div class=\"l-grid\">",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"グリッドカード 01\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">グリッドカード 01</h4>",
+      "\t\t<p class=\"c-txt15\">PC時2カラム / SP時1カラムの標準グリッドカードです。</p>",
+      "\t</div>",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/top/img_dummy_01.webp\" alt=\"グリッドカード 02\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">グリッドカード 02</h4>",
+      "\t\t<p class=\"c-txt15\">PC時2カラム / SP時1カラムの標準グリッドカードです。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "2 Columns Grid (l-grid) from _grids.ejs"
+  },
+  "l-grid l-grid--cl3 (3 Columns Grid)": {
+    "scope": "html,ejs,php",
+    "prefix": "l-grid-cl3",
+    "body": [
+      "<div class=\"l-grid l-grid--cl3\">",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"実績 01\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">サービス紹介 01</h4>",
+      "\t\t<p class=\"c-txt14\">サービス紹介や実績紹介に最適な3列グリッド。</p>",
+      "\t</div>",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/top/img_dummy_01.webp\" alt=\"実績 02\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">サービス紹介 02</h4>",
+      "\t\t<p class=\"c-txt14\">サービス紹介や実績紹介に最適な3列グリッド。</p>",
+      "\t</div>",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"実績 03\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">サービス紹介 03</h4>",
+      "\t\t<p class=\"c-txt14\">サービス紹介や実績紹介に最適な3列グリッド。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "3 Columns Grid (l-grid l-grid--cl3) from _grids.ejs"
+  },
+  "l-grid l-grid--cl4 (4 Columns Grid)": {
+    "scope": "html,ejs,php",
+    "prefix": "l-grid-cl4",
+    "body": [
+      "<div class=\"l-grid l-grid--cl4\">",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"メンバー 01\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">メンバー 01</h4>",
+      "\t\t<p class=\"c-txt13\">プロジェクトマネージャー</p>",
+      "\t</div>",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/top/img_dummy_01.webp\" alt=\"メンバー 02\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">メンバー 02</h4>",
+      "\t\t<p class=\"c-txt13\">テックリードエンジニア</p>",
+      "\t</div>",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"メンバー 03\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">メンバー 03</h4>",
+      "\t\t<p class=\"c-txt13\">UI/UXデザイナー</p>",
+      "\t</div>",
+      "\t<div class=\"c-box c-box--border\">",
+      "\t\t<div class=\"c-box__img\">",
+      "\t\t\t<img src=\"./assets/images/top/img_dummy_01.webp\" alt=\"メンバー 04\">",
+      "\t\t</div>",
+      "\t\t<h4 class=\"c-ttl24\">メンバー 04</h4>",
+      "\t\t<p class=\"c-txt13\">フロントエンド開発</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "4 Columns Grid (l-grid l-grid--cl4) from _grids.ejs"
+  },
   "c-header (Header)": {
+    "scope": "html,ejs,php",
     "prefix": "c-header",
     "body": [
       "<header class=\"c-header\">",
@@ -10,7 +485,7 @@
       "\t\t\t</a>",
       "\t\t<% if(file.data.page === 'top'){%></h1><% }else{ %></div><% } %>",
       "\t\t<div class=\"c-header__content\">",
-      "\t\t\t<div class=\"c-header-gnavi\" hidden=\"until-found\">",
+      "\t\t\t<div class=\"c-header-gnavi\">",
       "\t\t\t\t<div class=\"c-header-gnavi__inner\">",
       "\t\t\t\t\t<ul class=\"c-header-gnavi__list\">",
       "\t\t\t\t\t\t<li class=\"c-header-gnavi__item\">",
@@ -21,7 +496,7 @@
       "\t\t\t\t\t\t</li>",
       "\t\t\t\t\t\t<li class=\"c-header-gnavi__item is-sub\">",
       "\t\t\t\t\t\t\t<a href=\"\" class=\"c-header-gnavi__link\">サービス</a>",
-      "\t\t\t\t\t\t\t<ul class=\"c-header-gnavi__sub\" hidden=\"until-found\">",
+      "\t\t\t\t\t\t\t<ul class=\"c-header-gnavi__sub\">",
       "\t\t\t\t\t\t\t\t<li class=\"c-header-gnavi__sub-item\">",
       "\t\t\t\t\t\t\t\t\t<a href=\"\" class=\"c-header-gnavi__sub-link\">サービス01</a>",
       "\t\t\t\t\t\t\t\t</li>",
@@ -50,5 +525,769 @@
       "</header>"
     ],
     "description": "Header (c-header) from _header.ejs"
+  },
+  "c-link (Standard Text Link)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-link",
+    "body": [
+      "<a href=\"\" class=\"c-link\">${1:詳細はこちらからご確認ください}</a>"
+    ],
+    "description": "Standard Text Link (c-link) from _links.ejs"
+  },
+  "c-link c-link--primary (Primary Colored Link)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-link-primary",
+    "body": [
+      "<a href=\"\" class=\"c-link c-link--primary\">${1:サービス案内資料を見る}</a>"
+    ],
+    "description": "Primary Colored Link (c-link c-link--primary) from _links.ejs"
+  },
+  "c-link c-link--arrow (Right Arrow Link)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-link-arrow",
+    "body": [
+      "<a href=\"\" class=\"c-link c-link--arrow\">${1:導入事例一覧を見る}</a>"
+    ],
+    "description": "Right Arrow Link (c-link c-link--arrow) from _links.ejs"
+  },
+  "c-link c-link--blank (External New Window Link)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-link-blank",
+    "body": [
+      "<a href=\"\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"c-link c-link--blank\">${1:外部公式ポータルサイト}</a>"
+    ],
+    "description": "External New Window Link (c-link c-link--blank) from _links.ejs"
+  },
+  "c-link c-link--tel (Telephone Link)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-link-tel",
+    "body": [
+      "<a href=\"\" class=\"c-link c-link--tel\">${1:📞 0120-123-456 (平日 9:00〜18:00)}</a>"
+    ],
+    "description": "Telephone Link (c-link c-link--tel) from _links.ejs"
+  },
+  "c-link c-link--pdf (PDF Document Download Link)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-link-pdf",
+    "body": [
+      "<a href=\"\" class=\"c-link c-link--pdf\">${1:会社案内パンフレットダウンロード (2.4MB)}</a>"
+    ],
+    "description": "PDF Document Download Link (c-link c-link--pdf) from _links.ejs"
+  },
+  "c-list-dot (Lists)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-list-dot",
+    "body": [
+      "<ul class=\"c-list-dot\">",
+      "\t<li class=\"c-list-dot__item\">ダミーテキスト。</li>",
+      "\t<li class=\"c-list-dot__item\">ダミーテキスト。</li>",
+      "</ul>"
+    ],
+    "description": "Lists (c-list-dot) from _lists.ejs"
+  },
+  "c-list-number (Lists)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-list-number",
+    "body": [
+      "<ul class=\"c-list-number\">",
+      "\t<li class=\"c-list-number__item\">ダミーテキスト。</li>",
+      "\t<li class=\"c-list-number__item\">ダミーテキスト。</li>",
+      "</ul>"
+    ],
+    "description": "Lists (c-list-number) from _lists.ejs"
+  },
+  "c-list-star (Lists)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-list-star",
+    "body": [
+      "<ul class=\"c-list-star\">",
+      "\t<li class=\"c-list-star__item\">ダミーテキスト。</li>",
+      "\t<li class=\"c-list-star__item\">ダミーテキスト。</li>",
+      "</ul>"
+    ],
+    "description": "Lists (c-list-star) from _lists.ejs"
+  },
+  "c-mv (Mv)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-mv",
+    "body": [
+      "<section class=\"c-mv\">",
+      "\t<figure class=\"c-mv__bg\">",
+      "\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t</figure>",
+      "\t<div class=\"l-container\">",
+      "\t\t<div class=\"c-mv__inner\">",
+      "\t\t\t<h1 class=\"c-mv-title\">",
+      "\t\t\t\t<span class=\"c-mv-title__en\">Title</span>",
+      "\t\t\t\t<span class=\"c-mv-title__jp\">ダミーテキスト。</span>",
+      "\t\t\t</h1>",
+      "\t\t</div>",
+      "\t</div>",
+      "</section>"
+    ],
+    "description": "Mv (c-mv) from _mv.ejs"
+  },
+  "c-badge (Badge Default)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-badge",
+    "body": [
+      "<span class=\"c-badge\">イベント</span>"
+    ],
+    "description": "Badge Default (c-badge) from _other.ejs"
+  },
+  "c-badge c-badge--primary (Badge Primary)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-badge-primary",
+    "body": [
+      "<span class=\"c-badge c-badge--primary\">NEW</span>"
+    ],
+    "description": "Badge Primary (c-badge c-badge--primary) from _other.ejs"
+  },
+  "c-badge c-badge--news (Badge News)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-badge-news",
+    "body": [
+      "<span class=\"c-badge c-badge--news\">お知らせ</span>"
+    ],
+    "description": "Badge News (c-badge c-badge--news) from _other.ejs"
+  },
+  "c-badge c-badge--gray (Badge Gray)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-badge-gray",
+    "body": [
+      "<span class=\"c-badge c-badge--gray\">重要</span>"
+    ],
+    "description": "Badge Gray (c-badge c-badge--gray) from _other.ejs"
+  },
+  "c-tag (Tag Default)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-tag",
+    "body": [
+      "<a href=\"\" class=\"c-tag\">${1:# Webデザイン}</a>"
+    ],
+    "description": "Tag Default (c-tag) from _other.ejs"
+  },
+  "c-tag c-tag--outline (Tag Outline)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-tag-outline",
+    "body": [
+      "<a href=\"\" class=\"c-tag c-tag--outline\">${1:# UI/UX改善}</a>"
+    ],
+    "description": "Tag Outline (c-tag c-tag--outline) from _other.ejs"
+  },
+  "c-btn js-popup-open (Live Modal Trigger)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-btn",
+    "body": [
+      "<button type=\"button\" class=\"c-btn js-popup-open\" data-popup-target=\"#modal-sample\">利用規約モーダルを開く</button>"
+    ],
+    "description": "Live Modal Trigger (c-btn js-popup-open) from _popup.ejs"
+  },
+  "c-popup (Modal Card Preview)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-popup",
+    "body": [
+      "<div class=\"c-popup\">",
+      "\t<div class=\"c-popup__header\">",
+      "\t\t<h3 class=\"c-popup__title\">ご利用規約・プライバシーポリシー</h3>",
+      "\t\t<button type=\"button\" class=\"c-popup__close\" aria-label=\"閉じる\">✕</button>",
+      "\t</div>",
+      "\t<div class=\"c-popup__body\">",
+      "\t\t<p>本サービスをご利用いただくにあたり、以下の利用規約にご同意いただく必要がございます。当サイトが取得した個人情報は、厳重な管理のもとで適切に取り扱われ、第三者への提供は法令に基づく場合を除き一切行いません。</p>",
+      "\t\t<p class=\"c-popup__note\">※ 詳細な免責事項および個人情報保護方針につきましては、別途プライバシーポリシー詳細ページをご参照ください。</p>",
+      "\t</div>",
+      "\t<div class=\"c-popup__footer\">",
+      "\t\t<button type=\"button\" class=\"c-btn c-btn--cancel\">閉じる</button>",
+      "\t\t<button type=\"button\" class=\"c-btn\">同意する</button>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Modal Card Preview (c-popup) from _popup.ejs"
+  },
+  "c-popup-overlay (Modal Dialog Overlay Container)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-popup-overlay",
+    "body": [
+      "<div class=\"c-popup-overlay\" id=\"modal-sample\" aria-hidden=\"true\">",
+      "\t<div class=\"c-popup-overlay__backdrop js-popup-close\"></div>",
+      "\t<div class=\"c-popup\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"popup-sample-title\">",
+      "\t\t<div class=\"c-popup__header\">",
+      "\t\t\t<h3 class=\"c-popup__title\" id=\"popup-sample-title\">ご利用規約・プライバシーポリシー</h3>",
+      "\t\t\t<button type=\"button\" class=\"c-popup__close js-popup-close\" aria-label=\"閉じる\">✕</button>",
+      "\t\t</div>",
+      "\t\t<div class=\"c-popup__body\">",
+      "\t\t\t<p>本サービスをご利用いただくにあたり、以下の利用規約にご同意いただく必要がございます。当サイトが取得した個人情報は、厳重な管理のもとで適切に取り扱われ、第三者への提供は法令に基づく場合を除き一切行いません。</p>",
+      "\t\t\t<p class=\"c-popup__note\">※ 詳細な免責事項および個人情報保護方針につきましては、別途プライバシーポリシー詳細ページをご参照ください。</p>",
+      "\t\t</div>",
+      "\t\t<div class=\"c-popup__footer\">",
+      "\t\t\t<button type=\"button\" class=\"c-btn c-btn--cancel js-popup-close\">閉じる</button>",
+      "\t\t\t<button type=\"button\" class=\"c-btn js-popup-close\">同意する</button>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Modal Dialog Overlay Container (c-popup-overlay) from _popup.ejs"
+  },
+  "l-sidebar (Main Content + Right Sidebar)": {
+    "scope": "html,ejs,php",
+    "prefix": "l-sidebar",
+    "body": [
+      "<div class=\"l-sidebar\">",
+      "\t<main class=\"l-sidebar__main\">",
+      "\t\t<div class=\"c-box c-box--border\">",
+      "\t\t\t<div class=\"l-sidebar__img\">",
+      "\t\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"記事メイン画像\">",
+      "\t\t\t</div>",
+      "\t\t\t<h3 class=\"c-ttl24\">メインコンテンツ領域 (.l-sidebar__main)</h3>",
+      "\t\t\t<p class=\"c-txt15\">記事本文、ブログ投稿、製品詳細などの主要なコンテンツを配置する柔軟な幅のメインエリアです。画面幅に応じて自動的に拡張されます。</p>",
+      "\t\t</div>",
+      "\t</main>",
+      "\t<aside class=\"l-sidebar__aside\">",
+      "\t\t<div class=\"c-box c-box--bg\">",
+      "\t\t\t<h4 class=\"c-ttl24\">サイドバー (.l-sidebar__aside)</h4>",
+      "\t\t\t<p class=\"c-txt14\">カテゴリー一覧、最近の投稿、バナー広告、問い合わせボタンなどを配置する固定幅エリアです。</p>",
+      "\t\t</div>",
+      "\t</aside>",
+      "</div>"
+    ],
+    "description": "Main Content + Right Sidebar (l-sidebar) from _sidebar.ejs"
+  },
+  "l-sidebar l-sidebar--reverse (Left Sidebar + Right Main (Reversed))": {
+    "scope": "html,ejs,php",
+    "prefix": "l-sidebar-reverse",
+    "body": [
+      "<div class=\"l-sidebar l-sidebar--reverse\">",
+      "\t<main class=\"l-sidebar__main\">",
+      "\t\t<div class=\"c-box c-box--border\">",
+      "\t\t\t<div class=\"l-sidebar__img\">",
+      "\t\t\t\t<img src=\"<%= assetsDir %>assets/images/top/img_dummy_01.webp\" alt=\"記事メイン画像\">",
+      "\t\t\t</div>",
+      "\t\t\t<h3 class=\"c-ttl24\">反転配置メインコンテンツ (.l-sidebar--reverse)</h3>",
+      "\t\t\t<p class=\"c-txt15\">PC時にサイドバーが左側、メインコンテンツが右側に配置される反転レイアウトです。</p>",
+      "\t\t</div>",
+      "\t</main>",
+      "\t<aside class=\"l-sidebar__aside\">",
+      "\t\t<div class=\"c-box c-box--bg\">",
+      "\t\t\t<h4 class=\"c-ttl24\">左サイドバー</h4>",
+      "\t\t\t<p class=\"c-txt14\">ダッシュボードや管理画面の左ナビゲーションとしても活用できます。</p>",
+      "\t\t</div>",
+      "\t</aside>",
+      "</div>"
+    ],
+    "description": "Left Sidebar + Right Main (Reversed) (l-sidebar l-sidebar--reverse) from _sidebar.ejs"
+  },
+  "l-sidebar (Sticky Sidebar with Widget List)": {
+    "scope": "html,ejs,php",
+    "prefix": "l-sidebar",
+    "body": [
+      "<div class=\"l-sidebar\">",
+      "\t<main class=\"l-sidebar__main\">",
+      "\t\t<div class=\"c-box c-box--border\">",
+      "\t\t\t<div class=\"l-sidebar__img\">",
+      "\t\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"長文記事メイン画像\">",
+      "\t\t\t</div>",
+      "\t\t\t<h3 class=\"c-ttl24\">長文コンテンツと追従サイドバー</h3>",
+      "\t\t\t<p class=\"c-txt15\">スクロールに合わせて右側のサイドバーが固定（Sticky）表示されるレイアウトです。記事が縦に長い場合でも、関連リンクや問い合わせ導線を常にユーザーの視界に保つことができます。</p>",
+      "\t\t</div>",
+      "\t</main>",
+      "\t<aside class=\"l-sidebar__aside l-sidebar__aside--sticky\">",
+      "\t\t<div class=\"l-sidebar__widget\">",
+      "\t\t\t<div class=\"c-box c-box--bg\">",
+      "\t\t\t\t<h4 class=\"c-ttl24\">記事カテゴリー</h4>",
+      "\t\t\t\t<ul class=\"c-list-dot\">",
+      "\t\t\t\t\t<li class=\"c-list-dot__item\"><a href=\"\" class=\"c-link\">Webデザイン・UI/UX</a></li>",
+      "\t\t\t\t\t<li class=\"c-list-dot__item\"><a href=\"\" class=\"c-link\">フロントエンド開発技術</a></li>",
+      "\t\t\t\t\t<li class=\"c-list-dot__item\"><a href=\"\" class=\"c-link\">システムアーキテクチャ</a></li>",
+      "\t\t\t\t</ul>",
+      "\t\t\t</div>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-sidebar__widget\">",
+      "\t\t\t<div class=\"c-box c-box--primary\">",
+      "\t\t\t\t<h4 class=\"c-ttl24\">無料相談・お見積り</h4>",
+      "\t\t\t\t<p class=\"c-txt13\">プロジェクトのご相談はお気軽にどうぞ。</p>",
+      "\t\t\t\t<div class=\"l-sidebar__btn-wrap\">",
+      "\t\t\t\t\t<a href=\"\" class=\"c-btn c-btn--primary\">お問い合わせ</a>",
+      "\t\t\t\t</div>",
+      "\t\t\t</div>",
+      "\t\t</div>",
+      "\t</aside>",
+      "</div>"
+    ],
+    "description": "Sticky Sidebar with Widget List (l-sidebar) from _sidebar.ejs"
+  },
+  "c-slider js-slider (Responsive Multi-Card Slick Carousel)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-slider",
+    "body": [
+      "<div class=\"c-slider js-slider\">",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"プロジェクト事例 01\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">プロジェクト事例 01</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">大手製造業向けのクラウド基盤移行プロジェクト。ダウンタイムゼロでの移行を達成しました。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/top/img_dummy_01.webp\" alt=\"プロジェクト事例 02\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">プロジェクト事例 02</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">小売業向けオムニチャネルECサイト構築。CVRを前年比180%へと劇的に改善しました。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"プロジェクト事例 03\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">プロジェクト事例 03</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">金融機関向けセキュリティ強化コンサルティング。国際標準認証の取得をトータルサポート。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/top/img_dummy_01.webp\" alt=\"プロジェクト事例 04\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">プロジェクト事例 04</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">ヘルスケア領域のモバイルアプリ新規開発。直感的なUX設計で高評価を獲得しました。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Responsive Multi-Card Slick Carousel (c-slider js-slider) from _slider.ejs"
+  },
+  "c-slider c-slider--fade js-slider-fade (Single Slide Fade Banner Slider)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-slider-fade",
+    "body": [
+      "<div class=\"c-slider c-slider--fade js-slider-fade\">",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb c-slider__thumb--wide\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/top/img_dummy_01.webp\" alt=\"バナースライド 01\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">企業のデジタルトランスフォーメーションを牽引</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">最新テクノロジーとUI/UX設計で、ビジネスの新しい可能性を切り拓きます。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb c-slider__thumb--wide\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"バナースライド 02\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">確かな技術力と継続的なグロース支援</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">リリース後も安定した運用保守と継続的な改善提案で成長をサポート。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Single Slide Fade Banner Slider (c-slider c-slider--fade js-slider-fade) from _slider.ejs"
+  },
+  "c-slider c-slider--center js-slider-center (Center Mode Highlight Slick Carousel)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-slider-center",
+    "body": [
+      "<div class=\"c-slider c-slider--center js-slider-center\">",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"センターモード 01\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">センターモード ハイライト 01</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">中央のスライドを拡大・フォーカス表示する洗練されたビジュアル表現。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/top/img_dummy_01.webp\" alt=\"センターモード 02\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">センターモード ハイライト 02</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">前後のカードがチラ見えし、スムーズなフリックとクリック送りが可能です。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"センターモード 03\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">センターモード ハイライト 03</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">実績紹介やプロダクトフィーチャーに最適なギャラリーレイアウト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"c-slider__item\">",
+      "\t\t<div class=\"c-slider__thumb\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/top/img_dummy_01.webp\" alt=\"センターモード 04\">",
+      "\t\t</div>",
+      "\t\t<div class=\"c-slider__content\">",
+      "\t\t\t<h4 class=\"c-slider__title\">センターモード ハイライト 04</h4>",
+      "\t\t\t<p class=\"c-slider__desc\">レスポンシブにも完全対応し、モバイル端末でも快適に閲覧できます。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Center Mode Highlight Slick Carousel (c-slider c-slider--center js-slider-center) from _slider.ejs"
+  },
+  "c-tbl (Standard Data Table)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-tbl",
+    "body": [
+      "<table class=\"c-tbl\">",
+      "\t<thead>",
+      "\t\t<tr>",
+      "\t\t\t<th>項目名</th>",
+      "\t\t\t<th>プランA</th>",
+      "\t\t\t<th>プランB</th>",
+      "\t\t</tr>",
+      "\t</thead>",
+      "\t<tbody>",
+      "\t\t<tr>",
+      "\t\t\t<td>初期導入費用</td>",
+      "\t\t\t<td>¥50,000</td>",
+      "\t\t\t<td>¥100,000</td>",
+      "\t\t</tr>",
+      "\t\t<tr>",
+      "\t\t\t<td>月額利用料</td>",
+      "\t\t\t<td>¥9,800 / 月</td>",
+      "\t\t\t<td>¥24,800 / 月</td>",
+      "\t\t</tr>",
+      "\t\t<tr>",
+      "\t\t\t<td>サポート対応</td>",
+      "\t\t\t<td>メール対応（平日）</td>",
+      "\t\t\t<td>電話・チャット・優先対応</td>",
+      "\t\t</tr>",
+      "\t</tbody>",
+      "</table>"
+    ],
+    "description": "Standard Data Table (c-tbl) from _tbl.ejs"
+  },
+  "c-tbl c-tbl--striped (Striped Data Table)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-tbl-striped",
+    "body": [
+      "<table class=\"c-tbl c-tbl--striped\">",
+      "\t<thead>",
+      "\t\t<tr>",
+      "\t\t\t<th>製品名</th>",
+      "\t\t\t<th>ライセンス形態</th>",
+      "\t\t\t<th>推奨ユーザー規模</th>",
+      "\t\t</tr>",
+      "\t</thead>",
+      "\t<tbody>",
+      "\t\t<tr>",
+      "\t\t\t<td>Standard Edition</td>",
+      "\t\t\t<td>年間サブスクリプション</td>",
+      "\t\t\t<td>1〜20名規模</td>",
+      "\t\t</tr>",
+      "\t\t<tr>",
+      "\t\t\t<td>Professional Edition</td>",
+      "\t\t\t<td>年間サブスクリプション</td>",
+      "\t\t\t<td>20〜100名規模</td>",
+      "\t\t</tr>",
+      "\t\t<tr>",
+      "\t\t\t<td>Enterprise Edition</td>",
+      "\t\t\t<td>カスタマイズ契約</td>",
+      "\t\t\t<td>100名以上の大規模組織</td>",
+      "\t\t</tr>",
+      "\t</tbody>",
+      "</table>"
+    ],
+    "description": "Striped Data Table (c-tbl c-tbl--striped) from _tbl.ejs"
+  },
+  "c-tbl--scroll (Bordered Table with Responsive Scroll Wrapper)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-tbl--scroll",
+    "body": [
+      "<div class=\"c-tbl--scroll\">",
+      "\t<table class=\"c-tbl c-tbl--bordered\">",
+      "\t\t<thead>",
+      "\t\t\t<tr>",
+      "\t\t\t\t<th>機能・仕様</th>",
+      "\t\t\t\t<th>無料プラン</th>",
+      "\t\t\t\t<th>ベーシック</th>",
+      "\t\t\t\t<th>プレミアム</th>",
+      "\t\t\t</tr>",
+      "\t\t</thead>",
+      "\t\t<tbody>",
+      "\t\t\t<tr>",
+      "\t\t\t\t<td>月間転送量</td>",
+      "\t\t\t\t<td>10GB</td>",
+      "\t\t\t\t<td>100GB</td>",
+      "\t\t\t\t<td>無制限</td>",
+      "\t\t\t</tr>",
+      "\t\t\t<tr>",
+      "\t\t\t\t<td>独自ドメイン接続</td>",
+      "\t\t\t\t<td>不可</td>",
+      "\t\t\t\t<td>1ドメイン</td>",
+      "\t\t\t\t<td>最大5ドメイン</td>",
+      "\t\t\t</tr>",
+      "\t\t\t<tr>",
+      "\t\t\t\t<td>SSL自動更新</td>",
+      "\t\t\t\t<td>標準対応</td>",
+      "\t\t\t\t<td>標準対応</td>",
+      "\t\t\t\t<td>標準対応（EV SSL対応）</td>",
+      "\t\t\t</tr>",
+      "\t\t</tbody>",
+      "\t</table>",
+      "</div>"
+    ],
+    "description": "Bordered Table with Responsive Scroll Wrapper (c-tbl--scroll) from _tbl.ejs"
+  },
+  "l-tbl (Standard Layout Table (Definition List Style))": {
+    "scope": "html,ejs,php",
+    "prefix": "l-tbl",
+    "body": [
+      "<dl class=\"l-tbl\">",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<dt class=\"l-tbl__left\"><strong>会社名</strong></dt>",
+      "\t\t<dd class=\"l-tbl__right\">株式会社サンプルテクノロジーズ</dd>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<dt class=\"l-tbl__left\"><strong>所在地</strong></dt>",
+      "\t\t<dd class=\"l-tbl__right\">〒100-0001 東京都千代田区千代田1-1 サンプルビルディング 8F</dd>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<dt class=\"l-tbl__left\"><strong>設立年月日</strong></dt>",
+      "\t\t<dd class=\"l-tbl__right\">2015年4月1日</dd>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<dt class=\"l-tbl__left\"><strong>事業内容</strong></dt>",
+      "\t\t<dd class=\"l-tbl__right\">Webアプリケーション開発、クラウド導入支援、UI/UXデザイン設計、デジタルマーケティングコンサルティング</dd>",
+      "\t</div>",
+      "</dl>"
+    ],
+    "description": "Standard Layout Table (Definition List Style) (l-tbl) from _tbls.ejs"
+  },
+  "l-tbl (Middle Aligned Table Item)": {
+    "scope": "html,ejs,php",
+    "prefix": "l-tbl",
+    "body": [
+      "<dl class=\"l-tbl\">",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<dt class=\"l-tbl__left\"><strong>代表取締役</strong></dt>",
+      "\t\t<dd class=\"l-tbl__right\">山田 太郎</dd>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<dt class=\"l-tbl__left\"><strong>資本金</strong></dt>",
+      "\t\t<dd class=\"l-tbl__right\">50,000,000円</dd>",
+      "\t</div>",
+      "</dl>"
+    ],
+    "description": "Middle Aligned Table Item (l-tbl) from _tbls.ejs"
+  },
+  "c-txt34 (Text 34px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt34",
+    "body": [
+      "<p class=\"c-txt34\">${1:テキスト 34px：企業の成長を加速させる確かな技術力}</p>"
+    ],
+    "description": "Text 34px (c-txt34) from _texts.ejs"
+  },
+  "c-txt32 (Text 32px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt32",
+    "body": [
+      "<p class=\"c-txt32\">${1:テキスト 32px：企業の成長を加速させる確かな技術力}</p>"
+    ],
+    "description": "Text 32px (c-txt32) from _texts.ejs"
+  },
+  "c-txt30 (Text 30px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt30",
+    "body": [
+      "<p class=\"c-txt30\">${1:テキスト 30px：企業の成長を加速させる確かな技術力}</p>"
+    ],
+    "description": "Text 30px (c-txt30) from _texts.ejs"
+  },
+  "c-txt28 (Text 28px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt28",
+    "body": [
+      "<p class=\"c-txt28\">${1:テキスト 28px：革新的なアイデアを具現化するエンジニアリング}</p>"
+    ],
+    "description": "Text 28px (c-txt28) from _texts.ejs"
+  },
+  "c-txt26 (Text 26px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt26",
+    "body": [
+      "<p class=\"c-txt26\">${1:テキスト 26px：革新的なアイデアを具現化するエンジニアリング}</p>"
+    ],
+    "description": "Text 26px (c-txt26) from _texts.ejs"
+  },
+  "c-txt24 (Text 24px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt24",
+    "body": [
+      "<p class=\"c-txt24\">${1:テキスト 24px：使いやすさと美しさを両立したモダンなWeb設計}</p>"
+    ],
+    "description": "Text 24px (c-txt24) from _texts.ejs"
+  },
+  "c-txt22 (Text 22px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt22",
+    "body": [
+      "<p class=\"c-txt22\">${1:テキスト 22px：使いやすさと美しさを両立したモダンなWeb設計}</p>"
+    ],
+    "description": "Text 22px (c-txt22) from _texts.ejs"
+  },
+  "c-txt20 (Text 20px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt20",
+    "body": [
+      "<p class=\"c-txt20\">${1:テキスト 20px：リード文や強調したい説明文に適したフォントサイズです。}</p>"
+    ],
+    "description": "Text 20px (c-txt20) from _texts.ejs"
+  },
+  "c-txt18 (Text 18px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt18",
+    "body": [
+      "<p class=\"c-txt18\">${1:テキスト 18px：サブリードやカードタイトルの本文展開に最適です。}</p>"
+    ],
+    "description": "Text 18px (c-txt18) from _texts.ejs"
+  },
+  "c-txt16 (Text 16px (Base))": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt16",
+    "body": [
+      "<p class=\"c-txt16\">${1:テキスト 16px（基本本文）：日本語Webサイトにおける標準的で読みやすい本文サイズです。}</p>"
+    ],
+    "description": "Text 16px (Base) (c-txt16) from _texts.ejs"
+  },
+  "c-txt15 (Text 15px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt15",
+    "body": [
+      "<p class=\"c-txt15\">${1:テキスト 15px：すっきりとした読みやすさを重視した本文サイズです。}</p>"
+    ],
+    "description": "Text 15px (c-txt15) from _texts.ejs"
+  },
+  "c-txt14 (Text 14px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt14",
+    "body": [
+      "<p class=\"c-txt14\">${1:テキスト 14px：補足情報やメタ情報、一覧リストの抜粋テキストなどに使用します。}</p>"
+    ],
+    "description": "Text 14px (c-txt14) from _texts.ejs"
+  },
+  "c-txt13 (Text 13px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt13",
+    "body": [
+      "<p class=\"c-txt13\">${1:テキスト 13px：フォーム注記や補足説明テキストに最適なサイズです。}</p>"
+    ],
+    "description": "Text 13px (c-txt13) from _texts.ejs"
+  },
+  "c-txt12 (Text 12px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt12",
+    "body": [
+      "<p class=\"c-txt12\">${1:テキスト 12px：※注記や免責事項、著作権表示などに使用する小型フォントです。}</p>"
+    ],
+    "description": "Text 12px (c-txt12) from _texts.ejs"
+  },
+  "c-txt11 (Text 11px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt11",
+    "body": [
+      "<p class=\"c-txt11\">${1:テキスト 11px：タグバッジや補助的な極小ラベルに適しています。}</p>"
+    ],
+    "description": "Text 11px (c-txt11) from _texts.ejs"
+  },
+  "c-txt10 (Text 10px)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-txt10",
+    "body": [
+      "<p class=\"c-txt10\">${1:テキスト 10px：最小サイズの補助テキストです。}</p>"
+    ],
+    "description": "Text 10px (c-txt10) from _texts.ejs"
+  },
+  "c-title (Section Title (EN/JP))": {
+    "scope": "html,ejs,php",
+    "prefix": "c-title",
+    "body": [
+      "<h2 class=\"c-title\">",
+      "\t<span class=\"c-title__en\">SECTION TITLES &amp; HEADINGS</span>",
+      "\t<span class=\"c-title__jp\">見出し・タイトルコンポーネント</span>",
+      "</h2>"
+    ],
+    "description": "Section Title (EN/JP) (c-title) from _titles.ejs"
+  },
+  "c-ttl36 (Title 36px (Default))": {
+    "scope": "html,ejs,php",
+    "prefix": "c-ttl36",
+    "body": [
+      "<h3 class=\"c-ttl36\">${1:見出し 36px：企業の成長を支えるデジタルパートナー}</h3>"
+    ],
+    "description": "Title 36px (Default) (c-ttl36) from _titles.ejs"
+  },
+  "c-ttl24 c-ttl24--dot (Title 24px (Dot Mark))": {
+    "scope": "html,ejs,php",
+    "prefix": "c-ttl24-dot",
+    "body": [
+      "<h4 class=\"c-ttl24 c-ttl24--dot\">${1:見出し 24px（ドットマーク付き）：洗練されたユーザー体験の設計と実装}</h4>"
+    ],
+    "description": "Title 24px (Dot Mark) (c-ttl24 c-ttl24--dot) from _titles.ejs"
+  },
+  "c-ttl36 c-ttl36--line (Title 36px (Underline))": {
+    "scope": "html,ejs,php",
+    "prefix": "c-ttl36-line",
+    "body": [
+      "<h3 class=\"c-ttl36 c-ttl36--line\">${1:見出し 36px（下線ライン付き）：企業の成長を支えるデジタルパートナー}</h3>"
+    ],
+    "description": "Title 36px (Underline) (c-ttl36 c-ttl36--line) from _titles.ejs"
+  },
+  "c-ttl36 c-ttl36--dot (Title 36px (Dot Mark))": {
+    "scope": "html,ejs,php",
+    "prefix": "c-ttl36-dot",
+    "body": [
+      "<h3 class=\"c-ttl36 c-ttl36--dot\">${1:見出し 36px（ドットマーク付き）：企業の成長を支えるデジタルパートナー}</h3>"
+    ],
+    "description": "Title 36px (Dot Mark) (c-ttl36 c-ttl36--dot) from _titles.ejs"
+  },
+  "c-ttl (Heading with Selectable Size)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-ttl",
+    "body": [
+      "<h2 class=\"c-ttl${1|36,24|}\">${2:タイトルコンテンツ}</h2>"
+    ],
+    "description": "FLOCSS Heading with selectable font-size"
+  },
+  "c-title (EN/JP Bilingual Heading)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-title",
+    "body": [
+      "<h2 class=\"c-title\">",
+      "\t<span class=\"c-title__en\">${1:ENGLISH TITLE}</span>",
+      "\t<span class=\"c-title__jp\">${2:日本語タイトル}</span>",
+      "</h2>"
+    ],
+    "description": "FLOCSS Bilingual Title EN/JP (component/_titles.scss)"
+  },
+  "c-totop (Totop)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-totop",
+    "body": [
+      "<a href=\"\" class=\"c-totop\">${1:pagetop}</a>"
+    ],
+    "description": "FLOCSS (c-totop) from _footer.ejs"
+  },
+  "c-cookiewrap (Cookiewrap)": {
+    "scope": "html,ejs,php",
+    "prefix": "c-cookiewrap",
+    "body": [
+      "<div data-gdpr=\"wrap\" id=\"cookiewrap\" class=\"c-cookiewrap\">",
+      "\t<div class=\"c-cookiewrap__inner\">",
+      "\t\t<p class=\"c-cookiewrap__close\"><a href=\"\" data-gdpr=\"button\" >同意する</a></p>",
+      "\t\t<p class=\"c-cookiewrap__txt\">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href=\"\" class=\"c-cookiewrap__link\">プライバシーポリシー</a>」をご覧ください。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "FLOCSS (c-cookiewrap) from _footer.ejs"
   }
 }

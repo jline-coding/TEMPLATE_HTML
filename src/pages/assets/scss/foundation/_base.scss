@@ -7,17 +7,31 @@ foundation > base
 :root {
     --base: #3E3E3E;
     --primary: #e60012;
+    --primary-light: #fff5f5;
     --black: #000;
     --white: #fff;
     --gray: #ccc;
+    --gray-light: #f7f7f7;
+    --gray-subtle: #fafafa;
+    --gray-bg: #f2f2f2;
+    --gray-border: #e0e0e0;
+    --text-muted: #666;
+    --text-subtle: #888;
+    --text-placeholder: #aaa;
+    --info: #0076df;
     --red: #f45a3e;
+}
+
+html,
+body {
+    overflow-x: hidden;
 }
 
 body {
     line-height: 2;
     @extend %fz-16;
     font-weight: 400;
-    color: var(--base);
+    color: var(--base, #3E3E3E);
     font-family: $font-family-base;
     letter-spacing: 0.01em;
 }
@@ -71,42 +85,6 @@ a {
     }
 }
 
-// HTML5 W3C Standard: In-Page Searchable Collapsible (hidden="until-found")
-// Kept in DOM layout via content-visibility: hidden for native browser Ctrl+F indexing.
-// The browser automatically removes the hidden attribute and fires beforematch when matched.
-[hidden="until-found"] {
-    display: revert !important;
-    content-visibility: hidden !important;
-}
-
-@supports not (content-visibility: hidden) {
-    [hidden="until-found"] {
-        display: none !important;
-    }
-}
-
-// Optional CSS Utility for height-based searchables
-.js-searchable {
-    &:not(.is-open) {
-        display: block !important;
-        height: 0 !important;
-        max-height: 0 !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        border-top: none !important;
-        border-bottom: none !important;
-        overflow: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    &:focus-within {
-        height: auto !important;
-        max-height: none !important;
-        overflow: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-    }
+[hidden] {
+    display: none !important;
 }

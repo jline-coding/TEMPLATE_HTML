@@ -1,0 +1,223 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > Slider & Slick Carousel
+------------------------------
+*/
+
+.c-slider {
+    position: relative;
+    width: 100%;
+
+    /* Slick Track & Slide Spacing */
+    .slick-list {
+        overflow: hidden;
+        margin: 0 -14px;
+        padding: 8px 0;
+
+        @include mq(sp) {
+            margin: 0 -8px;
+        }
+    }
+
+    .slick-slide {
+        margin: 0 14px;
+        height: auto;
+        box-sizing: border-box;
+
+        @include mq(sp) {
+            margin: 0 8px;
+        }
+
+        > div {
+            height: 100%;
+        }
+    }
+
+    &__item {
+        background-color: var(--white);
+        border: 1px solid var(--gray);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        display: flex !important;
+        flex-direction: column;
+        height: 100%;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+    }
+
+    &__thumb {
+        width: 100%;
+        height: 180px;
+        background-color: var(--gray-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+
+        &--wide {
+            height: 240px;
+        }
+    }
+
+    &__item:hover &__thumb img {
+        transform: scale(1.04);
+    }
+
+    &__content {
+        padding: 16px 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__title {
+        @extend %fz-16;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--base);
+    }
+
+    &__desc {
+        @extend %fz-13;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Slick Navigation Arrows */
+    .slick-arrow,
+    &__arrow {
+        position: absolute;
+        top: calc(50% - 20px);
+        transform: translateY(-50%);
+        z-index: 5;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: var(--white);
+        border: 1px solid var(--gray);
+        color: var(--base);
+        font-size: 16px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.25s ease;
+
+        &:hover:not(.slick-disabled) {
+            background-color: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        &--prev,
+        &.slick-prev {
+            left: -20px;
+            @include mq(sp) {
+                left: 4px;
+            }
+        }
+
+        &--next,
+        &.slick-next {
+            right: -20px;
+            @include mq(sp) {
+                right: 4px;
+            }
+        }
+
+        &.slick-disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    }
+
+    /* Slick Pagination Dots */
+    .slick-dots {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        list-style: none;
+        padding: 0;
+        margin: 20px 0 0;
+
+        li {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+
+            button {
+                display: block;
+                width: 10px;
+                height: 10px;
+                border-radius: 5px;
+                background-color: var(--gray);
+                border: none;
+                font-size: 0;
+                padding: 0;
+                cursor: pointer;
+                transition: all 0.25s ease;
+
+                &:hover {
+                    background-color: var(--gray-border);
+                }
+            }
+
+            &.slick-active button {
+                width: 28px;
+                background-color: var(--primary);
+            }
+        }
+    }
+
+    /* Single Fade Banner Modifier */
+    &--fade {
+        max-width: 800px;
+        margin: 0 auto;
+
+        .slick-list {
+            margin: 0;
+        }
+
+        .slick-slide {
+            padding: 0;
+        }
+    }
+
+    /* Center Mode Modifier */
+    &--center {
+        .slick-slide {
+            opacity: 0.6;
+            transform: scale(0.92);
+            transition: all 0.3s ease;
+
+            &.slick-center {
+                opacity: 1;
+                transform: scale(1);
+
+                .c-slider__item {
+                    border-color: var(--primary);
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+                }
+            }
+        }
+    }
+}

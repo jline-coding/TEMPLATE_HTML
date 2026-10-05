@@ -1,6 +1,6 @@
 /**
  * scripts/tools/components/registry.js
- * Component Registry, Specification & Drift Detection Engine (View Diff before update)
+ * Component Registry, Specification & Installation Status
  */
 
 import { existsSync, readdirSync, readFileSync } from 'fs';
@@ -20,25 +20,9 @@ import {
   findMatchingScss,
   findMatchingJs
 } from './paths.js';
-import { isTemplateStub, sliceScssForClasses } from './variants.js';
+import { isTemplateStub } from './variants.js';
+import { sortComponentRegistry } from './ordering.js';
 
-/**
- * Normalizes code content for accurate semantic diffing
- */
-export function normalizeCodeForDiff(content) {
-  if (!content) return '';
-  return content
-    .replace(/\r\n/g, '\n')
-    .replace(/@use\s+[^;]+;/g, '')
-    .replace(/@forward\s+[^;]+;/g, '')
-    .replace(/\/\*![\s\S]*?\*\//g, '')
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/.*$/gm, '')
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => line.length > 0)
-    .join('\n');
-}
 
 /**
  * Strips Workbench Showroom metadata and item wrapper from component EJS
@@ -136,16 +120,16 @@ export function getCategoryMeta(category) {
 }
 
 /**
- * Get all available components in workbench with real-time status, specification, and diff in src/
+ * Get all available components in workbench with installation status and specification
  */
 export function getRegistry(paths = getDefaultPaths()) {
   if (!existsSync(paths.wbComponentsDir)) return [];
   const files = readdirSync(paths.wbComponentsDir).filter(f => f.startsWith('_') && f.endsWith('.ejs'));
 
-  return files.map(file => {
+  const items = files.map(file => {
     const rawName = basename(file, '.ejs').replace(/^_/, '');
     const clientEjs = resolve(paths.clientComponentsDir, file);
-    const clientEjsExists = existsSync(clientEjs);
+    let clientEjsExists = existsSync(clientEjs);
     let clientEjsContent = '';
     let clientMeta = {};
 
@@ -254,46 +238,6 @@ export function getRegistry(paths = getDefaultPaths()) {
 
     const isInstalled = clientScssExists || (['header', 'footer'].includes(category) && clientEjsExists);
 
-    let syncStatus = 'uninstalled';
-    let scssDiff = false;
-    let jsDiff = false;
-    let ejsDiff = false;
-
-    if (isInstalled) {
-      if (clientScssExists && wbScssContent) {
-        let compClientScss = clientScssContent;
-        let compWbScss = wbScssContent;
-        if (matchingScss && matchingScss !== `_${rawName}.scss` && matchingScss !== `_${rawName}s.scss`) {
-          compClientScss = sliceScssForClasses(clientScssContent, `c-${rawName}`);
-          compWbScss = sliceScssForClasses(wbScssContent, `c-${rawName}`);
-        }
-        if (normalizeCodeForDiff(compClientScss) !== normalizeCodeForDiff(compWbScss)) {
-          scssDiff = true;
-        }
-      }
-
-      if (clientJsExists && wbJsContent) {
-        const compClientJs = sliceJsForComponent(clientJsContent, rawName);
-        const compWbJs = sliceJsForComponent(wbJsContent, rawName);
-        if (normalizeCodeForDiff(compClientJs) !== normalizeCodeForDiff(compWbJs)) {
-          jsDiff = true;
-        }
-      }
-
-      if (clientEjsExists && wbEjsContent && ['header', 'footer'].includes(category)) {
-        const cleanWbEjs = stripEjsShowroomWrapper(wbEjsContent);
-        if (normalizeCodeForDiff(clientEjsContent) !== normalizeCodeForDiff(cleanWbEjs)) {
-          ejsDiff = true;
-        }
-      }
-
-      if (scssDiff || jsDiff || ejsDiff) {
-        syncStatus = 'diverged';
-      } else {
-        syncStatus = 'synced';
-      }
-    }
-
     const deps = resolveComponentDependencies(rawName, parsedMeta, wbEjsContent);
     const compTitle = parsedMeta.title || rawName.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const compId = parsedMeta.id || generateComponentId(rawName, category);
@@ -301,10 +245,6 @@ export function getRegistry(paths = getDefaultPaths()) {
     const schemaVersion = parsedMeta.schemaVersion || COMPONENT_SCHEMA_VERSION;
     const installedVersion = isInstalled ? (clientMeta.version || version) : null;
     const hasUpdate = Boolean(isInstalled && installedVersion && version > installedVersion);
-
-    if (hasUpdate) {
-      syncStatus = 'outdated';
-    }
 
     return {
       id: compId,
@@ -323,8 +263,6 @@ export function getRegistry(paths = getDefaultPaths()) {
       categoryLabel: categoryMeta.label,
       categoryIcon: categoryMeta.icon,
       isInstalled,
-      syncStatus,
-      diffDetails: { scssDiff, jsDiff, ejsDiff },
       meta: parsedMeta,
       scssContent: wbScssContent,
       clientScssContent,
@@ -334,4 +272,6 @@ export function getRegistry(paths = getDefaultPaths()) {
       clientEjsContent
     };
   });
+
+  return sortComponentRegistry(items);
 }

@@ -57,6 +57,6 @@ describe('Dual-Environment Workbench System', () => {
     expect(html).toContain('class="cs-nav"');
 
     // Isolation guard in Showroom CSS
-    expect(css).toContain('display: revert !important');
+    expect(css).toContain('display: none !important');
   });
 });

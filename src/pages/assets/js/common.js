@@ -1,140 +1,230 @@
-(function ($) {
-    'use strict';
-    if (!$ || typeof $.type !== 'undefined') return;
-    $.type = function (obj) {
-        if (obj === null) return 'null';
-        if (obj === undefined) return 'undefined';
-        return Object.prototype.toString.call(obj)
-            .replace(/^\[object\s|\]$/g, '')
-            .toLowerCase();
-    };
-})(window.jQuery || window.$);
-
-// common
-/* ==========================================================================
-   Common: Inview Scroll Animations (.js-inview)
-   ========================================================================== */
-(function () {
-    'use strict';
-    if (typeof inview === 'undefined' || !inview.observer) {
-        // Fallback for WP templates without inview.js enqueued: reveal content safely
-        if (typeof document !== 'undefined') {
-            const els = document.querySelectorAll('.js-inview');
-            els.forEach(function (el) {
-                el.classList.add('is-inview', 'active');
-            });
-        }
-        return;
-    }
-    const movement = new inview.observer({
-        class: 'js-inview',
-        aniDelay: 300,
-        optionView: { bottom: -50 },
-    });
-    movement.init();
-})();
+'use strict';
 
 /* ==========================================================================
-   Common: Smooth scroll anchor (#id)
+   Common: Smooth Scroll
    ========================================================================== */
-(function ($) {
-    'use strict';
+
+(function ($, window, document) {
     if (!$) return;
 
     const $htmlBody = $('html, body');
-
-    function scrollToHash(hash) {
-        if (!hash || hash === '#' || hash === '#!') return false;
-        let $target;
-        try {
-            $target = $(hash);
-        } catch (err) {
-            return false;
+    const SCROLL_DURATION = 600;
+    
+    function getTarget(hash) {
+        if (!hash || hash === '#' || hash === '#!') {
+            return null;
         }
-        if (!$target.length) return false;
 
-        // Auto-calculate WP Admin Bar height if present (0 on static HTML)
-        const wpBarH = $('#wpadminbar').outerHeight() || 0;
-        const headerH = $('.c-header').outerHeight() || 0;
+        let id = hash.substring(1);
 
-        $htmlBody.stop().animate({ scrollTop: $target.offset().top - (wpBarH + headerH + 30) }, 600);
-        return true;
+        try {
+            id = decodeURIComponent(id);
+        } catch (error) {
+            // Keep original ID if decode fails.
+        }
+
+        return document.getElementById(id);
     }
 
-    $(function () {
-        $(document).on('click.smoothAnchor', 'a[href^="#"]', function (e) {
-            const href = $(this).attr('href');
-            if (scrollToHash(href)) {
-                e.preventDefault();
-            }
-        });
+    function scrollToTarget(target, offset) {
+        const $target = $(target);
 
-        if (location.hash) {
-            setTimeout(function () {
-                scrollToHash(location.hash);
-            }, 100);
+        if (!$target.length) return;
+
+        const targetTop = Math.max(
+            0,
+            $target.offset().top - offset
+        );
+
+        $htmlBody.stop(true);
+
+        if (
+            window.matchMedia(
+                '(prefers-reduced-motion: reduce)'
+            ).matches
+        ) {
+            $htmlBody.scrollTop(targetTop);
+            return;
         }
-    });
-})(window.jQuery || window.$);
+
+        $htmlBody.animate(
+            {
+                scrollTop: targetTop,
+            },
+            SCROLL_DURATION
+        );
+    }
+
+    $(document).on(
+        'click.smoothScroll',
+        '.js-anchor[href^="#"]',
+        function (event) {
+            const $link = $(this);
+            const hash = $link.attr('href');
+            const target = getTarget(hash);
+
+            if (!target) return;
+
+            event.preventDefault();
+
+            const offset =
+                Number($link.attr('data-scroll-offset')) || 0;
+
+            scrollToTarget(target, offset);
+
+            if (
+                window.history &&
+                typeof window.history.pushState === 'function' &&
+                window.location.hash !== hash
+            ) {
+                window.history.pushState(null, '', hash);
+            }
+        }
+    );
+
+})(window.jQuery, window, document);
+
 
 /* ==========================================================================
-   [Component: totop]
+   Component: To Top
    ========================================================================== */
-(function ($) {
-    'use strict';
+
+(function ($, window) {
     if (!$) return;
 
     const $window = $(window);
     const $totop = $('.c-totop');
+
     if (!$totop.length) return;
 
-    function update() {
-        $totop.toggleClass('active', $window.scrollTop() > 50);
-    }
+    const ACTIVE_OFFSET = 50;
+    const SCROLL_DURATION = 600;
 
     let ticking = false;
-    $window.on('scroll.totop resize.totop', function () {
-        if (!ticking) {
-            requestAnimationFrame(function () {
-                update();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
 
-    $totop.on('click.totop', function (e) {
-        e.preventDefault();
-        $('html, body').stop().animate({ scrollTop: 0 }, 600);
-    });
+    /**
+     * Update visibility.
+     */
+    function update() {
+        $totop.toggleClass(
+            'is-active',
+            $window.scrollTop() > ACTIVE_OFFSET
+        );
+    }
 
-    $window.on('load.totop', update);
-    $(update);
-})(window.jQuery || window.$);
+    /**
+     * Limit scroll handling to one update per animation frame.
+     */
+    function requestUpdate() {
+        if (ticking) return;
 
-/* ==========================================================================
-   Common: ScrollHint 
-   ========================================================================== */
-(function ($) {
-    'use strict';
-    if (!$) return;
+        ticking = true;
 
-    function init() {
-        if (typeof ScrollHint === 'undefined') return;
-        if (!$('.js-scrollable, .has-fixed-layout').length) return;
-        new ScrollHint('.js-scrollable, .has-fixed-layout', {
-            scrollHintIconAppendClass: 'scroll-hint-icon-white',
-            applyToParents: true,
-            i18n: { scrollable: 'スクロールできます' },
+        window.requestAnimationFrame(function () {
+            update();
+            ticking = false;
         });
     }
 
-    if (document.readyState === 'complete') init();
-    else $(window).on('load.scrollHint', init);
-})(window.jQuery || window.$);
+    $window.on('scroll.totop', requestUpdate);
+
+    $totop.on('click.totop', function (event) {
+        event.preventDefault();
+
+        const $htmlBody = $('html, body');
+
+        $htmlBody.stop(true);
+
+        if (
+            window.matchMedia(
+                '(prefers-reduced-motion: reduce)'
+            ).matches
+        ) {
+            $htmlBody.scrollTop(0);
+            return;
+        }
+
+        $htmlBody.animate(
+            {
+                scrollTop: 0,
+            },
+            SCROLL_DURATION
+        );
+    });
+
+    update();
+
+})(window.jQuery, window);
+
 
 /* ==========================================================================
-   [Component: header]
+   Component: Scrollable
+   ========================================================================== */
+
+(function ($, window) {
+    if (!$) return;
+
+    const $targets = $('.js-scrollable, .has-fixed-layout');
+
+    if (!$targets.length) return;
+
+    let resizeTimer;
+
+    function updateState(element) {
+        const $element = $(element);
+
+        const isScrollable =
+            element.scrollWidth > element.clientWidth + 1;
+
+        $element.toggleClass(
+            'is-scrollable',
+            isScrollable
+        );
+
+        if (!isScrollable) {
+            $element.removeClass('is-scrolled');
+        }
+    }
+
+    $targets.each(function () {
+        const element = this;
+        const $element = $(element);
+
+        updateState(element);
+
+        $element.on(
+            'scroll.scrollable',
+            function () {
+                if (element.scrollLeft > 0) {
+                    $element.addClass('is-scrolled');
+                } else {
+                    $element.removeClass('is-scrolled');
+                }
+            }
+        );
+    });
+
+    $(window).on(
+        'resize.scrollable',
+        function () {
+            window.clearTimeout(resizeTimer);
+
+            resizeTimer = window.setTimeout(
+                function () {
+                    $targets.each(function () {
+                        updateState(this);
+                    });
+                },
+                150
+            );
+        }
+    );
+
+})(window.jQuery, window);
+
+
+/* ==========================================================================
+   Component: Header
    ========================================================================== */
 (function ($) {
     'use strict';
@@ -145,171 +235,249 @@
     const $header = $('.c-header');
     if (!$header.length) return;
 
-    // Elements inside header (supports both new .c-header-* and fallback classes)
-    const $toggle = $header.find('.c-header-toggle, .c-toggle');
-    const $gnavi = $header.find('.c-header-gnavi, .c-gnavi');
-    const $subParent = $gnavi.find('.c-header-gnavi__item.is-sub, .c-gnavi-list__item.is-sub');
-    const $subLink = $subParent.children('.c-header-gnavi__link, .c-gnavi-link');
+    const $toggle = $header.find('.c-header-toggle');
+    const $gnavi = $header.find('.c-header-gnavi');
+    const $subItems = $gnavi.find('.c-header-gnavi__item.is-sub');
+    const $subLinks = $subItems.children('.c-header-gnavi__link');
 
     let scrollPos = 0;
 
-    // --- 1. Header scroll active state (RAF 60fps) ---
-    function updateScrollState() {
-        $header.toggleClass('active', $window.scrollTop() > 50);
-    }
-
-    let ticking = false;
+    // Header scroll active
     $window.on('scroll.header resize.header', function () {
-        if (!ticking) {
-            requestAnimationFrame(function () {
-                updateScrollState();
-                ticking = false;
-            });
-            ticking = true;
+        $header.toggleClass('is-active', $window.scrollTop() > 50);
+    });
+    $header.toggleClass('is-active', $window.scrollTop() > 50);
+
+    // Mobile menu toggle
+    $toggle.on('click.header', function (e) {
+        e.preventDefault();
+        const isOpen = $(this).hasClass('is-active');
+
+        $(this).toggleClass('is-active', !isOpen);
+        $header.toggleClass('is-open', !isOpen);
+
+        if (!isOpen) {
+            scrollPos = $window.scrollTop();
+            $body.addClass('overflow_modal').css({ top: -scrollPos + 'px' });
+        } else {
+            $body.removeClass('overflow_modal').css({ top: '' });
+            $window.scrollTop(scrollPos);
+            $subItems.removeClass('is-open').children('.c-header-gnavi__sub').slideUp(200);
+        }
+
+        $gnavi.stop(true, true).slideToggle(300);
+    });
+
+    // Submenu accordion (mobile only)
+    $subLinks.on('click.header', function (e) {
+        if ($window.width() >= 768) return;
+        e.preventDefault();
+
+        const $parent = $(this).parent();
+        const $targetSub = $parent.children('.c-header-gnavi__sub');
+        const isOpen = $parent.hasClass('is-open');
+
+        $subItems.not($parent).filter('.is-open').removeClass('is-open')
+            .children('.c-header-gnavi__sub').stop(true, true).slideUp(200);
+
+        $parent.toggleClass('is-open', !isOpen);
+        $targetSub.stop(true, true).slideToggle(300);
+    });
+
+    // Close menu when clicking anchor link
+    $gnavi.on('click.header', 'a[href^="#"]', function () {
+        if ($window.width() < 768 && $toggle.hasClass('is-active')) {
+            $toggle.trigger('click');
         }
     });
-    $window.on('load.header', updateScrollState);
-    $(updateScrollState);
 
-    // --- 2. Body scroll lock (Preserves scroll position) ---
-    function lockBody() {
-        scrollPos = $window.scrollTop();
-        $body.addClass('overflow_modal').css({ top: -scrollPos + 'px' });
+    // Reset when resizing to desktop
+    $window.on('resize.header', function () {
+        if ($window.width() >= 768) {
+            $toggle.removeClass('is-active');
+            $header.removeClass('is-open');
+            $body.removeClass('overflow_modal').css({ top: '' });
+            $gnavi.removeAttr('style');
+            $subItems.removeClass('is-open').children('.c-header-gnavi__sub').removeAttr('style');
+        }
+    });
+
+})(window.jQuery || window.$);
+
+/* ==========================================================================
+   [Component: popup]
+   Accessible Modal & Popup Controller
+   ========================================================================== */
+(function ($) {
+    'use strict';
+    if (!$) return;
+
+    let scrollPos = 0;
+
+    function openPopup(target) {
+        if (!target) return;
+        const $overlay = $(target);
+        if (!$overlay.length) return;
+
+        scrollPos = $(window).scrollTop();
+        $('body').addClass('overflow_modal').css({ top: -scrollPos + 'px' });
+
+        $overlay
+            .addClass('is-active')
+            .attr('aria-hidden', 'false');
+
+        setTimeout(function () {
+            const $focusable = $overlay.find('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if ($focusable.length) {
+                $focusable.first().trigger('focus');
+            }
+        }, 150);
     }
 
-    function unlockBody() {
-        $body.removeClass('overflow_modal').css({ top: '' });
-        $window.scrollTop(scrollPos);
+    function closePopup(target) {
+        const $overlay = target ? $(target) : $('.c-popup-overlay.is-active');
+        if (!$overlay.length) return;
+
+        $overlay
+            .removeClass('is-active')
+            .attr('aria-hidden', 'true');
+
+        $('body').removeClass('overflow_modal').css({ top: '' });
+        $(window).scrollTop(scrollPos);
     }
 
-    // --- 3. Close submenu helper ---
-    function closeSub($items) {
-        $items.removeClass('is-open').children('.c-header-gnavi__sub, .c-gnavi-sub').each(function () {
-            const $sub = $(this);
-            $sub.css({ overflow: 'hidden' }).stop().animate({ height: 0 }, 300, function () {
-                $sub.attr('hidden', 'until-found').css({ height: '', overflow: '' });
+    $(document).on('click', '.js-popup-open, [data-popup-target]', function (e) {
+        e.preventDefault();
+        const target = $(this).attr('data-popup-target') || $(this).attr('href');
+        openPopup(target);
+    });
+
+    $(document).on('click', '.js-popup-close, .c-popup-overlay__backdrop, .c-popup__close, .c-popup__footer .c-btn--cancel', function (e) {
+        e.preventDefault();
+        const $overlay = $(this).closest('.c-popup-overlay');
+        closePopup($overlay);
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            const $active = $('.c-popup-overlay.is-active');
+            if ($active.length) {
+                closePopup($active);
+            }
+        }
+    });
+
+    window.appPopup = { open: openPopup, close: closePopup };
+})(window.jQuery || window.$);
+
+/* ==========================================================================
+   [Component: slider]
+   Slick Carousel Controller (assets/vendor/slick)
+   ========================================================================== */
+(function ($) {
+    'use strict';
+    if (!$) return;
+
+    // jQuery 4 compatibility for Slick
+    if (typeof $.type !== 'function') {
+        $.type = function (obj) {
+            if (obj == null) return obj + '';
+            var t = Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+            return typeof obj === 'object' || typeof obj === 'function' ? t : typeof obj;
+        };
+    }
+
+    function initSlickSliders() {
+        if (typeof $.fn.slick !== 'function') return;
+
+        // 1. Responsive Multi-Card Carousel Slider
+        $('.js-slider:not(.slick-initialized)').each(function () {
+            const $slider = $(this);
+            $slider.slick({
+                dots: true,
+                arrows: true,
+                infinite: true,
+                speed: 600,
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 4500,
+                pauseOnHover: true,
+                prevArrow: '<button type="button" class="slick-prev c-slider__arrow c-slider__arrow--prev" aria-label="前へ">❮</button>',
+                nextArrow: '<button type="button" class="slick-next c-slider__arrow c-slider__arrow--next" aria-label="次へ">❯</button>',
+                responsive: [
+                    {
+                        breakpoint: 1024,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 1
+                        }
+                    },
+                    {
+                        breakpoint: 640,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1,
+                            arrows: false
+                        }
+                    }
+                ]
+            });
+        });
+
+        // 2. Single Slide Fade Banner Slider
+        $('.js-slider-fade:not(.slick-initialized)').each(function () {
+            const $slider = $(this);
+            $slider.slick({
+                dots: true,
+                arrows: true,
+                fade: true,
+                infinite: true,
+                speed: 800,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 5000,
+                prevArrow: '<button type="button" class="slick-prev c-slider__arrow c-slider__arrow--prev" aria-label="前へ">❮</button>',
+                nextArrow: '<button type="button" class="slick-next c-slider__arrow c-slider__arrow--next" aria-label="次へ">❯</button>'
+            });
+        });
+
+        // 3. Center Mode Highlight Carousel
+        $('.js-slider-center:not(.slick-initialized)').each(function () {
+            const $slider = $(this);
+            $slider.slick({
+                dots: true,
+                arrows: true,
+                centerMode: true,
+                centerPadding: '50px',
+                slidesToShow: 3,
+                autoplay: true,
+                autoplaySpeed: 4000,
+                prevArrow: '<button type="button" class="slick-prev c-slider__arrow c-slider__arrow--prev" aria-label="前へ">❮</button>',
+                nextArrow: '<button type="button" class="slick-next c-slider__arrow c-slider__arrow--next" aria-label="次へ">❯</button>',
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            centerMode: true,
+                            centerPadding: '20px',
+                            slidesToShow: 1
+                        }
+                    }
+                ]
             });
         });
     }
 
-    // --- 4. Close mobile menu completely ---
-    function closeMenu() {
-        $toggle.removeClass('active');
-        $gnavi.removeClass('active is-open');
-        $header.removeClass('is-open');
-        if (window.matchMedia('(max-width: 767px)').matches) {
-            $gnavi.attr('hidden', 'until-found');
-        }
-        if ($body.hasClass('overflow_modal')) {
-            unlockBody();
-        }
-        closeSub($subParent);
-    }
-
-    // --- 5. Toggle mobile menu on button click ---
-    $toggle.on('click.header', function () {
-        const isActive = $(this).hasClass('active');
-
-        if (isActive) {
-            closeMenu();
-        } else {
-            $gnavi.removeAttr('hidden');
-            $(this).addClass('active');
-            $gnavi.addClass('active is-open');
-            $header.addClass('is-open');
-            lockBody();
-        }
+    $(function () {
+        initSlickSliders();
     });
 
-    // --- 6. Submenu accordion on SP (< 768px) ---
-    $subLink.on('click.header', function (e) {
-        if (window.matchMedia('(min-width: 768px)').matches) return;
-        e.preventDefault();
-
-        const $parent = $(this).parent();
-        const $targetSub = $parent.children('.c-header-gnavi__sub, .c-gnavi-sub');
-        const isOpen = $parent.hasClass('is-open');
-
-        $parent.toggleClass('is-open', !isOpen);
-        if (!isOpen) {
-            $targetSub.removeAttr('hidden');
-            const targetHeight = $targetSub.css({ height: 'auto' }).outerHeight();
-            $targetSub.css({ height: 0, overflow: 'hidden' })
-                .stop()
-                .animate({ height: targetHeight }, 300, function () {
-                    $(this).css({ height: '', overflow: '' });
-                });
-        } else {
-            $targetSub.css({ overflow: 'hidden' })
-                .stop()
-                .animate({ height: 0 }, 300, function () {
-                    $(this).attr('hidden', 'until-found').css({ height: '', overflow: '' });
-                });
-        }
-
-        // Close sibling submenus
-        closeSub($subParent.not($parent).filter('.is-open'));
+    $(window).on('load', function () {
+        initSlickSliders();
     });
 
-    // --- 7. Auto close menu when clicking SP anchor links ---
-    $gnavi.on('click.header', 'a[href^="#"]', function () {
-        if (window.matchMedia('(max-width: 767px)').matches) {
-            closeMenu();
-        }
-    });
-
-    // --- 8. Ctrl+F / Native Find-in-page: auto reveal menu and submenu ---
-    function handleBeforeMatch(e) {
-        const target = e.target;
-        const $target = $(target);
-
-        // Check if the matched element is inside header navigation
-        const $gnaviMatch = $target.closest('.c-header-gnavi, .c-gnavi');
-        if ($gnaviMatch.length) {
-            // 1. If mobile menu is closed, automatically open it!
-            if (!$toggle.hasClass('active')) {
-                $toggle.addClass('active');
-                $gnavi.removeAttr('hidden').addClass('active is-open');
-                $header.addClass('is-open');
-                lockBody();
-            }
-
-            // 2. If matched text is inside a submenu, automatically open that submenu!
-            const $sub = $target.closest('.c-header-gnavi__sub, .c-gnavi-sub');
-            if ($sub.length) {
-                const $parent = $sub.closest('.c-header-gnavi__item, .c-gnavi-list__item');
-                $parent.addClass('is-open');
-                $sub.removeAttr('hidden').css({ height: '', overflow: '' });
-            }
-        }
-    }
-
-    document.addEventListener('beforematch', handleBeforeMatch, true);
-
-    // --- 9. Initial sync & reset states when resizing to desktop (>= 768px) ---
-    function syncGnaviState() {
-        if (window.matchMedia('(min-width: 768px)').matches) {
-            $gnavi.removeAttr('hidden');
-        } else {
-            if (!$toggle.hasClass('active')) {
-                $gnavi.attr('hidden', 'until-found');
-            }
-        }
-    }
-    syncGnaviState();
-
-    let resizeTimer;
-    $window.on('resize.header', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            if (window.matchMedia('(min-width: 768px)').matches) {
-                closeMenu();
-                $gnavi.removeAttr('hidden');
-                $subParent.children('.c-header-gnavi__sub, .c-gnavi-sub').removeAttr('style');
-            } else {
-                syncGnaviState();
-            }
-        }, 150);
-    });
-
+    window.initSlickSliders = initSlickSliders;
 })(window.jQuery || window.$);
+

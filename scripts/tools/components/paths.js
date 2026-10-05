@@ -24,7 +24,7 @@ import { normalizeName } from './metadata.js';
 
 export const LAYOUT_CATEGORIES = new Set(['layout', 'layouts']);
 export const KNOWN_LAYOUT_COMPONENTS = new Set([
-  'container', 'flex', 'flexs', 'grid', 'grids', 'tbl', 'tbls', 'sidebar', 'other'
+  'container', 'flex', 'flexs', 'grid', 'grids', 'tbls', 'sidebar', 'wrapper', 'wrap', 'layout'
 ]);
 
 /**
@@ -54,7 +54,7 @@ export function getComponentCategory(compName) {
   const norm = normalizeName(compName);
   if (norm.startsWith('header') || norm.startsWith('gnavi') || norm.includes('_header')) return 'header';
   if (norm.startsWith('footer') || norm.includes('_footer')) return 'footer';
-  if (KNOWN_LAYOUT_COMPONENTS.has(norm)) return 'layout';
+  if (norm.startsWith('l-') || KNOWN_LAYOUT_COMPONENTS.has(norm)) return 'layout';
   return 'component';
 }
 

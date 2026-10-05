@@ -21,7 +21,6 @@ import {
   generateComponentId,
   getAvailableJsFiles,
   appendJsToTargetFile,
-  normalizeCodeForDiff,
   createSnapshotBackup,
   deleteWorkbenchComponent,
   deleteWorkbenchVariant,
@@ -217,8 +216,8 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
     });
   });
 
-  describe('Registry, Status Calculation & Diff Details', () => {
-    it('computes installed, latestVersion, and diffDetails in getRegistry()', () => {
+  describe('Registry & Installation Status', () => {
+    it('computes isInstalled and metadata in getRegistry()', () => {
       installComponent('accordion', { force: true }, sandboxPaths);
       const registry = getRegistry(sandboxPaths);
       expect(Array.isArray(registry)).toBe(true);
@@ -228,21 +227,6 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
       expect(acc.id).toBe('c-accordion');
       expect(acc.version).toBe('1.2.0');
       expect(acc.isInstalled).toBe(true);
-      expect(acc.syncStatus).toBe('synced');
-      expect(acc.diffDetails).toBeDefined();
-      expect(acc.diffDetails.scssDiff).toBe(false);
-    });
-
-    it('detects diverged status when client SCSS is modified (Drift Detection)', () => {
-      // Modify client SCSS
-      writeFileSync(accordionScssPath, '.c-accordion { display: flex; color: red; }', 'utf8');
-
-      const registry = getRegistry(sandboxPaths);
-      const acc = registry.find(r => r.name === 'accordion');
-
-      expect(acc.isInstalled).toBe(true);
-      expect(acc.syncStatus).toBe('diverged');
-      expect(acc.diffDetails.scssDiff).toBe(true);
     });
   });
 

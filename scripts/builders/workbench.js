@@ -26,6 +26,9 @@ import { getRegistry, parseComponentMetadata } from '../tools/component-service.
 const CATALOG_EJS = resolve(WORKBENCH_CATALOG_DIR, 'catalog.ejs');
 const CATALOG_CSS = resolve(WORKBENCH_CATALOG_DIR, 'catalog.css');
 const CATALOG_JS = resolve(WORKBENCH_CATALOG_DIR, 'catalog.js');
+const INVIEW_EJS = resolve(WORKBENCH_CATALOG_DIR, 'inview.ejs');
+const INVIEW_CSS = resolve(WORKBENCH_CATALOG_DIR, 'inview.css');
+const INVIEW_JS = resolve(WORKBENCH_CATALOG_DIR, 'inview.js');
 const WORKBENCH_SCSS = resolve(WORKBENCH_DIR, 'workbench.scss');
 
 /**
@@ -52,6 +55,7 @@ export async function buildWorkbenchScss() {
     dynamicScss += `@use "scss/global" as *;\n`;
     dynamicScss += `@use "scss/foundation";\n`;
     dynamicScss += `@use "scss/utilities";\n`;
+    dynamicScss += `@use "scss/layout/container";\n`;
 
     const registry = getRegistry();
     const scssImports = [];
@@ -61,6 +65,7 @@ export async function buildWorkbenchScss() {
       if (item.scssFile) {
         const inLayout = existsSync(resolve(WORKBENCH_LAYOUT_DIR, item.scssFile));
         const cleanName = item.scssFile.replace(/^_/, '').replace(/\.scss$/, '');
+        if (cleanName === 'container') continue;
         const relPath = `scss/${inLayout ? 'layout' : 'component'}/${cleanName}`;
         scssImports.push(`@use "${relPath}";`);
       }
@@ -75,6 +80,17 @@ export async function buildWorkbenchScss() {
     });
     ensureDir(WORKBENCH_OUT_DIR);
     writeFileSync(resolve(WORKBENCH_OUT_DIR, 'workbench.css'), result.css, 'utf8');
+
+    // Compile inview.scss directly importing site global, reset, base, inview
+    const INVIEW_SCSS = resolve(WORKBENCH_DIR, 'scss/inview.scss');
+    if (existsSync(INVIEW_SCSS)) {
+      const inviewResult = await sass.compileAsync(INVIEW_SCSS, {
+        loadPaths: [WORKBENCH_DIR, resolve(ROOT, 'src/pages/assets/scss')],
+        style: 'expanded',
+        sourceMap: false
+      });
+      writeFileSync(resolve(WORKBENCH_OUT_DIR, 'inview.css'), inviewResult.css, 'utf8');
+    }
   } catch (err) {
     console.error('[workbench] SCSS build error:', err.message);
   }
@@ -99,24 +115,8 @@ export async function buildWorkbench(options = {}) {
   // 1. Compile Workbench SCSS
   await buildWorkbenchScss();
 
-  // 2. Discover and render all components in workbench/components/ using registry
-  const categoryOrder = { 'header': 1, 'footer': 2, 'layout': 3, 'component': 4 };
-  const subOrder = ['header', 'header_01', 'footer', 'footer_01', 'sidebar', 'mv', 'grids', 'flexs', 'tbls', 'loading', 'bread', 'titles', 'texts', 'btns', 'links', 'lists', 'accordion', 'other'];
-
-  const rawRegistry = getRegistry();
-  const componentModules = rawRegistry
-    .sort((a, b) => {
-      const catA = categoryOrder[a.category] || 99;
-      const catB = categoryOrder[b.category] || 99;
-      if (catA !== catB) return catA - catB;
-
-      const idxA = subOrder.indexOf(a.name);
-      const idxB = subOrder.indexOf(b.name);
-      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-      if (idxA !== -1) return -1;
-      if (idxB !== -1) return 1;
-      return a.name.localeCompare(b.name);
-    })
+  // 2. Discover and render all components in workbench/components/ using registry (auto-sorted by design system hierarchy)
+  const componentModules = getRegistry()
     .map(item => {
       const ejsPath = resolve(WORKBENCH_COMPONENTS_DIR, item.ejsFile);
       const raw = existsSync(ejsPath) ? readFileSync(ejsPath, 'utf8') : '';
@@ -211,12 +211,35 @@ export async function buildWorkbench(options = {}) {
     ensureDir(WORKBENCH_OUT_DIR);
     writeFileSync(resolve(WORKBENCH_OUT_DIR, 'index.html'), html, 'utf8');
 
+    // 4b. Render inview.ejs -> inview.html (Dedicated Inview Motion Showcase & Guide)
+    if (existsSync(INVIEW_EJS)) {
+      try {
+        const inviewTemplate = readFileSync(INVIEW_EJS, 'utf8');
+        const inviewHtml = ejs.render(inviewTemplate, {
+          siteFontLinks,
+          assetsDir: '../assets/',
+          siteUrl: SITE_URL,
+          devToken: getDevSessionToken()
+        }, {
+          filename: INVIEW_EJS
+        });
+        writeFileSync(resolve(WORKBENCH_OUT_DIR, 'inview.html'), inviewHtml, 'utf8');
+      } catch (err) {
+        console.error('[workbench] Error rendering inview.ejs:', err.message);
+      }
+    }
+
     // 5. Copy Workbench UI assets (catalog.css, catalog.js)
     if (existsSync(CATALOG_CSS)) {
       copyFileSync(CATALOG_CSS, resolve(WORKBENCH_OUT_DIR, 'catalog.css'));
     }
     if (existsSync(CATALOG_JS)) {
       copyFileSync(CATALOG_JS, resolve(WORKBENCH_OUT_DIR, 'catalog.js'));
+    }
+
+    // 5a. Copy Inview UI controller (inview.js)
+    if (existsSync(INVIEW_JS)) {
+      copyFileSync(INVIEW_JS, resolve(WORKBENCH_OUT_DIR, 'inview.js'));
     }
 
     // 5b. Bundle interactive Component JS from workbench/js/

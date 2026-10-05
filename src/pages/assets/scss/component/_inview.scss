@@ -1,137 +1,228 @@
-:where(.js-inview) {
+@charset "UTF-8";
+
+/* ==========================================================================
+   Component: Inview Animations (FLOCSS Component Block & Modifiers)
+   --------------------------------------------------------------------------
+   Architecture : FLOCSS Component Layer (.c-inview) & Behavior Hook (.js-inview)
+   States       : .is-inview, .is-active
+   Performance  : Zero layout shift, GPU-accelerated, stacking-context release
+   Tokens       : Controlled dynamically via JS options (document.documentElement)
+                  or data-inview-* attributes, with CSS fallbacks on :root.
+   Modifiers    : --fade-up (default), --fade-in, --fade-down, --fade-left,
+                  --fade-right, --zoom-in, --zoom-out, --bounce-in, --bounce-out
+   Shortcuts    : --duration-fast, --duration-normal, --duration-slow,
+                  --delay-200, --delay-400
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Global Motion Tokens (CSS Custom Properties)
+   These provide safe fallbacks if running in standalone/no-JS mode.
+   When JS initializes, inview.js overrides these on document.documentElement
+   via the options passed to `new inview.observer({ ... })`.
+   -------------------------------------------------------------------------- */
+:root {
+  --inview-duration: 0.75s;
+
+  /* Distance Tokens (Global fallback + per-direction specialization) */
+  --inview-distance: 24px;
+  --inview-distance-up: var(--inview-distance);
+  --inview-distance-down: var(--inview-distance);
+  --inview-distance-left: var(--inview-distance);
+  --inview-distance-right: var(--inview-distance);
+
+  /* Easing Tokens (Global fallback + per-modifier specialization) */
+  --inview-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --inview-easing-fade-in: var(--inview-easing);
+  --inview-easing-fade-up: var(--inview-easing);
+  --inview-easing-fade-down: var(--inview-easing);
+  --inview-easing-fade-left: var(--inview-easing);
+  --inview-easing-fade-right: var(--inview-easing);
+  --inview-easing-zoom: var(--inview-easing);
+  --inview-easing-bounce: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* Scale Zoom Tokens */
+  --inview-scale-in: 0.85;
+  --inview-scale-out: 1.15;
+
+  /* Scale Bounce Tokens (Start scale + physics-computed overshoot & rebound) */
+  --inview-bounce-in-scale: 0.3;
+  --inview-bounce-in-overshoot: 1.05;
+  --inview-bounce-in-rebound: 0.96;
+
+  --inview-bounce-out-scale: 1.25;
+  --inview-bounce-out-overshoot: 0.96;
+  --inview-bounce-out-rebound: 1.03;
+}
+
+/* --------------------------------------------------------------------------
+   Keyframes for Physics-based Spring Bounce Animations
+   Dynamic tokens: starting scale, overshoot, and rebound resolve via CSS variables
+   -------------------------------------------------------------------------- */
+@keyframes c-inview-bounce-in {
+  0% {
     opacity: 0;
+    transform: scale3d(var(--inview-bounce-in-scale, 0.3), var(--inview-bounce-in-scale, 0.3), 1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale3d(var(--inview-bounce-in-overshoot, 1.05), var(--inview-bounce-in-overshoot, 1.05), 1);
+  }
+  70% {
+    transform: scale3d(var(--inview-bounce-in-rebound, 0.96), var(--inview-bounce-in-rebound, 0.96), 1);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes c-inview-bounce-out {
+  0% {
+    opacity: 0;
+    transform: scale3d(var(--inview-bounce-out-scale, 1.25), var(--inview-bounce-out-scale, 1.25), 1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale3d(var(--inview-bounce-out-overshoot, 0.96), var(--inview-bounce-out-overshoot, 0.96), 1);
+  }
+  70% {
+    transform: scale3d(var(--inview-bounce-out-rebound, 1.03), var(--inview-bounce-out-rebound, 1.03), 1);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Base Component & Behavior Hook
+   -------------------------------------------------------------------------- */
+.c-inview,
+.js-inview {
+  opacity: 0;
+  transform: translate3d(0, var(--inview-distance-up, var(--inview-distance, 24px)), 0); // Default: Fade Up
+  transition-property: opacity, transform;
+  transition-duration: var(--inview-duration, 0.75s);
+  transition-timing-function: var(--inview-easing, cubic-bezier(0.16, 1, 0.3, 1));
+  backface-visibility: hidden;
+
+  /* Focus-within accessibility fallback: ensure keyboard navigation is visible */
+  &:focus-within {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* ------------------------------------------------------------------------
+     Motion Type Modifiers (Pure Geometry Vector Only)
+     ------------------------------------------------------------------------ */
+  /* Fade Up (Explicit modifier matching default) */
+  &--fade-up {
+    opacity: 0;
+    transform: translate3d(0, var(--inview-distance-up, var(--inview-distance, 24px)), 0);
+    transition-timing-function: var(--inview-easing-fade-up, var(--inview-easing));
+  }
+
+  /* Fade In (In-place fade without positional translation) */
+  &--fade-in {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    transition-timing-function: var(--inview-easing-fade-in, var(--inview-easing));
+  }
+
+  /* Fade Down (Slides in downward from negative offset) */
+  &--fade-down {
+    opacity: 0;
+    transform: translate3d(0, calc(-1 * var(--inview-distance-down, var(--inview-distance, 24px))), 0);
+    transition-timing-function: var(--inview-easing-fade-down, var(--inview-easing));
+  }
+
+  /* Fade Left (Slides in from the right edge) */
+  &--fade-left {
+    opacity: 0;
+    transform: translate3d(var(--inview-distance-left, var(--inview-distance, 24px)), 0, 0);
+    transition-timing-function: var(--inview-easing-fade-left, var(--inview-easing));
+  }
+
+  /* Fade Right (Slides in from the left edge) */
+  &--fade-right {
+    opacity: 0;
+    transform: translate3d(calc(-1 * var(--inview-distance-right, var(--inview-distance, 24px))), 0, 0);
+    transition-timing-function: var(--inview-easing-fade-right, var(--inview-easing));
+  }
+
+  /* Zoom In (Scales smoothly up from scale-in token) */
+  &--zoom-in {
+    opacity: 0;
+    transform: scale3d(var(--inview-scale-in, 0.85), var(--inview-scale-in, 0.85), 1);
+    transition-timing-function: var(--inview-easing-zoom, var(--inview-easing));
+  }
+
+  /* Zoom Out (Scales smoothly down from scale-out token) */
+  &--zoom-out {
+    opacity: 0;
+    transform: scale3d(var(--inview-scale-out, 1.15), var(--inview-scale-out, 1.15), 1);
+    transition-timing-function: var(--inview-easing-zoom, var(--inview-easing));
+  }
+
+  /* Bounce In (Physics bounce from starting token) */
+  &--bounce-in {
+    opacity: 0;
+    transform: scale3d(var(--inview-bounce-in-scale, 0.3), var(--inview-bounce-in-scale, 0.3), 1);
 
     &.is-inview,
-    &.active {
-        opacity: 1;
-        transform: none;
+    &.is-active {
+      animation: c-inview-bounce-in var(--inview-duration, 0.75s) var(--inview-easing-bounce, cubic-bezier(0.215, 0.61, 0.355, 1)) both;
+      transition: none;
     }
+  }
 
-    // In-page search (Ctrl+F) support: reveal instantly if focused/matched inside
-    &:focus-within {
-        opacity: 1 !important;
-        transform: none !important;
-        animation: none !important;
-        transition: none !important;
+  /* Bounce Out (Physics bounce from starting token) */
+  &--bounce-out {
+    opacity: 0;
+    transform: scale3d(var(--inview-bounce-out-scale, 1.25), var(--inview-bounce-out-scale, 1.25), 1);
+
+    &.is-inview,
+    &.is-active {
+      animation: c-inview-bounce-out var(--inview-duration, 0.75s) var(--inview-easing-bounce, cubic-bezier(0.215, 0.61, 0.355, 1)) both;
+      transition: none;
     }
+  }
+
+  /* ------------------------------------------------------------------------
+     Semantic Duration Shortcuts (Optional class overrides)
+     ------------------------------------------------------------------------ */
+  &--duration-fast   { --inview-duration: 0.4s; }
+  &--duration-normal { --inview-duration: 0.75s; }
+  &--duration-slow   { --inview-duration: 1.2s; }
+
+  /* ------------------------------------------------------------------------
+     CSS Delay Utility Shortcuts (Fallback)
+     ------------------------------------------------------------------------ */
+  &--delay-200 { transition-delay: 200ms; }
+  &--delay-400 { transition-delay: 400ms; }
+
+  /* ------------------------------------------------------------------------
+     Active / Inview State Layer
+     Transitions to natural layout position (transform: none) to release
+     the transform stacking context, ensuring child modals, fixed menus,
+     and tooltips remain completely unconstrained.
+     ------------------------------------------------------------------------ */
+  &.is-inview,
+  &.is-active {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.js-fadeani {
-    &:focus-within {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-    }
-}
-
-.fadeIn,
-.fadeUp,
-.fadeRight,
-.fadeRight,
-.bounceIn {
-    animation-duration: 1.5s;
-    animation-timing-function: ease;
-}
-
-
-.fadeUp {
-    animation-name: ani_fadeup;
-    animation-fill-mode: forwards;
-}
-
-.fadeRight {
-    animation-name: ani_toright;
-    animation-fill-mode: forwards;
-}
-
-.fadeLeft {
-    animation-name: ani_toleft;
-    animation-fill-mode: forwards;
-}
-
-.fadeIn {
-    animation-name: ani_fadein;
-    animation-fill-mode: forwards;
-}
-
-.bounceIn {
-    animation-name: bounce_in;
-    animation-fill-mode: forwards;
-}
-
-
-@keyframes ani_fadeup {
-    0% {
-        transform: translateY(30px);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateY(0px);
-        opacity: 1;
-    }
-}
-
-@keyframes ani_toright {
-    0% {
-        transform: translateX(-40px);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateX(0px);
-        opacity: 1;
-    }
-}
-
-@keyframes ani_toleft {
-    0% {
-        transform: translateX(40px);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateY(0px);
-        opacity: 1;
-    }
-}
-
-
-@keyframes ani_fadein {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes bounce_in {
-    0% {
-        opacity: 0;
-        transform: scale3d(0.3, 0.3, 0.3);
-    }
-
-    20% {
-        transform: scale3d(1.2, 1.2, 1.2);
-    }
-
-    40% {
-        transform: scale3d(0.9, 0.9, 0.9);
-    }
-
-    60% {
-        opacity: 1;
-        transform: scale3d(1.03, 1.03, 1.03);
-    }
-
-    80% {
-        transform: scale3d(0.97, 0.97, 0.97);
-    }
-
-    100% {
-        opacity: 1;
-        transform: none;
-    }
+/* --------------------------------------------------------------------------
+   Accessibility: Respect user preference for reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .c-inview,
+  .js-inview {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
 }

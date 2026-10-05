@@ -1,0 +1,706 @@
+/* ==========================================================================
+   Workbench: Inview Motion Engine Showcase & Technical Documentation
+   Import trực tiếp các thành phần global, reset, base bên site để dùng.
+   100% sử dụng và phối màu hài hòa dựa trên CSS Tokens của Site:
+   --primary, --base, --black, --white, --gray, --red
+   ========================================================================== */
+
+// Import trực tiếp từ site: global, reset, base, inview component
+@use "../../src/pages/assets/scss/global" as *;
+@use "../../src/pages/assets/scss/foundation/reset";
+@use "../../src/pages/assets/scss/foundation/base";
+@use "../../src/pages/assets/scss/component/inview";
+
+/* --------------------------------------------------------------------------
+   Harmonious Design Tokens (Tự động tính toán 100% từ tokens của site)
+   -------------------------------------------------------------------------- */
+:root {
+  /* 1. Official Site Tokens */
+
+  /* 2. Harmonious Surface Palette */
+  --wb-bg-page: color-mix(in srgb, var(--base, #3E3E3E) 3.5%, var(--white, #fff));
+  --wb-surface: var(--white, #fff);
+  --wb-surface-subtle: color-mix(in srgb, var(--base, #3E3E3E) 4.5%, var(--white, #fff));
+  --wb-surface-muted: color-mix(in srgb, var(--gray, #ccc) 18%, var(--white, #fff));
+  --wb-surface-hover: color-mix(in srgb, var(--base, #3E3E3E) 6.5%, var(--white, #fff));
+
+  /* 3. Dark Studio Surfaces */
+  --wb-dark-app: color-mix(in srgb, var(--black, #000) 82%, var(--base, #3E3E3E));
+  --wb-dark-surface: color-mix(in srgb, var(--black, #000) 70%, var(--base, #3E3E3E));
+  --wb-dark-surface-elevated: color-mix(in srgb, var(--black, #000) 58%, var(--base, #3E3E3E));
+  --wb-dark-border: color-mix(in srgb, var(--white, #fff) 12%, transparent);
+  --wb-dark-text: var(--white, #fff);
+  --wb-dark-muted: color-mix(in srgb, var(--white, #fff) 65%, var(--gray, #ccc));
+
+  /* 4. Crisp Neutral Borders */
+  --wb-border: color-mix(in srgb, var(--gray, #ccc) 48%, var(--white, #fff));
+  --wb-border-subtle: color-mix(in srgb, var(--gray, #ccc) 26%, var(--white, #fff));
+  --wb-border-strong: color-mix(in srgb, var(--base, #3E3E3E) 22%, var(--gray, #ccc));
+
+  /* 5. Typography Hierarchy */
+  --wb-text-title: color-mix(in srgb, var(--black, #000) 65%, var(--base, #3E3E3E));
+  --wb-text-main: var(--base, #3E3E3E);
+  --wb-text-muted: color-mix(in srgb, var(--base, #3E3E3E) 64%, var(--white, #fff));
+  --wb-text-subtle: color-mix(in srgb, var(--base, #3E3E3E) 42%, var(--white, #fff));
+
+  /* 6. Primary Brand Tints & Accents */
+  --wb-primary: var(--primary, #e60012);
+  --wb-primary-hover: color-mix(in srgb, var(--primary, #e60012) 86%, var(--black, #000));
+  --wb-primary-tint: color-mix(in srgb, var(--primary, #e60012) 8.5%, var(--white, #fff));
+  --wb-primary-tint-hover: color-mix(in srgb, var(--primary, #e60012) 14%, var(--white, #fff));
+  --wb-primary-border: color-mix(in srgb, var(--primary, #e60012) 28%, transparent);
+  --wb-primary-glow: color-mix(in srgb, var(--primary, #e60012) 20%, transparent);
+
+  /* 7. Coral Accent */
+  --wb-accent: var(--red, #f45a3e);
+  --wb-accent-tint: color-mix(in srgb, var(--red, #f45a3e) 9.5%, var(--white, #fff));
+  --wb-accent-border: color-mix(in srgb, var(--red, #f45a3e) 28%, transparent);
+
+  /* 8. Elevation / Shadows */
+  --wb-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.02), 0 4px 14px -2px rgba(0, 0, 0, 0.04);
+  --wb-shadow-card-hover: 0 4px 6px -2px rgba(0, 0, 0, 0.03), 0 12px 28px -4px rgba(0, 0, 0, 0.07);
+}
+
+/* --------------------------------------------------------------------------
+   Page Layout & Smooth Scroll Setup (Hoàn toàn độc lập)
+   -------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+[id],
+.wb-section {
+  scroll-margin-top: 80px;
+}
+
+body.wb-inview-page {
+  margin: 0;
+  padding: 64px 0 0; // Header fixed offset (chiều cao topbar 64px)
+  background-color: var(--wb-bg-page);
+  color: var(--wb-text-main);
+  font-family: inherit;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+
+  // Cô lập hoàn toàn anchor link trong trang, không bị ảnh hưởng từ base.scss hay site
+  a {
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Header Fixed (Luôn cố định trên đỉnh màn hình)
+   -------------------------------------------------------------------------- */
+.wb-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
+  background-color: color-mix(in srgb, var(--wb-dark-app) 94%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--primary, #e60012);
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--white, #fff);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:hover {
+      background: var(--primary, #e60012);
+      border-color: var(--primary, #e60012);
+      color: var(--white, #fff);
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--primary, #e60012) 40%, transparent);
+      transform: translateY(-1px);
+    }
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--white, #fff);
+    font-size: 14.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  &__badge {
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: var(--primary, #e60012);
+    color: var(--white, #fff);
+    padding: 3px 8px;
+    border-radius: 9999px;
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--primary, #e60012) 40%, transparent);
+  }
+
+  &__nav {
+    display: none;
+    align-items: center;
+    gap: 6px;
+
+    @include mq(md) {
+      display: flex;
+    }
+  }
+
+  &__link {
+    color: var(--wb-dark-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: var(--white, #fff);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &--active {
+      color: var(--white, #fff);
+      background: rgba(255, 255, 255, 0.16);
+      font-weight: 700;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Bilingual System (Tiếng Việt mặc định & Tiếng Nhật)
+   -------------------------------------------------------------------------- */
+html:not([data-lang="ja"]) .lang-ja {
+  display: none !important;
+}
+
+html[data-lang="ja"] .lang-vi {
+  display: none !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   Language Switcher Component (High Contrast on Dark Header)
+   -------------------------------------------------------------------------- */
+.wb-lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.wb-lang-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.2;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--white, #fff);
+  }
+
+  &.is-active {
+    background: var(--primary, #e60012);
+    color: var(--white, #fff) !important;
+    font-weight: 800;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--primary, #e60012) 50%, transparent);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Container & Layout
+   -------------------------------------------------------------------------- */
+.wb-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 44px 24px 120px;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Section
+   -------------------------------------------------------------------------- */
+.wb-hero {
+  text-align: center;
+  padding: 44px 20px 52px;
+  margin-bottom: 52px;
+  border-bottom: 1px solid var(--wb-border);
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 16px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary, #e60012);
+    background: var(--wb-primary-tint);
+    border: 1px solid var(--wb-primary-border);
+    border-radius: 9999px;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: clamp(28px, 4.5vw, 44px);
+    font-weight: 800;
+    color: var(--wb-text-title);
+    line-height: 1.25;
+    margin: 0 0 16px;
+    letter-spacing: -0.5px;
+  }
+
+  &__desc {
+    font-size: 15.5px;
+    color: var(--wb-text-muted);
+    max-width: 740px;
+    margin: 0 auto 26px;
+    line-height: 1.75;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+.wb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wb-text-main);
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  padding: 5px 14px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+
+  &--dot::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary, #e60012);
+    box-shadow: 0 0 6px var(--wb-primary-glow);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Section Headers
+   -------------------------------------------------------------------------- */
+.wb-section {
+  margin-bottom: 68px;
+
+  &__head {
+    margin-bottom: 28px;
+  }
+
+  &__title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--wb-text-title);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 8px;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 22px;
+      background: var(--primary, #e60012);
+      border-radius: 2px;
+    }
+  }
+
+  &__desc {
+    font-size: 14.5px;
+    color: var(--wb-text-muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Demo Group Wrapper
+   -------------------------------------------------------------------------- */
+.wb-demo-group {
+  margin-bottom: 36px;
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--wb-shadow-card);
+
+  &__head {
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--wb-border-subtle);
+    padding-bottom: 16px;
+  }
+
+  &__title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--wb-text-title);
+    margin: 0 0 4px;
+  }
+
+  &__desc {
+    font-size: 13.5px;
+    color: var(--wb-text-muted);
+    margin: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Grids
+   -------------------------------------------------------------------------- */
+.wb-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+
+  @include mq(sd) {
+    &--2col,
+    &--3col,
+    &--4col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @include mq(md) {
+    &--3col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    &--4col {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Cards
+   CRITICAL REQUIREMENT: DO NOT add transition property here.
+   .c-inview handles 100% of transitions (opacity, transform) to prevent conflict.
+   -------------------------------------------------------------------------- */
+.wb-card {
+  background: var(--wb-surface-subtle);
+  border: 1px solid var(--wb-border);
+  border-radius: 14px;
+  padding: 22px;
+  color: var(--wb-text-main);
+  box-shadow: var(--wb-shadow-card);
+  position: relative;
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+
+    &--primary {
+      background: var(--wb-primary-tint);
+      color: var(--primary, #e60012);
+      border: 1px solid var(--wb-primary-border);
+    }
+
+    &--accent {
+      background: var(--wb-accent-tint);
+      color: var(--red, #f45a3e);
+      border: 1px solid var(--wb-accent-border);
+    }
+
+    &--gray {
+      background: var(--wb-surface-muted);
+      color: var(--wb-text-muted);
+      border: 1px solid var(--wb-border);
+    }
+  }
+
+  &__code {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: Consolas, "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--white, #fff);
+    background: var(--wb-dark-app);
+    border: 1px solid var(--wb-dark-border);
+    border-radius: 7px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    word-break: break-all;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+    &::before {
+      content: "$";
+      color: var(--primary, #e60012);
+      font-weight: 800;
+      font-size: 13px;
+    }
+  }
+
+  &__desc {
+    font-size: 13px;
+    color: var(--wb-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.wb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &--sm {
+    padding: 7px 14px;
+    font-size: 12.5px;
+    border-radius: 6px;
+  }
+
+  &--primary {
+    background: var(--primary, #e60012);
+    color: var(--white, #fff);
+    border: 1px solid var(--primary, #e60012);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--primary, #e60012) 35%, transparent);
+
+    &:hover {
+      background: var(--red, #f45a3e);
+      border-color: var(--red, #f45a3e);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px color-mix(in srgb, var(--primary, #e60012) 45%, transparent);
+    }
+  }
+
+  &--secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--white, #fff);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: var(--white, #fff);
+      color: var(--white, #fff);
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tables
+   -------------------------------------------------------------------------- */
+.wb-table-wrapper {
+  overflow-x: auto;
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  border-radius: 12px;
+  margin-bottom: 28px;
+  box-shadow: var(--wb-shadow-card);
+}
+
+.wb-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+
+  th {
+    background: var(--wb-surface-subtle);
+    color: var(--wb-text-title);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 13px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--wb-border);
+  }
+
+  td {
+    padding: 13px 16px;
+    font-size: 13px;
+    color: var(--wb-text-main);
+    border-bottom: 1px solid var(--wb-border-subtle);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: var(--wb-surface-hover);
+  }
+
+  code {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    color: var(--wb-text-title);
+    background: var(--wb-surface-subtle);
+    border: 1px solid var(--wb-border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Code Blocks & Callouts
+   -------------------------------------------------------------------------- */
+.wb-codeblock {
+  background: var(--wb-dark-app);
+  border: 1px solid var(--wb-dark-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  margin-bottom: 28px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 18px;
+    background: color-mix(in srgb, var(--black, #000) 45%, var(--wb-dark-app));
+    border-bottom: 1px solid var(--wb-dark-border);
+  }
+
+  &__title {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wb-dark-muted);
+  }
+
+  &__pre {
+    margin: 0;
+    padding: 20px 22px;
+    overflow-x: auto;
+    font-family: Consolas, "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--white, #fff);
+
+    code {
+      font-family: inherit;
+      color: inherit;
+    }
+  }
+}
+
+.wb-copy-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--white, #fff);
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--primary, #e60012);
+    border-color: var(--primary, #e60012);
+  }
+}
+
+.wb-callout {
+  padding: 18px 22px;
+  border-radius: 12px;
+  background: var(--wb-surface);
+  border: 1px solid var(--wb-border);
+  border-left: 4px solid var(--primary, #e60012);
+  margin-bottom: 24px;
+  box-shadow: var(--wb-shadow-card);
+
+  &__title {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--wb-text-title);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__text {
+    font-size: 13.5px;
+    color: var(--wb-text-muted);
+    margin: 0;
+    line-height: 1.65;
+  }
+}

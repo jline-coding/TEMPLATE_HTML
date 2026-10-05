@@ -4,6 +4,50 @@
 (function() {
     let WORKBENCH_TOKEN = document.querySelector('meta[name="workbench-token"]')?.getAttribute('content') || '';
 
+    /**
+     * Bilingual System (Vietnamese Default & Japanese)
+     */
+    function getLang() {
+        return (document.documentElement.getAttribute('data-lang') === 'ja') ? 'ja' : 'vi';
+    }
+
+    function t(vi, ja) {
+        return getLang() === 'ja' ? ja : vi;
+    }
+
+    function setLanguage(lang) {
+        const safeLang = lang === 'ja' ? 'ja' : 'vi';
+        document.documentElement.setAttribute('data-lang', safeLang);
+        document.documentElement.setAttribute('lang', safeLang);
+        try {
+            localStorage.setItem('wb_lang', safeLang);
+        } catch (_) {}
+
+        document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+            if (btn.getAttribute('data-lang-btn') === safeLang) {
+                btn.classList.add('is-active');
+            } else {
+                btn.classList.remove('is-active');
+            }
+        });
+
+        const filterInput = document.getElementById('cs-filter-input');
+        if (filterInput) {
+            filterInput.placeholder = safeLang === 'ja' ? 'コンポーネントを検索...' : 'Lọc component...';
+        }
+
+        if (typeof refreshInstalledCounter === 'function') {
+            refreshInstalledCounter();
+        }
+    }
+
+    // Initialize preferred language early
+    try {
+        const savedLang = localStorage.getItem('wb_lang') || 'vi';
+        document.documentElement.setAttribute('data-lang', savedLang);
+        document.documentElement.setAttribute('lang', savedLang);
+    } catch (_) {}
+
     async function apiFetch(url, options = {}, isRetry = false) {
         const opts = Object.assign({}, options);
         opts.headers = Object.assign({}, opts.headers);
@@ -63,7 +107,7 @@
     window.copyRaw = function(text, customMsg) {
         if (!text) return;
         const toCopy = text.trim();
-        const msg = customMsg || `Đã sao chép vào bộ nhớ tạm!`;
+        const msg = customMsg || t('Đã sao chép vào bộ nhớ tạm!', 'クリップボードにコピーしました！');
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(toCopy).then(() => {
                 showToast(msg);
@@ -73,18 +117,6 @@
         } else {
             fallbackCopy(toCopy, msg);
         }
-    };
-
-    window.setViewport = function(mode, btn) {
-        document.querySelectorAll('.cs-viewport-btn').forEach(b => b.classList.remove('is-active'));
-        if (btn) btn.classList.add('is-active');
-
-        const wrapper = document.getElementById('cs-viewport-container');
-        if (!wrapper) return;
-
-        wrapper.classList.remove('is-tablet', 'is-mobile');
-        if (mode === 'tablet') wrapper.classList.add('is-tablet');
-        if (mode === 'mobile') wrapper.classList.add('is-mobile');
     };
 
     // Category Filter
@@ -133,7 +165,7 @@
         }
 
         if (compLabel) compLabel.textContent = `Component: ${compTitle || compName}`;
-        listContainer.innerHTML = `<div style="padding:10px;text-align:center;color:#64748b;font-size:13px;">⏳ Đang tải danh sách file JS trong assets/js/...</div>`;
+        listContainer.innerHTML = `<div style="padding:10px;text-align:center;color:var(--base, #3E3E3E);font-size:13px;">⏳ ${t('Đang tải danh sách file JS trong assets/js/...', 'assets/js/ 内のJSファイル一覧を読み込み中...')}</div>`;
         modal.style.display = 'flex';
 
         try {
@@ -142,7 +174,7 @@
             const files = (data.success && Array.isArray(data.files)) ? data.files : [];
 
             if (files.length === 0) {
-                listContainer.innerHTML = `<div style="padding:10px;color:#64748b;font-size:13px;">Không tìm thấy file JS nào trong assets/js/. Bạn có thể chọn tạo file mới bên dưới.</div>`;
+                listContainer.innerHTML = `<div style="padding:10px;color:var(--base, #3E3E3E);font-size:13px;">${t('Không tìm thấy file JS nào trong assets/js/. Bạn có thể chọn tạo file mới bên dưới.', 'assets/js/ 内にJSファイルが見つかりません。下部で新規ファイル作成を選択できます。')}</div>`;
             } else {
                 listContainer.innerHTML = files.map((f, idx) => {
                     const isSelected = f.name === 'common.js' || idx === 0;
@@ -153,9 +185,9 @@
                             <span class="cs-js-option__icon">${f.isCommon ? '🌐' : '📄'}</span>
                             <div class="cs-js-option__info">
                                 <span class="cs-js-option__name">assets/js/${f.name}</span>
-                                <span class="cs-js-option__desc">${f.isCommon ? 'Dùng chung toàn site (Khuyên dùng)' : 'Script trang riêng'}</span>
+                                <span class="cs-js-option__desc">${f.isCommon ? '<span class="lang-vi">Dùng chung toàn site (Khuyên dùng)</span><span class="lang-ja">サイト全体共通（推奨）</span>' : '<span class="lang-vi">Script trang riêng</span><span class="lang-ja">個別ページ専用</span>'}</span>
                             </div>
-                            ${f.isCommon ? '<span class="cs-js-option__tag">Khuyên Dùng</span>' : ''}
+                            ${f.isCommon ? '<span class="cs-js-option__tag"><span class="lang-vi">Khuyên Dùng</span><span class="lang-ja">推奨</span></span>' : ''}
                         </label>
                     `;
                 }).join('');
@@ -168,9 +200,9 @@
                     <span class="cs-js-option__icon">🌐</span>
                     <div class="cs-js-option__info">
                         <span class="cs-js-option__name">assets/js/common.js</span>
-                        <span class="cs-js-option__desc">Dùng chung toàn site (Khuyên dùng)</span>
+                        <span class="cs-js-option__desc"><span class="lang-vi">Dùng chung toàn site (Khuyên dùng)</span><span class="lang-ja">サイト全体共通（推奨）</span></span>
                     </div>
-                    <span class="cs-js-option__tag">Khuyên Dùng</span>
+                    <span class="cs-js-option__tag"><span class="lang-vi">Khuyên Dùng</span><span class="lang-ja">推奨</span></span>
                 </label>
             `;
         }
@@ -212,7 +244,7 @@
             const customInput = document.getElementById('cs-custom-js-input');
             const customVal = customInput ? customInput.value.trim() : '';
             if (!customVal) {
-                alert('Vui lòng nhập tên file JS mới (ví dụ: my-script.js)!');
+                alert(t('Vui lòng nhập tên file JS mới (ví dụ: my-script.js)!', '新しいJSファイル名を入力してください（例: my-script.js）！'));
                 customInput.focus();
                 return;
             }
@@ -247,7 +279,7 @@
     async function executeSectionImport(compName, btn, targetJsFile) {
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = `⏳ Đang import...`;
+        btn.innerHTML = `<span class="lang-vi">⏳ Đang import...</span><span class="lang-ja">⏳ インポート中...</span>`;
 
         try {
             const res = await apiFetch(`/__api/import?component=${encodeURIComponent(compName)}`, {
@@ -260,13 +292,13 @@
             });
             const data = await res.json();
             if (data.success) {
-                showToast(`🎉 ${data.message || 'Đã import thành công vào site chính!'}`, '🚀');
+                showToast(`🎉 ${data.message || t('Đã import thành công vào site chính!', 'メインサイトへのインポートが完了しました！')}`, '🚀');
                 updateComponentStateInDom(compName, true);
                 if (Array.isArray(data.installedDependencies)) {
                     data.installedDependencies.forEach(dep => updateComponentStateInDom(dep, true));
                 }
             } else if (data.conflict) {
-                if (confirm(`⚠️ Component "${compName}" đã có file SCSS/JS tùy chỉnh trong site.\nBạn có chắc muốn GHI ĐÈ để lấy bản gốc từ Workbench không?`)) {
+                if (confirm(t(`⚠️ Component "${compName}" đã có file SCSS/JS tùy chỉnh trong site.\nBạn có chắc muốn GHI ĐÈ để lấy bản gốc từ Workbench không?`, `⚠️ コンポーネント "${compName}" のカスタムSCSS/JSファイルがサイトに既に存在します。\nWorkbenchのオリジナルで上書きしますか？`))) {
                     const forceRes = await apiFetch(`/__api/import?component=${encodeURIComponent(compName)}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -289,12 +321,12 @@
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             } else {
-                showToast(`❌ Lỗi: ${data.message || 'Không thể import'}`, '⚠️');
+                showToast(`❌ ${t('Lỗi', 'エラー')}: ${data.message || t('Không thể import', 'インポートできませんでした')}`, '⚠️');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         } catch (err) {
-            showToast(`❌ Không thể kết nối tới Dev API Server: ${err.message}`, '⚠️');
+            showToast(`❌ ${t('Không thể kết nối tới Dev API Server', 'Dev APIサーバーに接続できません')}: ${err.message}`, '⚠️');
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
@@ -302,11 +334,11 @@
 
     window.removeComponent = async function(compName, btn) {
         if (!compName) return;
-        if (!confirm(`Bạn có chắc muốn gỡ component "${compName}" khỏi site chính?`)) return;
+        if (!confirm(t(`Bạn có chắc muốn gỡ component "${compName}" khỏi site chính?`, `コンポーネント "${compName}" をメインサイトから削除してもよろしいですか？`))) return;
 
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = `⏳ Đang gỡ...`;
+        btn.innerHTML = `<span class="lang-vi">⏳ Đang gỡ...</span><span class="lang-ja">⏳ 削除中...</span>`;
 
         try {
             const res = await apiFetch(`/__api/remove?component=${encodeURIComponent(compName)}`, {
@@ -314,10 +346,10 @@
             });
             const data = await res.json();
             if (data.success) {
-                showToast(`🗑 ${data.message || 'Đã gỡ bỏ khỏi site chính!'}`, '✔');
+                showToast(`🗑 ${data.message || t('Đã gỡ bỏ khỏi site chính!', 'メインサイトから削除しました！')}`, '✔');
                 updateComponentStateInDom(compName, false);
             } else if (data.conflict) {
-                if (confirm(`⚠️ CẢNH BÁO MẤT CODE:\nFile của "${compName}" trong site đã được chỉnh sửa khác với bản mẫu.\nNếu gỡ bỏ, các đoạn code bạn đã viết thêm sẽ BỊ XÓA!\n\nBạn có chắc chắn muốn gỡ bỏ hoàn toàn không?`)) {
+                if (confirm(t(`⚠️ CẢNH BÁO MẤT CODE:\nFile của "${compName}" trong site đã được chỉnh sửa khác với bản mẫu.\nNếu gỡ bỏ, các đoạn code bạn đã viết thêm sẽ BỊ XÓA!\n\nBạn có chắc chắn muốn gỡ bỏ hoàn toàn không?`, `⚠️ コード消失の警告:\nサイト内の "${compName}" はオリジナルから編集されています。\n削除すると、追加したコードも完全に削除されます！\n\n本当に削除しますか？`))) {
                     const forceRes = await apiFetch(`/__api/remove?component=${encodeURIComponent(compName)}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -333,68 +365,34 @@
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             } else {
-                showToast(`❌ Lỗi: ${data.message || 'Không thể gỡ bỏ'}`, '⚠️');
+                showToast(`❌ ${t('Lỗi', 'エラー')}: ${data.message || t('Không thể gỡ bỏ', '削除できませんでした')}`, '⚠️');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         } catch (err) {
-            showToast(`❌ Lỗi kết nối: ${err.message}`, '⚠️');
+            showToast(`❌ ${t('Lỗi kết nối', '通信エラー')}: ${err.message}`, '⚠️');
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
     };
 
-    function updateComponentStateInDom(compName, isInstalled, syncStatus = 'uninstalled', diffDetails = {}) {
+    function updateComponentStateInDom(compName, isInstalled) {
         // Update section attribute
         const sec = document.getElementById(`sec-${compName}`);
         if (sec) {
             sec.setAttribute('data-installed', isInstalled ? 'true' : 'false');
-            sec.setAttribute('data-sync-status', syncStatus);
         }
 
         // Update dot in sidebar
         const dot = document.getElementById(`dot-${compName}`);
         if (dot) {
-            dot.classList.remove('is-installed', 'is-diverged', 'is-synced');
+            dot.classList.remove('is-installed');
             if (isInstalled) {
                 dot.classList.add('is-installed');
-                if (syncStatus === 'diverged') {
-                    dot.classList.add('is-diverged');
-                    dot.title = `Site có thay đổi (chưa đồng bộ)`;
-                } else {
-                    dot.classList.add('is-synced');
-                    dot.title = `Đã đồng bộ 100%`;
-                }
+                dot.title = `Đã cài đặt / 導入済み`;
             } else {
-                dot.title = `Chưa cài đặt`;
+                dot.title = `Chưa cài đặt / 未導入`;
             }
-        }
-
-        // Update badges and sync buttons on all cards of this component
-        if (sec) {
-            const badges = sec.querySelectorAll(`[data-sync-badge="${compName}"]`);
-            badges.forEach(b => {
-                b.className = `cs-sync-badge cs-sync-badge--${syncStatus}`;
-                if (syncStatus === 'diverged') {
-                    b.innerHTML = `⚠️ Site có thay đổi`;
-                    b.title = 'Site đã chỉnh sửa khác với Workbench';
-                } else if (syncStatus === 'synced') {
-                    b.innerHTML = `✓ Đã đồng bộ`;
-                    b.title = 'Code trên Site và Workbench trùng khớp 100%';
-                } else {
-                    b.innerHTML = `⚪ Chưa cài`;
-                    b.title = 'Chưa cài vào Site';
-                }
-            });
-
-            const syncBtns = sec.querySelectorAll(`.cs-btn-action--sync[data-comp="${compName}"]`);
-            syncBtns.forEach(btn => {
-                if (syncStatus === 'diverged') {
-                    btn.style.display = 'inline-flex';
-                } else {
-                    btn.style.display = 'none';
-                }
-            });
         }
 
         refreshInstalledCounter();
@@ -403,51 +401,15 @@
     function refreshInstalledCounter() {
         const total = document.querySelectorAll('.cs-section').length;
         const installed = document.querySelectorAll('.cs-section[data-installed="true"]').length;
-        const diverged = document.querySelectorAll('.cs-section[data-sync-status="diverged"]').length;
         const pill = document.getElementById('cs-installed-stat');
         if (pill) {
-            let html = `Đã cài vào site: <strong style="color:${installed > 0 ? '#10b981' : '#64748b'}">${installed}/${total}</strong>`;
-            if (diverged > 0) {
-                html += ` <span style="margin-left:6px;padding:2px 7px;border-radius:9999px;background:#fff7ed;color:#c2410c;font-size:11px;font-weight:700;border:1px solid #fed7aa;" title="${diverged} component trên site có thay đổi">⚠️ ${diverged} có thay đổi</span>`;
-            }
-            pill.innerHTML = html;
+            const numColor = installed > 0 ? 'var(--primary, #e60012)' : 'var(--base, #3E3E3E)';
+            pill.innerHTML = `
+                <span class="lang-vi">Đã cài vào site: <strong style="color:${numColor}">${installed}/${total}</strong></span>
+                <span class="lang-ja">サイト導入済み: <strong style="color:${numColor}">${installed}/${total}</strong></span>
+            `;
         }
     }
-
-    // ─────────────────────────────────────────────────────────────
-    // 1-CLICK EXPLICIT SYNC FROM SITE TO WORKBENCH
-    // ─────────────────────────────────────────────────────────────
-    window.syncComponentToWorkbench = async function(btn) {
-        const compName = btn.getAttribute('data-comp');
-        if (!compName) return;
-
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = `⏳ Đang đồng bộ...`;
-
-        try {
-            const res = await apiFetch(`/__api/sync-from-site?component=${encodeURIComponent(compName)}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ component: compName, force: true })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showToast(`🎉 Đã đồng bộ component "${compName}" từ Site vào Workbench!`, '🔄');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 600);
-            } else {
-                showToast(`❌ Lỗi: ${data.message || 'Không thể đồng bộ'}`, '⚠️');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        } catch (err) {
-            showToast(`❌ Lỗi kết nối: ${err.message}`, '⚠️');
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }
-    };
 
     // ─────────────────────────────────────────────────────────────
     // 1-CLICK PERMANENT DELETE FROM WORKBENCH (HTML, SCSS, JS)
@@ -456,18 +418,28 @@
         if (!compName) return;
         const displayName = title || compName;
         const confirmed = window.confirm(
-            `⚠️ CẢNH BÁO XÓA KHỎI WORKBENCH:\n\n` +
-            `Bạn có chắc chắn muốn xóa vĩnh viễn component "${displayName}" khỏi Workbench không?\n\n` +
-            `Thao tác này sẽ xóa toàn bộ file liên quan:\n` +
-            `• HTML/EJS: workbench/components/_${compName}.ejs\n` +
-            `• SCSS: workbench/scss/.../_${compName}.scss\n` +
-            `• JS: workbench/js/${compName}.js (nếu có)\n\n` +
-            `(Hệ thống sẽ tự động lưu 1 bản snapshot an toàn vào workbench/.backup/ trước khi xóa).`
+            t(
+                `⚠️ CẢNH BÁO XÓA KHỎI WORKBENCH:\n\n` +
+                `Bạn có chắc chắn muốn xóa vĩnh viễn component "${displayName}" khỏi Workbench không?\n\n` +
+                `Thao tác này sẽ xóa toàn bộ file liên quan:\n` +
+                `• HTML/EJS: workbench/components/_${compName}.ejs\n` +
+                `• SCSS: workbench/scss/.../_${compName}.scss\n` +
+                `• JS: workbench/js/${compName}.js (nếu có)\n\n` +
+                `(Hệ thống sẽ tự động lưu 1 bản snapshot an toàn vào workbench/.backup/ trước khi xóa).`,
+
+                `⚠️ WORKBENCHからの完全削除の確認:\n\n` +
+                `コンポーネント "${displayName}" をWorkbenchから完全に削除してもよろしいですか？\n\n` +
+                `関連するすべてのファイルが削除されます:\n` +
+                `• HTML/EJS: workbench/components/_${compName}.ejs\n` +
+                `• SCSS: workbench/scss/.../_${compName}.scss\n` +
+                `• JS: workbench/js/${compName}.js (存在する場合)\n\n` +
+                `（削除前に安全のため workbench/.backup/ へ自動スナップショットが保存されます）。`
+            )
         );
 
         if (!confirmed) return;
 
-        showToast(`⏳ Đang xóa component "${displayName}" khỏi Workbench...`, '🗑');
+        showToast(`⏳ ${t(`Đang xóa component "${displayName}" khỏi Workbench...`, `コンポーネント "${displayName}" を削除中...`)}`, '🗑');
 
         try {
             const res = await apiFetch(`/__api/delete-workbench?component=${encodeURIComponent(compName)}`, {
@@ -477,15 +449,15 @@
             });
             const data = await res.json();
             if (data.success) {
-                showToast(`✅ Đã xóa thành công component "${displayName}" khỏi Workbench!`, '🗑');
+                showToast(`✅ ${t(`Đã xóa thành công component "${displayName}" khỏi Workbench!`, `コンポーネント "${displayName}" を正常に削除しました！`)}`, '🗑');
                 setTimeout(() => {
                     window.location.reload();
                 }, 700);
             } else {
-                showToast(`❌ Lỗi: ${data.message || 'Không thể xóa component'}`, '⚠️');
+                showToast(`❌ ${t('Lỗi', 'エラー')}: ${data.message || t('Không thể xóa component', '削除できませんでした')}`, '⚠️');
             }
         } catch (err) {
-            showToast(`❌ Lỗi kết nối: ${err.message}`, '⚠️');
+            showToast(`❌ ${t('Lỗi kết nối', '通信エラー')}: ${err.message}`, '⚠️');
         }
     };
 
@@ -495,27 +467,36 @@
     window.deleteCardVariant = async function(btn) {
         if (!btn) return;
         const compName = btn.getAttribute('data-comp');
-        const title = btn.getAttribute('data-title') || 'component này';
+        const title = btn.getAttribute('data-title') || t('component này', 'このコンポーネント');
         const classStr = btn.getAttribute('data-class') || '';
         const cardIndexStr = btn.getAttribute('data-card-index');
         const cardIndex = (cardIndexStr !== '' && cardIndexStr !== null && cardIndexStr !== undefined) ? parseInt(cardIndexStr, 10) : undefined;
         const commentTitle = btn.getAttribute('data-comment') || '';
 
         const confirmed = window.confirm(
-            `⚠️ XÁC NHẬN XÓA RIÊNG COMPONENT NÀY:\n\n` +
-            `Bạn có chắc chắn muốn xóa component "${title}" khỏi Workbench không?\n\n` +
-            `• Thao tác này CHỈ gỡ bỏ component này (trong workbench/components/_${compName}.ejs)\n` +
-            `• Các component khác trong nhóm "${compName}" vẫn được bảo toàn nguyên vẹn 100%!\n` +
-            `• Các modifier CSS riêng không còn ai dùng sẽ được tự động dọn dẹp sạch sẽ.\n\n` +
-            `(Hệ thống sẽ tự động sao lưu snapshot an toàn vào workbench/.backup/ trước khi xóa).`
+            t(
+                `⚠️ XÁC NHẬN XÓA RIÊNG COMPONENT NÀY:\n\n` +
+                `Bạn có chắc chắn muốn xóa component "${title}" khỏi Workbench không?\n\n` +
+                `• Thao tác này CHỈ gỡ bỏ component này (trong workbench/components/_${compName}.ejs)\n` +
+                `• Các component khác trong nhóm "${compName}" vẫn được bảo toàn nguyên vẹn 100%!\n` +
+                `• Các modifier CSS riêng không còn ai dùng sẽ được tự động dọn dẹp sạch sẽ.\n\n` +
+                `(Hệ thống sẽ tự động sao lưu snapshot an toàn vào workbench/.backup/ trước khi xóa).`,
+
+                `⚠️ この個別コンポーネント削除の確認:\n\n` +
+                `コンポーネント "${title}" をWorkbenchから削除してもよろしいですか？\n\n` +
+                `• この操作では workbench/components/_${compName}.ejs 内のこのパーツのみ削除されます。\n` +
+                `• "${compName}" グループの他のパーツは100%保持されます。\n` +
+                `• 未使用となった専用modifier CSSも自動クリーンアップされます。\n\n` +
+                `（削除前に安全のため workbench/.backup/ へ自動スナップショットが保存されます）。`
+            )
         );
 
         if (!confirmed) return;
 
         const originalText = btn.innerHTML;
-        btn.innerHTML = '⏳ Đang xóa...';
+        btn.innerHTML = `<span class="lang-vi">⏳ Đang xóa...</span><span class="lang-ja">⏳ 削除中...</span>`;
         btn.disabled = true;
-        showToast(`⏳ Đang xóa component "${title}"...`, '🗑');
+        showToast(`⏳ ${t(`Đang xóa component "${title}"...`, `コンポーネント "${title}" を削除中...`)}`, '🗑');
 
         try {
             const res = await apiFetch('/__api/delete-variant', {
@@ -531,7 +512,7 @@
             });
             const data = await res.json();
             if (data.success) {
-                showToast(`✅ Đã xóa thành công component "${title}"!`, '🗑');
+                showToast(`✅ ${t(`Đã xóa thành công component "${title}"!`, `コンポーネント "${title}" を正常に削除しました！`)}`, '🗑');
                 const card = btn.closest('.cs-card');
                 if (card) {
                     card.style.transition = 'all 0.4s ease';
@@ -544,12 +525,12 @@
                     setTimeout(() => window.location.reload(), 500);
                 }
             } else {
-                showToast(`❌ Lỗi: ${data.message || 'Không thể xóa component'}`, '⚠️');
+                showToast(`❌ ${t('Lỗi', 'エラー')}: ${data.message || t('Không thể xóa component', '削除できませんでした')}`, '⚠️');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         } catch (err) {
-            showToast(`❌ Lỗi kết nối: ${err.message}`, '⚠️');
+            showToast(`❌ ${t('Lỗi kết nối', '通信エラー')}: ${err.message}`, '⚠️');
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
@@ -581,7 +562,7 @@
     async function executeCardVariantImport(btn, compName, classStr, title, scssCode, targetJsFile) {
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = `⏳ Đang import...`;
+        btn.innerHTML = `<span class="lang-vi">⏳ Đang import...</span><span class="lang-ja">⏳ インポート中...</span>`;
 
         try {
             const res = await apiFetch('/__api/import-variant', {
@@ -597,21 +578,21 @@
             });
             const data = await res.json();
             if (data.success) {
-                showToast(`🎉 ${data.message || `Đã import riêng component "${title}" vào site!`}`, '🚀');
+                showToast(`🎉 ${data.message || t(`Đã import riêng component "${title}" vào site!`, `コンポーネント "${title}" をサイトへ導入しました！`)}`, '🚀');
                 btn.classList.add('is-installed');
-                btn.innerHTML = `✓ Đã cài vào Site`;
+                btn.innerHTML = `<span class="lang-vi">✓ Đã cài vào Site</span><span class="lang-ja">✓ サイト導入済み</span>`;
                 btn.disabled = true;
                 if (typeof syncVariantCardsStatus === 'function') {
                     syncVariantCardsStatus();
                 }
                 syncRegistryState();
             } else {
-                showToast(`❌ Lỗi: ${data.message || 'Không thể import'}`, '⚠️');
+                showToast(`❌ ${t('Lỗi', 'エラー')}: ${data.message || t('Không thể import', 'インポートできませんでした')}`, '⚠️');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         } catch (err) {
-            showToast(`❌ Lỗi kết nối: ${err.message}`, '⚠️');
+            showToast(`❌ ${t('Lỗi kết nối', '通信エラー')}: ${err.message}`, '⚠️');
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
@@ -640,11 +621,11 @@
                     if (!btn) return;
                     if (item.isInstalled) {
                         btn.classList.add('is-installed');
-                        btn.innerHTML = `✓ Đã cài vào Site`;
+                        btn.innerHTML = `<span class="lang-vi">✓ Đã cài vào Site</span><span class="lang-ja">✓ サイト導入済み</span>`;
                         btn.disabled = true;
                     } else {
                         btn.classList.remove('is-installed');
-                        btn.innerHTML = `🚀 Import vào Site`;
+                        btn.innerHTML = `<span class="lang-vi">🚀 Import vào Site</span><span class="lang-ja">🚀 サイトへ導入</span>`;
                         btn.disabled = false;
                     }
                 });
@@ -662,7 +643,7 @@
             const data = await res.json();
             if (data.success && Array.isArray(data.components)) {
                 data.components.forEach(comp => {
-                    updateComponentStateInDom(comp.name, comp.isInstalled, comp.syncStatus, comp.diffDetails);
+                    updateComponentStateInDom(comp.name, comp.isInstalled);
                 });
             }
         } catch (e) {
@@ -679,7 +660,7 @@
         if (!card) return;
         const htmlCode = card.querySelector('.cs-code-panel--html code');
         if (htmlCode) {
-            copyRaw(htmlCode.textContent.trim(), 'Đã copy snippet HTML vào clipboard!');
+            copyRaw(htmlCode.textContent.trim(), t('Đã copy snippet HTML vào clipboard!', 'HTMLスニペットをクリップボードにコピーしました！'));
         }
     };
 
@@ -688,7 +669,7 @@
         if (!card) return;
         const scssCode = card.querySelector('.cs-code-panel--scss code');
         if (scssCode) {
-            copyRaw(scssCode.textContent.trim(), 'Đã copy SCSS styles vào clipboard!');
+            copyRaw(scssCode.textContent.trim(), t('Đã copy SCSS styles vào clipboard!', 'SCSSスタイルをクリップボードにコピーしました！'));
         }
     };
 
@@ -697,7 +678,7 @@
         if (!card) return;
         const jsCode = card.querySelector('.cs-code-panel--js code');
         if (jsCode) {
-            copyRaw(jsCode.textContent.trim(), 'Đã copy JS logic vào clipboard!');
+            copyRaw(jsCode.textContent.trim(), t('Đã copy JS logic vào clipboard!', 'JSロジックをクリップボードにコピーしました！'));
         }
     };
 
@@ -709,7 +690,9 @@
         drawer.classList.toggle('is-open');
         const isOpen = drawer.classList.contains('is-open');
         card.classList.toggle('is-code-open', isOpen);
-        btn.textContent = isOpen ? 'Ẩn Code' : 'Xem Code';
+        btn.innerHTML = isOpen
+            ? `<span class="lang-vi">Ẩn Code</span><span class="lang-ja">コード非表示</span>`
+            : `<span class="lang-vi">Xem Code</span><span class="lang-ja">コード表示</span>`;
     };
 
     window.switchCodeTab = function(tabBtn, targetTab) {
@@ -816,9 +799,9 @@
         if (!fullScss || !classStr) return stripFileBoilerplate(fullScss || '');
         const tokens = classStr.split(/\s+/).filter(Boolean);
 
-        // Support single or multiple root classes (e.g. c-card, c-btn, p-header, card)
+        // Support single or multiple root classes (e.g. c-card, c-btn, p-header, card), ignoring inview animation classes
         const candidateClasses = tokens
-            .filter(c => /^[clpmo]-/.test(c) || (!c.startsWith('is-') && !c.startsWith('js-') && c !== 'active'))
+            .filter(c => (/^[clpmo]-/.test(c) || (!c.startsWith('is-') && !c.startsWith('js-') && c !== 'active')) && !c.startsWith('c-inview') && !c.startsWith('js-inview') && !c.startsWith('inview--'))
             .map(c => c.split('--')[0]);
 
         const uniqueBases = Array.from(new Set(candidateClasses));
@@ -925,38 +908,35 @@
         const classTokens = effectiveClass.split(/\s+/).filter(Boolean);
         const badgesHtml = classTokens.map(c => {
             const cleanC = c.replace(/^\./, '');
-            return `<span class="cs-card__class-tag" title="Click để copy .${cleanC}" onclick="event.stopPropagation(); copyRaw('${cleanC}', 'Đã copy class: .${cleanC}')">.${cleanC}</span>`;
+            return `<span class="cs-card__class-tag" title="Click để copy .${cleanC} / クリックして .${cleanC} をコピー" onclick="event.stopPropagation(); copyRaw('${cleanC}', '${t(`Đã copy class: .${cleanC}`, `クラスをコピーしました: .${cleanC}`)}')">.${cleanC}</span>`;
         }).join(' ');
 
-        const sec = document.getElementById(`sec-${compName}`);
-        const syncStatus = sec?.getAttribute('data-sync-status') || 'uninstalled';
-        let badgeText = '⚪ Chưa cài';
-        let badgeClass = 'cs-sync-badge--uninstalled';
-        if (syncStatus === 'diverged') {
-            badgeText = '⚠️ Site có thay đổi';
-            badgeClass = 'cs-sync-badge--diverged';
-        } else if (syncStatus === 'synced') {
-            badgeText = '✓ Đã đồng bộ';
-            badgeClass = 'cs-sync-badge--synced';
-        }
-
-        const syncBtnStyle = syncStatus === 'diverged' ? 'display:inline-flex;' : 'display:none;';
         const escapedCommentAttr = (commentTitle || '').replace(/"/g, '&quot;');
 
         card.innerHTML = `
             <div class="cs-card__toolbar">
                 <div class="cs-card__title-wrap">
                     <span class="cs-card__title">${title}</span>
-                    <span class="cs-sync-badge ${badgeClass}" data-sync-badge="${compName}" title="${syncStatus === 'diverged' ? 'Site đã chỉnh sửa khác với Workbench' : (syncStatus === 'synced' ? 'Code trên Site và Workbench trùng khớp 100%' : 'Chưa cài vào Site')}">${badgeText}</span>
                 </div>
                 <div class="cs-card__actions">
-                    <button type="button" class="cs-btn-action cs-btn-action--sync" style="${syncBtnStyle}" onclick="syncComponentToWorkbench(this)" data-comp="${compName}" title="Đồng bộ các chỉnh sửa từ Site vào Workbench">🔄 Cập nhật vào Workbench</button>
-                    <button type="button" class="cs-btn-action cs-btn-action--import" onclick="importCardVariant(this)" data-comp="${compName}" data-class="${effectiveClass}" data-title="${title}" title="Chỉ import riêng component này vào site">🚀 Import vào Site</button>
-                    <button type="button" class="cs-btn-action cs-btn-action--copy" onclick="copySnippetFromCard(this)">📋 Copy HTML</button>
+                    <button type="button" class="cs-btn-action cs-btn-action--import" onclick="importCardVariant(this)" data-comp="${compName}" data-class="${effectiveClass}" data-title="${title}" title="Chỉ import riêng component này vào site / このコンポーネントのみサイトへ導入">
+                        <span class="lang-vi">🚀 Import vào Site</span>
+                        <span class="lang-ja">🚀 サイトへ導入</span>
+                    </button>
+                    <button type="button" class="cs-btn-action cs-btn-action--copy" onclick="copySnippetFromCard(this)">
+                        <span class="lang-vi">📋 Chép HTML</span>
+                        <span class="lang-ja">📋 HTMLコピー</span>
+                    </button>
                     ${cardScss ? `<button type="button" class="cs-btn-action" onclick="copyScssFromCard(this)">🎨 SCSS</button>` : ''}
                     ${jsText ? `<button type="button" class="cs-btn-action cs-btn-action--js" onclick="copyJsFromCard(this)">⚡ JS</button>` : ''}
-                    <button type="button" class="cs-btn-action" onclick="toggleCodeDrawer(this)">Xem Code</button>
-                    <button type="button" class="cs-btn-action cs-btn-action--delete" onclick="deleteCardVariant(this)" data-comp="${compName}" data-class="${effectiveClass}" data-title="${title}" data-card-index="${cardIndex !== undefined ? cardIndex : ''}" data-comment="${escapedCommentAttr}" title="Xóa riêng component '${title}' khỏi Workbench">🗑 Xóa</button>
+                    <button type="button" class="cs-btn-action cs-btn-action--code" onclick="toggleCodeDrawer(this)">
+                        <span class="lang-vi">Xem Code</span>
+                        <span class="lang-ja">コード表示</span>
+                    </button>
+                    <button type="button" class="cs-btn-action cs-btn-action--delete" onclick="deleteCardVariant(this)" data-comp="${compName}" data-class="${effectiveClass}" data-title="${title}" data-card-index="${cardIndex !== undefined ? cardIndex : ''}" data-comment="${escapedCommentAttr}" title="Xóa riêng component '${title}' khỏi Workbench / このコンポーネントをWorkbenchから削除">
+                        <span class="lang-vi">🗑 Xóa</span>
+                        <span class="lang-ja">🗑 削除</span>
+                    </button>
                 </div>
             </div>
             <div class="cs-card__preview${isLeft ? ' cs-card__preview--left' : ''}"></div>
@@ -990,18 +970,18 @@
     function formatComponentTitle(cls) {
         if (!cls) return 'Component';
         let clean = cls.replace(/^c-/, '').replace(/^l-/, '');
-        if (clean.includes('--cl3')) return 'Grid (3 Cột)';
-        if (clean.includes('--cl4')) return 'Grid (4 Cột)';
-        if (clean.includes('--cl5')) return 'Grid (5 Cột)';
+        if (clean.includes('--cl3')) return '<span class="lang-vi">Grid (3 Cột)</span><span class="lang-ja">グリッド (3列)</span>';
+        if (clean.includes('--cl4')) return '<span class="lang-vi">Grid (4 Cột)</span><span class="lang-ja">グリッド (4列)</span>';
+        if (clean.includes('--cl5')) return '<span class="lang-vi">Grid (5 Cột)</span><span class="lang-ja">グリッド (5列)</span>';
         if (clean.includes('--middle') && clean.includes('--reverse')) return 'Flex (Reverse + Middle)';
         if (clean.includes('--equal')) return 'Flex Equal 50/50';
-        if (clean.includes('--reverse')) return clean.includes('btn') ? 'Nút Reverse' : 'Flex Reverse';
-        if (clean.includes('--arrow-between')) return 'Nút Mũi Tên Cách Giữa';
-        if (clean.includes('--arrow-center')) return 'Nút Mũi Tên Trung Tâm';
-        if (clean.includes('--arrow')) return 'Nút Có Mũi Tên';
-        if (clean.includes('--blank')) return 'Link Mở Tab Mới (Blank)';
-        if (clean.includes('--line')) return 'Tiêu Đề Dạng Line';
-        if (clean.includes('--dot')) return 'Tiêu Đề Dạng Dot';
+        if (clean.includes('--reverse')) return clean.includes('btn') ? '<span class="lang-vi">Nút Reverse</span><span class="lang-ja">反転ボタン</span>' : 'Flex Reverse';
+        if (clean.includes('--arrow-between')) return '<span class="lang-vi">Nút Mũi Tên Cách Giữa</span><span class="lang-ja">矢印両端配置ボタン</span>';
+        if (clean.includes('--arrow-center')) return '<span class="lang-vi">Nút Mũi Tên Trung Tâm</span><span class="lang-ja">矢印中央配置ボタン</span>';
+        if (clean.includes('--arrow')) return '<span class="lang-vi">Nút Có Mũi Tên</span><span class="lang-ja">矢印付きボタン</span>';
+        if (clean.includes('--blank')) return '<span class="lang-vi">Link Mở Tab Mới (Blank)</span><span class="lang-ja">別タブリンク (Blank)</span>';
+        if (clean.includes('--line')) return '<span class="lang-vi">Tiêu Đề Dạng Line</span><span class="lang-ja">ライン見出し</span>';
+        if (clean.includes('--dot')) return '<span class="lang-vi">Tiêu Đề Dạng Dot</span><span class="lang-ja">ドット見出し</span>';
         if (cls.startsWith('c-ttl')) {
             const m = cls.match(/c-ttl(\d+)/);
             if (m) return `Heading ${m[1]}px`;
@@ -1059,8 +1039,9 @@
             }
 
             const targetClasses = (snippetTarget.className || '').split(/\s+/).filter(Boolean);
-            const matchedClass = targetClasses.find(c => /^[clpmo]-/.test(c)) ||
-                                 targetClasses.find(c => !c.startsWith('is-') && !c.startsWith('js-') && c !== 'active' && !c.startsWith('p-component__')) ||
+            const matchedClass = targetClasses.find(c => /^[clpmo]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')) ||
+                                 targetClasses.find(c => !c.startsWith('is-') && !c.startsWith('js-') && c !== 'active' && !c.startsWith('p-component__') && !c.startsWith('c-inview') && !c.startsWith('js-inview')) ||
+                                 targetClasses.find(c => !c.startsWith('c-inview') && !c.startsWith('js-inview')) ||
                                  targetClasses[0] ||
                                  snippetTarget.tagName.toLowerCase();
 
@@ -1150,6 +1131,14 @@
             sec.appendChild(header);
             sec.appendChild(cardsContainer);
 
+            // Normalize relative preview asset paths (e.g. ./assets/... -> ../assets/...)
+            cardsContainer.querySelectorAll('.cs-card__preview img').forEach(img => {
+                const rawSrc = img.getAttribute('src');
+                if (rawSrc && rawSrc.startsWith('./assets/')) {
+                    img.src = '../' + rawSrc.slice(2);
+                }
+            });
+
             // Agnostic Dynamic Normalization for Sandbox Previews (100% generic CSS property inspection)
             cardsContainer.querySelectorAll('.cs-card__preview > *').forEach(el => {
                 const hint = el.getAttribute('data-preview');
@@ -1226,10 +1215,28 @@
         }
     }
 
+    function initLanguageSwitcher() {
+        document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.getAttribute('data-lang-btn');
+                if (lang) setLanguage(lang);
+            });
+        });
+        let currentLang = 'vi';
+        try {
+            currentLang = localStorage.getItem('wb_lang') || 'vi';
+        } catch (_) {}
+        setLanguage(currentLang);
+    }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', transformSections);
+        document.addEventListener('DOMContentLoaded', () => {
+            transformSections();
+            initLanguageSwitcher();
+        });
     } else {
         transformSections();
+        initLanguageSwitcher();
     }
 
     // Live search filter

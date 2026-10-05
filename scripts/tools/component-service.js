@@ -7,7 +7,7 @@
  * - backup: Snapshot backups and safe rollback engine
  * - variants: SCSS class slicing, merging, and card-level deletion
  * - installer: Transactional install with automatic rollback on failure
- * - registry: Drift detection, status checking, and diff viewer
+ * - registry: Component registry, specification, and installation status
  * - workbench-manager: Canonical showroom management
  */
 

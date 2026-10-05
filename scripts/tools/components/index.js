@@ -10,4 +10,5 @@ export * from './backup.js';
 export * from './variants.js';
 export * from './installer.js';
 export * from './registry.js';
+export * from './ordering.js';
 export * from './workbench-manager.js';

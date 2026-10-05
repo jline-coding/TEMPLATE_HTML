@@ -15,8 +15,8 @@ const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
 const WB_COMPONENTS_DIR = resolve(ROOT, 'workbench/components');
 const SRC_COMPONENTS_DIR = resolve(ROOT, 'src/components');
-const COMPONENTS_DIR = existsSync(WB_COMPONENTS_DIR) ? WB_COMPONENTS_DIR : resolve(ROOT, 'src/pages/components');
 const SNIPPETS_FILE = resolve(ROOT, '.vscode/jline-components.code-snippets');
+const SNIPPET_SCOPE = 'html,ejs,php';
 
 const VOID_TAGS = new Set([
   'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'
@@ -315,6 +315,7 @@ export function syncSnippets(options = {}) {
       const body = formatSnippetBody(comp.rawHtml, comp.tagName, comp.mainClass, comp.classStr);
 
       generated[label] = {
+        scope: SNIPPET_SCOPE,
         prefix,
         body,
         description: comp.commentTitle
@@ -329,6 +330,7 @@ export function syncSnippets(options = {}) {
     const uniqueSizes = Array.from(new Set(sizeMatches)).sort((a, b) => Number(b) - Number(a));
     if (uniqueSizes.length > 1 && !generated['c-ttl (Heading with Selectable Size)']) {
       generated['c-ttl (Heading with Selectable Size)'] = {
+        scope: SNIPPET_SCOPE,
         prefix: 'c-ttl',
         body: [
           `<h2 class="c-ttl\${1|${uniqueSizes.join(',')}|}">\${2:タイトルコンテンツ}</h2>`
@@ -343,6 +345,7 @@ export function syncSnippets(options = {}) {
     const uniqueTxtSizes = Array.from(new Set(txtSizeMatches)).sort((a, b) => Number(b) - Number(a));
     if (uniqueTxtSizes.length > 1 && !generated['c-txt (Text with Selectable Size)']) {
       generated['c-txt (Text with Selectable Size)'] = {
+        scope: SNIPPET_SCOPE,
         prefix: 'c-txt',
         body: [
           `<p class="c-txt\${1|${uniqueTxtSizes.join(',')}|}">\${2:ダミーテキスト。}</p>`
@@ -355,6 +358,7 @@ export function syncSnippets(options = {}) {
     // Enhancement: Bilingual EN/JP Heading for c-title
     if (content.includes('c-title') && content.includes('c-title__en') && !generated['c-title (EN/JP Bilingual Heading)']) {
       generated['c-title (EN/JP Bilingual Heading)'] = {
+        scope: SNIPPET_SCOPE,
         prefix: 'c-title',
         body: [
           '<h2 class="c-title">',

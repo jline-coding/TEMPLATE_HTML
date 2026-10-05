@@ -1,0 +1,86 @@
+<!--
+---
+title: "Sidebar Layout"
+category: "layout"
+scss: "_sidebar.scss"
+---
+-->
+
+<div class="p-component__item">
+    <!-- Main Content + Right Sidebar -->
+    <div class="l-sidebar">
+        <main class="l-sidebar__main">
+            <div class="c-box c-box--border">
+                <div class="l-sidebar__img">
+                    <img src="<%= assetsDir %>assets/images/common/img_dummy.webp" alt="記事メイン画像">
+                </div>
+                <h3 class="c-ttl24">メインコンテンツ領域 (.l-sidebar__main)</h3>
+                <p class="c-txt15">記事本文、ブログ投稿、製品詳細などの主要なコンテンツを配置する柔軟な幅のメインエリアです。画面幅に応じて自動的に拡張されます。</p>
+            </div>
+        </main>
+        <aside class="l-sidebar__aside">
+            <div class="c-box c-box--bg">
+                <h4 class="c-ttl24">サイドバー (.l-sidebar__aside)</h4>
+                <p class="c-txt14">カテゴリー一覧、最近の投稿、バナー広告、問い合わせボタンなどを配置する固定幅エリアです。</p>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div class="p-component__item">
+    <!-- Left Sidebar + Right Main (Reversed) -->
+    <div class="l-sidebar l-sidebar--reverse">
+        <main class="l-sidebar__main">
+            <div class="c-box c-box--border">
+                <div class="l-sidebar__img">
+                    <img src="<%= assetsDir %>assets/images/top/img_dummy_01.webp" alt="記事メイン画像">
+                </div>
+                <h3 class="c-ttl24">反転配置メインコンテンツ (.l-sidebar--reverse)</h3>
+                <p class="c-txt15">PC時にサイドバーが左側、メインコンテンツが右側に配置される反転レイアウトです。</p>
+            </div>
+        </main>
+        <aside class="l-sidebar__aside">
+            <div class="c-box c-box--bg">
+                <h4 class="c-ttl24">左サイドバー</h4>
+                <p class="c-txt14">ダッシュボードや管理画面の左ナビゲーションとしても活用できます。</p>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div class="p-component__item">
+    <!-- Sticky Sidebar with Widget List -->
+    <div class="l-sidebar">
+        <main class="l-sidebar__main">
+            <div class="c-box c-box--border">
+                <div class="l-sidebar__img">
+                    <img src="<%= assetsDir %>assets/images/common/img_dummy.webp" alt="長文記事メイン画像">
+                </div>
+                <h3 class="c-ttl24">長文コンテンツと追従サイドバー</h3>
+                <p class="c-txt15">スクロールに合わせて右側のサイドバーが固定（Sticky）表示されるレイアウトです。記事が縦に長い場合でも、関連リンクや問い合わせ導線を常にユーザーの視界に保つことができます。</p>
+            </div>
+        </main>
+        <aside class="l-sidebar__aside l-sidebar__aside--sticky">
+            <div class="l-sidebar__widget">
+                <div class="c-box c-box--bg">
+                    <h4 class="c-ttl24">記事カテゴリー</h4>
+                    <ul class="c-list-dot">
+                        <li class="c-list-dot__item"><a href="" class="c-link">Webデザイン・UI/UX</a></li>
+                        <li class="c-list-dot__item"><a href="" class="c-link">フロントエンド開発技術</a></li>
+                        <li class="c-list-dot__item"><a href="" class="c-link">システムアーキテクチャ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="l-sidebar__widget">
+                <div class="c-box c-box--primary">
+                    <h4 class="c-ttl24">無料相談・お見積り</h4>
+                    <p class="c-txt13">プロジェクトのご相談はお気軽にどうぞ。</p>
+                    <div class="l-sidebar__btn-wrap">
+                        <a href="" class="c-btn c-btn--primary">お問い合わせ</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+

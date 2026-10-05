@@ -109,6 +109,7 @@ component > header
             transition: 0.5s;
         }
 
+        &.is-active,
         &.active {
             &::before {
                 width: 24px;
@@ -127,6 +128,7 @@ component > header
     }
 
     &-gnavi {
+        display: none;
         position: fixed;
         left: 0;
         top: 0;
@@ -134,34 +136,12 @@ component > header
         width: 100%;
         height: 100vh;
         height: 100lvh;
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(-100%);
-        transition: transform 0.35s ease, opacity 0.35s ease;
         background-color: var(--primary);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
 
-        &[hidden="until-found"] {
-            content-visibility: hidden;
-        }
-
-        &.active,
-        &.is-open,
-        &:focus-within {
-            content-visibility: visible !important;
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
-
         @include mq(md) {
-            content-visibility: visible !important;
-            display: block;
-            opacity: 1;
-            pointer-events: auto;
-            transform: none;
-            transition: none;
+            display: block !important;
             height: auto;
             width: auto;
             position: relative;
@@ -243,7 +223,7 @@ component > header
                     }
                     @include mq(md) {
                         .c-header-gnavi__sub{
-                            content-visibility: visible;
+                            visibility: visible;
                             opacity: 1;
                             transform: translateX(-50%) translateY(0);
                             pointer-events: auto;
@@ -258,7 +238,7 @@ component > header
                             transform: translateY(-35%) rotate(-135deg);
                         }
                         .c-header-gnavi__sub{
-                            content-visibility: visible !important;
+                            visibility: visible;
                             opacity: 1;
                             transform: translateX(-50%) translateY(0);
                             pointer-events: auto;
@@ -275,20 +255,14 @@ component > header
         }
 
         &__sub{
+            display: none;
             position: relative;
             background-color: rgba(0, 0, 0, 0.12);
             margin: 8px 20px 12px;
             border-radius: 4px;
 
-            &[hidden="until-found"] {
-                content-visibility: hidden;
-                margin: 0 !important;
-                padding: 0 !important;
-                border: none !important;
-            }
-
             @include mq(md) {
-                display: block;
+                display: block !important;
                 position: absolute;
                 left: 50%;
                 transform: translateX(-50%) translateY(10px);
@@ -299,13 +273,14 @@ component > header
                 border-radius: 6px;
                 box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
                 opacity: 0;
+                visibility: hidden;
                 pointer-events: none;
-                transition: opacity 0.3s ease, transform 0.3s ease, content-visibility 0.3s ease allow-discrete;
+                transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
                 z-index: 20;
 
                 // Keyboard Tab accessibility
                 &:focus-within {
-                    content-visibility: visible !important;
+                    visibility: visible;
                     opacity: 1;
                     transform: translateX(-50%) translateY(0);
                     pointer-events: auto;

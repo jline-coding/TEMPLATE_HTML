@@ -1,11 +1,6 @@
 @use "sass:math";
 @use "../global" as *;
 
-/*!
-layout > grids
-------------------------------
-*/
-
 .l-grid{
     display: grid;
     grid-gap: 20px;

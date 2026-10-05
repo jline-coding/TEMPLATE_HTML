@@ -1,0 +1,13 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > container
+------------------------------
+*/
+
+/*!
+layout > container (Synchronized from site)
+------------------------------
+*/
+@forward "../../../src/pages/assets/scss/layout/container";

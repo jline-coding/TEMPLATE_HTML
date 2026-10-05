@@ -426,11 +426,17 @@
         }
     }
 }
+
 .p-contact {
     padding-bottom: 80px;
     @include mq(md) {
         padding-bottom: clamped(76);
     }
+
+    &__btn{
+        background-color: #0C377D;
+    }
+    
     #mfp_warning{
         display: none !important;
     }

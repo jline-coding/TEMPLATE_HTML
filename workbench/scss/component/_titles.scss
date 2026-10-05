@@ -1,0 +1,50 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > title
+------------------------------
+*/
+
+.c-title{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    @include mq(md) {
+        gap: 10px;
+    }
+    &__en{
+        @extend %fz-20;
+        font-family: $font-family-barlow;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: block;
+        line-height: 1;
+    }
+    &__jp{
+        display: block;
+        @extend %fz-36 ;
+        font-weight: 700;
+        line-height: 1.6;
+    }
+}
+
+.c-ttl36{
+    font-weight: 700;
+    @extend %fz-36;
+
+}
+.c-ttl24{
+    font-weight: 700;
+    @extend %fz-24;
+
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
+}

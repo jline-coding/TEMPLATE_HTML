@@ -5,3 +5,57 @@
 component > TBL
 ------------------------------
 */
+
+.c-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    @extend %fz-15;
+
+    th,
+    td {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--gray);
+        vertical-align: middle;
+    }
+
+    th {
+        font-weight: 700;
+        background-color: var(--gray-light);
+        color: var(--base);
+        width: 30%;
+        min-width: 140px;
+    }
+
+    td {
+        background-color: var(--white);
+        color: var(--base);
+    }
+
+    &--bordered {
+        border: 1px solid var(--gray);
+
+        th,
+        td {
+            border: 1px solid var(--gray);
+        }
+    }
+
+    &--striped {
+        tbody tr:nth-child(even) td {
+            background-color: var(--gray-subtle);
+        }
+    }
+
+    &--scroll {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 20px;
+
+        table {
+            min-width: 600px;
+            width: 100%;
+        }
+    }
+}
