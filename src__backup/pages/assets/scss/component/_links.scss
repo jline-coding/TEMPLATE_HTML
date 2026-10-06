@@ -1,0 +1,72 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > Links
+------------------------------
+*/
+
+.c-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--base);
+    text-decoration: underline;
+    transition: color 0.3s ease, opacity 0.3s ease;
+
+    &:hover {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    &--primary {
+        color: var(--primary);
+        font-weight: 500;
+    }
+
+    &--arrow {
+        text-decoration: none;
+
+        &::after {
+            content: "→";
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover::after {
+            transform: translateX(4px);
+        }
+    }
+
+    &--blank {
+        text-decoration: none;
+
+        &::after {
+            content: "↗";
+            display: inline-block;
+            font-size: 0.85em;
+        }
+    }
+
+    &--tel {
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+
+        @include mq(md) {
+            pointer-events: none;
+        }
+    }
+
+    &--pdf {
+        text-decoration: none;
+
+        &::after {
+            content: "[PDF]";
+            font-size: 0.75em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-left: 2px;
+        }
+    }
+}

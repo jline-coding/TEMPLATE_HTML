@@ -81,15 +81,21 @@ export async function buildWorkbenchScss() {
     ensureDir(WORKBENCH_OUT_DIR);
     writeFileSync(resolve(WORKBENCH_OUT_DIR, 'workbench.css'), result.css, 'utf8');
 
-    // Compile inview.scss directly importing site global, reset, base, inview
+    // Compile inview.scss directly importing site global, reset, base, inview (only if inview component is installed)
     const INVIEW_SCSS = resolve(WORKBENCH_DIR, 'scss/inview.scss');
-    if (existsSync(INVIEW_SCSS)) {
-      const inviewResult = await sass.compileAsync(INVIEW_SCSS, {
-        loadPaths: [WORKBENCH_DIR, resolve(ROOT, 'src/pages/assets/scss')],
-        style: 'expanded',
-        sourceMap: false
-      });
-      writeFileSync(resolve(WORKBENCH_OUT_DIR, 'inview.css'), inviewResult.css, 'utf8');
+    const inviewDepExists = existsSync(resolve(ROOT, 'src/pages/assets/scss/component/_inview.scss')) ||
+                            existsSync(resolve(WORKBENCH_DIR, 'scss/component/_inview.scss'));
+    if (existsSync(INVIEW_SCSS) && inviewDepExists) {
+      try {
+        const inviewResult = await sass.compileAsync(INVIEW_SCSS, {
+          loadPaths: [WORKBENCH_DIR, resolve(ROOT, 'src/pages/assets/scss')],
+          style: 'expanded',
+          sourceMap: false
+        });
+        writeFileSync(resolve(WORKBENCH_OUT_DIR, 'inview.css'), inviewResult.css, 'utf8');
+      } catch (inviewErr) {
+        console.warn('[workbench] Optional inview.scss build skipped:', inviewErr.message);
+      }
     }
   } catch (err) {
     console.error('[workbench] SCSS build error:', err.message);

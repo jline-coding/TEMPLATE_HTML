@@ -98,6 +98,26 @@ export function findMatchingScss(normName, searchDir) {
 }
 
 /**
+ * Finds matching EJS file candidate in target directory
+ */
+export function findMatchingEjs(normName, searchDir) {
+  if (!existsSync(searchDir)) return null;
+  const candidates = [
+    `_${normName}.ejs`,
+    `_${normName}s.ejs`,
+    `_${normName.replace(/s$/, '')}.ejs`,
+    `${normName}.ejs`,
+    `${normName}s.ejs`,
+    `${normName.replace(/s$/, '')}.ejs`
+  ];
+  for (const c of candidates) {
+    const p = resolve(searchDir, c);
+    if (existsSync(p)) return c;
+  }
+  return null;
+}
+
+/**
  * Finds matching JS file candidate in target directory
  */
 export function findMatchingJs(normName, searchDir) {

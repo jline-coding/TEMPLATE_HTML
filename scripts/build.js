@@ -11,7 +11,8 @@ import {
   isWatch, isRenew, ROOT, DIST, SRC, PAGES_DIR, CSS_OUTPUT_RELS,
   JS_DIR, IMAGES_DIR, VIDEOS_DIR, VENDOR_DIR, SCSS_DIR, RENEW_SCSS_DIRS,
   LAYOUTS_DIR,
-  JS_OUT_DIRS, VENDOR_OUT_DIRS, VIDEOS_OUT_DIRS, IMAGES_OUT_DIRS, PAGE_OUT_PREFIXES
+  JS_OUT_DIRS, VENDOR_OUT_DIRS, VIDEOS_OUT_DIRS, IMAGES_OUT_DIRS, PAGE_OUT_PREFIXES,
+  WORKBENCH_DIR
 } from './tools/config.js';
 
 import { norm, ensureDir, walkSync, removeEmptyDirs, safeRmDirSync } from './tools/utils.js';
@@ -24,9 +25,6 @@ import {
 } from './builders/assets.js';
 import { buildWorkbench, cleanWorkbench, buildWorkbenchScss } from './builders/workbench.js';
 import { syncSnippets } from './sync-snippets.js';
-import { WORKBENCH_DIR } from './tools/config.js';
-import { createApiMiddleware } from './tools/api-middleware.js';
-import { updateClientScssIndex } from './tools/component-service.js';
 
 // ─────────────────────────────────────────────
 // Full Build Pipeline

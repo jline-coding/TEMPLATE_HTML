@@ -1,0 +1,529 @@
+---
+layout: _default
+title: TOP
+description: Static site template with EJS, SCSS, JS
+vendorcss: ['slick/slick']
+vendorjs: ['slick/slick.min']
+css: ['top']
+js: ['top']
+page: top
+---
+<main class="p-top">
+    <!-- Main Visual Hero -->
+    <section class="c-mv">
+        <figure class="c-mv__bg">
+            <img src="./assets/images/common/img_dummy.webp" alt="メインビジュアル">
+        </figure>
+        <div class="l-container">
+            <div class="c-mv__inner">
+                <h1 class="c-mv-title">
+                    <span class="c-mv-title__en">DIGITAL INNOVATION &amp; DESIGN</span>
+                    <span class="c-mv-title__jp">テクノロジーとデザインで、<br>未来のビジネスを加速させる。</span>
+                </h1>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breadcrumbs -->
+    <div class="l-container">
+        <ul class="c-bread">
+            <li class="c-bread__item">
+                <a href="./" class="c-bread__link">TOP</a>
+            </li>
+            <li class="c-bread__item">
+                <a href="./" class="c-bread__link">コンポーネント一覧</a>
+            </li>
+            <li class="c-bread__item">総合コンポーネントショーケース</li>
+        </ul>
+    </div>
+
+    <div class="l-container">
+        <!-- Hero Intro Section -->
+        <section class="p-top__hero c-inview">
+            <h2 class="p-top__hero-ttl">TEMPLATE HTML SHOWCASE</h2>
+            <p class="p-top__hero-txt">EJS・SCSS（FLOCSS）・JavaScript（ES6+）およびSlick Sliderによる、モダンで保守性に優れた高品質フロントエンドテンプレートです。</p>
+        </section>
+
+        <!-- 1. Bilingual Section Title & Headings -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">SECTION TITLES &amp; HEADINGS</span>
+                <span class="c-title__jp">見出し・タイトルコンポーネント</span>
+            </h2>
+            
+            <div class="p-top__stack">
+                <div class="p-top__card">
+                    <h3 class="c-ttl36">見出し 36px：企業の成長を支えるデジタルパートナー</h3>
+                    <h3 class="c-ttl36 c-ttl36--line">見出し 36px（下線ライン付き）：最新テクノロジーの統合</h3>
+                    <h3 class="c-ttl36 c-ttl36--dot">見出し 36px（ドットマーク付き）：持続可能なビジネスイノベーション</h3>
+                    <p class="p-top__caption">クラス名: <code>.c-ttl36</code>, <code>.c-ttl36.c-ttl36--line</code>, <code>.c-ttl36.c-ttl36--dot</code></p>
+                </div>
+                
+                <div class="p-top__card">
+                    <h3 class="c-ttl30 c-ttl30--line">見出し 30px（下線ライン付き）：最新のWeb技術と実績に基づいたソリューション</h3>
+                    <p class="p-top__caption">クラス名: <code>.c-ttl30.c-ttl30--line</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <h4 class="c-ttl24 c-ttl24--dot">見出し 24px（ドットマーク付き）：洗練されたユーザー体験の設計と実装</h4>
+                    <p class="p-top__caption">クラス名: <code>.c-ttl24.c-ttl24--dot</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <h4 class="c-ttl20 c-ttl20--line">見出し 20px（下線ライン付き）：保守性と拡張性に優れたフロントエンド開発</h4>
+                    <p class="p-top__caption">クラス名: <code>.c-ttl20.c-ttl20--line</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <h5 class="c-ttl18 c-ttl18--dot">見出し 18px（ドットマーク付き）：SEO・アクセシビリティ標準への完全対応</h5>
+                    <p class="p-top__caption">クラス名: <code>.c-ttl18.c-ttl18--dot</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <h6 class="c-ttl16">見出し 16px：高速な読み込み速度とスムーズなアニメーション</h6>
+                    <p class="p-top__caption">クラス名: <code>.c-ttl16</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Typography & Text Sizes -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">TYPOGRAPHY &amp; TEXT SIZES</span>
+                <span class="c-title__jp">テキスト・段落コンポーネント</span>
+            </h2>
+
+            <div class="p-top__stack">
+                <div class="p-top__card">
+                    <p class="c-txt20 p-top__lead">
+                        リード文（20px）：私たちはお客様のビジネス課題を深く理解し、成果に直結する最適なWebソリューションをご提案いたします。
+                    </p>
+                    <p class="p-top__caption">クラス名: <code>.c-txt20</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <p class="c-txt18">
+                        中見出し補足テキスト（18px）：企画立案からUI/UXデザイン、コーディング、運用保守まで、すべての工程をワンストップでサポート。高品質なWebサイト構築をお約束します。
+                    </p>
+                    <p class="p-top__caption">クラス名: <code>.c-txt18</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <p class="c-txt16">
+                        標準本文テキスト（16px）：HTML5・SCSS（FLOCSS）・JavaScript（ES6+）を用いた最新のコーディング標準に準拠。レスポンシブWebデザインにより、PC・スマートフォン・タブレットのあらゆる端末で快適な閲覧体験を提供します。
+                    </p>
+                    <p class="p-top__caption">クラス名: <code>.c-txt16</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <p class="c-txt14">
+                        補足・キャプションテキスト（14px）：案件ごとの細かなご要望にも柔軟に対応いたします。アニメーションの調整や外部ツールの連携など、お気軽にお問い合わせください。
+                    </p>
+                    <p class="p-top__caption">クラス名: <code>.c-txt14</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <p class="c-txt12">
+                        注釈・コピーライトテキスト（12px）：※掲載されている情報および仕様は予告なく変更される場合があります。あらかじめご了承ください。
+                    </p>
+                    <p class="p-top__caption">クラス名: <code>.c-txt12</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. List Components -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">LIST COMPONENTS</span>
+                <span class="c-title__jp">リスト・箇条書きコンポーネント</span>
+            </h2>
+
+            <div class="l-grid l-grid--cl3">
+                <div class="p-top__card">
+                    <h4 class="c-ttl18 c-ttl18--line p-top__card-ttl">ドット箇条書きリスト</h4>
+                    <ul class="c-list-dot">
+                        <li class="c-list-dot__item">最新のフロントエンド技術（HTML5 / SCSS / ES6）</li>
+                        <li class="c-list-dot__item">全デバイス対応の完全レスポンシブデザイン</li>
+                        <li class="c-list-dot__item">SEO内部対策とセマンティックマークアップ</li>
+                        <li class="c-list-dot__item">軽量・高速表示による離脱率の低減</li>
+                    </ul>
+                    <p class="p-top__caption">クラス名: <code>.c-list-dot</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <h4 class="c-ttl18 c-ttl18--line p-top__card-ttl">数字ステップリスト</h4>
+                    <ul class="c-list-number">
+                        <li class="c-list-number__item">お問い合わせ・ヒアリング（目的と要件の整理）</li>
+                        <li class="c-list-number__item">UI/UX設計とワイヤーフレームの作成</li>
+                        <li class="c-list-number__item">コーディング実装とブラウザ表示検証</li>
+                        <li class="c-list-number__item">最終テスト・本番公開とアフターサポート</li>
+                    </ul>
+                    <p class="p-top__caption">クラス名: <code>.c-list-number</code></p>
+                </div>
+
+                <div class="p-top__card">
+                    <h4 class="c-ttl18 c-ttl18--line p-top__card-ttl">米印（※）注記リスト</h4>
+                    <ul class="c-list-star">
+                        <li class="c-list-star__item">日本全国のオンライン打ち合わせに対応しております。</li>
+                        <li class="c-list-star__item">ご相談および概算お見積もりは完全無料です。</li>
+                        <li class="c-list-star__item">特急案件や短納期での開発もご相談に応じます。</li>
+                        <li class="c-list-star__item">既存サイトのリニューアルや部分改修も可能です。</li>
+                    </ul>
+                    <p class="p-top__caption">クラス名: <code>.c-list-star</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Button Components -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">BUTTON COMPONENTS</span>
+                <span class="c-title__jp">ボタンコンポーネント</span>
+            </h2>
+
+            <div class="p-top__btn-wrap">
+                <div class="p-top__btn-item">
+                    <a href="" class="c-btn">お問い合わせ</a>
+                    <p class="p-top__caption"><code>.c-btn</code></p>
+                </div>
+
+                <div class="p-top__btn-item">
+                    <a href="" class="c-btn c-btn--arrow">
+                        <span class="c-btn__content">詳しく見る</span>
+                    </a>
+                    <p class="p-top__caption"><code>.c-btn.c-btn--arrow</code></p>
+                </div>
+
+                <div class="p-top__btn-item">
+                    <a href="" class="c-btn c-btn--arrow-center">
+                        <span>資料ダウンロード</span>
+                    </a>
+                    <p class="p-top__caption"><code>.c-btn.c-btn--arrow-center</code></p>
+                </div>
+
+                <div class="p-top__btn-item">
+                    <a href="" class="c-btn c-btn--reverse">
+                        <span>会社案内を見る</span>
+                    </a>
+                    <p class="p-top__caption"><code>.c-btn.c-btn--reverse</code></p>
+                </div>
+
+                <div class="p-top__btn-item">
+                    <a href="" class="c-btn c-btn--reverse c-btn--arrow">
+                        <span class="c-btn__content">サービス一覧</span>
+                    </a>
+                    <p class="p-top__caption"><code>.c-btn.c-btn--reverse.c-btn--arrow</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Slider & Slick Carousel -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">SLICK CAROUSEL SLIDERS</span>
+                <span class="c-title__jp">スライダー（Slick JSプラグイン連携）</span>
+            </h2>
+
+            <div class="p-top__stack">
+                <!-- 5.1 Responsive Multi-Card Carousel -->
+                <div class="p-top__card">
+                    <h3 class="c-ttl20 c-ttl20--line p-top__card-ttl">1. マルチカードカルーセル（PC 3列 / タブレット 2列 / スマホ 1列）</h3>
+                    <div class="c-slider js-slider">
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb">
+                                <img src="./assets/images/common/img_dummy.webp" alt="プロジェクト事例 01">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">プロジェクト事例 01</h4>
+                                <p class="c-slider__desc">大手製造業向けのクラウド基盤移行プロジェクト。ダウンタイムゼロでの移行を達成しました。</p>
+                            </div>
+                        </div>
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb">
+                                <img src="./assets/images/top/img_dummy_01.webp" alt="プロジェクト事例 02">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">プロジェクト事例 02</h4>
+                                <p class="c-slider__desc">小売業向けオムニチャネルECサイト構築。CVRを前年比180%へと劇的に改善しました。</p>
+                            </div>
+                        </div>
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb">
+                                <img src="./assets/images/common/img_dummy.webp" alt="プロジェクト事例 03">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">プロジェクト事例 03</h4>
+                                <p class="c-slider__desc">金融機関向けセキュリティ強化コンサルティング。国際標準認証の取得をトータルサポート。</p>
+                            </div>
+                        </div>
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb">
+                                <img src="./assets/images/top/img_dummy_01.webp" alt="プロジェクト事例 04">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">プロジェクト事例 04</h4>
+                                <p class="c-slider__desc">ヘルスケア領域のモバイルアプリ新規開発。直感的なUX設計で高評価を獲得しました。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="p-top__caption">クラス名: <code>.c-slider.js-slider</code>（矢印・ドットナビ・自動再生対応）</p>
+                </div>
+
+                <!-- 5.2 Single Fade Banner Slider -->
+                <div class="p-top__card">
+                    <h3 class="c-ttl20 c-ttl20--line p-top__card-ttl">2. シングルフェードバナー（フェード切り替え）</h3>
+                    <div class="c-slider c-slider--fade js-slider-fade">
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb c-slider__thumb--wide">
+                                <img src="./assets/images/top/img_dummy_01.webp" alt="バナースライド 01">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">企業のデジタルトランスフォーメーションを牽引</h4>
+                                <p class="c-slider__desc">最新テクノロジーとUI/UX設計で、ビジネスの新しい可能性を切り拓きます。</p>
+                            </div>
+                        </div>
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb c-slider__thumb--wide">
+                                <img src="./assets/images/common/img_dummy.webp" alt="バナースライド 02">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">確かな技術力と継続的なグロース支援</h4>
+                                <p class="c-slider__desc">リリース後も安定した運用保守と継続的な改善提案で成長をサポート。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="p-top__caption">クラス名: <code>.c-slider.c-slider--fade.js-slider-fade</code></p>
+                </div>
+
+                <!-- 5.3 Center Highlight Carousel -->
+                <div class="p-top__card">
+                    <h3 class="c-ttl20 c-ttl20--line p-top__card-ttl">3. センターモードハイライト（中央フォーカス表示）</h3>
+                    <div class="c-slider c-slider--center js-slider-center">
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb">
+                                <img src="./assets/images/common/img_dummy.webp" alt="センターモード 01">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">センターモード ハイライト 01</h4>
+                                <p class="c-slider__desc">中央のスライドを拡大・フォーカス表示する洗練されたビジュアル表現。</p>
+                            </div>
+                        </div>
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb">
+                                <img src="./assets/images/top/img_dummy_01.webp" alt="センターモード 02">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">センターモード ハイライト 02</h4>
+                                <p class="c-slider__desc">前後のカードがチラ見えし、スムーズなフリックとクリック送りが可能です。</p>
+                            </div>
+                        </div>
+                        <div class="c-slider__item">
+                            <div class="c-slider__thumb">
+                                <img src="./assets/images/common/img_dummy.webp" alt="センターモード 03">
+                            </div>
+                            <div class="c-slider__content">
+                                <h4 class="c-slider__title">センターモード ハイライト 03</h4>
+                                <p class="c-slider__desc">実績紹介やプロダクトフィーチャーに最適なギャラリーレイアウト。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="p-top__caption">クラス名: <code>.c-slider.c-slider--center.js-slider-center</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Box & Card Layouts -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">BOX &amp; CARD CONTAINERS</span>
+                <span class="c-title__jp">ボックス・カードコンポーネント</span>
+            </h2>
+
+            <div class="l-grid l-grid--cl3">
+                <div class="c-box c-box--border">
+                    <div class="c-box__img">
+                        <img src="./assets/images/common/img_dummy.webp" alt="ボーダーボックス">
+                    </div>
+                    <h4 class="c-ttl20 c-ttl20--line p-top__card-ttl">標準ボーダーボックス</h4>
+                    <p class="c-txt14">薄いグレーのボーダーで囲まれた汎用カードです。サムネイル画像と組み合わせて記事カードとして活用できます。</p>
+                    <p class="p-top__caption">クラス名: <code>.c-box.c-box--border</code></p>
+                </div>
+
+                <div class="c-box c-box--bg">
+                    <div class="c-box__img">
+                        <img src="./assets/images/top/img_dummy_01.webp" alt="背景色ボックス">
+                    </div>
+                    <h4 class="c-ttl20 c-ttl20--line p-top__card-ttl">背景色付きボックス</h4>
+                    <p class="c-txt14">グレーの背景色で視覚的なグループ化を行うカードです。サイドバーのウィジェットや補足ブロックに最適です。</p>
+                    <p class="p-top__caption">クラス名: <code>.c-box.c-box--bg</code></p>
+                </div>
+
+                <div class="c-box c-box--primary">
+                    <div class="c-box__img">
+                        <img src="./assets/images/common/img_dummy.webp" alt="プライマリーボックス">
+                    </div>
+                    <h4 class="c-ttl20 c-ttl20--line p-top__card-ttl">アクセントボーダー</h4>
+                    <p class="c-txt14">ブランドカラーで強調された重要なお知らせやCTAエリア向けの特別なカードコンポーネントです。</p>
+                    <p class="p-top__caption">クラス名: <code>.c-box.c-box--primary</code></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Sidebar Layout System -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">SIDEBAR LAYOUT SYSTEM</span>
+                <span class="c-title__jp">サイドバー 2カラムレイアウト</span>
+            </h2>
+
+            <div class="l-sidebar">
+                <main class="l-sidebar__main">
+                    <div class="c-box c-box--border">
+                        <div class="c-box__img">
+                            <img src="./assets/images/common/img_dummy.webp" alt="メインコンテンツ">
+                        </div>
+                        <h3 class="c-ttl24 c-ttl24--dot">メインコンテンツ領域 (.l-sidebar__main)</h3>
+                        <p class="c-txt16">記事本文、ブログ投稿、製品詳細などの主要なコンテンツを配置する柔軟な幅のメインエリアです。画面幅に応じて自動的に拡張されます。</p>
+                        <p class="c-txt14">レスポンシブ時には自動的に1カラム縦積みに切り替わり、スマートフォンの閲覧に最適化されます。</p>
+                    </div>
+                </main>
+                <aside class="l-sidebar__aside">
+                    <div class="c-box c-box--bg l-sidebar__widget">
+                        <h4 class="c-ttl18 c-ttl18--line p-top__card-ttl">カテゴリー一覧</h4>
+                        <ul class="c-list-dot">
+                            <li class="c-list-dot__item"><a href="" class="c-link">Webサイト制作 (24)</a></li>
+                            <li class="c-list-dot__item"><a href="" class="c-link">UI/UXデザイン (18)</a></li>
+                            <li class="c-list-dot__item"><a href="" class="c-link">フロントエンド開発 (32)</a></li>
+                            <li class="c-list-dot__item"><a href="" class="c-link">SEO・マーケティング (15)</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="c-box c-box--primary l-sidebar__widget">
+                        <h4 class="c-ttl18 p-top__card-ttl">無料相談・お見積り</h4>
+                        <p class="c-txt14">制作に関するご質問やお見積りのご依頼はお気軽にお問い合わせください。</p>
+                        <div class="l-sidebar__btn-wrap">
+                            <a href="" class="c-btn c-btn--arrow">
+                                <span class="c-btn__content">お問い合わせ</span>
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <p class="p-top__caption">クラス名: <code>.l-sidebar > .l-sidebar__main + .l-sidebar__aside</code></p>
+        </section>
+
+        <!-- 8. Table Components -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">DATA TABLES</span>
+                <span class="c-title__jp">データテーブルコンポーネント</span>
+            </h2>
+
+            <div class="p-top__card">
+                <div class="c-tbl--scroll">
+                    <table class="c-tbl c-tbl--bordered c-tbl--striped">
+                        <thead>
+                            <tr>
+                                <th>プラン名</th>
+                                <th>初期費用</th>
+                                <th>月額保守</th>
+                                <th>ページ数目安</th>
+                                <th>納期目安</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>ライトプラン</th>
+                                <td>¥150,000〜</td>
+                                <td>¥10,000</td>
+                                <td>〜5ページ</td>
+                                <td>約2週間</td>
+                            </tr>
+                            <tr>
+                                <th>スタンダードプラン</th>
+                                <td>¥350,000〜</td>
+                                <td>¥25,000</td>
+                                <td>〜15ページ</td>
+                                <td>約1ヶ月</td>
+                            </tr>
+                            <tr>
+                                <th>エンタープライズ</th>
+                                <td>お見積り</td>
+                                <td>要相談</td>
+                                <td>30ページ〜</td>
+                                <td>2ヶ月〜</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="p-top__caption">クラス名: <code>.c-tbl.c-tbl--bordered.c-tbl--striped</code>（横スクロール対応 <code>.c-tbl--scroll</code>）</p>
+            </div>
+        </section>
+
+        <!-- 9. Link Components -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">INLINE &amp; ACTION LINKS</span>
+                <span class="c-title__jp">リンクコンポーネント</span>
+            </h2>
+
+            <div class="p-top__links-wrap">
+                <div>
+                    <a href="" class="c-link">標準テキストリンク（ホバーでアンダーライン解除）</a>
+                    <span class="p-top__caption"> — <code>.c-link</code></span>
+                </div>
+                <div>
+                    <a href="" class="c-link c-link--primary">プライマリーカラー強調リンク</a>
+                    <span class="p-top__caption"> — <code>.c-link.c-link--primary</code></span>
+                </div>
+                <div>
+                    <a href="" class="c-link c-link--arrow">矢印アイコン付きアクションリンク</a>
+                    <span class="p-top__caption"> — <code>.c-link.c-link--arrow</code></span>
+                </div>
+                <div>
+                    <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="c-link c-link--blank">外部サイトリンク（別タブアイコン付き）</a>
+                    <span class="p-top__caption"> — <code>.c-link.c-link--blank</code></span>
+                </div>
+                <div>
+                    <a href="./sample.pdf" target="_blank" rel="noopener noreferrer" class="c-link c-link--pdf">PDF資料ダウンロード</a>
+                    <span class="p-top__caption"> — <code>.c-link.c-link--pdf</code></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. Interactive Popup / Modal -->
+        <section class="p-top__section">
+            <h2 class="c-title">
+                <span class="c-title__en">MODAL &amp; POPUP COMPONENT</span>
+                <span class="c-title__jp">モーダル・ポップアップ（JS連動）</span>
+            </h2>
+
+            <div class="p-top__card">
+                <p class="c-txt16">アクセシビリティ対応のモーダルウィンドウです。背景スクロールロック、ESCキー閉じる、フォーカストラップを完備。</p>
+                <div class="p-top__btn-action">
+                    <button type="button" class="c-btn js-popup-open" data-popup-target="#top-modal-sample">モーダルウィンドウを開く</button>
+                </div>
+                <p class="p-top__caption">トリガー: <code>.js-popup-open[data-popup-target="#top-modal-sample"]</code></p>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- Modal Dialog Overlay Container -->
+<div class="c-popup-overlay" id="top-modal-sample" aria-hidden="true">
+    <div class="c-popup-overlay__backdrop js-popup-close"></div>
+    <div class="c-popup" role="dialog" aria-modal="true" aria-labelledby="top-popup-title">
+        <div class="c-popup__header">
+            <h3 class="c-popup__title" id="top-popup-title">ご利用規約・プライバシーポリシー</h3>
+            <button type="button" class="c-popup__close js-popup-close" aria-label="閉じる">✕</button>
+        </div>
+        <div class="c-popup__body">
+            <p>本サービスをご利用いただくにあたり、以下の利用規約にご同意いただく必要がございます。当サイトが取得した個人情報は、厳重な管理のもとで適切に取り扱われ、第三者への提供は法令に基づく場合を除き一切行いません。</p>
+            <p class="c-popup__note">※ 詳細な免責事項および個人情報保護方針につきましては、別途プライバシーポリシー詳細ページをご参照ください。</p>
+        </div>
+        <div class="c-popup__footer">
+            <button type="button" class="c-btn c-btn--cancel js-popup-close">閉じる</button>
+            <button type="button" class="c-btn js-popup-close">同意する</button>
+        </div>
+    </div>
+</div>

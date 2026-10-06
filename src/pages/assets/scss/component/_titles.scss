@@ -2,7 +2,7 @@
 @use "../global" as *;
 
 /*!
-component > title
+component > titles
 ------------------------------
 */
 
@@ -10,8 +10,10 @@ component > title
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-bottom: 30px;
     @include mq(md) {
         gap: 10px;
+        margin-bottom: 40px;
     }
     &__en{
         @extend %fz-20;
@@ -27,11 +29,19 @@ component > title
         font-weight: 700;
         line-height: 1.6;
     }
+
+    &--center{
+        text-align: center;
+    }
 }
 
-.c-ttl16{
+.c-ttl30{
     font-weight: 700;
-    @extend %fz-16;
+    @extend %fz-30;
+    margin-bottom: 30px;
+    @include mq(md) {
+        margin-bottom: 50px;
+    }
 
     &--line{
         position: relative;
@@ -39,88 +49,7 @@ component > title
             content: "";
             position: absolute;
             width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
-
-.c-ttl18{
-    font-weight: 700;
-    @extend %fz-18;
-
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
-
-.c-ttl20{
-    font-weight: 700;
-    @extend %fz-20;
-
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
-
-.c-ttl22{
-    font-weight: 700;
-    @extend %fz-22;
-
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
+            height: 0.1em;
             left: 0;
             bottom: 0;
             background-color: var(--base);
@@ -140,6 +69,10 @@ component > title
 .c-ttl24{
     font-weight: 700;
     @extend %fz-24;
+    margin-bottom: 30px;
+    @include mq(md) {
+        margin-bottom: 50px;
+    }
 
     &--line{
         position: relative;
@@ -147,12 +80,13 @@ component > title
             content: "";
             position: absolute;
             width: 100%;
-            height: 0.05em;
+            height: 0.1em;
             left: 0;
             bottom: 0;
             background-color: var(--base);
         }
     }
+
     &--dot{
         position: relative;
         display: flex;
@@ -164,9 +98,13 @@ component > title
     }
 }
 
-.c-ttl26{
+.c-ttl20{
     font-weight: 700;
-    @extend %fz-26;
+    @extend %fz-20;
+    margin-bottom: 30px;
+    @include mq(md) {
+        margin-bottom: 50px;
+    }
 
     &--line{
         position: relative;
@@ -174,145 +112,13 @@ component > title
             content: "";
             position: absolute;
             width: 100%;
-            height: 0.05em;
+            height: 0.1em;
             left: 0;
             bottom: 0;
             background-color: var(--base);
         }
     }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
 
-.c-ttl28{
-    font-weight: 700;
-    @extend %fz-28;
-
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
-
-.c-ttl30{
-    font-weight: 700;
-    @extend %fz-30;
-
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
-
-.c-ttl32{
-    font-weight: 700;
-    @extend %fz-32;
-
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
-
-.c-ttl34{
-    font-weight: 700;
-    @extend %fz-34;
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
-    &--dot{
-        position: relative;
-        display: flex;
-        &::before{
-            content: "・";
-            flex-shrink: 0;
-            display: block;
-        }
-    }
-}
-
-.c-ttl36{
-    font-weight: 700;
-    @extend %fz-36;
-    &--line{
-        position: relative;
-        &::before{
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 0.05em;
-            left: 0;
-            bottom: 0;
-            background-color: var(--base);
-        }
-    }
     &--dot{
         position: relative;
         display: flex;

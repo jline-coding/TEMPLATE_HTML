@@ -13,11 +13,14 @@ import {
   mergeVariantScss,
   mergeComponentScss,
   findMatchingJs,
+  findMatchingEjs,
   isVariantInstalled,
   installVariant,
   COMPONENT_DEPENDENCIES,
   COMPONENT_SCHEMA_VERSION,
   resolveComponentDependencies,
+  resolveComponentVendors,
+  COMPONENT_VENDORS,
   generateComponentId,
   getAvailableJsFiles,
   appendJsToTargetFile,
@@ -66,7 +69,9 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
     { dir: sandboxPaths.wbComponentsDir, file: '_flexs.ejs', content: '<div class="l-flex">Flex</div>' },
     { dir: sandboxPaths.wbLayoutDir, file: '_flexs.scss', content: '@use "../global" as *;\n.l-flex { display: flex; }' },
     { dir: sandboxPaths.wbComponentsDir, file: '_grids.ejs', content: '<div class="l-grid">Grid</div>' },
-    { dir: sandboxPaths.wbLayoutDir, file: '_grids.scss', content: '@use "../global" as *;\n.l-grid { display: grid; }' }
+    { dir: sandboxPaths.wbLayoutDir, file: '_grids.scss', content: '@use "../global" as *;\n.l-grid { display: grid; }' },
+    { dir: sandboxPaths.wbComponentsDir, file: '_slider.ejs', content: '<!--\n---\nid: "c-slider"\nversion: "1.0.0"\nvendors:\n  css: ["slick/slick"]\n  js: ["slick/slick.min"]\n---\n-->\n<div class="c-slider">Slider</div>' },
+    { dir: sandboxPaths.wbScssDir, file: '_slider.scss', content: '@use "../global" as *;\n.c-slider { display: block; }' }
   ];
 
   function setupSandbox() {
@@ -341,5 +346,63 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
       expect(updated).toContain('[Component: header]');
       expect(updated).toContain("$('.c-header').show();");
     });
+
+    it('findMatchingEjs discovers singular and plural file names correctly', () => {
+      const testEjsDir = resolve(sandboxDir, 'test-ejs');
+      mkdirSync(testEjsDir, { recursive: true });
+      writeFileSync(resolve(testEjsDir, '_btn.ejs'), '<div>Btn</div>', 'utf8');
+      writeFileSync(resolve(testEjsDir, '_tbls.ejs'), '<table>Tbls</table>', 'utf8');
+
+      expect(findMatchingEjs('btn', testEjsDir)).toBe('_btn.ejs');
+      expect(findMatchingEjs('btns', testEjsDir)).toBe('_btn.ejs');
+      expect(findMatchingEjs('tbls', testEjsDir)).toBe('_tbls.ejs');
+      expect(findMatchingEjs('tbl', testEjsDir)).toBe('_tbls.ejs');
+      expect(findMatchingEjs('nonexistent', testEjsDir)).toBeNull();
+    });
+
+    it('verifies workbench _container.scss and _titles.scss integrity', () => {
+      const containerPath = resolve(PROJECT_ROOT, 'workbench/scss/layout/_container.scss');
+      const containerContent = readFileSync(containerPath, 'utf8');
+      expect(containerContent).not.toContain('@forward "../../../src/pages');
+      expect(containerContent).toContain('.l-container');
+
+      const titlesPath = existsSync(resolve(PROJECT_ROOT, 'workbench__backup/scss/component/_titles.scss'))
+        ? resolve(PROJECT_ROOT, 'workbench__backup/scss/component/_titles.scss')
+        : resolve(PROJECT_ROOT, 'workbench/scss/component/_titles.scss');
+      if (existsSync(titlesPath)) {
+        const titlesContent = readFileSync(titlesPath, 'utf8');
+        expect(titlesContent).toContain('.c-title');
+        expect(titlesContent).toContain('.c-ttl16');
+        expect(titlesContent).toContain('.c-ttl18');
+        expect(titlesContent).toContain('.c-ttl20');
+        expect(titlesContent).toContain('.c-ttl24');
+        expect(titlesContent).toContain('.c-ttl30');
+        expect(titlesContent).toContain('.c-ttl36');
+      }
+    });
+
+    it('resolveComponentVendors resolves slider external vendor requirements', () => {
+      const vendors = resolveComponentVendors('slider');
+      expect(vendors.css).toContain('slick/slick');
+      expect(vendors.js).toContain('slick/slick.min');
+
+      const customVendors = resolveComponentVendors('custom', {
+        vendors: { css: ['custom/style'], js: ['custom/lib'] }
+      });
+      expect(customVendors.css).toContain('custom/style');
+      expect(customVendors.js).toContain('custom/lib');
+    });
+
+    it('installComponent includes vendor requirement warning in return message', () => {
+      const res = installComponent('slider', { targetJsFile: '__skip__' }, sandboxPaths);
+      expect(res.success).toBe(true);
+      expect(res.vendors).toBeDefined();
+      expect(res.vendors.css).toContain('slick/slick');
+      expect(res.vendors.js).toContain('slick/slick.min');
+      expect(res.message).toContain("vendorcss: ['slick/slick']");
+      expect(res.message).toContain("vendorjs: ['slick/slick.min']");
+    });
   });
 });
+
+

@@ -10,7 +10,8 @@ import {
   generateComponentId,
   COMPONENT_DEPENDENCIES,
   COMPONENT_SCHEMA_VERSION,
-  resolveComponentDependencies
+  resolveComponentDependencies,
+  resolveComponentVendors
 } from './metadata.js';
 import {
   getDefaultPaths,
@@ -219,12 +220,24 @@ export function getRegistry(paths = getDefaultPaths()) {
         const rootJs = resolve(paths.root, 'src/pages/assets/js', matchingJs);
         if (existsSync(rootJs)) {
           clientJsPath = rootJs;
+        } else {
+          const commonJsPath = resolve(paths.root, 'src/pages/assets/js/common.js');
+          if (existsSync(commonJsPath)) {
+            try {
+              const commonRaw = readFileSync(commonJsPath, 'utf8');
+              const range = getComponentJsRange(commonRaw, rawName);
+              if (range) {
+                clientJsPath = commonJsPath;
+                clientJsFile = 'common.js';
+              }
+            } catch {}
+          }
         }
       }
       if (existsSync(clientJsPath)) {
         try {
           const raw = readFileSync(clientJsPath, 'utf8');
-          if (matchingJs === 'common.js' || matchingJs === 'top.js') {
+          if (clientJsFile === 'common.js' || clientJsFile === 'top.js') {
             const range = getComponentJsRange(raw, rawName);
             clientJsExists = !!range;
             clientJsContent = range ? sliceJsForComponent(raw, rawName) : '';
@@ -259,6 +272,7 @@ export function getRegistry(paths = getDefaultPaths()) {
       scssFile: matchingScss,
       jsFile: matchingJs,
       dependencies: deps,
+      vendors: resolveComponentVendors(rawName, parsedMeta),
       category,
       categoryLabel: categoryMeta.label,
       categoryIcon: categoryMeta.icon,

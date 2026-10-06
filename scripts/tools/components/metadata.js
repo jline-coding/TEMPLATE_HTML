@@ -23,6 +23,34 @@ export const COMPONENT_DEPENDENCIES = {
 };
 
 /**
+ * Standard Component Vendor Requirements Map
+ * Maps components to external library requirements (CSS & JS)
+ */
+export const COMPONENT_VENDORS = {
+  slider: {
+    css: ['slick/slick'],
+    js: ['slick/slick.min']
+  }
+};
+
+/**
+ * Resolves required vendor dependencies for a component
+ * @param {string} compName
+ * @param {Object} [meta={}]
+ * @returns {{ css: string[], js: string[] }}
+ */
+export function resolveComponentVendors(compName, meta = {}) {
+  const norm = normalizeName(compName);
+  const fallback = COMPONENT_VENDORS[norm] || { css: [], js: [] };
+  const declared = meta.vendors || {};
+
+  return {
+    css: Array.from(new Set([...(fallback.css || []), ...(declared.css || [])])),
+    js: Array.from(new Set([...(fallback.js || []), ...(declared.js || [])]))
+  };
+}
+
+/**
  * Normalizes input name (e.g. "_btns.ejs" -> "btns", "btn" -> "btn")
  * @param {string} input
  * @returns {string}
@@ -153,6 +181,7 @@ export function parseComponentMetadata(content) {
     scss: rawMeta.scss || undefined,
     js: rawMeta.js || undefined,
     dependencies: Array.isArray(rawMeta.dependencies) ? rawMeta.dependencies : undefined,
+    vendors: rawMeta.vendors || (rawMeta.vendor ? (Array.isArray(rawMeta.vendor) ? { js: rawMeta.vendor } : rawMeta.vendor) : undefined),
     ...rawMeta
   };
 
@@ -176,7 +205,8 @@ export function formatComponentMetadata(meta, content) {
     version: meta.version || '1.0.0',
     title: meta.title,
     category: meta.category || 'component',
-    dependencies: Array.isArray(meta.dependencies) ? meta.dependencies : undefined
+    dependencies: Array.isArray(meta.dependencies) ? meta.dependencies : undefined,
+    vendors: meta.vendors || undefined
   };
 
   // Remove undefined keys
@@ -185,6 +215,14 @@ export function formatComponentMetadata(meta, content) {
   const yamlLines = Object.entries(cleanMeta).map(([k, v]) => {
     if (Array.isArray(v)) {
       return `${k}: [${v.map(item => `"${item}"`).join(', ')}]`;
+    }
+    if (typeof v === 'object' && v !== null) {
+      const subLines = Object.entries(v)
+        .filter(([_, subVal]) => Array.isArray(subVal) && subVal.length > 0)
+        .map(([subKey, subVal]) => `  ${subKey}: [${subVal.map(item => `"${item}"`).join(', ')}]`);
+      if (subLines.length > 0) {
+        return `${k}:\n${subLines.join('\n')}`;
+      }
     }
     return `${k}: "${v}"`;
   });

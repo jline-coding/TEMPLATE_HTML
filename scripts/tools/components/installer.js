@@ -7,13 +7,14 @@
 
 import { existsSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync } from 'fs';
 import { resolve, basename } from 'path';
-import { normalizeName, COMPONENT_DEPENDENCIES, parseComponentMetadata, resolveComponentDependencies } from './metadata.js';
+import { normalizeName, COMPONENT_DEPENDENCIES, parseComponentMetadata, resolveComponentDependencies, resolveComponentVendors } from './metadata.js';
 import {
   getDefaultPaths,
   getComponentCategory,
   getScssDirForCategory,
   getScssIndexForCategory,
   getWorkbenchScssDirForCategory,
+  findMatchingEjs,
   findMatchingScss,
   findMatchingJs
 } from './paths.js';
@@ -222,7 +223,7 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
     const targetClientScssDir = getScssDirForCategory(category, paths);
 
     // Discover component files in workbench
-    const ejsFile = existsSync(resolve(paths.wbComponentsDir, `_${norm}.ejs`)) ? `_${norm}.ejs` : null;
+    const ejsFile = findMatchingEjs(norm, paths.wbComponentsDir);
     const scssFile = findMatchingScss(norm, targetWbScssDir) || findMatchingScss(norm, paths.wbScssDir);
     let jsFile = findMatchingJs(norm, paths.wbJsDir);
 
@@ -257,7 +258,7 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
       if (dep !== norm) {
         const depCategory = getComponentCategory(dep);
         const depWbScssDir = getWorkbenchScssDirForCategory(depCategory, paths);
-        const depEjs = existsSync(resolve(paths.wbComponentsDir, `_${dep}.ejs`));
+        const depEjs = findMatchingEjs(dep, paths.wbComponentsDir);
         const depScss = findMatchingScss(dep, depWbScssDir) || findMatchingScss(dep, paths.wbScssDir);
         if (depEjs || depScss) {
           const depResult = installComponent(dep, { force: options.force, includeEjs: false }, paths, tx);
@@ -372,6 +373,16 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
       }
     }
 
+    // Resolve vendors
+    const vendors = resolveComponentVendors(norm, meta);
+    let vendorNotice = '';
+    if (vendors.css.length > 0 || vendors.js.length > 0) {
+      const parts = [];
+      if (vendors.css.length > 0) parts.push(`vendorcss: [${vendors.css.map(c => `'${c}'`).join(', ')}]`);
+      if (vendors.js.length > 0) parts.push(`vendorjs: [${vendors.js.map(j => `'${j}'`).join(', ')}]`);
+      vendorNotice = ` ⚠️ Yêu cầu khai báo: ${parts.join(' và ')}`;
+    }
+
     // Commit transaction on success
     if (isRootTx) {
       tx.commit();
@@ -383,9 +394,10 @@ export function installComponent(targetName, options = {}, paths = getDefaultPat
       files: installedFiles,
       hasJs: Boolean(jsFile),
       installedDependencies,
-      message: installedDependencies.length > 0
+      vendors,
+      message: (installedDependencies.length > 0
         ? `Đã cài đặt "${alias}" và dependencies (${installedDependencies.join(', ')}). Dùng snippet VS Code để chèn HTML!`
-        : `Đã cài đặt SCSS${jsFile ? ' & JS' : ''} cho component "${alias}". Dùng snippet VS Code để chèn HTML!`
+        : `Đã cài đặt SCSS${jsFile ? ' & JS' : ''} cho component "${alias}". Dùng snippet VS Code để chèn HTML!`) + vendorNotice
     };
   } catch (err) {
     if (isRootTx) {
@@ -447,7 +459,7 @@ export function installVariant(compName, variantData = {}, paths = getDefaultPat
     let finalScss;
     if (!existing.trim() || isTemplateStub(existing)) {
       finalScss = mergeComponentScss(existing, incomingScss, norm);
-    } else if (variantData.classStr && variantData.classStr.includes('--')) {
+    } else if (variantData.classStr) {
       const mergedVariant = mergeVariantScss(existing, incomingScss, variantData.classStr);
       finalScss = mergeComponentScss(mergedVariant, '', norm);
     } else {
@@ -515,15 +527,8 @@ export function removeComponent(targetName, options = {}, paths = getDefaultPath
 
   const scssFile = findMatchingScss(norm, targetClientScssDir) || findMatchingScss(norm, paths.clientScssDir);
   const jsFile = findMatchingJs(norm, paths.clientJsDir);
-  const ejsCandidates = [`_${norm}.ejs`, `${norm}.ejs`];
-  let clientEjs = null;
-  for (const c of ejsCandidates) {
-    const p = resolve(paths.clientComponentsDir, c);
-    if (existsSync(p)) {
-      clientEjs = p;
-      break;
-    }
-  }
+  const ejsMatch = findMatchingEjs(norm, paths.clientComponentsDir);
+  const clientEjs = ejsMatch ? resolve(paths.clientComponentsDir, ejsMatch) : null;
 
   if (!scssFile && !jsFile && !clientEjs) {
     return {

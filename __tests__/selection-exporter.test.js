@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { resolve } from 'path';
-import { existsSync, readFileSync, writeFileSync, rmSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, rmSync, mkdirSync } from 'fs';
 import { ROOT, WORKBENCH_COMPONENTS_DIR, WORKBENCH_SCSS_DIR, WORKBENCH_JS_DIR } from '../scripts/tools/config.js';
 import {
   parseComponentHtml,
@@ -11,6 +11,55 @@ import {
 } from '../scripts/tools/selection-exporter.js';
 
 describe('Selection Exporter Engine (VS Code to Workbench)', () => {
+  let tempHeaderCreated = false;
+  let tempScssCreated = false;
+  let tempJsModified = false;
+  let originalCommonJs = '';
+
+  beforeAll(() => {
+    const compDir = resolve(ROOT, 'src/components');
+    const scssDir = resolve(ROOT, 'src/pages/assets/scss/component');
+    const jsDir = resolve(ROOT, 'src/pages/assets/js');
+    if (!existsSync(compDir)) mkdirSync(compDir, { recursive: true });
+    if (!existsSync(scssDir)) mkdirSync(scssDir, { recursive: true });
+    if (!existsSync(jsDir)) mkdirSync(jsDir, { recursive: true });
+
+    const headerFile = resolve(compDir, '_header.ejs');
+    const scssFile = resolve(scssDir, '_header.scss');
+    const jsFile = resolve(jsDir, 'common.js');
+
+    if (!existsSync(headerFile)) {
+      writeFileSync(headerFile, '<header class="c-header"><div class="c-header__inner">Logo</div></header>', 'utf8');
+      tempHeaderCreated = true;
+    }
+    if (!existsSync(scssFile)) {
+      writeFileSync(scssFile, '.c-header { display: block; }\n', 'utf8');
+      tempScssCreated = true;
+    }
+    if (existsSync(jsFile)) {
+      originalCommonJs = readFileSync(jsFile, 'utf8');
+      if (!originalCommonJs.includes('[Component: header]')) {
+        writeFileSync(jsFile, originalCommonJs + '\n/* ==========================================================================\n   [Component: header]\n   ========================================================================== */\n$(\'.c-header\').show();\n', 'utf8');
+        tempJsModified = true;
+      }
+    }
+  });
+
+  afterAll(() => {
+    const headerFile = resolve(ROOT, 'src/components/_header.ejs');
+    const scssFile = resolve(ROOT, 'src/pages/assets/scss/component/_header.scss');
+    const jsFile = resolve(ROOT, 'src/pages/assets/js/common.js');
+
+    if (tempHeaderCreated && existsSync(headerFile)) {
+      try { rmSync(headerFile, { force: true }); } catch {}
+    }
+    if (tempScssCreated && existsSync(scssFile)) {
+      try { rmSync(scssFile, { force: true }); } catch {}
+    }
+    if (tempJsModified && originalCommonJs) {
+      try { writeFileSync(jsFile, originalCommonJs, 'utf8'); } catch {}
+    }
+  });
   it('accurately parses component class, name, and category from HTML snippet', () => {
     const html1 = '<div class="c-accordion"><button class="c-accordion__head">Title</button></div>';
     const parsed1 = parseComponentHtml(html1);

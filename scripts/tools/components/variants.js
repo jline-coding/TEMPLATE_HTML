@@ -117,7 +117,54 @@ export function extractFileHeader(fullScss) {
 }
 
 /**
- * Extract SCSS specific to a class/variant from full component SCSS
+ * Accurately finds the start and end of a specific class rule block in SCSS
+ */
+export function findRuleBlockRange(scssCode, className) {
+  if (!scssCode || !className) return null;
+  const escaped = className.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const regex = new RegExp('(?:^|\\n)([ \\t]*\\.' + escaped + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
+  const m = scssCode.match(regex);
+  if (!m) return null;
+
+  const startIdx = m.index + (m[0].length - m[1].length);
+  const openBrace = scssCode.indexOf('{', startIdx);
+  if (openBrace === -1) return null;
+
+  const endIdx = findMatchingBrace(scssCode, openBrace);
+  if (endIdx === -1) return null;
+
+  return {
+    start: startIdx,
+    openBrace,
+    end: endIdx,
+    content: scssCode.slice(startIdx, endIdx)
+  };
+}
+
+/**
+ * Checks whether a specific modifier exists for a base block (scoped, never global)
+ */
+export function isModifierInBlock(blockContent, modName, fullScss = '', baseBlockName = '') {
+  if (!modName) return true;
+  const escaped = modName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+  // Check 1: Nested inside block: &--mod
+  if (blockContent) {
+    const nestedRegex = new RegExp('&' + escaped + '(?![a-zA-Z0-9_-])');
+    if (nestedRegex.test(blockContent)) return true;
+  }
+
+  // Check 2: Standalone class in fullScss: .baseBlockName--mod {
+  if (fullScss && baseBlockName) {
+    const standaloneRegex = new RegExp('(?:^|\\n)[ \\t]*\\.' + baseBlockName + escaped + '(?![a-zA-Z0-9_-])[^{]*\\{', 'm');
+    if (standaloneRegex.test(fullScss)) return true;
+  }
+
+  return false;
+}
+
+/**
+ * Extract SCSS specific to a class/variant from full component SCSS (Block-Scoped)
  */
 export function sliceScssForClasses(fullScss, classStr) {
   if (!fullScss || !classStr) return fullScss || '';
@@ -137,24 +184,15 @@ export function sliceScssForClasses(fullScss, classStr) {
   const extractedBlocks = [];
 
   for (const baseBlockName of uniqueBases) {
-    if (extractedBlocks.some(b => b.includes(`.${baseBlockName}`))) continue;
-    const regex = new RegExp('(?:^|\\n)([ \\t]*\\.' + baseBlockName.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
-    const m = fullScss.match(regex);
-    if (!m) continue;
+    const baseRange = findRuleBlockRange(fullScss, baseBlockName);
+    if (!baseRange) continue;
 
-    const startIdx = m.index + (m[0].length - m[1].length);
-    const openBraceIdx = fullScss.indexOf('{', startIdx);
-    if (openBraceIdx === -1) continue;
-
-    const endIdx = findMatchingBrace(fullScss, openBraceIdx);
-    if (endIdx === -1) continue;
-
-    const blockContent = fullScss.slice(startIdx, endIdx);
-
+    const blockContent = baseRange.content;
     const activeMods = tokens
       .filter(c => c.startsWith(baseBlockName + '--'))
       .map(c => c.slice(baseBlockName.length));
 
+    // Find all modifier blocks &--... inside THIS block
     const modRegex = /\n([ \t]*&--([a-zA-Z0-9_-]+)(?![a-zA-Z0-9_-])[^{]*\{)/g;
     let match;
     const allMods = [];
@@ -181,6 +219,14 @@ export function sliceScssForClasses(fullScss, classStr) {
     filteredBlock += blockContent.slice(lastPos);
     filteredBlock = filteredBlock.replace(/\n\s*\n\s*\n+/g, '\n\n');
     extractedBlocks.push(filteredBlock.trim());
+
+    // Also look for standalone .baseBlockName--mod blocks outside
+    for (const mod of activeMods) {
+      const standaloneRange = findRuleBlockRange(fullScss, `${baseBlockName}${mod}`);
+      if (standaloneRange && !extractedBlocks.includes(standaloneRange.content.trim())) {
+        extractedBlocks.push(standaloneRange.content.trim());
+      }
+    }
   }
 
   if (extractedBlocks.length === 0) return fullScss;
@@ -188,7 +234,7 @@ export function sliceScssForClasses(fullScss, classStr) {
 }
 
 /**
- * Merge an individual variant SCSS into an existing site SCSS file
+ * Merge an individual variant SCSS into an existing site SCSS file (100% Block-Scoped)
  */
 export function mergeVariantScss(existing, incoming, classStr) {
   if (!existing || isTemplateStub(existing)) return incoming.trim() + '\n';
@@ -204,10 +250,11 @@ export function mergeVariantScss(existing, incoming, classStr) {
     uniqueBases.push(tokens[0].split(/__|--/)[0]);
   }
 
+  let merged = existing;
+
+  // Header preservation & injection (@use and variables)
   const matchIncomingFirstRule = incoming.search(/(?:^|\n)\s*[.#%a-zA-Z0-9_-]+\s*\{/);
   const incomingHeaders = matchIncomingFirstRule !== -1 ? incoming.slice(0, matchIncomingFirstRule).trim() : '';
-
-  let merged = existing;
 
   if (incomingHeaders) {
     const useMatches = incomingHeaders.match(/@use\s+[^;]+;/g) || [];
@@ -226,57 +273,74 @@ export function mergeVariantScss(existing, incoming, classStr) {
   }
 
   for (const baseBlockName of uniqueBases) {
-    const incomingBaseRegex = new RegExp('(?:^|\\n)([ \\t]*\\.' + baseBlockName.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
-    const incomingMatch = incoming.match(incomingBaseRegex);
-    if (!incomingMatch) continue;
+    const incomingBaseRange = findRuleBlockRange(incoming, baseBlockName);
+    const existingBaseRange = findRuleBlockRange(merged, baseBlockName);
 
-    const baseCheckRegex = new RegExp('(?:^|\\n)[ \\t]*\\.' + baseBlockName.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])[^{]*\\{', 'm');
-    if (!baseCheckRegex.test(merged)) {
-      const startIdx = incomingMatch.index + (incomingMatch[0].length - incomingMatch[1].length);
-      const openBrace = incoming.indexOf('{', startIdx);
-      if (openBrace !== -1) {
-        const endIdx = findMatchingBrace(incoming, openBrace);
-        if (endIdx !== -1) {
-          const ruleContent = incoming.slice(startIdx, endIdx);
-          merged = merged.trim() + '\n\n' + ruleContent.trim() + '\n';
+    // Case 1: Base block does NOT exist in merged yet:
+    if (!existingBaseRange) {
+      if (incomingBaseRange) {
+        merged = merged.trim() + '\n\n' + incomingBaseRange.content.trim() + '\n';
+      }
+      // Check for standalone modifier rules in incoming
+      const activeMods = tokens
+        .filter(c => c.startsWith(baseBlockName + '--'))
+        .map(c => c.slice(baseBlockName.length));
+      for (const mod of activeMods) {
+        const standaloneRange = findRuleBlockRange(incoming, `${baseBlockName}${mod}`);
+        if (standaloneRange && !merged.includes(standaloneRange.content.trim())) {
+          merged = merged.trim() + '\n\n' + standaloneRange.content.trim() + '\n';
         }
       }
       continue;
     }
 
+    // Case 2: Base block ALREADY exists in merged:
+    // Only merge missing modifiers into THIS specific base block!
     const activeMods = tokens
       .filter(c => c.startsWith(baseBlockName + '--'))
       .map(c => c.slice(baseBlockName.length));
 
     for (const mod of activeMods) {
-      const modCheckRegex = new RegExp('&' + mod.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])');
-      if (modCheckRegex.test(merged)) continue;
+      const currentExistingBase = findRuleBlockRange(merged, baseBlockName);
+      if (!currentExistingBase) break;
 
-      const modExtractRegex = new RegExp('(?:^|\\n)([ \\t]*&' + mod.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
-      const m = incoming.match(modExtractRegex);
-      if (!m) continue;
+      // 1. Check if modifier already exists in THIS base block or as standalone
+      const alreadyNested = isModifierInBlock(currentExistingBase.content, mod);
+      const alreadyStandalone = isModifierInBlock('', mod, merged, baseBlockName);
+      if (alreadyNested || alreadyStandalone) {
+        continue; // Already has this modifier in this block, skip!
+      }
 
-      const startIdx = m.index + (m[0].length - m[1].length);
-      const modBraceIdx = incoming.indexOf('{', startIdx);
-      if (modBraceIdx === -1) continue;
+      // 2. Extract modifier from incomingBaseRange
+      let modBlock = null;
+      if (incomingBaseRange) {
+        const escapedMod = mod.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const modRegex = new RegExp('(?:^|\\n)([ \\t]*&' + escapedMod + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
+        const m = incomingBaseRange.content.match(modRegex);
+        if (m) {
+          const mStart = m.index + (m[0].length - m[1].length);
+          const mOpen = incomingBaseRange.content.indexOf('{', mStart);
+          if (mOpen !== -1) {
+            const mEnd = findMatchingBrace(incomingBaseRange.content, mOpen);
+            if (mEnd !== -1) {
+              modBlock = incomingBaseRange.content.slice(mStart, mEnd);
+            }
+          }
+        }
+      }
 
-      const endIdx = findMatchingBrace(incoming, modBraceIdx);
-      if (endIdx === -1) continue;
-
-      const modBlock = incoming.slice(startIdx, endIdx);
-
-      const baseRegex = new RegExp('(?:^|\\n)([ \\t]*\\.' + baseBlockName.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
-      const bMatch = merged.match(baseRegex);
-      if (!bMatch) continue;
-
-      const bStart = bMatch.index + (bMatch[0].length - bMatch[1].length);
-      const bOpenBrace = merged.indexOf('{', bStart);
-      if (bOpenBrace === -1) continue;
-
-      const bEnd = findMatchingBrace(merged, bOpenBrace);
-      if (bEnd !== -1) {
-        const insertPos = bEnd - 1;
-        merged = merged.slice(0, insertPos) + '    ' + modBlock.trim() + '\n' + merged.slice(insertPos);
+      // 3. If nested &--mod found in incomingBaseRange:
+      if (modBlock) {
+        // Insert right before the closing brace '}' of currentExistingBase
+        const insertPos = currentExistingBase.end - 1;
+        merged = merged.slice(0, insertPos).trimEnd() + '\n\n    ' + modBlock.trim() + '\n' + merged.slice(insertPos);
+      } else {
+        // 4. Check if incoming has standalone .baseBlockName--mod
+        const standaloneIncoming = findRuleBlockRange(incoming, `${baseBlockName}${mod}`);
+        if (standaloneIncoming) {
+          const insertPos = currentExistingBase.end;
+          merged = merged.slice(0, insertPos) + '\n\n' + standaloneIncoming.content.trim() + '\n' + merged.slice(insertPos);
+        }
       }
     }
   }
@@ -285,7 +349,7 @@ export function mergeVariantScss(existing, incoming, classStr) {
 }
 
 /**
- * Check if a specific component variant is already installed in site
+ * Check if a specific component variant is already installed in site (100% Block-Scoped)
  */
 export function isVariantInstalled(compName, classStr, paths = getDefaultPaths()) {
   const norm = normalizeName(compName);
@@ -301,20 +365,38 @@ export function isVariantInstalled(compName, classStr, paths = getDefaultPaths()
   if (isTemplateStub(existing)) return false;
 
   const tokens = (classStr || '').split(/\s+/).filter(Boolean);
-  const mainClass = tokens.find(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview')) || tokens.find(c => /^[cl]-/.test(c)) || tokens[0];
-  if (!mainClass) return true;
+  if (tokens.length === 0) return true;
 
-  const baseBlockName = mainClass.split('--')[0];
-  const baseRegex = new RegExp('\\.' + baseBlockName.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])');
-  if (!baseRegex.test(existing)) return false;
+  const candidateBases = Array.from(new Set(
+    tokens
+      .filter(c => /^[cl]-/.test(c) && !c.startsWith('c-inview') && !c.startsWith('js-inview'))
+      .map(c => c.split('--')[0])
+  ));
 
-  const activeMods = tokens
-    .filter(c => c.startsWith(baseBlockName + '--'))
-    .map(c => c.slice(baseBlockName.length));
+  if (candidateBases.length === 0) {
+    candidateBases.push(tokens[0].split('--')[0]);
+  }
 
-  for (const mod of activeMods) {
-    const modRegex = new RegExp('&' + mod.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])');
-    if (!modRegex.test(existing)) return false;
+  for (const base of candidateBases) {
+    const baseRange = findRuleBlockRange(existing, base);
+
+    const activeMods = tokens
+      .filter(c => c.startsWith(base + '--'))
+      .map(c => c.slice(base.length));
+
+    if (activeMods.length > 0) {
+      for (const mod of activeMods) {
+        const hasNested = baseRange ? isModifierInBlock(baseRange.content, mod) : false;
+        const hasStandalone = isModifierInBlock('', mod, existing, base);
+        if (!hasNested && !hasStandalone) {
+          return false;
+        }
+      }
+    } else {
+      if (!baseRange) {
+        return false;
+      }
+    }
   }
 
   return true;
@@ -526,36 +608,40 @@ export function removeVariantFromScss(scssContent, remainingEjs, classStr) {
   let updatedScss = scssContent;
 
   for (const token of tokens) {
-    const modMatch = token.match(/--([a-zA-Z0-9_-]+)/);
-    if (modMatch) {
-      const modName = modMatch[1];
-      if (!remainingEjs.includes('--' + modName)) {
-        const modRegex = new RegExp('(?:^|\\n)([ \\t]*&--' + modName + '[^{]*\\{)', 'm');
-        const m = updatedScss.match(modRegex);
-        if (m) {
-          const startIdx = m.index + (m[0].length - m[1].length);
-          const braceIdx = updatedScss.indexOf('{', startIdx);
-          if (braceIdx !== -1) {
-            const endIdx = findMatchingBrace(updatedScss, braceIdx);
-            if (endIdx !== -1) {
-              updatedScss = updatedScss.slice(0, startIdx).trimEnd() + '\n' + updatedScss.slice(endIdx).trimStart();
+    if (token.includes('--')) {
+      const [baseName, modName] = token.split('--');
+      const fullMod = '--' + modName;
+
+      // Only remove if remainingEjs doesn't contain this exact token anymore
+      if (!remainingEjs.includes(token)) {
+        // Find base block in updatedScss
+        const baseRange = findRuleBlockRange(updatedScss, baseName);
+        if (baseRange) {
+          const escapedMod = fullMod.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          const modRegex = new RegExp('(?:^|\\n)([ \\t]*&' + escapedMod + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
+          const m = baseRange.content.match(modRegex);
+          if (m) {
+            const mStart = baseRange.start + m.index + (m[0].length - m[1].length);
+            const mOpen = updatedScss.indexOf('{', mStart);
+            if (mOpen !== -1) {
+              const mEnd = findMatchingBrace(updatedScss, mOpen);
+              if (mEnd !== -1) {
+                updatedScss = updatedScss.slice(0, mStart).trimEnd() + '\n' + updatedScss.slice(mEnd).trimStart();
+              }
             }
           }
+        }
+        // Also remove standalone rule if present
+        const standaloneRange = findRuleBlockRange(updatedScss, `${baseName}${fullMod}`);
+        if (standaloneRange) {
+          updatedScss = updatedScss.slice(0, standaloneRange.start).trimEnd() + '\n' + updatedScss.slice(standaloneRange.end).trimStart();
         }
       }
     } else if (/^[cl]-/.test(token)) {
       if (!remainingEjs.includes(token)) {
-        const rootRegex = new RegExp('(?:^|\\n)([ \\t]*\\.' + token + '(?![a-zA-Z0-9_-])[^{]*\\{)', 'm');
-        const m = updatedScss.match(rootRegex);
-        if (m) {
-          const startIdx = m.index + (m[0].length - m[1].length);
-          const braceIdx = updatedScss.indexOf('{', startIdx);
-          if (braceIdx !== -1) {
-            const endIdx = findMatchingBrace(updatedScss, braceIdx);
-            if (endIdx !== -1) {
-              updatedScss = updatedScss.slice(0, startIdx).trimEnd() + '\n' + updatedScss.slice(endIdx).trimStart();
-            }
-          }
+        const baseRange = findRuleBlockRange(updatedScss, token);
+        if (baseRange) {
+          updatedScss = updatedScss.slice(0, baseRange.start).trimEnd() + '\n' + updatedScss.slice(baseRange.end).trimStart();
         }
       }
     }

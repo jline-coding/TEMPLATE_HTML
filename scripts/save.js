@@ -19,7 +19,7 @@ import { existsSync, readdirSync } from 'fs';
 import { resolve, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { saveComponent, normalizeName } from './tools/component-service.js';
-import { CLIENT_COMPONENTS_DIR, CLIENT_SCSS_DIR, CLIENT_JS_DIR } from './tools/config.js';
+import { CLIENT_COMPONENTS_DIR, CLIENT_SCSS_DIR, CLIENT_LAYOUT_DIR, CLIENT_JS_DIR } from './tools/config.js';
 import { buildWorkbench } from './builders/workbench.js';
 import { syncSnippets } from './sync-snippets.js';
 
@@ -61,6 +61,16 @@ function scanClientComponents() {
     });
   }
 
+  // Scan src/pages/assets/scss/layout/
+  if (existsSync(CLIENT_LAYOUT_DIR)) {
+    const layoutFiles = readdirSync(CLIENT_LAYOUT_DIR).filter(f => f.endsWith('.scss') && f !== '_index.scss');
+    layoutFiles.forEach(f => {
+      const name = normalizeName(f);
+      if (!compMap.has(name)) compMap.set(name, { name, ejs: null, scss: f, js: null });
+      else if (!compMap.get(name).scss) compMap.get(name).scss = f;
+    });
+  }
+
   // Scan src/pages/assets/js/component/
   if (existsSync(CLIENT_JS_DIR)) {
     const jsFiles = readdirSync(CLIENT_JS_DIR).filter(f => f.endsWith('.js'));
@@ -68,6 +78,20 @@ function scanClientComponents() {
       const name = normalizeName(f);
       if (!compMap.has(name)) compMap.set(name, { name, ejs: null, scss: null, js: f });
       else compMap.get(name).js = f;
+    });
+  }
+
+  // Scan src/pages/assets/js/ (root standalone component JS)
+  const rootJsDir = resolve(CLIENT_JS_DIR, '..');
+  if (existsSync(rootJsDir)) {
+    const rootJsFiles = readdirSync(rootJsDir).filter(f => f.endsWith('.js') && !['common.js', 'top.js', 'company.js', 'contact.js'].includes(f));
+    rootJsFiles.forEach(f => {
+      const name = normalizeName(f);
+      if (compMap.has(name)) {
+        if (!compMap.get(name).js) compMap.get(name).js = f;
+      } else {
+        compMap.set(name, { name, ejs: null, scss: null, js: f });
+      }
     });
   }
 

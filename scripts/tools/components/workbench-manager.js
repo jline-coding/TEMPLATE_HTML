@@ -12,6 +12,7 @@ import {
   getComponentCategory,
   getWorkbenchScssDirForCategory,
   getScssDirForCategory,
+  findMatchingEjs,
   findMatchingScss
 } from './paths.js';
 import { resolveSafePath } from '../safety.js';
@@ -33,13 +34,9 @@ export function saveComponent(srcName, options = {}, paths = getDefaultPaths()) 
 
   // Find source EJS in src/components/
   let srcEjsFile = null;
-  const ejsCandidates = [`_${norm}.ejs`, `${norm}.ejs`];
-  for (const c of ejsCandidates) {
-    const p = resolve(paths.clientComponentsDir, c);
-    if (existsSync(p)) {
-      srcEjsFile = p;
-      break;
-    }
+  const ejsMatch = findMatchingEjs(norm, paths.clientComponentsDir);
+  if (ejsMatch) {
+    srcEjsFile = resolve(paths.clientComponentsDir, ejsMatch);
   }
 
   // Find source SCSS in targetClientScssDir or clientScssDir

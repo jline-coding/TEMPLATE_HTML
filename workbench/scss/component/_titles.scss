@@ -10,8 +10,10 @@ component > title
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-bottom: 30px;
     @include mq(md) {
         gap: 10px;
+        margin-bottom: 40px;
     }
     &__en{
         @extend %fz-20;
@@ -27,16 +29,95 @@ component > title
         font-weight: 700;
         line-height: 1.6;
     }
+
+    &--center{
+        text-align: center;
+    }
 }
 
-.c-ttl36{
+.c-ttl30{
     font-weight: 700;
-    @extend %fz-36;
+    @extend %fz-30;
+    margin-bottom: 30px;
+    @include mq(md) {
+        margin-bottom: 50px;
+    }
 
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.1em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
 }
+
 .c-ttl24{
     font-weight: 700;
     @extend %fz-24;
+    margin-bottom: 30px;
+    @include mq(md) {
+        margin-bottom: 50px;
+    }
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.1em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
+
+    &--dot{
+        position: relative;
+        display: flex;
+        &::before{
+            content: "・";
+            flex-shrink: 0;
+            display: block;
+        }
+    }
+}
+
+.c-ttl20{
+    font-weight: 700;
+    @extend %fz-20;
+    margin-bottom: 30px;
+    @include mq(md) {
+        margin-bottom: 50px;
+    }
+
+    &--line{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 0.1em;
+            left: 0;
+            bottom: 0;
+            background-color: var(--base);
+        }
+    }
 
     &--dot{
         position: relative;
