@@ -13,7 +13,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
-const COMPONENTS_DIR = resolve(ROOT, 'src/pages/components');
+const WB_COMPONENTS_DIR = resolve(ROOT, 'workbench/components');
+const SRC_COMPONENTS_DIR = resolve(ROOT, 'src/components');
+const PAGES_COMPONENTS_DIR = resolve(ROOT, 'src/pages/components');
 const SNIPPETS_FILE = resolve(ROOT, '.vscode/jline-components.code-snippets');
 const SNIPPET_SCOPE = 'html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge';
 
@@ -276,21 +278,29 @@ function formatSnippetBody(rawHtml, tagName, mainClass, classStr) {
 export function syncSnippets(options = {}) {
   const { quiet = false } = options;
 
-  if (!existsSync(COMPONENTS_DIR)) {
-    if (!quiet) console.warn(`[snippets] Directory not found: ${COMPONENTS_DIR}`);
+  const targetDirs = [WB_COMPONENTS_DIR, SRC_COMPONENTS_DIR, PAGES_COMPONENTS_DIR].filter(d => existsSync(d));
+  if (targetDirs.length === 0) {
+    if (!quiet) console.warn('[snippets] No component directories found.');
     return;
   }
 
   const generated = {};
   const stats = {};
 
-  const files = readdirSync(COMPONENTS_DIR).filter(f => f.startsWith('_') && f.endsWith('.ejs'));
+  for (const dir of targetDirs) {
+    const files = readdirSync(dir).filter(f => f.startsWith('_') && f.endsWith('.ejs'));
 
-  for (const file of files) {
-    const filePath = resolve(COMPONENTS_DIR, file);
-    const content = readFileSync(filePath, 'utf8');
-    const compName = basename(file, '.ejs').replace(/^_/, '');
-    stats[compName] = 0;
+    for (const file of files) {
+      const filePath = resolve(dir, file);
+      if (!existsSync(filePath)) continue;
+      let content = '';
+      try {
+        content = readFileSync(filePath, 'utf8');
+      } catch {
+        continue;
+      }
+      const compName = basename(file, '.ejs').replace(/^_/, '');
+      if (stats[compName] === undefined) stats[compName] = 0;
 
     // Extract all FLOCSS components generically
     const components = extractFlocssComponents(content, file);
@@ -362,6 +372,7 @@ export function syncSnippets(options = {}) {
       stats[compName]++;
     }
   }
+}
 
   // Dirty-check: only write to disk if content has actually changed
   const newContent = JSON.stringify(generated, null, 2) + '\n';

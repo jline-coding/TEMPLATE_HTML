@@ -32,5 +32,18 @@ yarn-error.log*
 .env.*
 !.env.example
 
-# Auto-generated VS Code snippets
-.vscode/jline-components.code-snippets
+# Workbench backups
+workbench/.backup/
+workbench__backup/
+workbench_backup/
+workbench copy/
+scratch/
+
+# VS Code (Whitelist shared configs & extension source, ignore temp files)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/*.code-snippets
+!.vscode/extension/
+.vscode/.temp*

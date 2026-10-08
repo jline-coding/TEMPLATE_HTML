@@ -1,0 +1,73 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+layout > sidebar
+------------------------------
+*/
+
+.l-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    @include mq(md) {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: clamped(30, 60);
+    }
+
+    &__main {
+        width: 100%;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__aside {
+        width: 100%;
+        flex-shrink: 0;
+
+        @include mq(md) {
+            width: clamped(260, 320);
+        }
+
+        &--sticky {
+            @include mq(md) {
+                position: sticky;
+                top: 24px;
+            }
+        }
+    }
+
+    &__widget {
+        margin-bottom: 24px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__btn-wrap {
+        margin-top: 14px;
+    }
+
+    &__img {
+        margin-bottom: 20px;
+        border-radius: 6px;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: auto;
+            max-height: 240px;
+            object-fit: cover;
+            display: block;
+        }
+    }
+
+    &--reverse {
+        @include mq(md) {
+            flex-direction: row-reverse;
+        }
+    }
+}

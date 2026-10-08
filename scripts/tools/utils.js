@@ -2,6 +2,8 @@ import { join, relative, extname } from 'path';
 import { mkdirSync, statSync, existsSync, readdirSync, unlinkSync, rmSync, rmdirSync } from 'fs';
 import { DIST } from './config.js';
 
+export { assertSafeOutputDir, safeRmDirSync, safeRmDir } from './safety.js';
+
 /** Normalize path to use posix separators */
 export const norm = (p) => p.replace(/\\/g, '/');
 

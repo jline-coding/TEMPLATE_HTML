@@ -1,39 +1,74 @@
 ---
 layout: _default
-title: Title1321
-description: 
-vendorcss: ['slick/slick']
-vendorjs: ['slick/slick.min']
+title: TOP
+description: Static site template with EJS, SCSS, JS
 css: ['top']
 js: ['top']
 page: top
 ---
-<script>
-    if (!window.sessionStorage.getItem("storage_loading")) {
-        document.documentElement.classList.add("is-loading");    
-        window.sessionStorage.setItem("storage_loading", new Date().getTime().toString());    
-    }
-</script>
-<main class="p-top">   
-    <div class="c-loading">
-        <div class="c-loading__inner">
-            <div class="c-loading__content">
-                <div class="c-loading__item"></div>
-                <div class="c-loading__item"></div>
-            </div>
-        </div>
-    </div>
+<main class="p-top">
     <section class="c-mv">
         <figure class="c-mv__bg">
-            <img src="./assets/images/common/img_dummy.webp" alt="">
+            <img src="./assets/images/common/img_dummy.webp" alt="メインビジュアル">
         </figure>
         <div class="l-container">
             <div class="c-mv__inner">
                 <h1 class="c-mv-title">
-                    <span class="c-mv-title__en">title1</span>
-                    <span class="c-mv-title__jp">タイトル</span>
+                    <span class="c-mv-title__en">DIGITAL INNOVATION &amp; DESIGN</span>
+                    <span class="c-mv-title__jp">テクノロジーとデザインで、<br>未来のビジネスを加速させる。</span>
                 </h1>
             </div>
         </div>
     </section>
+     <!-- Breadcrumbs -->
+    <div class="l-container">
+        <ul class="c-bread">
+            <li class="c-bread__item">
+                <a href="./" class="c-bread__link">TOP</a>
+            </li>
+            <li class="c-bread__item">
+                <a href="./" class="c-bread__link">コンポーネント一覧</a>
+            </li>
+            <li class="c-bread__item">総合コンポーネントショーケース</li>
+        </ul>
+    </div>
+    <div class="l-container">
+        <div class="p-top__content">
+            <h2 class="c-title">
+                <span class="c-title__en">SECTION TITLES HEADINGS</span>
+                <span class="c-title__jp">見出し・タイトルコンポーネント</span>
+            </h2>
+
+            <h2 class="c-title c-title--center">
+                <span class="c-title__en">SECTION TITLES HEADINGS</span>
+                <span class="c-title__jp">見出し・タイトルコンポーネント</span>
+            </h2>
+
+            <h3 class="c-ttl30">見出しのフォントサイズ：30px</h3>
+            <h3 class="c-ttl30 c-ttl30--line">見出しのフォントサイズ：30px</h3>
+            <h3 class="c-ttl30 c-ttl30--dot">見出しのフォントサイズ：30px</h3>
+            
+            <h3 class="c-ttl24">見出しのフォントサイズ：24px</h3>
+            <h3 class="c-ttl24 c-ttl24--line">見出しのフォントサイズ：24px</h3>
+            <h3 class="c-ttl24 c-ttl24--dot">見出しのフォントサイズ：24px</h3>
+
+            <h3 class="c-ttl20">見出しのフォントサイズ：20px</h3>
+            <h3 class="c-ttl20 c-ttl20--line">見出しのフォントサイズ：20px</h3>
+            <h3 class="c-ttl20 c-ttl20--dot">見出しのフォントサイズ：20px</h3>
+
+        </div>
+        <div class="p-top__content">
+           <p class="c-txt20">ダミーテキストのフォントサイズ：20px</p>
+           <p class="c-txt18">ダミーテキストのフォントサイズ：18px</p>
+           <p class="c-txt16">ダミーテキストのフォントサイズ：16px</p>
+           <p class="c-txt14">ダミーテキストのフォントサイズ：14px</p>
+           <p class="c-txt12">ダミーテキストのフォントサイズ：12px</p>
+           <p class="c-txt10">ダミーテキストのフォントサイズ：10px</p>
+        </div>
+        
+        <div class="p-top__content">
+           
+        </div>
+        
+    </div>
 </main>

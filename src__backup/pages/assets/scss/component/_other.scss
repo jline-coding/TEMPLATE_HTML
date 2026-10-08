@@ -1,0 +1,60 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > Other (Badges, Tags, Status Labels)
+------------------------------
+*/
+
+.c-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    border-radius: 999px;
+    color: var(--white);
+    background-color: var(--base);
+
+    &--primary {
+        background-color: var(--primary);
+    }
+
+    &--news {
+        background-color: var(--info);
+    }
+
+    &--gray {
+        background-color: var(--gray-border);
+        color: var(--base);
+    }
+}
+
+.c-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    background-color: var(--gray-bg);
+    color: var(--base);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+        background-color: var(--primary);
+        color: var(--white);
+    }
+
+    &--outline {
+        background-color: transparent;
+        border: 1px solid var(--gray);
+
+        &:hover {
+            border-color: var(--primary);
+            background-color: var(--primary);
+            color: var(--white);
+        }
+    }
+}

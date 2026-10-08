@@ -1,0 +1,22 @@
+@use "sass:math";
+@use "../global" as *;
+
+.l-grid{
+    display: grid;
+    grid-gap: 20px;
+    @include mq(md) {
+        grid-gap: clamped(20,40);
+        grid-template-columns: 1fr 1fr;
+        
+    }
+    &--cl3{
+        @include mq(md) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    &--cl4{
+        @include mq(md) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+}

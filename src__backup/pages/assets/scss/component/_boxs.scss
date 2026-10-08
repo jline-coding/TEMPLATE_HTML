@@ -1,0 +1,55 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+component > Box
+------------------------------
+*/
+
+.c-box {
+    padding: 20px;
+    background-color: var(--white);
+    border-radius: 8px;
+
+    @include mq(md) {
+        padding: clamped(24, 36);
+    }
+
+    &__img {
+        margin: -20px -20px 16px -20px;
+        overflow: hidden;
+        border-radius: 8px 8px 0 0;
+
+        @include mq(md) {
+            margin: clamped(-36, -24) clamped(-36, -24) 20px clamped(-36, -24);
+        }
+
+        img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+    }
+
+    &--border {
+        border: 1px solid var(--gray);
+    }
+
+    &--bg {
+        background-color: var(--gray-light);
+    }
+
+    &--shadow {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    &--primary {
+        border: 2px solid var(--primary);
+    }
+
+    &--alert {
+        border-left: 4px solid var(--primary);
+        background-color: var(--primary-light);
+    }
+}

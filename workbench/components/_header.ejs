@@ -1,0 +1,49 @@
+<div class="p-component__item">
+    <!-- Header -->
+    <header class="c-header">
+        <div class="c-header__inner">
+            <% if(file.data.page === 'top'){%><h1 class="c-header-logo"><% }else{ %><div class="c-header-logo"><% } %>
+                <a href="" class="c-header-logo__link">
+                    <img src="<%= assetsDir %>assets/images/common/img_logo.webp" alt="">
+                </a>
+            <% if(file.data.page === 'top'){%></h1><% }else{ %></div><% } %>
+            <div class="c-header__content">
+                <div class="c-header-gnavi">
+                    <div class="c-header-gnavi__inner">
+                        <ul class="c-header-gnavi__list">
+                            <li class="c-header-gnavi__item">
+                                <a href="" class="c-header-gnavi__link">会社123</a>
+                            </li>
+                            <li class="c-header-gnavi__item">
+                                <a href="" class="c-header-gnavi__link">私たちについて</a>
+                            </li>
+                            <li class="c-header-gnavi__item is-sub">
+                                <a href="" class="c-header-gnavi__link">サービス</a>
+                                <ul class="c-header-gnavi__sub">
+                                    <li class="c-header-gnavi__sub-item">
+                                        <a href="" class="c-header-gnavi__sub-link">サービス01</a>
+                                    </li>
+                                    <li class="c-header-gnavi__sub-item">
+                                        <a href="" class="c-header-gnavi__sub-link">サービス02</a>
+                                    </li>
+                                    <li class="c-header-gnavi__sub-item">
+                                        <a href="" class="c-header-gnavi__sub-link">サービス03</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="c-header-gnavi__item is-btn">
+                                <a href="" class="c-btn c-btn--reverse">お問い合わせ</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="c-header-btns">
+                    <a href="" class="c-btn c-btn--reverse c-header-btns__content">お問い合わせ</a>
+                </div>
+            </div>
+        </div>
+        <div class="c-header-toggle">
+            <span class="c-header-toggle__line"></span>
+        </div>
+    </header>
+</div>

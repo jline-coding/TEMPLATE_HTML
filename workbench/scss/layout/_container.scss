@@ -1,0 +1,17 @@
+@use "sass:math";
+@use "../global" as *;
+
+/*!
+layout > container
+------------------------------
+*/
+
+.l-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    @include mq(md) {
+        padding: 0 40px;
+        max-width: 1200px;
+    }
+}

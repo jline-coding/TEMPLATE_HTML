@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- meta -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no, address=no, email=no">
+  <%
+    // Build canonical path from file's relative position
+    let canonicalPath = '/';
+    if (file && file.path) {
+      const relPath = file.path.replace(/\\/g, '/');
+      const pagesIdx = relPath.indexOf('/pages/');
+      if (pagesIdx !== -1) {
+        canonicalPath = relPath.substring(pagesIdx + '/pages'.length);
+      }
+      const outExt = (typeof ext !== 'undefined' && ext) ? ext : '.html';
+      canonicalPath = canonicalPath.replace(/\.ejs$/, outExt);
+      canonicalPath = canonicalPath.replace(new RegExp('/index' + outExt.replace('.', '\\.') + '$'), '/');
+      canonicalPath = canonicalPath.replace(/^\//, '');
+    }
+    
+    let baseDomain = (typeof siteUrl !== 'undefined' && siteUrl) ? siteUrl : '';
+    if (baseDomain && !baseDomain.endsWith('/')) baseDomain += '/';
+    const pageUrl = baseDomain ? (baseDomain + canonicalPath) : '';
+    const pageDescription = file.data.description || '';
+    const pageOgImage = baseDomain ? (baseDomain + 'assets/images/common/ogp.jpg') : '';
+    const pageOgType = 'website';
+    const pageSiteName = '';
+  -%>
+  <title><%= file.data.title %></title>
+  <meta name="description" content="<%= pageDescription %>">
+  <link rel="canonical" href="<%= pageUrl %>">
+  <!-- OGP -->
+  <meta property="og:title" content="<%= file.data.title %>">
+  <meta property="og:description" content="<%= pageDescription %>">
+  <meta property="og:type" content="<%= pageOgType %>">
+  <meta property="og:url" content="<%= pageUrl %>">
+  <meta property="og:image" content="<%= pageOgImage %>">
+  <meta property="og:site_name" content="<%= pageSiteName %>">
+  <meta property="og:locale" content="ja_JP">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= file.data.title %>">
+  <meta name="twitter:description" content="<%= pageDescription %>">
+  <meta name="twitter:image" content="<%= pageOgImage %>">
+  <!-- favicon -->
+  <link rel="icon" href="<%= assetsDir %>assets/images/common/favicon.ico">
+  <link rel="apple-touch-icon" href="<%= assetsDir %>assets/images/common/apple-touch-icon.png">
+  <!-- link -->  
+  <% if(file.data.vendorcss){ 
+    file.data.vendorcss.forEach(cssItem => { -%>
+    <link rel="stylesheet" href="<%= assetsDir %>assets/vendor/<%= cssItem %>.css">
+  <% }); } -%>
+  <link rel="stylesheet" href="<%= assetsDir %>assets/css/common.css">
+  <% if(file.data.css){ 
+    file.data.css.forEach(cssItem => { -%>
+  <link rel="stylesheet" href="<%= assetsDir %>assets/css/<%= cssItem %>.css">
+  <% }); } -%>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- script -->  
+
+    <script src="<%= assetsDir %>assets/vendor/jquery/jquery-4.0.0.min.js" defer></script>
+    
+    <% if(file.data.vendorjs){ 
+      file.data.vendorjs.forEach(jsItem => { -%>
+      <script src="<%= assetsDir %>assets/vendor/<%= jsItem %>.js" defer></script>
+    <% }); } -%>
+    <script src="<%= assetsDir %>assets/js/inview.js" defer></script>
+    <script src="<%= assetsDir %>assets/js/cookie.js" defer></script>
+    <script src="<%= assetsDir %>assets/js/common.js" defer></script>
+    <% if(file.data.js){ 
+      file.data.js.forEach(jsItem => { -%>
+      <script src="<%= assetsDir %>assets/js/<%= jsItem %>.js" defer></script>
+    <% }); } -%>
+</head>
+<body>
+  <div id="wrapper" class="l-wrapper">
+<% const headerName = (file && file.data && file.data.header) ? file.data.header : 'header'; -%>
+<% if (ext === '.php' && phpInclude) { -%>
+      <?php $assetsDir = '<%= assetsDir %>'; <% if (file.data && file.data.page) { %>$page = '<%= file.data.page %>'; <% } %>include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %><%= componentsDirName %>/<%= headerName %>.php'; ?>
+<% } else { -%>
+      <%- includeComponent(headerName) -%>
+<% } -%>
+    <%- contents %>    
+<% const footerName = (file && file.data && file.data.footer) ? file.data.footer : 'footer'; -%>
+<% if (ext === '.php' && phpInclude) { -%>
+      <?php include __DIR__ . '/<%= assetsDir.startsWith("./") ? assetsDir.slice(2) : assetsDir %><%= componentsDirName %>/<%= footerName %>.php'; ?>
+<% } else { -%>
+      <%- includeComponent(footerName) -%>
+<% } -%>
+  </div>
+</body>
+</html>

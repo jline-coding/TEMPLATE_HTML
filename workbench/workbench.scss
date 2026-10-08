@@ -1,0 +1,12 @@
+@use "sass:math";
+@use "scss/global" as *;
+@use "scss/foundation";
+@use "scss/layout";
+@use "scss/component";
+@use "scss/utilities";
+
+/* ==========================================================================
+   WORKBENCH SANDBOX — FULL COMPONENT PREVIEW STYLES
+   Compiles all available layout & components for developer preview in Workbench.
+   Does NOT affect production client builds.
+   ========================================================================== */
