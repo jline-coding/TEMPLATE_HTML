@@ -1,5 +1,4 @@
 /node_modules
-/public
 
 # Deploy artifacts (generated on CI)
 .repo_lock

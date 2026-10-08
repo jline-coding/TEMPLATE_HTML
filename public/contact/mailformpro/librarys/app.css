@@ -1,0 +1,213 @@
+* {
+	box-sizing: border-box;
+	padding: 0px;
+	margin: 0px;
+	line-height: 1em;
+	font-family: sans-serif;
+}
+body {
+	background-color: #EEE;
+	text-align: center;
+}
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: rgba(0,0,0,0.8);
+	height: 40px;
+}
+header h1 {
+	font-size: 18px;
+	color: #FFF;
+	padding: 0.7em 0 0 1em;
+	text-align: left;
+}
+header nav {
+	position: fixed;
+	right: 0em;
+	top: 10px;
+	font-size: 12px;
+	text-decoration: none;
+	color: #FFF;
+}
+header nav div {
+	position: relative;
+	padding-right: 1em;
+}
+header nav span {
+	display: inline-block;
+	font-size: 24px;
+	font-weight: normal;
+	cursor: pointer;
+}
+header nav ul {
+	position: absolute;
+	right: 0px;
+	top: 30px;
+	display: none;
+	list-style: none;
+	background: rgba(0,0,0,0.8);
+	border-radius: 0 0 0 5px;
+}
+header nav.open ul {
+	display: inline-block;
+}
+header nav ul li a {
+	white-space: nowrap;
+	display: block;
+	color: #FFF;
+	text-decoration: none;
+	padding: .8em 1.5em;
+	font-size: 12px;
+}
+header nav ul li a:hover {
+	color: #090;
+}
+header nav ul li:last-child a {
+	border-radius: 0 0 0 5px;
+}
+main {
+	padding: 40px 0 0 0;
+}
+main p {
+	font-size: 12px;
+	padding: 0.5em 0 1em 0;
+	line-height: 1.7em;
+}
+main section.app {
+	margin: 20px auto;
+	max-width: 90%;
+	width: 360px;
+	text-align: left;
+	border: solid 1px #CCC;
+	background: #FFF;
+	border-radius: 10px;
+	padding: 15px;
+}
+main section.app_wide {
+	max-width: 96%;
+	width: 100%;
+}
+main section.app h2 {
+	font-size: 18px;
+	text-align: center;
+	padding: 2em 0;
+}
+main section.app h2 span {
+	display: inline-block;
+	padding: 0 .2em;
+	border-bottom: solid 2px #000;
+}
+main section.app dl dt,
+main section.app dl dd {
+	font-size: 14px;
+}
+main section.app dl dt {
+	font-weight: bolder;
+}
+main section.app dl dd {
+	padding: .5em 0 1.5em 0;
+}
+main section.app dl dd span {
+	display: block;
+	color: #666;
+	font-size: 12px;
+	line-height: 1.5em;
+}
+main section.app input[type=text],
+main section.app input[type=password],
+main section.app input[type=email],
+main section.app input[type=number],
+main section.app textarea,
+main section.app select,
+main section.app label,
+main section.app button {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	padding: 0.5em;
+	border: solid 1px #999;
+	border-radius: 5px;
+	margin-bottom: .5em;
+	font-size: 16px;
+	box-shadow: 0px 1px 2px #CCC inset;
+}
+main section.app button {
+	box-shadow: none;
+}
+main section.app label {
+	position: relative;
+	padding-left: 2em;
+}
+main section.app label input {
+	position: absolute;
+	top: .5em;
+	left: .5em;
+}
+main section.app ul.error {
+	list-style: none;
+	border: solid 1px #F00;
+	margin: 1em 0;
+	padding: .5em 1em;
+	background: #FEE;
+	border-radius: 10px;
+}
+main section.app ul.error li {
+	color: #F00;
+	font-size: 12px;
+	padding: .5em;
+}
+nav.app_navigator ul {
+	padding: 2%;
+}
+nav.app_navigator ul li {
+	display: block;
+	padding: 2%;
+	float: left;
+	width: 50%;
+}
+nav.app_navigator ul li a {
+	display: block;
+	width: 100%;
+	border: solid 1px #CCC;
+	background: #FFF;
+	border-radius: 4px;
+	padding: 2em 0;
+	text-decoration: none;
+}
+div#stat {
+	position: fixed;
+	bottom: -60px;
+	right: 20px;
+	display: inline-block;
+	background: rgba(0,0,0,0.8);
+	color: #FFF;
+	padding: .5em 1em;
+	border-radius: 5px;
+	font-size: 16px;
+	transition-property: all;
+	transition-duration: 0.3s;
+	transition-timing-function: ease-in-out;
+}
+table.app_list {
+	border-spacing: 0px;
+	border-collapse: collapse;
+	width: 100%;
+}
+table.app_list thead tr th {
+	background: #EEE;
+	font-size: 12px;
+	font-weight: normal;
+	color: #666;
+	padding: 5px 10px;
+}
+table.app_list tbody tr th,
+table.app_list tbody tr td {
+	padding: 5px 10px;
+	font-size: 14px;
+}
+table.app_list tbody tr td {
+	width: 1%;
+	white-space: nowrap;
+}

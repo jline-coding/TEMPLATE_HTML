@@ -1,0 +1,6 @@
+support1	有償サポート	9800
+support2	年間サポート	108000
+yamawasabi	山わさび個数	980
+shiroikoibito	白い恋人個数	1500
+kuroiaijin	黒い愛人個数	9800
+wadanoriyuki	ワダノリユキの愛憎	10
