@@ -76,6 +76,9 @@ async function fullBuild() {
   if (errors.length > 0) {
     console.error(`\n⚠️ Build completed with ${errors.length} error(s):`);
     errors.forEach(([step, err]) => console.error(`  [${step}] ${err.message}`));
+    if (!isWatch) {
+      process.exit(1);
+    }
   }
 
   const elapsed = Date.now() - start;

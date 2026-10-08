@@ -299,5 +299,6 @@ async function renderEjsFile(filePath) {
     }
   } catch (err) {
     console.error(`[ejs] Error processing ${filePath}:`, err.message);
+    if (!isWatch) throw err;
   }
 }

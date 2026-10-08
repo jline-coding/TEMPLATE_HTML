@@ -89,6 +89,7 @@ async function compileScssFile(filePath) {
     }
   } catch (err) {
     console.error(`[scss] Error compiling ${filePath}:`, err.message);
+    if (!isWatch) throw err;
   }
 }
 
