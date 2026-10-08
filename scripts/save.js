@@ -51,6 +51,17 @@ function scanClientComponents() {
     });
   }
 
+  // Scan src/pages/components/
+  const pagesCompDir = resolve(CLIENT_COMPONENTS_DIR, '../pages/components');
+  if (existsSync(pagesCompDir)) {
+    const ejsFiles = readdirSync(pagesCompDir).filter(f => f.endsWith('.ejs') && f !== 'index.ejs');
+    ejsFiles.forEach(f => {
+      const name = normalizeName(f);
+      if (!compMap.has(name)) compMap.set(name, { name, ejs: f, scss: null, js: null });
+      else if (!compMap.get(name).ejs) compMap.get(name).ejs = f;
+    });
+  }
+
   // Scan src/pages/assets/scss/component/
   if (existsSync(CLIENT_SCSS_DIR)) {
     const scssFiles = readdirSync(CLIENT_SCSS_DIR).filter(f => f.endsWith('.scss') && f !== '_index.scss');
