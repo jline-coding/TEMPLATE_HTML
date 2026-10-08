@@ -15,8 +15,9 @@ const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
 const WB_COMPONENTS_DIR = resolve(ROOT, 'workbench/components');
 const SRC_COMPONENTS_DIR = resolve(ROOT, 'src/components');
+const PAGES_COMPONENTS_DIR = resolve(ROOT, 'src/pages/components');
 const SNIPPETS_FILE = resolve(ROOT, '.vscode/jline-components.code-snippets');
-const SNIPPET_SCOPE = 'html,ejs,php';
+const SNIPPET_SCOPE = 'html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge';
 
 const VOID_TAGS = new Set([
   'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'
@@ -277,7 +278,7 @@ function formatSnippetBody(rawHtml, tagName, mainClass, classStr) {
 export function syncSnippets(options = {}) {
   const { quiet = false } = options;
 
-  const targetDirs = [WB_COMPONENTS_DIR, SRC_COMPONENTS_DIR].filter(d => existsSync(d));
+  const targetDirs = [WB_COMPONENTS_DIR, SRC_COMPONENTS_DIR, PAGES_COMPONENTS_DIR].filter(d => existsSync(d));
   if (targetDirs.length === 0) {
     if (!quiet) console.warn('[snippets] No component directories found.');
     return;

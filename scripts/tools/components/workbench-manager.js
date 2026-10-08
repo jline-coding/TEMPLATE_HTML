@@ -32,11 +32,16 @@ export function saveComponent(srcName, options = {}, paths = getDefaultPaths()) 
   const targetClientScssDir = getScssDirForCategory(category, paths);
   const targetWbScssDir = getWorkbenchScssDirForCategory(category, paths);
 
-  // Find source EJS in src/components/
+  // Find source EJS in src/components/ or src/pages/components/
   let srcEjsFile = null;
   const ejsMatch = findMatchingEjs(norm, paths.clientComponentsDir);
   if (ejsMatch) {
     srcEjsFile = resolve(paths.clientComponentsDir, ejsMatch);
+  } else if (paths.root && existsSync(resolve(paths.root, 'src/pages/components'))) {
+    const pagesMatch = findMatchingEjs(norm, resolve(paths.root, 'src/pages/components'));
+    if (pagesMatch) {
+      srcEjsFile = resolve(paths.root, 'src/pages/components', pagesMatch);
+    }
   }
 
   // Find source SCSS in targetClientScssDir or clientScssDir

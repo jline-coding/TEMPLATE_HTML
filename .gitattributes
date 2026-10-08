@@ -1,39 +1,92 @@
-# Auto-detect text files and normalize line endings to LF on commit
+# ==============================================================================
+# Git Attributes for template_jline_html
+# Thiết lập toàn diện cho mọi kịch bản phát triển trong tương lai
+# ==============================================================================
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 1. CHIẾN LƯỢC MERGE ĐỘC LẬP CHO THƯ MỤC PUBLIC
+# Khi có conflict trong public/, Git tự động ưu tiên bản nhánh hiện tại (ours)
+# và không bao giờ chèn conflict markers (<<<<<<< HEAD) làm hỏng file HTML/CSS/JS.
+# Thư mục public sẽ được tự động rebuild chính xác 100% từ mã nguồn src/ đã merge.
+# (src/ và các thư mục khác vẫn giữ nguyên cơ chế mặc định, an toàn 100%)
+# ──────────────────────────────────────────────────────────────────────────────
+public/** merge=ours
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 2. QUY CHUẨN XUỐNG DÒNG (LINE ENDINGS: LF)
+# Tránh diff ảo giữa Windows và macOS/Linux, chống lỗi 500 trên server Apache Linux
+# ──────────────────────────────────────────────────────────────────────────────
 * text=auto eol=lf
 
-# Code and configuration files (Strict LF)
+# Frontend Web Assets
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
 *.js text eol=lf
 *.mjs text eol=lf
 *.cjs text eol=lf
+*.ts text eol=lf
 *.json text eol=lf
-*.scss text eol=lf
-*.css text eol=lf
 *.ejs text eol=lf
-*.html text eol=lf
+*.svg text eol=lf
+
+# Tài liệu & Cấu hình
 *.md text eol=lf
+*.txt text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
-*.svg text eol=lf
-*.txt text eol=lf
-*.ini text eol=lf
+*.editorconfig text eol=lf
+*.gitignore text eol=lf
+*.gitattributes text eol=lf
+.env text eol=lf
+.env.* text eol=lf
+
+# Apache & Server Config (Bắt buộc LF để server Linux không bị lỗi 500)
+.htaccess text eol=lf
+.htpasswd text eol=lf
+
+# Mailformpro (Perl / CGI / Templates của Nhật - Bắt buộc LF)
 *.cgi text eol=lf
+*.pl text eol=lf
 *.pm text eol=lf
 *.tpl text eol=lf
+*.ini text eol=lf
 
-# Binary files (No line ending conversion)
+# ──────────────────────────────────────────────────────────────────────────────
+# 3. ĐỊNH DẠNG NHỊ PHÂN (BINARY)
+# Đảm bảo Git không bao giờ cố thay đổi nội dung file binary
+# ──────────────────────────────────────────────────────────────────────────────
+# Ảnh & Icon
 *.png binary
 *.jpg binary
 *.jpeg binary
 *.gif binary
 *.webp binary
 *.ico binary
+*.avif binary
+*.bmp binary
+*.tiff binary
+
+# Media (Âm thanh / Video)
 *.mp3 binary
-*.mp4 binary
 *.ogg binary
+*.wav binary
+*.mp4 binary
+*.webm binary
+*.mov binary
+
+# Font chữ
 *.woff binary
 *.woff2 binary
 *.ttf binary
 *.eot binary
-*.zip binary
-*.vsix binary
+*.otf binary
+
+# Tài liệu nén & Bàn giao
 *.pdf binary
+*.zip binary
+*.tar.gz binary
+*.tgz binary
+*.rar binary
+*.7z binary

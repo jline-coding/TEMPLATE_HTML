@@ -6,7 +6,7 @@
 
 import { resolve, normalize, relative, isAbsolute, parse, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { rmSync, existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
 import { rm } from 'fs/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -266,7 +266,22 @@ export function assertSafePathInside(targetPath, allowedRootDir, label = 'Path')
 export function safeRmDirSync(targetDir, rootDir = PROJECT_ROOT, rmOptions = { recursive: true, force: true }) {
   assertSafeOutputDir(targetDir, rootDir);
   if (existsSync(targetDir)) {
-    rmSync(targetDir, rmOptions);
+    try {
+      rmSync(targetDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100, ...rmOptions });
+    } catch (err) {
+      if (err.code === 'EPERM' || err.code === 'EBUSY') {
+        try {
+          const entries = readdirSync(targetDir);
+          for (const entry of entries) {
+            try {
+              rmSync(resolve(targetDir, entry), { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+            } catch {}
+          }
+        } catch {}
+      } else {
+        throw err;
+      }
+    }
   }
 }
 
@@ -276,7 +291,22 @@ export function safeRmDirSync(targetDir, rootDir = PROJECT_ROOT, rmOptions = { r
 export async function safeRmDir(targetDir, rootDir = PROJECT_ROOT, rmOptions = { recursive: true, force: true }) {
   assertSafeOutputDir(targetDir, rootDir);
   if (existsSync(targetDir)) {
-    await rm(targetDir, rmOptions);
+    try {
+      await rm(targetDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100, ...rmOptions });
+    } catch (err) {
+      if (err.code === 'EPERM' || err.code === 'EBUSY') {
+        try {
+          const entries = readdirSync(targetDir);
+          for (const entry of entries) {
+            try {
+              rmSync(resolve(targetDir, entry), { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+            } catch {}
+          }
+        } catch {}
+      } else {
+        throw err;
+      }
+    }
   }
 }
 

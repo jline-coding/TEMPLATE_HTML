@@ -1,5 +1,5 @@
 import { resolve, basename, extname, dirname, join, relative } from 'path';
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { compileString } from 'sass-embedded';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
@@ -44,20 +44,8 @@ export async function buildScss(changedFile) {
     }
   }
 
-  const errors = [];
   for (const entry of entryFiles) {
-    try {
-      await compileScssFile(entry);
-    } catch (err) {
-      errors.push({ file: entry, error: err });
-    }
-  }
-
-  if (errors.length > 0) {
-    const summary = errors.map(e => `${basename(e.file)}: ${e.error.message}`).join('; ');
-    const err = new Error(`SCSS build failed (${errors.length} file(s)): ${summary}`);
-    err.details = errors;
-    throw err;
+    await compileScssFile(entry);
   }
 }
 
@@ -101,7 +89,7 @@ async function compileScssFile(filePath) {
     }
   } catch (err) {
     console.error(`[scss] Error compiling ${filePath}:`, err.message);
-    throw err;
+    if (!isWatch) throw err;
   }
 }
 

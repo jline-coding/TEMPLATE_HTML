@@ -1,6 +1,6 @@
 {
   "c-bread (Bread)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-bread",
     "body": [
       "<ul class=\"c-bread\">",
@@ -11,7 +11,7 @@
     "description": "Bread (c-bread) from _bread.ejs"
   },
   "c-header (Header)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-header",
     "body": [
       "<header class=\"c-header\">",
@@ -64,7 +64,7 @@
     "description": "Header (c-header) from _header.ejs"
   },
   "c-mv (Mv)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-mv",
     "body": [
       "<section class=\"c-mv\">",
@@ -84,7 +84,7 @@
     "description": "Mv (c-mv) from _mv.ejs"
   },
   "c-title (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-title",
     "body": [
       "<h2 class=\"c-title\">",
@@ -95,7 +95,7 @@
     "description": "Titles (c-title) from _titles.ejs"
   },
   "c-title c-title--center (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-title-center",
     "body": [
       "<h2 class=\"c-title c-title--center\">",
@@ -106,7 +106,7 @@
     "description": "Titles (c-title c-title--center) from _titles.ejs"
   },
   "c-ttl30 (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl30",
     "body": [
       "<h3 class=\"c-ttl30\">${1:見出しのフォントサイズ：30px}</h3>"
@@ -114,7 +114,7 @@
     "description": "Titles (c-ttl30) from _titles.ejs"
   },
   "c-ttl30 c-ttl30--line (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl30-line",
     "body": [
       "<h3 class=\"c-ttl30 c-ttl30--line\">${1:見出しのフォントサイズ：30px}</h3>"
@@ -122,7 +122,7 @@
     "description": "Titles (c-ttl30 c-ttl30--line) from _titles.ejs"
   },
   "c-ttl30 c-ttl30--dot (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl30-dot",
     "body": [
       "<h3 class=\"c-ttl30 c-ttl30--dot\">${1:見出しのフォントサイズ：30px}</h3>"
@@ -130,7 +130,7 @@
     "description": "Titles (c-ttl30 c-ttl30--dot) from _titles.ejs"
   },
   "c-ttl24 (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl24",
     "body": [
       "<h3 class=\"c-ttl24\">${1:見出しのフォントサイズ：24px}</h3>"
@@ -138,7 +138,7 @@
     "description": "Titles (c-ttl24) from _titles.ejs"
   },
   "c-ttl24 c-ttl24--line (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl24-line",
     "body": [
       "<h3 class=\"c-ttl24 c-ttl24--line\">${1:見出しのフォントサイズ：24px}</h3>"
@@ -146,7 +146,7 @@
     "description": "Titles (c-ttl24 c-ttl24--line) from _titles.ejs"
   },
   "c-ttl24 c-ttl24--dot (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl24-dot",
     "body": [
       "<h3 class=\"c-ttl24 c-ttl24--dot\">${1:見出しのフォントサイズ：24px}</h3>"
@@ -154,7 +154,7 @@
     "description": "Titles (c-ttl24 c-ttl24--dot) from _titles.ejs"
   },
   "c-ttl20 (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl20",
     "body": [
       "<h3 class=\"c-ttl20\">${1:見出しのフォントサイズ：20px}</h3>"
@@ -162,7 +162,7 @@
     "description": "Titles (c-ttl20) from _titles.ejs"
   },
   "c-ttl20 c-ttl20--line (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl20-line",
     "body": [
       "<h3 class=\"c-ttl20 c-ttl20--line\">${1:見出しのフォントサイズ：20px}</h3>"
@@ -170,7 +170,7 @@
     "description": "Titles (c-ttl20 c-ttl20--line) from _titles.ejs"
   },
   "c-ttl20 c-ttl20--dot (Titles)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl20-dot",
     "body": [
       "<h3 class=\"c-ttl20 c-ttl20--dot\">${1:見出しのフォントサイズ：20px}</h3>"
@@ -178,7 +178,7 @@
     "description": "Titles (c-ttl20 c-ttl20--dot) from _titles.ejs"
   },
   "c-ttl (Heading with Selectable Size)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-ttl",
     "body": [
       "<h2 class=\"c-ttl${1|30,24,20|}\">${2:タイトルコンテンツ}</h2>"
@@ -186,7 +186,7 @@
     "description": "FLOCSS Heading with selectable font-size"
   },
   "c-title (EN/JP Bilingual Heading)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-title",
     "body": [
       "<h2 class=\"c-title\">",
@@ -197,7 +197,7 @@
     "description": "FLOCSS Bilingual Title EN/JP (component/_titles.scss)"
   },
   "c-footer (Footer)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-footer",
     "body": [
       "<footer class=\"c-footer\">",
@@ -225,20 +225,13 @@
       "\t\t</div>",
       "\t\t<p class=\"c-footer-copy\">J-line Corporation ©copyright</p>",
       "\t</div>",
+      "\t<a href=\"\" class=\"c-totop\">pagetop</a>",
       "</footer>"
     ],
     "description": "FLOCSS (c-footer) from _footer.ejs"
   },
-  "c-totop (Totop)": {
-    "scope": "html,ejs,php",
-    "prefix": "c-totop",
-    "body": [
-      "<a href=\"\" class=\"c-totop\">${1:pagetop}</a>"
-    ],
-    "description": "FLOCSS (c-totop) from _footer.ejs"
-  },
   "c-cookiewrap (Cookiewrap)": {
-    "scope": "html,ejs,php",
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
     "prefix": "c-cookiewrap",
     "body": [
       "<div data-gdpr=\"wrap\" id=\"cookiewrap\" class=\"c-cookiewrap\">",
@@ -249,5 +242,766 @@
       "</div>"
     ],
     "description": "FLOCSS (c-cookiewrap) from _footer.ejs"
+  },
+  "c-footer-01 (Footer 01)": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-footer-01",
+    "body": [
+      "<footer class=\"c-footer-01\">",
+      "\t<div class=\"c-footer__inner\">",
+      "\t\t<h2>Footer 01</h2>",
+      "\t\t<div class=\"c-footer__copy\">",
+      "\t\t\t<small>&copy; 2026 Custom Site</small>",
+      "\t\t</div>",
+      "\t</div>",
+      "</footer>"
+    ],
+    "description": "FLOCSS (c-footer-01) from _footer_01.ejs"
+  },
+  "c-header-01 (HEADER 01)": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-header-01",
+    "body": [
+      "<header class=\"c-header-01\">",
+      "\t<div class=\"c-header__inner\">",
+      "\t\t<h2>Header 011111</h2>",
+      "\t\t<a href=\"\">",
+      "\t\t\t<img src=\"<%= assetsDir %>assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</a>",
+      "\t</div>",
+      "</header>"
+    ],
+    "description": "HEADER 01 (c-header-01) from _header_01.ejs"
+  },
+  "c-sidebar (Sidebar)": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-sidebar",
+    "body": [
+      "<aside class=\"c-sidebar\">",
+      "\t<h3>Related Contents</h3>",
+      "\t<ul>",
+      "\t\t<li><a href=\"\">About us</a></li>",
+      "\t\t<li><a href=\"\">stesst</a></li>",
+      "\t</ul>",
+      "</aside>"
+    ],
+    "description": "FLOCSS (c-sidebar) from _sidebar.ejs"
+  },
+  "c-accordion (Accordion Details (HTML5標準 details/summary アコーディオン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-accordion",
+    "body": [
+      "<details class=\"c-accordion\">",
+      "\t<summary class=\"c-accordion__head\">",
+      "\t\t<span class=\"c-accordion__title\">アコーディオンタイトル（HTML5 detailsタグ）</span>",
+      "\t\t<span class=\"c-accordion__icon\"></span>",
+      "\t</summary>",
+      "\t<div class=\"c-accordion__body\">",
+      "\t\t<div class=\"c-accordion__content\">",
+      "\t\t\t<p>ダミーテキストが入ります。ブラウザのページ内検索（Ctrl+F）を実行すると、閉じているアコーディオンも自動的に展開されてハイライトされます。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</details>"
+    ],
+    "description": "Accordion Details (HTML5標準 details/summary アコーディオン) (c-accordion) from _accordion.ejs"
+  },
+  "c-accordion (Accordion Standard (hidden=\"until-found\"対応 標準アコーディオン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-accordion",
+    "body": [
+      "<div class=\"c-accordion\">",
+      "\t<button type=\"button\" class=\"c-accordion__head\">",
+      "\t\t<span class=\"c-accordion__title\">アコーディオンタイトル（hidden=\"until-found\"対応）</span>",
+      "\t\t<span class=\"c-accordion__icon\"></span>",
+      "\t</button>",
+      "\t<div class=\"c-accordion__body\" hidden=\"until-found\">",
+      "\t\t<div class=\"c-accordion__content\">",
+      "\t\t\t<p>ダミーテキストが入ります。hidden=\"until-found\"とbeforematchイベントにより、ページ内検索（Ctrl+F）時に未表示のコンテンツでも即座に検索・展開されます。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Accordion Standard (hidden=\"until-found\"対応 標準アコーディオン) (c-accordion) from _accordion.ejs"
+  },
+  "c-accordion (Accordion Plus Icon (プラス・マイナスアイコン アコーディオン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-accordion",
+    "body": [
+      "<div class=\"c-accordion\">",
+      "\t<button type=\"button\" class=\"c-accordion__head\">",
+      "\t\t<span class=\"c-accordion__title\">アコーディオンタイトル（プラス・マイナスアイコン）</span>",
+      "\t\t<span class=\"c-accordion__icon c-accordion__icon--plus\"></span>",
+      "\t</button>",
+      "\t<div class=\"c-accordion__body\" hidden=\"until-found\">",
+      "\t\t<div class=\"c-accordion__content\">",
+      "\t\t\t<p>ダミーテキストが入ります。ダミーテキストが入ります。ダミーテキストが入ります。ダミーテキストが入ります。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Accordion Plus Icon (プラス・マイナスアイコン アコーディオン) (c-accordion) from _accordion.ejs"
+  },
+  "c-bread (Breadcrumb Navigation (パンくずリスト))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-bread",
+    "body": [
+      "<ul class=\"c-bread\">",
+      "\t<li class=\"c-bread__item\">",
+      "\t\t<a href=\"\" class=\"c-bread__link\">top</a>",
+      "\t</li>",
+      "\t<li class=\"c-bread__item\">コンポーネント</li>",
+      "</ul>"
+    ],
+    "description": "Breadcrumb Navigation (パンくずリスト) (c-bread) from _bread.ejs"
+  },
+  "c-btn (Button Standard (通常ボタン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn",
+    "body": [
+      "<a href=\"\" class=\"c-btn\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Standard (通常ボタン) (c-btn) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow (Button with Arrow (矢印付きボタン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn-arrow",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button with Arrow (矢印付きボタン) (c-btn c-btn--arrow) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow-center (Button Arrow Center (矢印中央配置ボタン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn-arrow-center",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow-center\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Arrow Center (矢印中央配置ボタン) (c-btn c-btn--arrow-center) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow-between (Button Arrow Between (矢印両端配置ボタン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn-arrow-between",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow-between\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Arrow Between (矢印両端配置ボタン) (c-btn c-btn--arrow-between) from _btns.ejs"
+  },
+  "c-btn c-btn--reverse (Button Reverse (反転ボタン 白背景))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn-reverse",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Reverse (反転ボタン 白背景) (c-btn c-btn--reverse) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow c-btn--reverse (Button Reverse with Arrow (反転 矢印付きボタン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn-arrow-reverse",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Reverse with Arrow (反転 矢印付きボタン) (c-btn c-btn--arrow c-btn--reverse) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow-center c-btn--reverse (Button Reverse Arrow Center (反転 矢印中央配置ボタン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn-arrow-center-reverse",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow-center c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Reverse Arrow Center (反転 矢印中央配置ボタン) (c-btn c-btn--arrow-center c-btn--reverse) from _btns.ejs"
+  },
+  "c-btn c-btn--arrow-between c-btn--reverse (Button Reverse Arrow Between (反転 矢印両端配置ボタン))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-btn-arrow-between-reverse",
+    "body": [
+      "<a href=\"\" class=\"c-btn c-btn--arrow-between c-btn--reverse\">",
+      "\t<span class=\"c-btn__content\">${1:ボタン}</span>",
+      "</a>"
+    ],
+    "description": "Button Reverse Arrow Between (反転 矢印両端配置ボタン) (c-btn c-btn--arrow-between c-btn--reverse) from _btns.ejs"
+  },
+  "c-abc (Custom Component (カスタムコンポーネント))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-abc",
+    "body": [
+      "<a href=\"\" class=\"c-abc\">${1:test}</a>"
+    ],
+    "description": "Custom Component (カスタムコンポーネント) (c-abc) from _btns.ejs"
+  },
+  "l-flex (Flex Standard (2カラム 左画像400px・右テキスト))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex",
+    "body": [
+      "<div class=\"l-flex\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Standard (2カラム 左画像400px・右テキスト) (l-flex) from _flexs.ejs"
+  },
+  "l-flex l-flex--reverse (Flex Reverse (2カラム 画像右配置))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex-reverse",
+    "body": [
+      "<div class=\"l-flex l-flex--reverse\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Reverse (2カラム 画像右配置) (l-flex l-flex--reverse) from _flexs.ejs"
+  },
+  "l-flex l-flex--middle (Flex Middle (2カラム 上下中央揃え))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Middle (2カラム 上下中央揃え) (l-flex l-flex--middle) from _flexs.ejs"
+  },
+  "l-flex l-flex--reverse l-flex--middle (Flex Reverse Middle (2カラム 画像右配置・上下中央揃え))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex-reverse-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--reverse l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Reverse Middle (2カラム 画像右配置・上下中央揃え) (l-flex l-flex--reverse l-flex--middle) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal (Flex Equal 50/50 (2カラム 均等50%・50%))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex-equal",
+    "body": [
+      "<div class=\"l-flex l-flex--equal\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 (2カラム 均等50%・50%) (l-flex l-flex--equal) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal l-flex--reverse (Flex Equal 50/50 Reverse (2カラム 均等50%・50% 画像右配置))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex-equal-reverse",
+    "body": [
+      "<div class=\"l-flex l-flex--equal l-flex--reverse\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 Reverse (2カラム 均等50%・50% 画像右配置) (l-flex l-flex--equal l-flex--reverse) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal l-flex--middle (Flex Equal 50/50 Middle (2カラム 均等50%・50% 上下中央揃え))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex-equal-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--equal l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 Middle (2カラム 均等50%・50% 上下中央揃え) (l-flex l-flex--equal l-flex--middle) from _flexs.ejs"
+  },
+  "l-flex l-flex--equal l-flex--reverse l-flex--middle (Flex Equal 50/50 Reverse Middle (2カラム 均等50%・50% 画像右配置・上下中央揃え))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-flex-equal-reverse-middle",
+    "body": [
+      "<div class=\"l-flex l-flex--equal l-flex--reverse l-flex--middle\">",
+      "\t<div class=\"l-flex__left\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-flex__right\">",
+      "\t\t<h2 class=\"c-ttl24\">ダミーテキスト。</h2>",
+      "\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Flex Equal 50/50 Reverse Middle (2カラム 均等50%・50% 画像右配置・上下中央揃え) (l-flex l-flex--equal l-flex--reverse l-flex--middle) from _flexs.ejs"
+  },
+  "l-grid (Grid 2 Columns (グリッド 2カラム))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-grid",
+    "body": [
+      "<div class=\"l-grid\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Grid 2 Columns (グリッド 2カラム) (l-grid) from _grids.ejs"
+  },
+  "l-grid l-grid--cl3 (Grid 3 Columns (グリッド 3カラム))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-grid-cl3",
+    "body": [
+      "<div class=\"l-grid l-grid--cl3\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Grid 3 Columns (グリッド 3カラム) (l-grid l-grid--cl3) from _grids.ejs"
+  },
+  "l-grid l-grid--cl4 (Grid 4 Columns (グリッド 4カラム))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-grid-cl4",
+    "body": [
+      "<div class=\"l-grid l-grid--cl4\">",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "\t<div class=\"l-grid__item\">",
+      "\t\t<figure>",
+      "\t\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t\t</figure>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Grid 4 Columns (グリッド 4カラム) (l-grid l-grid--cl4) from _grids.ejs"
+  },
+  "c-link (Link Standard (テキストリンク))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-link",
+    "body": [
+      "<a href=\"\" class=\"c-link\">${1:リンク}</a>"
+    ],
+    "description": "Link Standard (テキストリンク) (c-link) from _links.ejs"
+  },
+  "c-link c-link--blank (Link External Blank (外部リンク 新規タブ))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-link-blank",
+    "body": [
+      "<a href=\"\" class=\"c-link c-link--blank\">${1:リンク}</a>"
+    ],
+    "description": "Link External Blank (外部リンク 新規タブ) (c-link c-link--blank) from _links.ejs"
+  },
+  "c-list-dot (Bullet List Dot (箇条書き ドット ・))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-list-dot",
+    "body": [
+      "<ul class=\"c-list-dot\">",
+      "\t<li class=\"c-list-dot__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-dot__item\">${2:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "Bullet List Dot (箇条書き ドット ・) (c-list-dot) from _lists.ejs"
+  },
+  "c-list-number (Numbered List (番号付きリスト 1. 2. 3.))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-list-number",
+    "body": [
+      "<ul class=\"c-list-number\">",
+      "\t<li class=\"c-list-number__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-number__item\">${2:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "Numbered List (番号付きリスト 1. 2. 3.) (c-list-number) from _lists.ejs"
+  },
+  "c-list-star (Star Note List (注記リスト ※))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-list-star",
+    "body": [
+      "<ul class=\"c-list-star\">",
+      "\t<li class=\"c-list-star__item\">${1:ダミーテキスト。}</li>",
+      "\t<li class=\"c-list-star__item\">${2:ダミーテキスト。}</li>",
+      "</ul>"
+    ],
+    "description": "Star Note List (注記リスト ※) (c-list-star) from _lists.ejs"
+  },
+  "c-mv (Main Visual Banner (メインビジュアル 背景画像＋2言語タイトル))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-mv",
+    "body": [
+      "<section class=\"c-mv\">",
+      "\t<figure class=\"c-mv__bg\">",
+      "\t\t<img src=\"./assets/images/common/img_dummy.webp\" alt=\"\">",
+      "\t</figure>",
+      "\t<div class=\"l-container\">",
+      "\t\t<div class=\"c-mv__inner\">",
+      "\t\t\t<h1 class=\"c-mv-title\">",
+      "\t\t\t\t<span class=\"c-mv-title__en\">title1</span>",
+      "\t\t\t\t<span class=\"c-mv-title__jp\">タイトル</span>",
+      "\t\t\t</h1>",
+      "\t\t</div>",
+      "\t</div>",
+      "</section>"
+    ],
+    "description": "Main Visual Banner (メインビジュアル 背景画像＋2言語タイトル) (c-mv) from _mv.ejs"
+  },
+  "l-tbl (Table Standard (テーブル 上揃え))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-tbl",
+    "body": [
+      "<div class=\"l-tbl\">",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Table Standard (テーブル 上揃え) (l-tbl) from _tbls.ejs"
+  },
+  "l-tbl (Table Middle (テーブル 中央揃え))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "l-tbl",
+    "body": [
+      "<div class=\"l-tbl\">",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "\t<div class=\"l-tbl__item l-tbl__item--middle\">",
+      "\t\t<div class=\"l-tbl__left\">",
+      "\t\t\t<h2 class=\"c-ttl16\">ダミーテキスト。</h2>",
+      "\t\t</div>",
+      "\t\t<div class=\"l-tbl__right\">",
+      "\t\t\t<p class=\"c-txt16\">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>",
+      "\t\t</div>",
+      "\t</div>",
+      "</div>"
+    ],
+    "description": "Table Middle (テーブル 中央揃え) (l-tbl) from _tbls.ejs"
+  },
+  "c-txt24 (Paragraph 24px (リード文 24px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt24",
+    "body": [
+      "<p class=\"c-txt24\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 24px (リード文 24px) (c-txt24) from _texts.ejs"
+  },
+  "c-txt22 (Paragraph 22px (本文大 22px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt22",
+    "body": [
+      "<p class=\"c-txt22\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 22px (本文大 22px) (c-txt22) from _texts.ejs"
+  },
+  "c-txt20 (Paragraph 20px (本文 20px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt20",
+    "body": [
+      "<p class=\"c-txt20\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 20px (本文 20px) (c-txt20) from _texts.ejs"
+  },
+  "c-txt18 (Paragraph 18px (本文 18px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt18",
+    "body": [
+      "<p class=\"c-txt18\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 18px (本文 18px) (c-txt18) from _texts.ejs"
+  },
+  "c-txt16 (Paragraph 16px (本文基本 16px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt16",
+    "body": [
+      "<p class=\"c-txt16\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 16px (本文基本 16px) (c-txt16) from _texts.ejs"
+  },
+  "c-txt14 (Paragraph 14px (注記・補足 14px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt14",
+    "body": [
+      "<p class=\"c-txt14\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 14px (注記・補足 14px) (c-txt14) from _texts.ejs"
+  },
+  "c-txt12 (Paragraph 12px (キャプション 12px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt12",
+    "body": [
+      "<p class=\"c-txt12\">${1:ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。}</p>"
+    ],
+    "description": "Paragraph 12px (キャプション 12px) (c-txt12) from _texts.ejs"
+  },
+  "c-txt (Text with Selectable Size)": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-txt",
+    "body": [
+      "<p class=\"c-txt${1|24,22,20,18,16,14,12|}\">${2:ダミーテキスト。}</p>"
+    ],
+    "description": "FLOCSS Paragraph with selectable font-size"
+  },
+  "c-title (Title Bilingual EN/JP (英語・日本語 見出し))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-title",
+    "body": [
+      "<h2 class=\"c-title\">",
+      "\t<span class=\"c-title__en\">title</span>",
+      "\t<span class=\"c-title__jp\">タイトル</span>",
+      "</h2>"
+    ],
+    "description": "Title Bilingual EN/JP (英語・日本語 見出し) (c-title) from _titles.ejs"
+  },
+  "c-ttl36 (Heading 36px (見出し 36px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl36",
+    "body": [
+      "<h2 class=\"c-ttl36\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 36px (見出し 36px) (c-ttl36) from _titles.ejs"
+  },
+  "c-ttl36 c-ttl36--line (Heading 36px with Line (下線付き見出し 36px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl36-line",
+    "body": [
+      "<h2 class=\"c-ttl36 c-ttl36--line\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 36px with Line (下線付き見出し 36px) (c-ttl36 c-ttl36--line) from _titles.ejs"
+  },
+  "c-ttl36 c-ttl36--dot (Heading 36px with Dot (ドット付き見出し 36px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl36-dot",
+    "body": [
+      "<h2 class=\"c-ttl36 c-ttl36--dot\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 36px with Dot (ドット付き見出し 36px) (c-ttl36 c-ttl36--dot) from _titles.ejs"
+  },
+  "c-ttl34 (Heading 34px (見出し 34px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl34",
+    "body": [
+      "<h2 class=\"c-ttl34\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 34px (見出し 34px) (c-ttl34) from _titles.ejs"
+  },
+  "c-ttl32 (Heading 32px (見出し 32px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl32",
+    "body": [
+      "<h2 class=\"c-ttl32\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 32px (見出し 32px) (c-ttl32) from _titles.ejs"
+  },
+  "c-ttl30 (Heading 30px (見出し 30px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl30",
+    "body": [
+      "<h2 class=\"c-ttl30\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 30px (見出し 30px) (c-ttl30) from _titles.ejs"
+  },
+  "c-ttl28 (Heading 28px (見出し 28px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl28",
+    "body": [
+      "<h2 class=\"c-ttl28\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 28px (見出し 28px) (c-ttl28) from _titles.ejs"
+  },
+  "c-ttl26 (Heading 26px (見出し 26px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl26",
+    "body": [
+      "<h2 class=\"c-ttl26\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 26px (見出し 26px) (c-ttl26) from _titles.ejs"
+  },
+  "c-ttl24 (Heading 24px (見出し 24px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl24",
+    "body": [
+      "<h2 class=\"c-ttl24\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 24px (見出し 24px) (c-ttl24) from _titles.ejs"
+  },
+  "c-ttl22 (Heading 22px (見出し 22px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl22",
+    "body": [
+      "<h2 class=\"c-ttl22\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 22px (見出し 22px) (c-ttl22) from _titles.ejs"
+  },
+  "c-ttl20 (Heading 20px (見出し 20px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl20",
+    "body": [
+      "<h2 class=\"c-ttl20\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 20px (見出し 20px) (c-ttl20) from _titles.ejs"
+  },
+  "c-ttl18 (Heading 18px (見出し 18px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl18",
+    "body": [
+      "<h2 class=\"c-ttl18\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 18px (見出し 18px) (c-ttl18) from _titles.ejs"
+  },
+  "c-ttl16 (Heading 16px (見出し 16px))": {
+    "scope": "html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge",
+    "prefix": "c-ttl16",
+    "body": [
+      "<h2 class=\"c-ttl16\">${1:タイトルコンテンツ}</h2>"
+    ],
+    "description": "Heading 16px (見出し 16px) (c-ttl16) from _titles.ejs"
   }
 }

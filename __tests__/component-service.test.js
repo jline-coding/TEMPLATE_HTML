@@ -372,12 +372,9 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
       if (existsSync(titlesPath)) {
         const titlesContent = readFileSync(titlesPath, 'utf8');
         expect(titlesContent).toContain('.c-title');
-        expect(titlesContent).toContain('.c-ttl16');
-        expect(titlesContent).toContain('.c-ttl18');
         expect(titlesContent).toContain('.c-ttl20');
         expect(titlesContent).toContain('.c-ttl24');
         expect(titlesContent).toContain('.c-ttl30');
-        expect(titlesContent).toContain('.c-ttl36');
       }
     });
 

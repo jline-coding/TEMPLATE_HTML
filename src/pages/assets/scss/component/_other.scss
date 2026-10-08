@@ -4,4 +4,316 @@
 /*!
 component > Other (Badges, Tags, Status Labels)
 ------------------------------
+
+- loadpage
+------------------------------
 */
+.is-loading .c-loading {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.c-loading {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--base);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+
+    &__content {
+        position: relative;
+        -webkit-transform: translate(-15px, -15px);
+        transform: translate(-15px, -15px);
+    }
+
+    &__item {
+        background-color: var(--white);
+        width: 12px;
+        height: 12px;
+        border-radius: 100%;
+        margin: 2px;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+        position: absolute;
+        margin-left: 15px;
+        top: 4px;
+        left: -7px;
+
+        &:first-child {
+            -webkit-animation: ball-zig 0.7s 0s infinite linear;
+            animation: ball-zig 0.7s 0s infinite linear;
+        }
+
+        &:last-child {
+            -webkit-animation: ball-zag 0.7s 0s infinite linear;
+            animation: ball-zag 0.7s 0s infinite linear;
+        }
+    }
+
+}
+
+@-webkit-keyframes ball-zig {
+    33% {
+        -webkit-transform: translate(-15px, -30px);
+        transform: translate(-15px, -30px);
+    }
+
+    66% {
+        -webkit-transform: translate(15px, -30px);
+        transform: translate(15px, -30px);
+    }
+
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes ball-zig {
+    33% {
+        -webkit-transform: translate(-15px, -30px);
+        transform: translate(-15px, -30px);
+    }
+
+    66% {
+        -webkit-transform: translate(15px, -30px);
+        transform: translate(15px, -30px);
+    }
+
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+}
+
+@-webkit-keyframes ball-zag {
+    33% {
+        -webkit-transform: translate(15px, 30px);
+        transform: translate(15px, 30px);
+    }
+
+    66% {
+        -webkit-transform: translate(-15px, 30px);
+        transform: translate(-15px, 30px);
+    }
+
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes ball-zag {
+    33% {
+        -webkit-transform: translate(15px, 30px);
+        transform: translate(15px, 30px);
+    }
+
+    66% {
+        -webkit-transform: translate(-15px, 30px);
+        transform: translate(-15px, 30px);
+    }
+
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+}
+
+.p-country-name{
+    display: none !important;
+}
+
+div#mfp_hidden {
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+	padding: 0px;
+	margin: 0px;
+}
+div#mfp_hidden input {
+	margin: 10px;
+}
+div#mfp_loading_screen {
+	z-index: 20000;
+	opacity: 0.8;
+	display: none;
+	background-color: #000;
+	position: absolute;
+}
+div#mfp_loading {
+	z-index: 20001;
+	position: absolute;
+	display: none;
+	width: 40px;
+	height: 40px;
+	background-image: url(_images/mfp_loading.gif);
+}
+div#mfp_loading_screen {
+	z-index: 20000;
+	opacity: 0.8;
+	display: none;
+	background-color: #000;
+	position: absolute;
+}
+div#mfp_overlay {
+	position: absolute;
+	display: none;
+	z-index: 10001;
+}
+div#mfp_overlay_inner {
+	background-color: #FFF;
+	padding: 15px;
+	margin: 0px auto;
+	border-radius: 5px;
+	box-shadow: 0px 0px 10px #000;
+	width: 640px;
+	max-width: 90%;
+}
+div#mfp_overlay_background {
+	background-color: #000;
+	position: absolute;
+	display: none;
+	z-index: 10000;
+}
+div#mfp_loading_screen {
+	z-index: 20000;
+	opacity: 0.8;
+	display: none;
+	background-color: #000;
+	position: absolute;
+}
+.mfp_err {
+  color: var(--red);
+  @extend %fz-14;
+  display: block;
+  width: 100%;
+}
+
+.wpcf7-form {
+    &.resetting,
+    &.submitting {
+        pointer-events: none;
+    }
+}
+
+/*!
+- Cookiewrap
+------------------------------
+*/
+
+.c-cookiewrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: var(--white);
+    z-index: 999;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    display: none;
+
+    @include mq(md) {
+        padding: 40px;
+    }
+
+    &__inner {
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+
+    }
+    &__close {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        text-align: right;
+        font-size: rem(14);
+        line-height: 1em;
+
+        @include mq(md) {
+            top: 50%;
+            bottom: auto;
+            transform: translateY(-50%);
+        }
+
+        a {
+            display: block;
+            padding: 8px;
+            border: 1px solid var(--base);
+        }
+    }
+
+    &__txt {
+        font-size: rem(14);
+        line-height: 1.8;
+        padding-bottom: 45px;
+
+        @include mq(md) {
+            padding-bottom: 0;
+            padding-right: 110px;
+        }
+    }
+    &__link{
+        text-decoration: underline;
+    }
+}
+
+/*!
+- Recruit
+------------------------------
+*/
+
+.p-404 {
+    &__inner {
+        padding: 50px 0 100px;
+
+        @include mq(md) {
+            padding: clamped(100, 140, 768, 1280) 0 clamped(130, 173, 768, 1280) 0;
+            margin-bottom: -22px;
+        }
+    }
+
+    &__btn {
+        padding: 40px 0 0 0;
+
+        @include mq(md) {
+            padding: 50px 0 50px 0;
+        }
+    }
+}
+
+.p-thanks {
+    &__inner {
+        padding: 50px 0 100px;
+
+        @include mq(md) {
+            text-align: center;
+            padding: clamped(100, 140, 768, 1280) 0 clamped(130, 173, 768, 1280) 0;
+            margin-bottom: -22px;
+        }
+
+        .c-ttl30 {
+            margin-bottom: 25px;
+
+            @include mq(md) {
+                margin-bottom: 40px;
+            }
+        }
+    }
+
+    &__btn {
+        padding: 40px 0 0 0;
+
+        @include mq(md) {
+            padding: 50px 0 50px 0;
+        }
+    }
+}
