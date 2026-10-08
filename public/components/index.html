@@ -1,1543 +1,918 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- meta -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="format-detection" content="telephone=no, address=no, email=no">
+    <!-- meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no, address=no, email=no">
     <title>Component Library &amp; Design System</title>
-  <meta name="description" content="FLOCSS Component Library for JLINE - Full-width layout &amp; modular includes">
-  <link rel="canonical" href="https://your-domain123.com/components/">
-  <!-- OGP -->
-  <meta property="og:title" content="Component Library &amp; Design System">
-  <meta property="og:description" content="FLOCSS Component Library for JLINE - Full-width layout &amp; modular includes">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://your-domain123.com/components/">
-  <meta property="og:image" content="https://your-domain123.com/assets/images/common/ogp.jpg">
-  <meta property="og:site_name" content="">
-  <meta property="og:locale" content="ja_JP">
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Component Library &amp; Design System">
-  <meta name="twitter:description" content="FLOCSS Component Library for JLINE - Full-width layout &amp; modular includes">
-  <meta name="twitter:image" content="https://your-domain123.com/assets/images/common/ogp.jpg">
-  <!-- favicon -->
-  <link rel="icon" href="./../assets/images/common/favicon.ico">
-  <link rel="apple-touch-icon" href="./../assets/images/common/apple-touch-icon.png">
-  <!-- link -->  
+    <meta name="description" content="FLOCSS Component Library for JLINE - Full-width layout &amp; modular includes">
+    <link rel="canonical" href="https://your-domain123.com/components/">
+    <!-- OGP -->
+    <meta property="og:title" content="Component Library &amp; Design System">
+    <meta property="og:description" content="FLOCSS Component Library for JLINE - Full-width layout &amp; modular includes">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain123.com/components/">
+    <meta property="og:image" content="https://your-domain123.com/assets/images/common/ogp.jpg">
+    <meta property="og:site_name" content="">
+    <meta property="og:locale" content="ja_JP">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Component Library &amp; Design System">
+    <meta name="twitter:description" content="FLOCSS Component Library for JLINE - Full-width layout &amp; modular includes">
+    <meta name="twitter:image" content="https://your-domain123.com/assets/images/common/ogp.jpg">
+    <!-- favicon -->
+    <link rel="icon" href="./../assets/images/common/favicon.ico">
+    <link rel="apple-touch-icon" href="./../assets/images/common/apple-touch-icon.png">
+    <!-- link -->
     <link rel="stylesheet" href="./../assets/css/common.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <!-- script -->  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- script -->
 
     <script src="./../assets/vendor/jquery/jquery-4.0.0.min.js" defer></script>
-    
-        <script src="./../assets/js/inview.js" defer></script>
-    <script src="./../assets/js/cookie.js" defer></script>
+
+    <script src="./../assets/js/inview.js" defer></script>
     <script src="./../assets/js/common.js" defer></script>
-    </head>
+</head>
 <body>
-  <div id="wrapper" class="l-wrapper">
-      <header class="c-header">
-    <div class="c-header__inner">  
-        <div class="c-header-logo"> 
-            <a href="./../" class="c-header-logo__link">
-                <img src="./../assets/images/common/img_logo.webp" alt="">
-            </a>
-        </div> 
-        <div class="c-header__content">
-            <div class="c-gnavi">
-                <div class="c-gnavi__inner">
-                    <ul class="c-gnavi-list">
-                        <li class="c-gnavi-list__item">
-                            <a href="./../" class="c-gnavi-link">会社</a>
-                        </li>
-                        <li class="c-gnavi-list__item">
-                            <a href="./../" class="c-gnavi-link">私たちについて</a>
-                        </li>
-                        <li class="c-gnavi-list__item is-sub">
-                            <a href="./../" class="c-gnavi-link">サービス</a>
-                            <ul class="c-gnavi-sub" hidden="until-found">
-                                <li class="c-gnavi-sub__item">
-                                    <a href="./../" class="c-gnavi-sub-link">サービス01</a>
+    <div id="wrapper" class="l-wrapper">
+        <header class="c-header">
+            <div class="c-header__inner">
+                <div class="c-header-logo">
+                    <a href="" class="c-header-logo__link">
+                        <img src="./../assets/images/common/img_logo.webp" alt="">
+                    </a>
+                </div>
+                <div class="c-header__content">
+                    <div class="c-header-gnavi">
+                        <div class="c-header-gnavi__inner">
+                            <ul class="c-header-gnavi__list">
+                                <li class="c-header-gnavi__item">
+                                    <a href="" class="c-header-gnavi__link">会社123</a>
                                 </li>
-                                <li class="c-gnavi-sub__item">
-                                    <a href="./../" class="c-gnavi-sub-link">サービス02</a>
+                                <li class="c-header-gnavi__item">
+                                    <a href="" class="c-header-gnavi__link">私たちについて</a>
                                 </li>
-                                <li class="c-gnavi-sub__item">
-                                    <a href="./../" class="c-gnavi-sub-link">サービス03</a>
+                                <li class="c-header-gnavi__item is-sub">
+                                    <a href="" class="c-header-gnavi__link">サービス</a>
+                                    <ul class="c-header-gnavi__sub">
+                                        <li class="c-header-gnavi__sub-item">
+                                            <a href="" class="c-header-gnavi__sub-link">サービス01</a>
+                                        </li>
+                                        <li class="c-header-gnavi__sub-item">
+                                            <a href="" class="c-header-gnavi__sub-link">サービス02</a>
+                                        </li>
+                                        <li class="c-header-gnavi__sub-item">
+                                            <a href="" class="c-header-gnavi__sub-link">サービス03</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="c-header-gnavi__item is-btn">
+                                    <a href="" class="c-btn c-btn--reverse">お問い合わせ</a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="c-gnavi-list__item is-btn">
-                            <a href="./../" class="c-btn c-btn--reverse">お問い合わせ</a>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
+                    <div class="c-header-btns">
+                        <a href="" class="c-btn c-btn--reverse c-header-btns__content">お問い合わせ</a>
+                    </div>
                 </div>
             </div>
-            <div class="c-header-btns">
-                <a href="./../" class="c-btn c-btn--reverse c-header-btns__content">お問い合わせ</a>
+            <div class="c-header-toggle">
+                <span class="c-header-toggle__line"></span>
             </div>
-        </div>
-    </div>
-    <div class="c-toggle">
-        <span class="c-toggle__line"></span>
-    </div>
-</header>
-<!--▲ Content area ▲-->    <script>
-    if (!window.sessionStorage.getItem("storage_loading")) {
-        document.documentElement.classList.add("is-loading");    
-        window.sessionStorage.setItem("storage_loading", new Date().getTime().toString());    
-    }
-</script>
+        </header>
+        <!--▲ Content area ▲-->
+        <script>
+            if (!window.sessionStorage.getItem("storage_loading")) {
+                document.documentElement.classList.add("is-loading");
+                window.sessionStorage.setItem("storage_loading", new Date().getTime().toString());
+            }
+        </script>
 
-<style>
-/* ==========================================================================
+        <style>
+            /* ==========================================================================
    COMPONENT SHOWCASE - FULL WIDTH & PROFESSIONAL SIDEBAR
    Design tokens:
    - Primary: var(--primary, #e60012)
    - Base Dark: var(--base, #3E3E3E)
    - Scoped under .cs- to avoid leaking into the main website styles
    ========================================================================== */
+            /* Hide default site header, footer & cookie banner on Component page for Full-width App view */
+            .c-header,
+            .c-footer,
+            .c-cookiewrap {
+                display: none !important;
+            }
 
-/* Hide default site header, footer & cookie banner on Component page for Full-width App view */
-.c-header, .c-footer, .c-cookiewrap {
-    display: none !important;
-}
+            html {
+                scroll-behavior: smooth;
+            }
 
-html {
-    scroll-behavior: smooth;
-}
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: #f8fafc;
+            }
 
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #f8fafc;
-}
+            .l-wrapper {
+                overflow: visible !important;
+            }
 
-.l-wrapper {
-    overflow: visible !important;
-}
+            /* Full-Width App Layout without container */
+            .cs-app {
+                display: flex;
+                width: 100%;
+                min-height: 100vh;
+                background: #f8fafc;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                color: var(--base, #3E3E3E);
+                position: relative;
+            }
 
-/* Full-Width App Layout without container */
-.cs-app {
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
-    background: #f8fafc;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: var(--base, #3E3E3E);
-    position: relative;
-}
-
-/* ==========================================
+            /* ==========================================
    FIXED SIDEBAR (290px)
    ========================================== */
-.cs-sidebar {
-    width: 290px;
-    flex-shrink: 0;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    background: #ffffff;
-    border-right: 1px solid #e2e8f0;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-}
+            .cs-sidebar {
+                width: 290px;
+                flex-shrink: 0;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                background: #ffffff;
+                border-right: 1px solid #e2e8f0;
+                box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+                display: flex;
+                flex-direction: column;
+                z-index: 100;
+            }
 
-.cs-sidebar__header {
-    padding: 24px 20px 18px;
-    border-bottom: 1px solid #f1f5f9;
-}
+            .cs-sidebar__header {
+                padding: 24px 20px 18px;
+                border-bottom: 1px solid #f1f5f9;
+            }
 
-.cs-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-}
+            .cs-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 14px;
+            }
 
-.cs-brand__icon {
-    width: 32px;
-    height: 32px;
-    background: var(--primary, #e60012);
-    color: #fff;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 16px;
-    box-shadow: 0 4px 8px rgba(230, 0, 18, 0.25);
-}
+            .cs-brand__icon {
+                width: 32px;
+                height: 32px;
+                background: var(--primary, #e60012);
+                color: #fff;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 900;
+                font-size: 16px;
+                box-shadow: 0 4px 8px rgba(230, 0, 18, 0.25);
+            }
 
-.cs-brand__text {
-    font-size: 15px;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: 0.5px;
-    line-height: 1.2;
-}
+            .cs-brand__text {
+                font-size: 15px;
+                font-weight: 800;
+                color: #0f172a;
+                letter-spacing: 0.5px;
+                line-height: 1.2;
+            }
 
-.cs-brand__sub {
-    font-size: 11px;
-    color: #64748b;
-    font-weight: 500;
-}
+            .cs-brand__sub {
+                font-size: 11px;
+                color: #64748b;
+                font-weight: 500;
+            }
 
-/* Search Box */
-.cs-search {
-    position: relative;
-}
+            /* Search Box */
+            .cs-search {
+                position: relative;
+            }
 
-.cs-search__input {
-    width: 100%;
-    padding: 9px 12px 9px 34px;
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #1e293b;
-    outline: none;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-}
+            .cs-search__input {
+                width: 100%;
+                padding: 9px 12px 9px 34px;
+                background: #f8fafc;
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+                font-size: 13px;
+                color: #1e293b;
+                outline: none;
+                transition: all 0.2s ease;
+                box-sizing: border-box;
+            }
 
-.cs-search__input:focus {
-    background: #fff;
-    border-color: var(--primary, #e60012);
-    box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.15);
-}
+            .cs-search__input:focus {
+                background: #fff;
+                border-color: var(--primary, #e60012);
+                box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.15);
+            }
 
-.cs-search__icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 13px;
-    color: #94a3b8;
-    pointer-events: none;
-}
+            .cs-search__icon {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 13px;
+                color: #94a3b8;
+                pointer-events: none;
+            }
 
-/* Nav Menu */
-.cs-nav {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 12px;
-}
+            /* Nav Menu */
+            .cs-nav {
+                flex: 1;
+                overflow-y: auto;
+                padding: 16px 12px;
+            }
 
-.cs-nav::-webkit-scrollbar {
-    width: 5px;
-}
-.cs-nav::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
+            .cs-nav::-webkit-scrollbar {
+                width: 5px;
+            }
 
-.cs-nav__group-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #94a3b8;
-    padding: 8px 10px 4px;
-    margin: 8px 0 2px;
-}
+            .cs-nav::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 4px;
+            }
 
-.cs-nav__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
+            .cs-nav__group-title {
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: #94a3b8;
+                padding: 8px 10px 4px;
+                margin: 8px 0 2px;
+            }
 
-.cs-nav__link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 6px;
-    color: #475569;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.15s ease;
-}
+            .cs-nav__list {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
 
-.cs-nav__link:hover {
-    background: #f8fafc;
-    color: var(--primary, #e60012);
-    transform: translateX(3px);
-}
+            .cs-nav__link {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 12px;
+                border-radius: 6px;
+                color: #475569;
+                font-size: 13px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.15s ease;
+            }
 
-.cs-nav__link.is-active {
-    background: rgba(230, 0, 18, 0.08);
-    color: var(--primary, #e60012);
-    font-weight: 700;
-    border-left: 3px solid var(--primary, #e60012);
-}
+            .cs-nav__link:hover {
+                background: #f8fafc;
+                color: var(--primary, #e60012);
+                transform: translateX(3px);
+            }
 
-.cs-nav__badge {
-    font-size: 10px;
-    font-family: Consolas, monospace;
-    background: #f1f5f9;
-    color: #64748b;
-    padding: 2px 6px;
-    border-radius: 4px;
-}
+            .cs-nav__link.is-active {
+                background: rgba(230, 0, 18, 0.08);
+                color: var(--primary, #e60012);
+                font-weight: 700;
+                border-left: 3px solid var(--primary, #e60012);
+            }
 
-.cs-sidebar__footer {
-    padding: 14px 18px;
-    border-top: 1px solid #f1f5f9;
-    background: #f8fafc;
-    font-size: 11px;
-    color: #64748b;
-    line-height: 1.5;
-}
+            .cs-nav__badge {
+                font-size: 10px;
+                font-family: Consolas, monospace;
+                background: #f1f5f9;
+                color: #64748b;
+                padding: 2px 6px;
+                border-radius: 4px;
+            }
 
-.cs-sidebar__footer strong {
-    color: var(--primary, #e60012);
-}
+            .cs-sidebar__footer {
+                padding: 14px 18px;
+                border-top: 1px solid #f1f5f9;
+                background: #f8fafc;
+                font-size: 11px;
+                color: #64748b;
+                line-height: 1.5;
+            }
 
-/* ==========================================
+            .cs-sidebar__footer strong {
+                color: var(--primary, #e60012);
+            }
+
+            /* ==========================================
    MAIN WORKSPACE (FULL WIDTH)
    ========================================== */
-.cs-main {
-    flex: 1;
-    min-width: 0;
-    padding: 30px 40px 100px;
-}
+            .cs-main {
+                flex: 1;
+                min-width: 0;
+                padding: 30px 40px 100px;
+            }
 
-.cs-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 24px;
-    margin-bottom: 30px;
-    border-bottom: 1px solid #e2e8f0;
-}
+            .cs-topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-bottom: 24px;
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e2e8f0;
+            }
 
-.cs-topbar__title {
-    font-size: 24px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 4px;
-}
+            .cs-topbar__title {
+                font-size: 24px;
+                font-weight: 800;
+                color: #0f172a;
+                margin: 0 0 4px;
+            }
 
-.cs-topbar__desc {
-    font-size: 13px;
-    color: #64748b;
-    margin: 0;
-}
+            .cs-topbar__desc {
+                font-size: 13px;
+                color: #64748b;
+                margin: 0;
+            }
 
-.cs-topbar__stats {
-    display: flex;
-    gap: 12px;
-}
+            .cs-topbar__stats {
+                display: flex;
+                gap: 12px;
+            }
 
-.cs-stat-pill {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.cs-stat-pill strong {
-    color: var(--primary, #e60012);
-}
+            .cs-stat-pill {
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                color: #334155;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-/* Section Header */
-.cs-section {
-    scroll-margin-top: 24px;
-    margin-bottom: 50px;
-}
+            .cs-stat-pill strong {
+                color: var(--primary, #e60012);
+            }
 
-.cs-section__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #e2e8f0;
-}
+            /* Section Header */
+            .cs-section {
+                scroll-margin-top: 24px;
+                margin-bottom: 50px;
+            }
 
-.cs-section__title {
-    font-size: 18px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-left: 4px solid var(--primary, #e60012);
-    padding-left: 12px;
-}
+            .cs-section__header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-bottom: 12px;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #e2e8f0;
+            }
 
-.cs-section__file {
-    font-size: 12px;
-    font-family: Consolas, monospace;
-    background: #fff;
-    color: #475569;
-    padding: 4px 12px;
-    border-radius: 4px;
-    border: 1px solid #cbd5e1;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
+            .cs-section__title {
+                font-size: 18px;
+                font-weight: 800;
+                color: #0f172a;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                border-left: 4px solid var(--primary, #e60012);
+                padding-left: 12px;
+            }
 
-/* Component Grid & Card Groups */
-.cs-cards-container {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    width: 100%;
-}
+            .cs-section__file {
+                font-size: 12px;
+                font-family: Consolas, monospace;
+                background: #fff;
+                color: #475569;
+                padding: 4px 12px;
+                border-radius: 4px;
+                border: 1px solid #cbd5e1;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
 
-.cs-group--full {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-}
+            /* Component Grid & Card Groups */
+            .cs-cards-container {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+                width: 100%;
+            }
 
-.cs-group--inline-block {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-    width: 100%;
-}
+            .cs-group--full {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                width: 100%;
+            }
 
-/* ==========================================
+            .cs-group--inline-block {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 20px;
+                width: 100%;
+            }
+
+            /* ==========================================
    COMPONENT CARD
    ========================================== */
-.cs-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
+            .cs-card {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+                transition: all 0.2s ease;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+            }
 
-.cs-card:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
-}
+            .cs-card:hover {
+                border-color: #cbd5e1;
+                box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+            }
 
-.cs-card--full {
-    width: 100%;
-}
+            .cs-card--full {
+                width: 100%;
+            }
 
-.cs-card--inline-block {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-width: 0;
-}
+            .cs-card--inline-block {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                min-width: 0;
+            }
 
-.cs-card__toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    gap: 12px;
-}
+            .cs-card__toolbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 16px;
+                background: #f8fafc;
+                border-bottom: 1px solid #e2e8f0;
+                gap: 12px;
+            }
 
-.cs-card__title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0;
-    line-height: 1.4;
-    white-space: normal;
-    word-break: break-word;
-}
+            .cs-card__title {
+                font-size: 13px;
+                font-weight: 700;
+                color: #1e293b;
+                margin: 0;
+                line-height: 1.4;
+                white-space: normal;
+                word-break: break-word;
+            }
 
-.cs-card__actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-    margin-left: auto;
-}
+            .cs-card__actions {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+                margin-left: auto;
+            }
 
-/* Action Buttons */
-.cs-btn-action {
-    padding: 5px 10px;
-    font-size: 11px;
-    font-weight: 600;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    line-height: 1;
-    white-space: nowrap;
-}
+            /* Action Buttons */
+            .cs-btn-action {
+                padding: 5px 10px;
+                font-size: 11px;
+                font-weight: 600;
+                border-radius: 5px;
+                cursor: pointer;
+                border: 1px solid transparent;
+                transition: all 0.15s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                line-height: 1;
+                white-space: nowrap;
+            }
 
-.cs-btn-action--copy {
-    background: var(--primary, #e60012);
-    color: #fff;
-}
-.cs-btn-action--copy:hover {
-    background: #c5000f;
-}
+            .cs-btn-action--copy {
+                background: var(--primary, #e60012);
+                color: #fff;
+            }
 
-.cs-btn-action--secondary {
-    background: #fff;
-    color: #475569;
-    border-color: #cbd5e1;
-}
-.cs-btn-action--secondary:hover {
-    background: #f1f5f9;
-    color: #0f172a;
-    border-color: #94a3b8;
-}
+            .cs-btn-action--copy:hover {
+                background: #c5000f;
+            }
 
-/* Preview Area */
-.cs-card__preview {
-    padding: 24px 20px;
-    background: #ffffff;
-    min-height: 60px;
-}
+            .cs-btn-action--secondary {
+                background: #fff;
+                color: #475569;
+                border-color: #cbd5e1;
+            }
 
-.cs-card--inline-block .cs-card__preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 80px;
-}
+            .cs-btn-action--secondary:hover {
+                background: #f1f5f9;
+                color: #0f172a;
+                border-color: #94a3b8;
+            }
 
-.cs-card__preview--left,
-.cs-card--inline-block .cs-card__preview--left {
-    justify-content: flex-start;
-}
+            /* Preview Area */
+            .cs-card__preview {
+                padding: 24px 20px;
+                background: #ffffff;
+                min-height: 60px;
+            }
 
-.cs-card__preview .c-mv {
-    margin-top: 0;
-}
+            .cs-card--inline-block .cs-card__preview {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 80px;
+            }
 
-/* Card Footer with centered class badge */
-.cs-card__footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-    gap: 6px;
-    flex-wrap: wrap;
-}
+            .cs-card__preview--left,
+            .cs-card--inline-block .cs-card__preview--left {
+                justify-content: flex-start;
+            }
 
-.cs-card__class-tag {
-    font-size: 11px;
-    font-family: Consolas, monospace;
-    background: #fee2e2;
-    color: var(--primary, #e60012);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: inline-block;
-}
+            .cs-card__preview .c-mv {
+                margin-top: 0;
+            }
 
-.cs-card__class-tag:hover {
-    background: #fecaca;
-    transform: translateY(-1px);
-}
+            /* Card Footer with centered class badge */
+            .cs-card__footer {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 8px 16px;
+                background: #f8fafc;
+                border-top: 1px solid #e2e8f0;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
 
-/* Code Accordion */
-.cs-card__code {
-    display: none;
-    background: #0f172a;
-    padding: 14px 16px;
-    border-top: 1px solid #1e293b;
-}
+            .cs-card__class-tag {
+                font-size: 11px;
+                font-family: Consolas, monospace;
+                background: #fee2e2;
+                color: var(--primary, #e60012);
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.15s ease;
+                display: inline-block;
+            }
 
-.cs-card__code.is-open {
-    display: block;
-}
+            .cs-card__class-tag:hover {
+                background: #fecaca;
+                transform: translateY(-1px);
+            }
 
-.cs-card__code pre {
-    margin: 0;
-    color: #e2e8f0;
-    font-family: Consolas, Monaco, "Courier New", monospace;
-    font-size: 12px;
-    line-height: 1.6;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
-}
+            /* Code Accordion */
+            .cs-card__code {
+                display: none;
+                background: #0f172a;
+                padding: 14px 16px;
+                border-top: 1px solid #1e293b;
+            }
 
-/* Floating Toast */
-.cs-toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #0f172a;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 99999;
-    transform: translateY(100px);
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    border-left: 4px solid var(--primary, #e60012);
-}
+            .cs-card__code.is-open {
+                display: block;
+            }
 
-.cs-toast.is-show {
-    transform: translateY(0);
-    opacity: 1;
-}
+            .cs-card__code pre {
+                margin: 0;
+                color: #e2e8f0;
+                font-family: Consolas, Monaco, "Courier New", monospace;
+                font-size: 12px;
+                line-height: 1.6;
+                overflow-x: auto;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
 
-/* Unified component wrapper helpers */
-.p-component__item { display: block; width: 100%; }
-.p-component__item--inline-block { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-.p-component__btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-.p-component__titles { display: grid; gap: 16px; }
-.p-component__texts { display: grid; gap: 14px; }
-.p-component__grids { display: grid; gap: 30px; }
-.p-component__flexs { display: grid; gap: 30px; }
-.p-component__tbls { display: grid; gap: 30px; }
-.p-component__lists { display: grid; gap: 24px; }
+            /* Floating Toast */
+            .cs-toast {
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                background: #0f172a;
+                color: #fff;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 13px;
+                font-weight: 600;
+                z-index: 99999;
+                transform: translateY(100px);
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                border-left: 4px solid var(--primary, #e60012);
+            }
 
-@media (max-width: 991px) {
-    .cs-app {
-        flex-direction: column;
-    }
-    .cs-sidebar {
-        width: 100%;
-        height: auto;
-        gap: 15px;
-        position: static;
-    }
-    .cs-topbar{
-        flex-wrap: wrap;
-    }
-    .cs-main {
-        padding: 20px 16px;
-    }
-    .cs-group--inline-block,
-    .p-component__item--inline-block,
-    .p-component__btns {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
+            .cs-toast.is-show {
+                transform: translateY(0);
+                opacity: 1;
+            }
 
-<div class="cs-app">
-    <!-- =======================================================
+            /* Unified component wrapper helpers */
+            .p-component__item {
+                display: block;
+                width: 100%;
+            }
+
+            .p-component__item--inline-block {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 20px;
+            }
+
+            .p-component__btns {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 20px;
+            }
+
+            .p-component__titles {
+                display: grid;
+                gap: 16px;
+            }
+
+            .p-component__texts {
+                display: grid;
+                gap: 14px;
+            }
+
+            .p-component__grids {
+                display: grid;
+                gap: 30px;
+            }
+
+            .p-component__flexs {
+                display: grid;
+                gap: 30px;
+            }
+
+            .p-component__tbls {
+                display: grid;
+                gap: 30px;
+            }
+
+            .p-component__lists {
+                display: grid;
+                gap: 24px;
+            }
+
+            @media (max-width: 991px) {
+                .cs-app {
+                    flex-direction: column;
+                }
+
+                .cs-sidebar {
+                    width: 100%;
+                    height: auto;
+                    gap: 15px;
+                    position: static;
+                }
+
+                .cs-topbar {
+                    flex-wrap: wrap;
+                }
+
+                .cs-main {
+                    padding: 20px 16px;
+                }
+
+                .cs-group--inline-block,
+                .p-component__item--inline-block,
+                .p-component__btns {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+
+        <div class="cs-app">
+            <!-- =======================================================
          FIXED SIDEBAR (FULL HEIGHT)
          ======================================================= -->
-    <aside class="cs-sidebar">
-        <div class="cs-sidebar__header">
-            <div class="cs-brand">
-                <div class="cs-brand__icon">J</div>
-                <div>
-                    <div class="cs-brand__text">JLINE COMPONENT</div>
-                    <div class="cs-brand__sub">Design System & Code Library</div>
+            <aside class="cs-sidebar">
+                <div class="cs-sidebar__header">
+                    <div class="cs-brand">
+                        <div class="cs-brand__icon">J</div>
+                        <div>
+                            <div class="cs-brand__text">JLINE COMPONENT</div>
+                            <div class="cs-brand__sub">Design System & Code Library</div>
+                        </div>
+                    </div>
+                    <div class="cs-search">
+                        <span class="cs-search__icon">🔍</span>
+                        <input type="text" id="cs-filter-input" class="cs-search__input" placeholder="Filter components..." autocomplete="off">
+                    </div>
                 </div>
-            </div>
-            <div class="cs-search">
-                <span class="cs-search__icon">🔍</span>
-                <input type="text" id="cs-filter-input" class="cs-search__input" placeholder="Filter components..." autocomplete="off">
-            </div>
-        </div>
 
-        <nav class="cs-nav">
-            
-            
-            <div class="cs-nav__group-title">Components (c-*)</div>
-            <ul class="cs-nav__list">
-                
-                <li>
-                    <a href="#sec-mv" class="cs-nav__link">
-                        <span>01. Mv</span>
-                        <span class="cs-nav__badge">_mv.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-bread" class="cs-nav__link">
-                        <span>02. Bread</span>
-                        <span class="cs-nav__badge">_bread.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-titles" class="cs-nav__link">
-                        <span>03. Titles</span>
-                        <span class="cs-nav__badge">_titles.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-texts" class="cs-nav__link">
-                        <span>04. Texts</span>
-                        <span class="cs-nav__badge">_texts.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-btns" class="cs-nav__link">
-                        <span>05. Btns</span>
-                        <span class="cs-nav__badge">_btns.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-links" class="cs-nav__link">
-                        <span>06. Links</span>
-                        <span class="cs-nav__badge">_links.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-lists" class="cs-nav__link">
-                        <span>07. Lists</span>
-                        <span class="cs-nav__badge">_lists.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-accordion" class="cs-nav__link">
-                        <span>08. Accordion</span>
-                        <span class="cs-nav__badge">_accordion.ejs</span>
-                    </a>
-                </li>
-                
-            </ul>
-            
+                <nav class="cs-nav">
 
-            
-            <div class="cs-nav__group-title">Layout & Structure (l-*)</div>
-            <ul class="cs-nav__list">
-                
-                <li>
-                    <a href="#sec-grids" class="cs-nav__link">
-                        <span>09. Grids</span>
-                        <span class="cs-nav__badge">_grids.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-flexs" class="cs-nav__link">
-                        <span>10. Flexs</span>
-                        <span class="cs-nav__badge">_flexs.ejs</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#sec-tbls" class="cs-nav__link">
-                        <span>11. Tbls</span>
-                        <span class="cs-nav__badge">_tbls.ejs</span>
-                    </a>
-                </li>
-                
-            </ul>
-            
-        </nav>
+                </nav>
 
-        <div class="cs-sidebar__footer">
-            💡 <strong>Dev Tip:</strong> Thêm hoặc sửa bất kỳ file <code>src/pages/components/_*.ejs</code>. Mọi file và class mới đều tự động xuất hiện!
-        </div>
-    </aside>
+                <div class="cs-sidebar__footer">
+                    💡 <strong>Dev Tip:</strong> Thêm hoặc sửa bất kỳ file <code>src/pages/components/_*.ejs</code>. Mọi file và class mới đều tự động xuất hiện!
+                </div>
+            </aside>
 
-    <!-- =======================================================
+            <!-- =======================================================
          MAIN WORKSPACE: FULL WIDTH & DYNAMIC MODULAR INCLUDES
          ======================================================= -->
-    <main class="cs-main">
-        <header class="cs-topbar">
-            <div>
-                <h1 class="cs-topbar__title">FLOCSS Component Library</h1>
-                <p class="cs-topbar__desc">Tất cả component được nạp động từ các file <code>_*.ejs</code>. Click vào bất kỳ thẻ class hoặc nút copy để sử dụng.</p>
-            </div>
-            <div class="cs-topbar__stats">
-                <div class="cs-stat-pill">Modules: <strong>11 files</strong></div>
-                <div class="cs-stat-pill" id="cs-total-components">Components: <strong>...</strong></div>
-            </div>
-        </header>
+            <main class="cs-main">
+                <header class="cs-topbar">
+                    <div>
+                        <h1 class="cs-topbar__title">FLOCSS Component Library</h1>
+                        <p class="cs-topbar__desc">Tất cả component được nạp động từ các file <code>_*.ejs</code>. Click vào bất kỳ thẻ class hoặc nút copy để sử dụng.</p>
+                    </div>
+                    <div class="cs-topbar__stats">
+                        <div class="cs-stat-pill">Modules: <strong>0 files</strong></div>
+                        <div class="cs-stat-pill" id="cs-total-components">Components: <strong>...</strong></div>
+                    </div>
+                </header>
 
-        
-        <!-- 01. MV -->
-        <section id="sec-mv" class="cs-section" data-title="01. Mv" data-file="_mv.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Main Visual Banner (メインビジュアル 背景画像＋2言語タイトル) -->
-    <section class="c-mv">
-        <figure class="c-mv__bg">
-            <img src="../assets/images/common/img_dummy.webp" alt="">
-        </figure>
-        <div class="l-container">
-            <div class="c-mv__inner">
-                <h1 class="c-mv-title">
-                    <span class="c-mv-title__en">title1</span>
-                    <span class="c-mv-title__jp">タイトル</span>
-                </h1>
-            </div>
+            </main>
         </div>
-    </section>
-</div>
 
-            </div>
-        </section>
-        
-        <!-- 02. BREAD -->
-        <section id="sec-bread" class="cs-section" data-title="02. Bread" data-file="_bread.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Breadcrumb Navigation (パンくずリスト) -->
-    <ul class="c-bread">
-        <li class="c-bread__item">
-            <a href="" class="c-bread__link">top</a>
-        </li>
-        <li class="c-bread__item">コンポーネント</li>
-    </ul>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 03. TITLES -->
-        <section id="sec-titles" class="cs-section" data-title="03. Titles" data-file="_titles.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Title Bilingual EN/JP (英語・日本語 見出し) -->
-    <h2 class="c-title">
-        <span class="c-title__en">title</span>
-        <span class="c-title__jp">タイトル</span>
-    </h2>
-
-    <!-- Heading 36px (見出し 36px) -->
-    <h2 class="c-ttl36">タイトルコンテンツ</h2>
-
-    <!-- Heading 36px with Line (下線付き見出し 36px) -->
-    <h2 class="c-ttl36 c-ttl36--line">タイトルコンテンツ</h2>
-
-    <!-- Heading 36px with Dot (ドット付き見出し 36px) -->
-    <h2 class="c-ttl36 c-ttl36--dot">タイトルコンテンツ</h2>
-
-    <!-- Heading 34px (見出し 34px) -->
-    <h2 class="c-ttl34">タイトルコンテンツ</h2>
-
-    <!-- Heading 32px (見出し 32px) -->
-    <h2 class="c-ttl32">タイトルコンテンツ</h2>
-
-    <!-- Heading 30px (見出し 30px) -->
-    <h2 class="c-ttl30">タイトルコンテンツ</h2>
-
-    <!-- Heading 28px (見出し 28px) -->
-    <h2 class="c-ttl28">タイトルコンテンツ</h2>
-
-    <!-- Heading 26px (見出し 26px) -->
-    <h2 class="c-ttl26">タイトルコンテンツ</h2>
-
-    <!-- Heading 24px (見出し 24px) -->
-    <h2 class="c-ttl24">タイトルコンテンツ</h2>
-
-    <!-- Heading 22px (見出し 22px) -->
-    <h2 class="c-ttl22">タイトルコンテンツ</h2>
-
-    <!-- Heading 20px (見出し 20px) -->
-    <h2 class="c-ttl20">タイトルコンテンツ</h2>
-
-    <!-- Heading 18px (見出し 18px) -->
-    <h2 class="c-ttl18">タイトルコンテンツ</h2>
-
-    <!-- Heading 16px (見出し 16px) -->
-    <h2 class="c-ttl16">タイトルコンテンツ</h2>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 04. TEXTS -->
-        <section id="sec-texts" class="cs-section" data-title="04. Texts" data-file="_texts.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Paragraph 24px (リード文 24px) -->
-    <p class="c-txt24">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-
-    <!-- Paragraph 22px (本文大 22px) -->
-    <p class="c-txt22">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-
-    <!-- Paragraph 20px (本文 20px) -->
-    <p class="c-txt20">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-
-    <!-- Paragraph 18px (本文 18px) -->
-    <p class="c-txt18">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-
-    <!-- Paragraph 16px (本文基本 16px) -->
-    <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-
-    <!-- Paragraph 14px (注記・補足 14px) -->
-    <p class="c-txt14">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-
-    <!-- Paragraph 12px (キャプション 12px) -->
-    <p class="c-txt12">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 05. BTNS -->
-        <section id="sec-btns" class="cs-section" data-title="05. Btns" data-file="_btns.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item p-component__item--inline-block">
-    <!-- Button Standard (通常ボタン) -->
-    <a href="" class="c-btn">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-
-    <!-- Button with Arrow (矢印付きボタン) -->
-    <a href="" class="c-btn c-btn--arrow">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-
-    <!-- Button Arrow Center (矢印中央配置ボタン) -->
-    <a href="" class="c-btn c-btn--arrow-center">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-
-    <!-- Button Arrow Between (矢印両端配置ボタン) -->
-    <a href="" class="c-btn c-btn--arrow-between">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-</div>
-<div class="p-component__item p-component__item--inline-block">
-    <!-- Button Reverse (反転ボタン 白背景) -->
-    <a href="" class="c-btn c-btn--reverse">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-
-    <!-- Button Reverse with Arrow (反転 矢印付きボタン) -->
-    <a href="" class="c-btn c-btn--arrow c-btn--reverse">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-
-    <!-- Button Reverse Arrow Center (反転 矢印中央配置ボタン) -->
-    <a href="" class="c-btn c-btn--arrow-center c-btn--reverse">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-
-    <!-- Button Reverse Arrow Between (反転 矢印両端配置ボタン) -->
-    <a href="" class="c-btn c-btn--arrow-between c-btn--reverse">
-        <span class="c-btn__content">ボタン</span>
-    </a>
-
-    <!-- Custom Component (カスタムコンポーネント) -->
-    <a href="" class="c-abc">test</a>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 06. LINKS -->
-        <section id="sec-links" class="cs-section" data-title="06. Links" data-file="_links.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item p-component__item--inline-block">
-    <!-- Link Standard (テキストリンク) -->
-    <a href="" class="c-link">リンク</a>
-
-    <!-- Link External Blank (外部リンク 新規タブ) -->
-    <a href="" class="c-link c-link--blank">リンク</a>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 07. LISTS -->
-        <section id="sec-lists" class="cs-section" data-title="07. Lists" data-file="_lists.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Bullet List Dot (箇条書き ドット ・) -->
-    <ul class="c-list-dot">
-        <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-dot__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-    </ul>
-
-    <!-- Numbered List (番号付きリスト 1. 2. 3.) -->
-    <ul class="c-list-number">
-        <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-number__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-    </ul>
-
-    <!-- Star Note List (注記リスト ※) -->
-    <ul class="c-list-star">
-        <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-        <li class="c-list-star__item">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</li>
-    </ul>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 08. ACCORDION -->
-        <section id="sec-accordion" class="cs-section" data-title="08. Accordion" data-file="_accordion.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Accordion Details (HTML5標準 details/summary アコーディオン) -->
-    <details class="c-accordion">
-        <summary class="c-accordion__head">
-            <span class="c-accordion__title">アコーディオンタイトル（HTML5 detailsタグ）</span>
-            <span class="c-accordion__icon"></span>
-        </summary>
-        <div class="c-accordion__body">
-            <div class="c-accordion__content">
-                <p>ダミーテキストが入ります。ブラウザのページ内検索（Ctrl+F）を実行すると、閉じているアコーディオンも自動的に展開されてハイライトされます。</p>
-            </div>
+        <!-- Floating Toast -->
+        <div id="cs-toast" class="cs-toast">
+            <span>✅</span>
+            <span id="cs-toast-msg">Copied HTML snippet to clipboard!</span>
         </div>
-    </details>
-</div>
 
-<div class="p-component__item">
-    <!-- Accordion Standard (hidden="until-found"対応 標準アコーディオン) -->
-    <div class="c-accordion">
-        <button type="button" class="c-accordion__head">
-            <span class="c-accordion__title">アコーディオンタイトル（hidden="until-found"対応）</span>
-            <span class="c-accordion__icon"></span>
-        </button>
-        <div class="c-accordion__body" hidden="until-found">
-            <div class="c-accordion__content">
-                <p>ダミーテキストが入ります。hidden="until-found"とbeforematchイベントにより、ページ内検索（Ctrl+F）時に未表示のコンテンツでも即座に検索・展開されます。</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="p-component__item">
-    <!-- Accordion Plus Icon (プラス・マイナスアイコン アコーディオン) -->
-    <div class="c-accordion">
-        <button type="button" class="c-accordion__head">
-            <span class="c-accordion__title">アコーディオンタイトル（プラス・マイナスアイコン）</span>
-            <span class="c-accordion__icon c-accordion__icon--plus"></span>
-        </button>
-        <div class="c-accordion__body" hidden="until-found">
-            <div class="c-accordion__content">
-                <p>ダミーテキストが入ります。ダミーテキストが入ります。ダミーテキストが入ります。ダミーテキストが入ります。</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 09. GRIDS -->
-        <section id="sec-grids" class="cs-section" data-title="09. Grids" data-file="_grids.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Grid 2 Columns (グリッド 2カラム) -->
-    <div class="l-grid">
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-    </div>
-
-    <!-- Grid 3 Columns (グリッド 3カラム) -->
-    <div class="l-grid l-grid--cl3">
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-    </div>
-
-    <!-- Grid 4 Columns (グリッド 4カラム) -->
-    <div class="l-grid l-grid--cl4">
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-        <div class="l-grid__item">
-            <figure>
-                <img src="../assets/images/common/img_dummy.webp" alt="">
-            </figure>
-        </div>
-    </div>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 10. FLEXS -->
-        <section id="sec-flexs" class="cs-section" data-title="10. Flexs" data-file="_flexs.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <div class="l-container">
-        <!-- Flex Standard (2カラム 左画像400px・右テキスト) -->
-        <div class="l-flex">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="l-container">
-        <!-- Flex Reverse (2カラム 画像右配置) -->
-        <div class="l-flex l-flex--reverse">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="l-container">
-        <!-- Flex Middle (2カラム 上下中央揃え) -->
-        <div class="l-flex l-flex--middle">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="l-container">
-        <!-- Flex Reverse Middle (2カラム 画像右配置・上下中央揃え) -->
-        <div class="l-flex l-flex--reverse l-flex--middle">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="l-container">
-        <!-- Flex Equal 50/50 (2カラム 均等50%・50%) -->
-        <div class="l-flex l-flex--equal">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="l-container">
-        <!-- Flex Equal 50/50 Reverse (2カラム 均等50%・50% 画像右配置) -->
-        <div class="l-flex l-flex--equal l-flex--reverse">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="l-container">
-        <!-- Flex Equal 50/50 Middle (2カラム 均等50%・50% 上下中央揃え) -->
-        <div class="l-flex l-flex--equal l-flex--middle">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="l-container">
-        <!-- Flex Equal 50/50 Reverse Middle (2カラム 均等50%・50% 画像右配置・上下中央揃え) -->
-        <div class="l-flex l-flex--equal l-flex--reverse l-flex--middle">
-            <div class="l-flex__left">
-                <figure>
-                    <img src="../assets/images/common/img_dummy.webp" alt="">
-                </figure>
-            </div>
-            <div class="l-flex__right">
-                <h2 class="c-ttl24">ダミーテキスト。</h2>
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-            </div>
-        </section>
-        
-        <!-- 11. TBLS -->
-        <section id="sec-tbls" class="cs-section" data-title="11. Tbls" data-file="_tbls.ejs">
-            <div class="cs-raw-content">
-                <div class="p-component__item">
-    <!-- Table Standard (テーブル 上揃え) -->
-    <div class="l-tbl">
-        <div class="l-tbl__item">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Table Middle (テーブル 中央揃え) -->
-    <div class="l-tbl">
-        <div class="l-tbl__item l-tbl__item--middle">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item l-tbl__item--middle">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item l-tbl__item--middle">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item l-tbl__item--middle">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-        <div class="l-tbl__item l-tbl__item--middle">
-            <div class="l-tbl__left">
-                <h2 class="c-ttl16">ダミーテキスト。</h2>
-            </div>
-            <div class="l-tbl__right">
-                <p class="c-txt16">ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。ダミーテキスト。</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-            </div>
-        </section>
-        
-
-    </main>
-</div>
-
-<!-- Floating Toast -->
-<div id="cs-toast" class="cs-toast">
-    <span>✅</span>
-    <span id="cs-toast-msg">Copied HTML snippet to clipboard!</span>
-</div>
-
-<script>
-/* ==========================================================================
+        <script>
+            /* ==========================================================================
    AUTO-CONVERT INCLUDED FILES INTO MODULAR CARDS
    - Parses directly from included _*.ejs files
    - Edit partial files and this showcase updates dynamically!
    ========================================================================== */
-(function() {
-    let toastTimeout = null;
+            (function() {
+                let toastTimeout = null;
+                window.showToast = function(msg) {
+                    const toast = document.getElementById('cs-toast');
+                    const toastMsg = document.getElementById('cs-toast-msg');
+                    if (!toast || !toastMsg) return;
+                    toastMsg.textContent = msg;
+                    toast.classList.add('is-show');
+                    if (toastTimeout) clearTimeout(toastTimeout);
+                    toastTimeout = setTimeout(() => {
+                        toast.classList.remove('is-show');
+                    }, 2200);
+                };
 
-    window.showToast = function(msg) {
-        const toast = document.getElementById('cs-toast');
-        const toastMsg = document.getElementById('cs-toast-msg');
-        if (!toast || !toastMsg) return;
-        toastMsg.textContent = msg;
-        toast.classList.add('is-show');
-        if (toastTimeout) clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => {
-            toast.classList.remove('is-show');
-        }, 2200);
-    };
-
-    function fallbackCopy(text, toastMsg) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-            document.execCommand('copy');
-            if (toastMsg) showToast(toastMsg);
-        } catch (e) {
-            console.error('Copy failed', e);
-        }
-        document.body.removeChild(ta);
-    }
-
-    window.copyRaw = function(text) {
-        if (!text) return;
-        const toCopy = text.trim();
-        const displayLabel = toCopy.includes(' ') ? toCopy : (toCopy.startsWith('.') ? toCopy : '.' + toCopy);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(toCopy).then(() => {
-                showToast(`Copied: "${displayLabel}"`);
-            }).catch(() => {
-                fallbackCopy(toCopy, `Copied: "${displayLabel}"`);
-            });
-        } else {
-            fallbackCopy(toCopy, `Copied: "${displayLabel}"`);
-        }
-    };
-
-    window.copySnippetFromCard = function(btn) {
-        const card = btn.closest('.cs-card');
-        if (!card) return;
-        const codeBlock = card.querySelector('.cs-card__code pre code');
-        let htmlToCopy = '';
-        if (codeBlock) {
-            htmlToCopy = codeBlock.textContent.trim();
-        } else {
-            const preview = card.querySelector('.cs-card__preview');
-            if (preview) {
-                const container = preview.querySelector('.l-container');
-                const target = (container && container.firstElementChild) ? container.firstElementChild : preview.firstElementChild || preview;
-                htmlToCopy = target.outerHTML || target.innerHTML.trim();
-            }
-        }
-
-        if (htmlToCopy) {
-            htmlToCopy = htmlToCopy.replace(/src=["'](?:\.\.\/)+assets\//g, 'src="./assets/');
-            htmlToCopy = normalizeIndentation(htmlToCopy);
-            htmlToCopy = htmlToCopy.replace(/\bhref=["']#["']/gi, 'href=""');
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(htmlToCopy).then(() => {
-                    showToast('Copied HTML snippet to clipboard!');
-                }).catch(() => {
-                    fallbackCopy(htmlToCopy, 'Copied HTML snippet to clipboard!');
+                function fallbackCopy(text, toastMsg) {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try {
+                        document.execCommand('copy');
+                        if (toastMsg) showToast(toastMsg);
+                    } catch (e) {
+                        console.error('Copy failed', e);
+                    }
+                    document.body.removeChild(ta);
+                }
+                window.copyRaw = function(text) {
+                    if (!text) return;
+                    const toCopy = text.trim();
+                    const displayLabel = toCopy.includes(' ') ? toCopy : (toCopy.startsWith('.') ? toCopy : '.' + toCopy);
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(toCopy).then(() => {
+                            showToast(`Copied: "${displayLabel}"`);
+                        }).catch(() => {
+                            fallbackCopy(toCopy, `Copied: "${displayLabel}"`);
+                        });
+                    } else {
+                        fallbackCopy(toCopy, `Copied: "${displayLabel}"`);
+                    }
+                };
+                window.copySnippetFromCard = function(btn) {
+                    const card = btn.closest('.cs-card');
+                    if (!card) return;
+                    const codeBlock = card.querySelector('.cs-card__code pre code');
+                    let htmlToCopy = '';
+                    if (codeBlock) {
+                        htmlToCopy = codeBlock.textContent.trim();
+                    } else {
+                        const preview = card.querySelector('.cs-card__preview');
+                        if (preview) {
+                            const container = preview.querySelector('.l-container');
+                            const target = (container && container.firstElementChild) ? container.firstElementChild : preview.firstElementChild || preview;
+                            htmlToCopy = target.outerHTML || target.innerHTML.trim();
+                        }
+                    }
+                    if (htmlToCopy) {
+                        htmlToCopy = htmlToCopy.replace(/src=["'](?:\.\.\/)+assets\//g, 'src="./assets/');
+                        htmlToCopy = normalizeIndentation(htmlToCopy);
+                        htmlToCopy = htmlToCopy.replace(/\bhref=["']#["']/gi, 'href=""');
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(htmlToCopy).then(() => {
+                                showToast('Copied HTML snippet to clipboard!');
+                            }).catch(() => {
+                                fallbackCopy(htmlToCopy, 'Copied HTML snippet to clipboard!');
+                            });
+                        } else {
+                            fallbackCopy(htmlToCopy, 'Copied HTML snippet to clipboard!');
+                        }
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '✅ Copied!';
+                        btn.style.background = '#10b981';
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.style.background = '';
+                        }, 1200);
+                    }
+                };
+                window.toggleCodeAccordion = function(btn) {
+                    const card = btn.closest('.cs-card');
+                    if (!card) return;
+                    const code = card.querySelector('.cs-card__code');
+                    if (!code) return;
+                    code.classList.toggle('is-open');
+                    btn.textContent = code.classList.contains('is-open') ? 'Hide Code' : 'Code';
+                };
+                // Prevent demo links inside card previews from reloading or navigating away
+                document.addEventListener('click', function(e) {
+                    const previewLink = e.target.closest('.cs-card__preview a');
+                    if (previewLink) {
+                        e.preventDefault();
+                    }
                 });
-            } else {
-                fallbackCopy(htmlToCopy, 'Copied HTML snippet to clipboard!');
-            }
+                // Helper to build dynamic Card element
+                function normalizeIndentation(html) {
+                    if (!html) return '';
+                    const trimmed = html.trim();
+                    const lines = trimmed.split(/\r?\n/);
+                    if (lines.length <= 1) return trimmed;
+                    let minIndent = Infinity;
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.trim().length === 0) continue;
+                        const m = line.match(/^(\s*)/);
+                        const len = m ? m[1].length : 0;
+                        if (len < minIndent) {
+                            minIndent = len;
+                        }
+                    }
+                    if (minIndent === Infinity || minIndent === 0) {
+                        return lines.map(l => l.trimEnd()).join('\n').trim();
+                    }
+                    const result = [lines[0].trim()];
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.trim().length === 0) {
+                            result.push('');
+                        } else {
+                            result.push(line.slice(minIndent).trimEnd());
+                        }
+                    }
+                    return result.join('\n').trim();
+                }
 
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '✅ Copied!';
-            btn.style.background = '#10b981';
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.style.background = '';
-            }, 1200);
-        }
-    };
-
-    window.toggleCodeAccordion = function(btn) {
-        const card = btn.closest('.cs-card');
-        if (!card) return;
-        const code = card.querySelector('.cs-card__code');
-        if (!code) return;
-        code.classList.toggle('is-open');
-        btn.textContent = code.classList.contains('is-open') ? 'Hide Code' : 'Code';
-    };
-
-    // Prevent demo links inside card previews from reloading or navigating away
-    document.addEventListener('click', function(e) {
-        const previewLink = e.target.closest('.cs-card__preview a');
-        if (previewLink) {
-            e.preventDefault();
-        }
-    });
-
-    // Helper to build dynamic Card element
-    
-    function normalizeIndentation(html) {
-        if (!html) return '';
-        const trimmed = html.trim();
-        const lines = trimmed.split(/\r?\n/);
-        if (lines.length <= 1) return trimmed;
-
-        let minIndent = Infinity;
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i];
-            if (line.trim().length === 0) continue;
-            const m = line.match(/^(\s*)/);
-            const len = m ? m[1].length : 0;
-            if (len < minIndent) {
-                minIndent = len;
-            }
-        }
-
-        if (minIndent === Infinity || minIndent === 0) {
-            return lines.map(l => l.trimEnd()).join('\n').trim();
-        }
-
-        const result = [lines[0].trim()];
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i];
-            if (line.trim().length === 0) {
-                result.push('');
-            } else {
-                result.push(line.slice(minIndent).trimEnd());
-            }
-        }
-
-        return result.join('\n').trim();
-    }
-
-    function buildCard(el, title, fullClass, isInline = false, isLeft = false) {
-        // If element is wrapped in .l-container, target the inner component for snippet and class badge
-        let snippetEl = el;
-        let effectiveClass = fullClass;
-
-        if (el.classList && el.classList.contains('l-container') && el.firstElementChild) {
-            snippetEl = el.firstElementChild;
-            effectiveClass = snippetEl.className || fullClass;
-        }
-
-        effectiveClass = (effectiveClass || '').trim().replace(/\s+/g, ' ');
-
-        // Normalize href="#" to href="" on preview DOM
-        if (snippetEl.tagName === 'A' && snippetEl.getAttribute('href') === '#') {
-            snippetEl.setAttribute('href', '');
-        }
-        snippetEl.querySelectorAll('a[href="#"]').forEach(a => a.setAttribute('href', ''));
-
-        const card = document.createElement('div');
-        card.className = `cs-card ${isInline ? 'cs-card--inline-block' : 'cs-card--full'}`;
-        card.setAttribute('data-search', `${title} ${effectiveClass}`.toLowerCase());
-
-        // Escape HTML for code block
-        let cleanHtml = snippetEl.outerHTML;
-        cleanHtml = cleanHtml.replace(/src=["'](?:\.\.\/)+assets\//g, 'src="./assets/');
-        cleanHtml = cleanHtml.replace(/\bhref=["']#["']/gi, 'href=""');
-        cleanHtml = normalizeIndentation(cleanHtml);
-        const escaped = cleanHtml
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-
-        // Build individual badges for each class token so all classes are displayed
-        const classTokens = effectiveClass.split(/\s+/).filter(Boolean);
-        const badgesHtml = classTokens.map(c => {
-            const cleanC = c.replace(/^\./, '');
-            return `<span class="cs-card__class-tag" title="Click to copy .${cleanC}" onclick="event.stopPropagation(); copyRaw('${cleanC}')">.${cleanC}</span>`;
-        }).join(' ');
-
-        card.innerHTML = `
+                function buildCard(el, title, fullClass, isInline = false, isLeft = false) {
+                    // If element is wrapped in .l-container, target the inner component for snippet and class badge
+                    let snippetEl = el;
+                    let effectiveClass = fullClass;
+                    if (el.classList && el.classList.contains('l-container') && el.firstElementChild) {
+                        snippetEl = el.firstElementChild;
+                        effectiveClass = snippetEl.className || fullClass;
+                    }
+                    effectiveClass = (effectiveClass || '').trim().replace(/\s+/g, ' ');
+                    // Normalize href="#" to href="" on preview DOM
+                    if (snippetEl.tagName === 'A' && snippetEl.getAttribute('href') === '#') {
+                        snippetEl.setAttribute('href', '');
+                    }
+                    snippetEl.querySelectorAll('a[href="#"]').forEach(a => a.setAttribute('href', ''));
+                    const card = document.createElement('div');
+                    card.className = `cs-card ${isInline ? 'cs-card--inline-block' : 'cs-card--full'}`;
+                    card.setAttribute('data-search', `${title} ${effectiveClass}`.toLowerCase());
+                    // Escape HTML for code block
+                    let cleanHtml = snippetEl.outerHTML;
+                    cleanHtml = cleanHtml.replace(/src=["'](?:\.\.\/)+assets\//g, 'src="./assets/');
+                    cleanHtml = cleanHtml.replace(/\bhref=["']#["']/gi, 'href=""');
+                    cleanHtml = normalizeIndentation(cleanHtml);
+                    const escaped = cleanHtml
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+                    // Build individual badges for each class token so all classes are displayed
+                    const classTokens = effectiveClass.split(/\s+/).filter(Boolean);
+                    const badgesHtml = classTokens.map(c => {
+                        const cleanC = c.replace(/^\./, '');
+                        return `<span class="cs-card__class-tag" title="Click to copy .${cleanC}" onclick="event.stopPropagation(); copyRaw('${cleanC}')">.${cleanC}</span>`;
+                    }).join(' ');
+                    card.innerHTML = `
             <div class="cs-card__toolbar">
                 <span class="cs-card__title">${title}</span>
                 <div class="cs-card__actions">
@@ -1554,353 +929,319 @@ body {
                 <pre><code>${escaped}</code></pre>
             </div>
         `;
-
-        card.querySelector('.cs-card__preview').appendChild(el);
-        return card;
-    }
-
-    // Helper to format friendly title from class
-    function formatComponentTitle(cls) {
-        if (!cls) return 'Component';
-        let clean = cls.replace(/^c-/, '').replace(/^l-/, '');
-        if (clean.includes('--cl3')) return 'Grid (3 Columns)';
-        if (clean.includes('--cl4')) return 'Grid (4 Columns)';
-        if (clean.includes('--cl5')) return 'Grid (5 Columns)';
-        if (clean.includes('--middle') && clean.includes('--reverse')) return 'Flex (Reverse + Middle)';
-        if (clean.includes('--equal')) return 'Flex Equal 50/50';
-        if (clean.includes('--reverse')) return clean.includes('btn') ? 'Button Reverse' : 'Flex Reverse';
-        if (clean.includes('--arrow-between')) return 'Button Arrow Between';
-        if (clean.includes('--arrow-center')) return 'Button Arrow Center';
-        if (clean.includes('--arrow')) return 'Button with Arrow';
-        if (clean.includes('--blank')) return 'Link External (Blank)';
-        if (clean.includes('--line')) return 'Heading Line';
-        if (clean.includes('--dot')) return 'Heading Dot';
-        if (cls.startsWith('c-ttl')) {
-            const m = cls.match(/c-ttl(\d+)/);
-            if (m) return `Heading ${m[1]}px`;
-        }
-        if (cls.startsWith('c-txt')) {
-            const m = cls.match(/c-txt(\d+)/);
-            if (m) return `Text ${m[1]}px`;
-        }
-        return clean.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    }
-
-    // Helper to find immediately preceding HTML comment before an element
-    function getPrecedingComment(node) {
-        if (!node) return null;
-        let prev = node.previousSibling;
-        while (prev) {
-            if (prev.nodeType === 8) { // Comment node
-                let text = (prev.nodeValue || '').trim();
-                text = text.replace(/^[\s*#-]+/, '').replace(/[\s*#-]+$/, '').trim();
-                if (text && !text.startsWith('[') && !text.startsWith('vite') && !text.startsWith('webpack')) {
-                    return text;
+                    card.querySelector('.cs-card__preview').appendChild(el);
+                    return card;
                 }
-            } else if (prev.nodeType === 1) { // Hit preceding element -> stop
-                break;
-            } else if (prev.nodeType === 3 && prev.nodeValue && prev.nodeValue.trim() !== '') {
-                break;
-            }
-            prev = prev.previousSibling;
-        }
-        return null;
-    }
-
-    // Universal Component Extractor: extracts any element with c-* or l-*
-    function extractComponentItems(raw) {
-        const items = [];
-        const seenElements = new Set();
-
-        function processNode(node, currentWrapper = null) {
-            if (!node || node.nodeType !== 1) return;
-
-            const classStr = node.className || '';
-            let wrapper = currentWrapper;
-
-            // Check if node is a component wrapper (p-component__item, etc.)
-            if (typeof classStr === 'string' && classStr.includes('p-component__')) {
-                wrapper = node;
-                Array.from(node.children).forEach(child => processNode(child, wrapper));
-                return;
-            }
-
-            // Multi-child l-container wrapper
-            if (node.classList.contains('l-container') && node.children.length > 1) {
-                Array.from(node.children).forEach(child => processNode(child, wrapper));
-                return;
-            }
-
-            // Check if element is wrapped in a single-child .l-container
-            let snippetTarget = node;
-            if (node.classList && node.classList.contains('l-container') && node.children.length === 1) {
-                snippetTarget = node.firstElementChild;
-            }
-
-            const classList = Array.from(snippetTarget.classList || []);
-            const flocssClass = classList.find(c => /^[cl]-[a-zA-Z0-9_-]+/.test(c) && c !== 'l-container' && !c.startsWith('p-component') && !c.includes('__')) ||
-                                classList.find(c => /^[cl]-[a-zA-Z0-9_-]+/.test(c) && c !== 'l-container' && !c.startsWith('p-component'));
-
-            if (flocssClass) {
-                if (!seenElements.has(snippetTarget)) {
-                    seenElements.add(snippetTarget);
-                    const comment = getPrecedingComment(snippetTarget) || 
-                                  getPrecedingComment(node) || 
-                                  (node.parentElement && node.parentElement !== raw ? getPrecedingComment(node.parentElement) : null);
-                    
-                    const isInline = wrapper ? (
-                        wrapper.classList.contains('p-component__item--inline-block') || 
-                        (typeof wrapper.className === 'string' && wrapper.className.includes('inline-block'))
-                    ) : false;
-
-                    items.push({
-                        domElement: node,
-                        snippetElement: snippetTarget,
-                        tagClass: flocssClass,
-                        fullClass: snippetTarget.className,
-                        commentTitle: comment,
-                        isInline: isInline,
-                        wrapperNode: wrapper
-                    });
+                // Helper to format friendly title from class
+                function formatComponentTitle(cls) {
+                    if (!cls) return 'Component';
+                    let clean = cls.replace(/^c-/, '').replace(/^l-/, '');
+                    if (clean.includes('--cl3')) return 'Grid (3 Columns)';
+                    if (clean.includes('--cl4')) return 'Grid (4 Columns)';
+                    if (clean.includes('--cl5')) return 'Grid (5 Columns)';
+                    if (clean.includes('--middle') && clean.includes('--reverse')) return 'Flex (Reverse + Middle)';
+                    if (clean.includes('--equal')) return 'Flex Equal 50/50';
+                    if (clean.includes('--reverse')) return clean.includes('btn') ? 'Button Reverse' : 'Flex Reverse';
+                    if (clean.includes('--arrow-between')) return 'Button Arrow Between';
+                    if (clean.includes('--arrow-center')) return 'Button Arrow Center';
+                    if (clean.includes('--arrow')) return 'Button with Arrow';
+                    if (clean.includes('--blank')) return 'Link External (Blank)';
+                    if (clean.includes('--line')) return 'Heading Line';
+                    if (clean.includes('--dot')) return 'Heading Dot';
+                    if (cls.startsWith('c-ttl')) {
+                        const m = cls.match(/c-ttl(\d+)/);
+                        if (m) return `Heading ${m[1]}px`;
+                    }
+                    if (cls.startsWith('c-txt')) {
+                        const m = cls.match(/c-txt(\d+)/);
+                        if (m) return `Text ${m[1]}px`;
+                    }
+                    return clean.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
                 }
-                return;
-            }
+                // Helper to find immediately preceding HTML comment before an element
+                function getPrecedingComment(node) {
+                    if (!node) return null;
+                    let prev = node.previousSibling;
+                    while (prev) {
+                        if (prev.nodeType === 8) { // Comment node
+                            let text = (prev.nodeValue || '').trim();
+                            text = text.replace(/^[\s*#-]+/, '').replace(/[\s*#-]+$/, '').trim();
+                            if (text && !text.startsWith('[') && !text.startsWith('vite') && !text.startsWith('webpack')) {
+                                return text;
+                            }
+                        } else if (prev.nodeType === 1) { // Hit preceding element -> stop
+                            break;
+                        } else if (prev.nodeType === 3 && prev.nodeValue && prev.nodeValue.trim() !== '') {
+                            break;
+                        }
+                        prev = prev.previousSibling;
+                    }
+                    return null;
+                }
+                // Universal Component Extractor: extracts any element with c-* or l-*
+                function extractComponentItems(raw) {
+                    const items = [];
+                    const seenElements = new Set();
 
-            // If this node didn't directly match, check its children
-            Array.from(node.children).forEach(child => processNode(child, wrapper));
-        }
-
-        Array.from(raw.children).forEach(child => processNode(child, null));
-
-        // Fallback: if nothing matched at all, take the first child
-        if (items.length === 0 && raw.firstElementChild) {
-            const el = raw.firstElementChild;
-            const inner = el.querySelector('[class*="c-"], [class*="l-"]') || el;
-            const cls = Array.from(inner.classList || []).find(c => /^[cl]-/.test(c)) || 'component';
-            const isInline = el.classList.contains('p-component__item--inline-block') || 
+                    function processNode(node, currentWrapper = null) {
+                        if (!node || node.nodeType !== 1) return;
+                        const classStr = node.className || '';
+                        let wrapper = currentWrapper;
+                        // Check if node is a component wrapper (p-component__item, etc.)
+                        if (typeof classStr === 'string' && classStr.includes('p-component__')) {
+                            wrapper = node;
+                            Array.from(node.children).forEach(child => processNode(child, wrapper));
+                            return;
+                        }
+                        // Multi-child l-container wrapper
+                        if (node.classList.contains('l-container') && node.children.length > 1) {
+                            Array.from(node.children).forEach(child => processNode(child, wrapper));
+                            return;
+                        }
+                        // Check if element is wrapped in a single-child .l-container
+                        let snippetTarget = node;
+                        if (node.classList && node.classList.contains('l-container') && node.children.length === 1) {
+                            snippetTarget = node.firstElementChild;
+                        }
+                        const classList = Array.from(snippetTarget.classList || []);
+                        const flocssClass = classList.find(c => /^[cl]-[a-zA-Z0-9_-]+/.test(c) && c !== 'l-container' && !c.startsWith('p-component') && !c.includes('__')) ||
+                            classList.find(c => /^[cl]-[a-zA-Z0-9_-]+/.test(c) && c !== 'l-container' && !c.startsWith('p-component'));
+                        if (flocssClass) {
+                            if (!seenElements.has(snippetTarget)) {
+                                seenElements.add(snippetTarget);
+                                const comment = getPrecedingComment(snippetTarget) ||
+                                    getPrecedingComment(node) ||
+                                    (node.parentElement && node.parentElement !== raw ? getPrecedingComment(node.parentElement) : null);
+                                const isInline = wrapper ? (
+                                    wrapper.classList.contains('p-component__item--inline-block') ||
+                                    (typeof wrapper.className === 'string' && wrapper.className.includes('inline-block'))
+                                ) : false;
+                                items.push({
+                                    domElement: node,
+                                    snippetElement: snippetTarget,
+                                    tagClass: flocssClass,
+                                    fullClass: snippetTarget.className,
+                                    commentTitle: comment,
+                                    isInline: isInline,
+                                    wrapperNode: wrapper
+                                });
+                            }
+                            return;
+                        }
+                        // If this node didn't directly match, check its children
+                        Array.from(node.children).forEach(child => processNode(child, wrapper));
+                    }
+                    Array.from(raw.children).forEach(child => processNode(child, null));
+                    // Fallback: if nothing matched at all, take the first child
+                    if (items.length === 0 && raw.firstElementChild) {
+                        const el = raw.firstElementChild;
+                        const inner = el.querySelector('[class*="c-"], [class*="l-"]') || el;
+                        const cls = Array.from(inner.classList || []).find(c => /^[cl]-/.test(c)) || 'component';
+                        const isInline = el.classList.contains('p-component__item--inline-block') ||
                             (typeof el.className === 'string' && el.className.includes('inline-block'));
-            items.push({
-                domElement: el,
-                snippetElement: inner,
-                tagClass: cls,
-                fullClass: inner.className || '',
-                commentTitle: getPrecedingComment(el),
-                isInline: isInline,
-                wrapperNode: el
-            });
-        }
-
-        return items;
-    }
-
-    // Transform included content blocks into individual Cards dynamically
-    function transformSections() {
-        const sections = document.querySelectorAll('.cs-section');
-        let totalItems = 0;
-
-        sections.forEach(sec => {
-            const title = sec.getAttribute('data-title') || '';
-            const file = sec.getAttribute('data-file') || '';
-            const raw = sec.querySelector('.cs-raw-content');
-            if (!raw) return;
-
-            // Create Section Header
-            const header = document.createElement('div');
-            header.className = 'cs-section__header';
-            header.innerHTML = `
+                        items.push({
+                            domElement: el,
+                            snippetElement: inner,
+                            tagClass: cls,
+                            fullClass: inner.className || '',
+                            commentTitle: getPrecedingComment(el),
+                            isInline: isInline,
+                            wrapperNode: el
+                        });
+                    }
+                    return items;
+                }
+                // Transform included content blocks into individual Cards dynamically
+                function transformSections() {
+                    const sections = document.querySelectorAll('.cs-section');
+                    let totalItems = 0;
+                    sections.forEach(sec => {
+                        const title = sec.getAttribute('data-title') || '';
+                        const file = sec.getAttribute('data-file') || '';
+                        const raw = sec.querySelector('.cs-raw-content');
+                        if (!raw) return;
+                        // Create Section Header
+                        const header = document.createElement('div');
+                        header.className = 'cs-section__header';
+                        header.innerHTML = `
                 <h2 class="cs-section__title">${title}</h2>
                 <span class="cs-section__file">📁 ${file}</span>
             `;
-
-            const cardsContainer = document.createElement('div');
-            cardsContainer.className = 'cs-cards-container';
-
-            const items = extractComponentItems(raw);
-
-            let currentGroup = null;
-            let currentWrapper = null;
-            let currentIsInline = null;
-
-            items.forEach((item) => {
-                const isInline = !!item.isInline;
-                const wrapper = item.wrapperNode;
-
-                const shouldNewGroup = !currentGroup || 
-                    (wrapper ? wrapper !== currentWrapper : (currentWrapper !== null || isInline !== currentIsInline));
-
-                if (shouldNewGroup) {
-                    currentGroup = document.createElement('div');
-                    currentGroup.className = isInline ? 'cs-group cs-group--inline-block' : 'cs-group cs-group--full';
-                    cardsContainer.appendChild(currentGroup);
-                    currentWrapper = wrapper;
-                    currentIsInline = isInline;
-                }
-
-                const fullCls = (item.fullClass || item.tagClass || '').trim();
-                const name = item.commentTitle || formatComponentTitle(fullCls);
-                const isLeft = fullCls.includes('c-txt') || fullCls.includes('c-ttl') || fullCls.includes('c-title') || fullCls.includes('c-link');
-                const card = buildCard(item.domElement, name, fullCls, isInline, isLeft);
-                currentGroup.appendChild(card);
-                totalItems++;
-            });
-
-            if (items.length === 0) {
-                const emptyNotice = document.createElement('div');
-                emptyNotice.className = 'cs-card cs-card--full';
-                emptyNotice.innerHTML = '<div class="cs-card__preview" style="color: #94a3b8; font-style: italic; padding: 20px; text-align: center;">Chưa có component nào trong module này. Hãy thêm class FLOCSS (c-* hoặc l-*) để hiển thị.</div>';
-                cardsContainer.appendChild(emptyNotice);
-            }
-
-            raw.remove();
-            sec.appendChild(header);
-            sec.appendChild(cardsContainer);
-        });
-
-        const totalBadge = document.getElementById('cs-total-components');
-        if (totalBadge) {
-            totalBadge.innerHTML = `Components: <strong>${totalItems} items</strong>`;
-        }
-    }
-
-    // Execute transformation
-    transformSections();
-
-    // Live Search
-    const searchInput = document.getElementById('cs-filter-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const val = e.target.value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.cs-card');
-            const sections = document.querySelectorAll('.cs-section');
-
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                const searchMeta = (card.getAttribute('data-search') || '').toLowerCase();
-                if (text.includes(val) || searchMeta.includes(val)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            sections.forEach(sec => {
-                const groups = sec.querySelectorAll('.cs-group');
-                groups.forEach(grp => {
-                    const visibleInGroup = grp.querySelectorAll('.cs-card:not([style*="display: none"])');
-                    grp.style.display = (visibleInGroup.length === 0 && val !== '') ? 'none' : '';
-                });
-                const visible = sec.querySelectorAll('.cs-card:not([style*="display: none"])');
-                sec.style.display = (visible.length === 0 && val !== '') ? 'none' : '';
-            });
-        });
-    }
-
-    // Highlight active sidebar link on scroll & smooth anchor scroll
-    const navLinks = document.querySelectorAll('.cs-nav__link');
-    const sections = document.querySelectorAll('.cs-section');
-    let isSmoothScrolling = false;
-    let scrollTimeout = null;
-
-    // Smooth click handler - completely eliminates anchor stutter / jitter
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (!href || !href.startsWith('#')) return;
-            const target = document.querySelector(href);
-            if (!target) return;
-
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-
-            // 1. Immediately activate clicked item (no lag, no flash)
-            navLinks.forEach(l => l.classList.remove('is-active'));
-            this.classList.add('is-active');
-
-            // 2. Lock scroll spy during smooth animation
-            isSmoothScrolling = true;
-
-            // 3. Smooth scroll directly to target section
-            const targetTop = target.getBoundingClientRect().top + window.pageYOffset - 24;
-            window.scrollTo({
-                top: Math.max(0, targetTop),
-                behavior: 'smooth'
-            });
-
-            if (window.history && window.history.pushState) {
-                window.history.pushState(null, '', href);
-            }
-
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                isSmoothScrolling = false;
-            }, 750);
-        });
-    });
-
-    // Passive, optimized ScrollSpy without layout thrashing
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (isSmoothScrolling) return;
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                let current = '';
-                sections.forEach(section => {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= 140 && rect.bottom > 60) {
-                        current = '#' + section.getAttribute('id');
-                    }
-                });
-
-                if (current) {
-                    navLinks.forEach(link => {
-                        if (link.getAttribute('href') === current) {
-                            link.classList.add('is-active');
-                        } else {
-                            link.classList.remove('is-active');
+                        const cardsContainer = document.createElement('div');
+                        cardsContainer.className = 'cs-cards-container';
+                        const items = extractComponentItems(raw);
+                        let currentGroup = null;
+                        let currentWrapper = null;
+                        let currentIsInline = null;
+                        items.forEach((item) => {
+                            const isInline = !!item.isInline;
+                            const wrapper = item.wrapperNode;
+                            const shouldNewGroup = !currentGroup ||
+                                (wrapper ? wrapper !== currentWrapper : (currentWrapper !== null || isInline !== currentIsInline));
+                            if (shouldNewGroup) {
+                                currentGroup = document.createElement('div');
+                                currentGroup.className = isInline ? 'cs-group cs-group--inline-block' : 'cs-group cs-group--full';
+                                cardsContainer.appendChild(currentGroup);
+                                currentWrapper = wrapper;
+                                currentIsInline = isInline;
+                            }
+                            const fullCls = (item.fullClass || item.tagClass || '').trim();
+                            const name = item.commentTitle || formatComponentTitle(fullCls);
+                            const isLeft = fullCls.includes('c-txt') || fullCls.includes('c-ttl') || fullCls.includes('c-title') || fullCls.includes('c-link');
+                            const card = buildCard(item.domElement, name, fullCls, isInline, isLeft);
+                            currentGroup.appendChild(card);
+                            totalItems++;
+                        });
+                        if (items.length === 0) {
+                            const emptyNotice = document.createElement('div');
+                            emptyNotice.className = 'cs-card cs-card--full';
+                            emptyNotice.innerHTML = '<div class="cs-card__preview" style="color: #94a3b8; font-style: italic; padding: 20px; text-align: center;">Chưa có component nào trong module này. Hãy thêm class FLOCSS (c-* hoặc l-*) để hiển thị.</div>';
+                            cardsContainer.appendChild(emptyNotice);
                         }
+                        raw.remove();
+                        sec.appendChild(header);
+                        sec.appendChild(cardsContainer);
+                    });
+                    const totalBadge = document.getElementById('cs-total-components');
+                    if (totalBadge) {
+                        totalBadge.innerHTML = `Components: <strong>${totalItems} items</strong>`;
+                    }
+                }
+                // Execute transformation
+                transformSections();
+                // Live Search
+                const searchInput = document.getElementById('cs-filter-input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', function(e) {
+                        const val = e.target.value.toLowerCase().trim();
+                        const cards = document.querySelectorAll('.cs-card');
+                        const sections = document.querySelectorAll('.cs-section');
+                        cards.forEach(card => {
+                            const text = card.textContent.toLowerCase();
+                            const searchMeta = (card.getAttribute('data-search') || '').toLowerCase();
+                            if (text.includes(val) || searchMeta.includes(val)) {
+                                card.style.display = '';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                        sections.forEach(sec => {
+                            const groups = sec.querySelectorAll('.cs-group');
+                            groups.forEach(grp => {
+                                const visibleInGroup = grp.querySelectorAll('.cs-card:not([style*="display: none"])');
+                                grp.style.display = (visibleInGroup.length === 0 && val !== '') ? 'none' : '';
+                            });
+                            const visible = sec.querySelectorAll('.cs-card:not([style*="display: none"])');
+                            sec.style.display = (visible.length === 0 && val !== '') ? 'none' : '';
+                        });
                     });
                 }
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }, { passive: true });
-})();
-</script>
-    
-      <footer class="c-footer">
-    <div class="l-container">
-        <div class="c-footer__inner">
-            <div class="c-footer-logo">
-                <a href="./../" class="c-footer-logo__link">
-                    <img src="./../assets/images/common/img_logo.webp" alt="">
-                </a>
+                // Highlight active sidebar link on scroll & smooth anchor scroll
+                const navLinks = document.querySelectorAll('.cs-nav__link');
+                const sections = document.querySelectorAll('.cs-section');
+                let isSmoothScrolling = false;
+                let scrollTimeout = null;
+                // Smooth click handler - completely eliminates anchor stutter / jitter
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        if (!href || !href.startsWith('#')) return;
+                        const target = document.querySelector(href);
+                        if (!target) return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        // 1. Immediately activate clicked item (no lag, no flash)
+                        navLinks.forEach(l => l.classList.remove('is-active'));
+                        this.classList.add('is-active');
+                        // 2. Lock scroll spy during smooth animation
+                        isSmoothScrolling = true;
+                        // 3. Smooth scroll directly to target section
+                        const targetTop = target.getBoundingClientRect().top + window.pageYOffset - 24;
+                        window.scrollTo({
+                            top: Math.max(0, targetTop),
+                            behavior: 'smooth'
+                        });
+                        if (window.history && window.history.pushState) {
+                            window.history.pushState(null, '', href);
+                        }
+                        clearTimeout(scrollTimeout);
+                        scrollTimeout = setTimeout(() => {
+                            isSmoothScrolling = false;
+                        }, 750);
+                    });
+                });
+                // Passive, optimized ScrollSpy without layout thrashing
+                let ticking = false;
+                window.addEventListener('scroll', () => {
+                    if (isSmoothScrolling) return;
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            let current = '';
+                            sections.forEach(section => {
+                                const rect = section.getBoundingClientRect();
+                                if (rect.top <= 140 && rect.bottom > 60) {
+                                    current = '#' + section.getAttribute('id');
+                                }
+                            });
+                            if (current) {
+                                navLinks.forEach(link => {
+                                    if (link.getAttribute('href') === current) {
+                                        link.classList.add('is-active');
+                                    } else {
+                                        link.classList.remove('is-active');
+                                    }
+                                });
+                            }
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }, {
+                    passive: true
+                });
+            })();
+        </script>
+
+        <footer class="c-footer">
+            <div class="l-container">
+                <div class="c-footer__inner">
+                    <div class="c-footer-logo">
+                        <a href="./../" class="c-footer-logo__link">
+                            <img src="./../assets/images/common/img_logo.webp" alt="">
+                        </a>
+                    </div>
+                    <ul class="c-footer-list">
+                        <li class="c-footer-list__item">
+                            <a href="./../" class="c-footer-link">リンク</a>
+                        </li>
+                        <li class="c-footer-list__item">
+                            <a href="./../" class="c-footer-link">リンク</a>
+                        </li>
+                        <li class="c-footer-list__item">
+                            <a href="./../" class="c-footer-link">リンク</a>
+                        </li>
+                        <li class="c-footer-list__item">
+                            <a href="./../" class="c-footer-link">リンク</a>
+                        </li>
+                    </ul>
+                </div>
+                <p class="c-footer-copy">J-line Corporation ©copyright</p>
             </div>
-            <ul class="c-footer-list">
-                <li class="c-footer-list__item">
-                    <a href="./../" class="c-footer-link">リンク</a>
-                </li>
-                <li class="c-footer-list__item">
-                    <a href="./../" class="c-footer-link">リンク</a>
-                </li>
-                <li class="c-footer-list__item">
-                    <a href="./../" class="c-footer-link">リンク</a>
-                </li>
-                <li class="c-footer-list__item">
-                    <a href="./../" class="c-footer-link">リンク</a>
-                </li>
-            </ul>
+            <a href="#wrapper" class="c-totop">pagetop</a>
+        </footer>
+        <div data-gdpr="wrap" id="cookiewrap" class="c-cookiewrap">
+            <div class="c-cookiewrap__inner">
+                <p class="c-cookiewrap__close"><a href="javascript:void(0)" data-gdpr="button">同意する</a></p>
+                <p class="c-cookiewrap__txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href="" class="c-cookiewrap__link">プライバシーポリシー</a>」をご覧ください。</p>
+            </div>
         </div>
-        <p class="c-footer-copy">J-line Corporation ©copyright</p>
+        <div data-gdpr="wrap" id="cookiewrap" class="c-cookiewrap">
+            <div class="c-cookiewrap__inner">
+                <p class="c-cookiewrap__close"><a href="javascript:void(0)" data-gdpr="button">同意する</a></p>
+                <p class="c-cookiewrap__txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href="" class="c-cookiewrap__link">プライバシーポリシー</a>」をご覧ください。</p>
+            </div>
+        </div>
     </div>
-    <a href="#wrapper" class="c-totop">pagetop</a>
-</footer>    <div data-gdpr="wrap" id="cookiewrap" class="c-cookiewrap">
-      <div class="c-cookiewrap__inner">
-        <p class="c-cookiewrap__close"><a href="javascript:void(0)" data-gdpr="button" >同意する</a></p>
-        <p class="c-cookiewrap__txt">当サイトではCookieを使用します。Cookieの使用に関する詳細は「<a href="" class="c-cookiewrap__link">プライバシーポリシー</a>」をご覧ください。</p>
-      </div>      
-    </div>
-  </div>
 </body>
 </html>
