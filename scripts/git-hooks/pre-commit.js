@@ -25,19 +25,21 @@ function checkConflictMarkers() {
     const stagedFiles = run('git diff --cached --name-only').split('\n').map(f => f.trim()).filter(Boolean);
     const srcFiles = stagedFiles.filter(f => f.startsWith('src/'));
 
-    const conflictPatterns = [/<<<<<<< HEAD/, /=======/, />>>>>>> /];
+    // Chỉ khớp chính xác với conflict marker của Git ở đầu dòng:
+    // <<<<<<< [nhánh/commit]
+    // =======
+    // >>>>>>> [nhánh/commit]
+    const conflictMarkerRegex = /^<{7}\s|^={7}\r?$|^>{7}\s/m;
 
     for (const file of srcFiles) {
       const fullPath = resolve(ROOT, file);
       try {
         const content = readFileSync(fullPath, 'utf8');
-        for (const pattern of conflictPatterns) {
-          if (pattern.test(content)) {
-            console.error(`\n❌ [pre-commit] PHÁT HIỆN CONFLICT MARKER CHƯA GIẢI QUYẾT:`);
-            console.error(`   File: ${file}`);
-            console.error(`   Vui lòng mở file và hoàn thành giải quyết conflict trước khi commit!\n`);
-            process.exit(1);
-          }
+        if (conflictMarkerRegex.test(content)) {
+          console.error(`\n❌ [pre-commit] PHÁT HIỆN CONFLICT MARKER CHƯA GIẢI QUYẾT:`);
+          console.error(`   File: ${file}`);
+          console.error(`   Vui lòng mở file và hoàn thành giải quyết conflict trước khi commit!\n`);
+          process.exit(1);
         }
       } catch {
         // Binary or deleted file, skip

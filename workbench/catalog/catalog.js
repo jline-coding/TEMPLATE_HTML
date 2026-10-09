@@ -548,7 +548,7 @@
         const card = btn.closest('.cs-card');
         const scssCode = card?.querySelector('.cs-code-panel--scss code')?.textContent?.trim() || '';
         const sec = btn.closest('.cs-section');
-        const hasJs = !!card?.querySelector('.cs-code-panel--js') || sec?.getAttribute('data-has-js') === 'true';
+        const hasJs = !!card?.querySelector('.cs-code-panel--js');
 
         if (hasJs) {
             openJsModal(compName, title, function(targetJsFile) {
@@ -802,11 +802,15 @@
         // Support single or multiple root classes (e.g. c-card, c-btn, p-header, card), ignoring inview animation classes
         const candidateClasses = tokens
             .filter(c => (/^[clpmo]-/.test(c) || (!c.startsWith('is-') && !c.startsWith('js-') && c !== 'active')) && !c.startsWith('c-inview') && !c.startsWith('js-inview') && !c.startsWith('inview--'))
-            .map(c => c.split('--')[0]);
+            .flatMap(c => {
+                const base = c.split('--')[0];
+                return base.includes('__') ? [base, base.split('__')[0]] : [base];
+            });
 
         const uniqueBases = Array.from(new Set(candidateClasses));
         if (uniqueBases.length === 0 && tokens[0]) {
-            uniqueBases.push(tokens[0].split('--')[0]);
+            const b = tokens[0].split('--')[0];
+            uniqueBases.push(b.includes('__') ? b.split('__')[0] : b);
         }
 
         const extractedBlocks = [];
@@ -864,7 +868,66 @@
         return extractedBlocks.join('\n\n').trim();
     }
 
-    function buildCard(el, title, fullClass, scssText, jsText, compName, isInline = false, isLeft = false, cardIndex = undefined, commentTitle = '') {
+    function sliceJsForCard(jsText, snippetEl, cleanHtml, totalCards = 1) {
+        if (!jsText || !jsText.trim()) return '';
+        if (totalCards === 1) return jsText.trim();
+
+        const allElements = [snippetEl, ...Array.from(snippetEl.querySelectorAll('*'))];
+        const cardClasses = new Set();
+        const cardIds = new Set();
+        const cardAttrs = new Set();
+
+        allElements.forEach(el => {
+            if (el.classList) {
+                el.classList.forEach(c => {
+                    cardClasses.add(c);
+                    if (c.includes('--')) cardClasses.add(c.split('--')[0]);
+                    if (c.includes('__')) cardClasses.add(c.split('__')[0]);
+                });
+            }
+            if (el.id) cardIds.add(el.id);
+            if (el.attributes) {
+                for (let i = 0; i < el.attributes.length; i++) {
+                    const attr = el.attributes[i];
+                    if (attr.name.startsWith('data-')) {
+                        cardAttrs.add(attr.name);
+                    }
+                }
+            }
+        });
+
+        let matches = false;
+        for (const cls of cardClasses) {
+            const reg = new RegExp('\\.' + cls.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])');
+            if (reg.test(jsText)) {
+                matches = true;
+                break;
+            }
+        }
+
+        if (!matches) {
+            for (const id of cardIds) {
+                const reg = new RegExp('#' + id.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '(?![a-zA-Z0-9_-])');
+                if (reg.test(jsText)) {
+                    matches = true;
+                    break;
+                }
+            }
+        }
+
+        if (!matches) {
+            for (const attr of cardAttrs) {
+                if (jsText.includes(attr)) {
+                    matches = true;
+                    break;
+                }
+            }
+        }
+
+        return matches ? jsText.trim() : '';
+    }
+
+    function buildCard(el, title, fullClass, scssText, jsText, compName, isInline = false, isLeft = false, cardIndex = undefined, commentTitle = '', totalCards = 1) {
         let snippetEl = el;
         let effectiveClass = fullClass;
 
@@ -902,8 +965,9 @@
             .replace(/>/g, '&gt;');
 
         const cardScss = sliceScssForClasses(scssText, effectiveClass);
+        const cardJs = sliceJsForCard(jsText, snippetEl, cleanHtml, totalCards);
         const escapedScss = (cardScss || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        const escapedJs = (jsText || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const escapedJs = (cardJs || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
         const classTokens = effectiveClass.split(/\s+/).filter(Boolean);
         const badgesHtml = classTokens.map(c => {
@@ -928,7 +992,7 @@
                         <span class="lang-ja">📋 HTMLコピー</span>
                     </button>
                     ${cardScss ? `<button type="button" class="cs-btn-action" onclick="copyScssFromCard(this)">🎨 SCSS</button>` : ''}
-                    ${jsText ? `<button type="button" class="cs-btn-action cs-btn-action--js" onclick="copyJsFromCard(this)">⚡ JS</button>` : ''}
+                    ${cardJs ? `<button type="button" class="cs-btn-action cs-btn-action--js" onclick="copyJsFromCard(this)">⚡ JS</button>` : ''}
                     <button type="button" class="cs-btn-action cs-btn-action--code" onclick="toggleCodeDrawer(this)">
                         <span class="lang-vi">Xem Code</span>
                         <span class="lang-ja">コード表示</span>
@@ -947,7 +1011,7 @@
                 <div class="cs-code-tabs">
                     <button type="button" class="cs-code-tab is-active" onclick="switchCodeTab(this, 'html')">HTML</button>
                     ${cardScss ? `<button type="button" class="cs-code-tab" onclick="switchCodeTab(this, 'scss')">SCSS</button>` : ''}
-                    ${jsText ? `<button type="button" class="cs-code-tab" onclick="switchCodeTab(this, 'js')">JavaScript</button>` : ''}
+                    ${cardJs ? `<button type="button" class="cs-code-tab" onclick="switchCodeTab(this, 'js')">JavaScript</button>` : ''}
                 </div>
                 <div class="cs-code-panel cs-code-panel--html is-active">
                     <pre><code>${escapedHtml}</code></pre>
@@ -956,7 +1020,7 @@
                 <div class="cs-code-panel cs-code-panel--scss">
                     <pre><code>${escapedScss}</code></pre>
                 </div>` : ''}
-                ${jsText ? `
+                ${cardJs ? `
                 <div class="cs-code-panel cs-code-panel--js">
                     <pre><code>${escapedJs}</code></pre>
                 </div>` : ''}
@@ -1123,7 +1187,7 @@
             items.forEach((item, itemIdx) => {
                 const cardTitle = item.commentTitle || formatComponentTitle(item.tagClass);
                 const isLeft = item.tagClass.includes('title') || item.tagClass.includes('text') || item.tagClass.includes('bread') || item.tagClass.includes('ttl') || item.tagClass.includes('txt') || item.tagClass.includes('tbl') || ['H1','H2','H3','H4','H5','H6','P','TABLE','UL','OL'].includes(item.snippetElement.tagName);
-                const card = buildCard(item.domElement, cardTitle, item.fullClass, scssText, jsText, compName, item.isInline, isLeft, itemIdx, item.commentTitle);
+                const card = buildCard(item.domElement, cardTitle, item.fullClass, scssText, jsText, compName, item.isInline, isLeft, itemIdx, item.commentTitle, items.length);
                 cardsContainer.appendChild(card);
             });
 
