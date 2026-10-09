@@ -1,0 +1,1 @@
+node scripts/git-hooks/pre-commit.js

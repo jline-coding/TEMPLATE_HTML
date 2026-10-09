@@ -25,6 +25,14 @@ import {
 } from './builders/assets.js';
 import { buildWorkbench, cleanWorkbench, buildWorkbenchScss } from './builders/workbench.js';
 import { syncSnippets } from './sync-snippets.js';
+import { execSync } from 'child_process';
+
+try {
+  const driver = execSync('git config --get merge.ours.driver', { cwd: ROOT, encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+  if (!driver) execSync('git config --local merge.ours.driver true', { cwd: ROOT, stdio: 'ignore' });
+} catch {
+  try { execSync('git config --local merge.ours.driver true', { cwd: ROOT, stdio: 'ignore' }); } catch {}
+}
 
 // ─────────────────────────────────────────────
 // Full Build Pipeline

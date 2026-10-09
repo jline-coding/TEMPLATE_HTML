@@ -102,22 +102,25 @@ export async function buildEjs(changedFile) {
     const isPartialOrLayout = changedBase.startsWith('_') || changedNorm.includes('/layouts/') || isInIncludeDir;
 
     if (!isPartialOrLayout && changedNorm.includes('/pages/')) {
-      try {
-        await renderEjsFile(changedFile);
-      } catch (err) {
-        errors.push({ file: changedFile, error: err });
-      }
-      if (errors.length > 0) {
-        const err = new Error(`EJS render error in ${basename(changedFile)}: ${errors[0].error.message}`);
-        err.details = errors;
-        throw err;
-      }
+      await renderEjsFile(changedFile);
       return;
     }
   }
 
+  const errors = [];
   for (const file of ejsFiles) {
-    await renderEjsFile(file);
+    try {
+      await renderEjsFile(file);
+    } catch (err) {
+      errors.push({ file, error: err });
+    }
+  }
+
+  if (errors.length > 0) {
+    const summary = errors.map(e => `${basename(e.file)}: ${e.error.message}`).join('; ');
+    const err = new Error(`EJS build failed (${errors.length} file(s)): ${summary}`);
+    err.details = errors;
+    throw err;
   }
 }
 
@@ -244,6 +247,6 @@ async function renderEjsFile(filePath) {
     }
   } catch (err) {
     console.error(`[ejs] Error processing ${filePath}:`, err.message);
-    if (!isWatch) throw err;
+    throw err;
   }
 }

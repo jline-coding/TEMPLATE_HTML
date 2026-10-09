@@ -149,6 +149,78 @@
 
 })(window.jQuery, window);
 
+/* ==========================================================================
+   Component: To Top
+   ========================================================================== */
+
+(function ($, window) {
+    if (!$) return;
+
+    const $window = $(window);
+    const $totop = $('.c-totop');
+
+    if (!$totop.length) return;
+
+    const ACTIVE_OFFSET = 50;
+    const SCROLL_DURATION = 600;
+
+    let ticking = false;
+
+    /**
+     * Update visibility.
+     */
+    function update() {
+        $totop.toggleClass(
+            'is-active',
+            $window.scrollTop() > ACTIVE_OFFSET
+        );
+    }
+
+    /**
+     * Limit scroll handling to one update per animation frame.
+     */
+    function requestUpdate() {
+        if (ticking) return;
+
+        ticking = true;
+
+        window.requestAnimationFrame(function () {
+            update();
+            ticking = false;
+        });
+    }
+
+    $window.on('scroll.totop', requestUpdate);
+
+    $totop.on('click.totop', function (event) {
+        event.preventDefault();
+
+        const $htmlBody = $('html, body');
+
+        $htmlBody.stop(true);
+
+        if (
+            window.matchMedia(
+                '(prefers-reduced-motion: reduce)'
+            ).matches
+        ) {
+            $htmlBody.scrollTop(0);
+            return;
+        }
+
+        $htmlBody.animate(
+            {
+                scrollTop: 0,
+            },
+            SCROLL_DURATION
+        );
+    });
+
+    update();
+
+})(window.jQuery, window);
+
+
 'use strict';
 // Workbench Shared JS Starter
 
@@ -230,6 +302,47 @@
             $gnavi.removeAttr('style');
             $subItems.removeClass('is-open').children('.c-header-gnavi__sub').removeAttr('style');
         }
+    });
+
+})(window.jQuery || window.$);
+
+/* ==========================================================================
+   [Component: c-file]
+   ========================================================================== */
+
+(function ($) {
+    'use strict';
+    if (!$) return;
+
+    $(document).on('change.cFile', '.js-file input[type="file"]', function () {
+        const file = this.files && this.files[0];
+        const $wrapper = $(this).closest('.js-file');
+        const $content = $wrapper.find('.js-file__content');
+        const $clearBtn = $wrapper.find('.js-file-clear');
+
+        if (!$content.data('default-text')) {
+            $content.data('default-text', $content.text().trim() || '添付する');
+        }
+
+        if (file) {
+            $content.text(file.name).addClass('is-active');
+            $clearBtn.addClass('is-active').show();
+        } else {
+            $content.text($content.data('default-text')).removeClass('is-active');
+            $clearBtn.removeClass('is-active').hide();
+        }
+    });
+
+    $(document).on('click.cFile', '.js-file-clear', function (e) {
+        e.preventDefault();
+        const $wrapper = $(this).closest('.js-file');
+        const $input = $wrapper.find('input[type="file"]');
+        const $content = $wrapper.find('.js-file__content');
+
+        $input.val('');
+        const defaultText = $content.data('default-text') || '添付する';
+        $content.text(defaultText).removeClass('is-active');
+        $(this).removeClass('is-active').hide();
     });
 
 })(window.jQuery || window.$);

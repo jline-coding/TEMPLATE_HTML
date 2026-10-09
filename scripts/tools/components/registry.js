@@ -89,7 +89,9 @@ export function mergeComponentJs(existingJs, incomingJs, compName) {
   if (!existingJs || !existingJs.trim()) return incomingJs.trim() + '\n';
   if (!incomingJs || !incomingJs.trim()) return existingJs;
 
-  const range = getComponentJsRange(existingJs, compName);
+  const incomingMarkerMatch = incomingJs.match(/\[Component(?:\s*Module)?:\s*([\w-]+)\]/i);
+  const targetCompName = incomingMarkerMatch ? incomingMarkerMatch[1] : compName;
+  const range = getComponentJsRange(existingJs, targetCompName) || (compName ? getComponentJsRange(existingJs, compName) : null);
   if (range) {
     return (
       existingJs.substring(0, range.start).trimEnd() +

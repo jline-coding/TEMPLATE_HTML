@@ -186,7 +186,7 @@ export function appendJsToTargetFile(targetFileName, compName, jsCode, paths = g
 
   // Ensure formatted with component header if not already present
   let formattedJs = jsCode.trim();
-  const hasMarker = formattedJs.includes(`[Component: ${compName}]`) || formattedJs.includes(`[Component Module: ${compName}]`);
+  const hasMarker = /\[Component(?:\s*Module)?:\s*[\w-]+\]/i.test(formattedJs);
   if (!hasMarker) {
     formattedJs = `/* ==========================================================================\n   [Component: ${compName}]\n   ========================================================================== */\n${formattedJs}`;
   }
@@ -471,32 +471,19 @@ export function installVariant(compName, variantData = {}, paths = getDefaultPat
     const scssBase = basename(scssFileName, '.scss').replace(/^_/, '');
     updateClientScssIndex(scssBase, 'add', category, paths, tx);
 
-    // JS Handling
+    // JS Handling: Only install JS if specifically requested by this variant
     const wbJsFile = findMatchingJs(norm, paths.wbJsDir);
-    if (wbJsFile) {
+    if (wbJsFile && variantData.targetJsFile && variantData.targetJsFile !== '__skip__' && variantData.targetJsFile !== 'none') {
       const srcJsPath = resolveSafePath(paths.wbJsDir, wbJsFile, 'wbJsFile');
       if (existsSync(srcJsPath)) {
         const srcJsContent = readFileSync(srcJsPath, 'utf8');
-
-        if (variantData.targetJsFile && variantData.targetJsFile !== '__skip__' && variantData.targetJsFile !== 'none') {
-          const appendRes = appendJsToTargetFile(variantData.targetJsFile, norm, srcJsContent, paths, tx);
-          if (!appendRes.success) {
-            throw new Error(appendRes.message);
-          }
-        } else if (variantData.targetJsFile === '__skip__' || variantData.targetJsFile === 'none') {
-          // Skip JS
-        } else {
-          if (!existsSync(paths.clientJsDir)) {
-            mkdirSync(paths.clientJsDir, { recursive: true });
-          }
-          const destJs = resolveSafePath(paths.clientJsDir, wbJsFile, 'destJs');
-          if (!existsSync(destJs)) {
-            tx.recordCreated(destJs);
-            copyFileSync(srcJsPath, destJs);
-          }
+        const appendRes = appendJsToTargetFile(variantData.targetJsFile, norm, srcJsContent, paths, tx);
+        if (!appendRes.success) {
+          throw new Error(appendRes.message);
         }
       }
     }
+
 
     tx.commit();
     return {

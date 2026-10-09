@@ -1,12 +1,7 @@
-/**
- * post-merge.js — Hook tự động tái sinh public/ sau khi git merge hoặc git pull
- * Đảm bảo: Sau khi merge code src/, public/ luôn được biên dịch lại 100% chính xác,
- * triệt tiêu hoàn toàn conflict trong thư mục public/.
- */
-
 import { execSync } from 'child_process';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { createSrcBackup } from './backup-helper.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '../..');
@@ -26,8 +21,11 @@ function ensureMergeDriver() {
 
 function main() {
   ensureMergeDriver();
+
+  // 1. Tự động sao lưu an toàn src/ vào .git/src_backups/ trước khi merge ảnh hưởng
+  createSrcBackup('post-merge');
+
   try {
-    // Lấy danh sách các file thay đổi bởi lệnh merge vừa xong (so sánh ORIG_HEAD với HEAD)
     let changedFiles = [];
     try {
       const output = run('git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD');
@@ -46,7 +44,6 @@ function main() {
     console.log('\n[post-merge] 🔄 Đã cập nhật mã nguồn src/ sau khi merge -> Đang tự động rebuild lại public/...');
     run('node scripts/build.js', { stdio: 'inherit' });
 
-    // Tự động add public/
     const publicStatus = run('git status --porcelain public').trim();
     if (publicStatus) {
       run('git add public');

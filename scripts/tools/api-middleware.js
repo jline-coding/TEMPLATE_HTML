@@ -211,6 +211,12 @@ export function createApiMiddleware() {
     }
 
     if (bodyData.targetJsFile && bodyData.targetJsFile !== '__skip__' && bodyData.targetJsFile !== 'none') {
+      let targetFile = String(bodyData.targetJsFile).trim();
+      if (!targetFile.endsWith('.js')) {
+        targetFile += '.js';
+      }
+      bodyData.targetJsFile = targetFile;
+
       const assetsJsDir = resolve(PROJECT_ROOT, 'src/pages/assets/js');
       let isSafe = false;
       try {

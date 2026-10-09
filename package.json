@@ -10,7 +10,8 @@
     "link": "node scripts/link.js",
     "snippets": "node scripts/sync-snippets.js",
     "test": "vitest run --no-file-parallelism",
-    "prepare": "husky && git config merge.ours.driver true"
+    "restore:src": "node scripts/tools/restore-src.js",
+    "prepare": "husky && git config --local merge.ours.driver true"
   },
   "author": "",
   "license": "ISC",
