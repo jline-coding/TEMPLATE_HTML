@@ -3,7 +3,6 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { compileString } from 'sass-embedded';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
-import cssnano from 'cssnano';
 import sortMediaQueries from 'postcss-sort-media-queries';
 
 import {
@@ -13,12 +12,7 @@ import { norm, ensureDir, walkSync } from '../tools/utils.js';
 
 const postcssPlugins = [
   sortMediaQueries({ sort: 'mobile-first' }),
-  autoprefixer({ cascade: false }),
-  cssnano({
-    preset: ['default', {
-      discardComments: { removeAll: true }
-    }]
-  })
+  autoprefixer({ cascade: false })
 ];
 
 export async function buildScss(changedFile) {
