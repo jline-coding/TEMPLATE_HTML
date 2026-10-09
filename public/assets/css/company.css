@@ -1,1 +1,31 @@
-.p-company{padding:60px 0}@media screen and (min-width:768px){.p-company{padding:100px 0}}
+/*!
+global > color
+------------------------------
+*/
+/*!
+global > content-width
+------------------------------
+*/
+/*!
+global > font
+------------------------------
+*/
+/*!
+global > mixin
+------------------------------
+*/
+/* ================================
+UTILITIES
+================================ */
+/*!
+page > company
+------------------------------
+*/
+.p-company {
+  padding: 60px 0;
+}
+@media screen and (min-width: 768px) {
+  .p-company {
+    padding: 100px 0;
+  }
+}
