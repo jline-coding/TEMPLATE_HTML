@@ -6,6 +6,50 @@ css: ['company']
 js: ['company']
 page: company
 ---
-<main class="p-company">   
-    
+<main class="p-company">
+    <!-- Breadcrumbs -->
+    <div class="l-container">
+        <ul class="c-bread">
+            <li class="c-bread__item">
+                <a href="<%= assetsDir %>" class="c-bread__link">TOP</a>
+            </li>
+            <li class="c-bread__item">企業情報</li>
+        </ul>
+    </div>
+
+    <div class="l-container">
+        <section class="p-company__overview">
+            <h2 class="c-title c-title--center">
+                <span class="c-title__en">COMPANY PROFILE</span>
+                <span class="c-title__jp">会社概要</span>
+            </h2>
+
+            <div class="l-tbl">
+                <dl class="l-tbl__item">
+                    <dt class="l-tbl__left c-txt16 u-fw--500">会社名</dt>
+                    <dd class="l-tbl__right c-txt16">株式会社ジェイ・ライン（J-line Corporation）</dd>
+                </dl>
+                <dl class="l-tbl__item">
+                    <dt class="l-tbl__left c-txt16 u-fw--500">設立</dt>
+                    <dd class="l-tbl__right c-txt16">2000年10月</dd>
+                </dl>
+                <dl class="l-tbl__item">
+                    <dt class="l-tbl__left c-txt16 u-fw--500">代表者</dt>
+                    <dd class="l-tbl__right c-txt16">代表取締役社長</dd>
+                </dl>
+                <dl class="l-tbl__item">
+                    <dt class="l-tbl__left c-txt16 u-fw--500">所在地</dt>
+                    <dd class="l-tbl__right c-txt16">〒541-0056 大阪府大阪市中央区久太郎町2-4-11</dd>
+                </dl>
+                <dl class="l-tbl__item">
+                    <dt class="l-tbl__left c-txt16 u-fw--500">事業内容</dt>
+                    <dd class="l-tbl__right c-txt16">
+                        ・Webサイト企画・制作・運用保守<br>
+                        ・Webシステム開発・CMS構築<br>
+                        ・デジタルマーケティング支援
+                    </dd>
+                </dl>
+            </div>
+        </section>
+    </div>
 </main>

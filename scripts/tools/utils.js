@@ -52,6 +52,9 @@ export function removeStaleFiles(srcDir, destDir, opts = {}) {
     if (transformExt && transformExt.from.includes(ext.toLowerCase())) {
       const safeExt = ext.replace(/\./g, '\\.');
       srcFiles.add(rel.replace(new RegExp(`${safeExt}$`, 'i'), transformExt.to));
+      if (opts.allowOriginal || rel.toLowerCase().includes('ogp.') || rel.toLowerCase().includes('apple-touch-icon.')) {
+        srcFiles.add(rel);
+      }
     } else {
       srcFiles.add(rel);
     }

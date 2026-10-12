@@ -64,7 +64,10 @@
       body.className = classes.join(' ');
 
       // ボタンをクリックされた際の動作
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function(e) {
+        if (e && typeof e.preventDefault === 'function') {
+          e.preventDefault();
+        }
         // body要素のclass属性値から「gdpr」を削除する
         const classes = getClassList();
         body.className = classes.filter(function(className) {

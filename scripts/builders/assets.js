@@ -250,6 +250,7 @@ export async function buildImages(changedFile) {
       }
     } else if (convertExts.includes(ext)) {
       const webpRel = rel.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+      const isPreserved = rel.toLowerCase().includes('ogp.') || rel.toLowerCase().includes('apple-touch-icon.');
       const buffer = readFileSync(changedFile);
       const processed = await sharp(buffer).webp({ quality: 90 }).toBuffer();
       for (const destDir of IMAGES_OUT_DIRS) {
@@ -257,6 +258,10 @@ export async function buildImages(changedFile) {
         ensureDir(dirname(dest));
         writeFileSync(dest, processed);
         console.log(`[images] webp: ${norm(relative(DIST, dest))}`);
+        if (isPreserved) {
+          copyFileSync(changedFile, resolve(destDir, rel));
+          console.log(`[images] copy (original): ${norm(relative(DIST, resolve(destDir, rel)))}`);
+        }
       }
     }
     return;
@@ -279,6 +284,7 @@ export async function buildImages(changedFile) {
       }
     } else if (convertExts.includes(ext)) {
       const webpRel = rel.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+      const isPreserved = rel.toLowerCase().includes('ogp.') || rel.toLowerCase().includes('apple-touch-icon.');
       let processed = null;
       for (const destDir of IMAGES_OUT_DIRS) {
         const dest = resolve(destDir, webpRel);
@@ -290,6 +296,14 @@ export async function buildImages(changedFile) {
           }
           writeFileSync(dest, processed);
           console.log(`[images] webp: ${norm(relative(DIST, dest))}`);
+        }
+        if (isPreserved) {
+          const originalDest = resolve(destDir, rel);
+          if (isNewer(file, originalDest)) {
+            ensureDir(dirname(originalDest));
+            copyFileSync(file, originalDest);
+            console.log(`[images] copy (original): ${norm(relative(DIST, originalDest))}`);
+          }
         }
       }
     }

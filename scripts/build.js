@@ -25,6 +25,7 @@ import {
 } from './builders/assets.js';
 import { buildWorkbench, cleanWorkbench, buildWorkbenchScss } from './builders/workbench.js';
 import { syncSnippets } from './sync-snippets.js';
+import { updateClientScssIndex } from './tools/components/installer.js';
 import { execSync } from 'child_process';
 
 try {

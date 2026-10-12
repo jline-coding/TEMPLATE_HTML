@@ -1,1 +1,3 @@
-node scripts/git-hooks/pre-commit.js
+unset SHELL
+node scripts/build.js
+git add public

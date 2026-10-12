@@ -2017,6 +2017,55 @@ layout > flexs
 .l-tbl__right {
   width: 100%;
 }
+
+/*!
+layout > sidebar
+------------------------------
+*/
+.l-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.l-sidebar__main {
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+}
+.l-sidebar__aside {
+  width: 100%;
+  flex-shrink: 0;
+}
+.l-sidebar__widget {
+  margin-bottom: 24px;
+}
+.l-sidebar__widget:last-child {
+  margin-bottom: 0;
+}
+.l-sidebar__btn-wrap {
+  margin-top: 14px;
+}
+.l-sidebar__img {
+  margin-bottom: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.l-sidebar__img img {
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  display: block;
+}
+
+/*!
+layout > Other
+------------------------------
+Custom layout structures & wrappers
+------------------------------
+*/
+
 @media screen and (min-width: 768px){
   .c-txt12 {
     font-size: clamp(0.625rem, 0.4237vw + 0.4216rem, 0.75rem);
@@ -2433,7 +2482,23 @@ layout > flexs
     margin-bottom: 0;
     width: clamp(12.5rem, 21.1864vw + 2.3305rem, 18.75rem);
   }
+  .l-sidebar {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: clamp(1.875rem, 6.3559vw + -1.1759rem, 3.75rem);
+  }
+  .l-sidebar__aside {
+    width: clamp(16.25rem, 12.7119vw + 10.1483rem, 20rem);
+  }
+  .l-sidebar__aside--sticky {
+    position: sticky;
+    top: 24px;
+  }
+  .l-sidebar--reverse {
+    flex-direction: row-reverse;
+  }
 }
+
 @media (prefers-reduced-motion: reduce){
   .c-inview,
   .js-inview {

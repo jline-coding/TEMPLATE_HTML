@@ -1,5 +1,5 @@
 import { resolve, basename, extname, dirname, join, relative } from 'path';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
 import { compileString } from 'sass-embedded';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';

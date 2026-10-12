@@ -6,11 +6,11 @@
     "MODE": "new",
     "OUTPUT_EXT": "html",
     "USE_PHP_INCLUDE": "false",
-    "RENEW_SCSS_DIR": "assets/scss",
-    "RENEW_CSS_DIR": "assets/css",
+    "RENEW_SCSS_DIR": "pages/assets/scss",
+    "RENEW_CSS_DIR": "pages/assets/css",
     "SITE_URL": "https://your-domain123.com",
     "DIP": "false",
-    "DIP_PO": "op186589"
+    "DIP_PO": ""
   },
   "production": {
     "deploy_method": "zip",

@@ -131,10 +131,7 @@ async function renderEjsFile(filePath) {
 
     const relPath = norm(relative(PAGES_DIR, filePath));
     const depth = relPath.split('/').length - 1;
-    let assetsDir = './';
-    for (let i = 0; i < depth; i++) {
-      assetsDir += '../';
-    }
+    let assetsDir = depth === 0 ? './' : '../'.repeat(depth);
 
     const layoutName = frontData.layout || '_default';
     const layoutPath = resolve(LAYOUTS_DIR, `${layoutName}.ejs`);
