@@ -80,12 +80,12 @@ jobs:
         if: env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: 📦 Cài đặt dependencies dự án (nếu cần build)
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
-        run: npm install --no-package-lock
+        run: npm ci --include=dev
 
       - name: 🧪 Chạy Unit Tests
         if: (env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh')
