@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
 import {
@@ -88,7 +88,8 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
     }
   }
 
-  beforeAll(() => {
+  beforeEach(() => {
+    if (existsSync(sandboxDir)) safeRmDirSync(sandboxDir, PROJECT_ROOT);
     setupSandbox();
   });
 
@@ -258,7 +259,9 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
 
   describe('Safe Removal & Conflict Guard', () => {
     it('blocks accidental deletion without --force when client has customized edits', () => {
-      // Client has custom edits from earlier test
+      expect(installComponent('accordion', { force: true }, sandboxPaths).success).toBe(true);
+      // This test owns its customized client state.
+      writeFileSync(accordionScssPath, '.c-accordion { color: red; }\n', 'utf8');
       const result = removeComponent('accordion', { force: false }, sandboxPaths);
 
       expect(result.success).toBe(false);
@@ -267,6 +270,7 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
     });
 
     it('removes component cleanly when --force is provided', () => {
+      expect(installComponent('accordion', { force: true }, sandboxPaths).success).toBe(true);
       const result = removeComponent('accordion', { force: true }, sandboxPaths);
 
       expect(result.success).toBe(true);
@@ -299,7 +303,7 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
       expect(result).toContain('@use "../global" as *;');
       expect(result).toContain('component > header');
       expect(result).toContain('.c-header {');
-      expect(result.trim().endsWith('}'));
+      expect(result.trim().endsWith('}')).toBe(true);
     });
 
     it('mergeComponentScss generates required @use and banner when target file is brand new', () => {
@@ -360,22 +364,36 @@ describe('Component Engine (Isolated Fixture Testing & Specification)', () => {
       expect(findMatchingEjs('nonexistent', testEjsDir)).toBeNull();
     });
 
-    it('verifies workbench _container.scss and _titles.scss integrity', () => {
-      const containerPath = resolve(PROJECT_ROOT, 'workbench/scss/layout/_container.scss');
-      const containerContent = readFileSync(containerPath, 'utf8');
-      expect(containerContent).not.toContain('@forward "../../../src/pages');
-      expect(containerContent).toContain('.l-container');
+    it.each(['teaser', 'custom-heading', 'notice_panel'])('preserves custom %s component SCSS when installing', (name) => {
+      // Classes belong to this fixture; the user's library is never inspected.
+      const selector = `.c-${name}`;
+      const scss = `@use "../global" as *;\n${selector} { color: red; }\n${selector}--accent { color: blue; }\n`;
+      const source = resolve(sandboxPaths.wbScssDir, `_${name}.scss`);
+      writeFileSync(source, scss, 'utf8');
+      writeFileSync(resolve(sandboxPaths.wbComponentsDir, `_${name}.ejs`), `<div class="c-${name}">Fixture</div>`, 'utf8');
 
-      const titlesPath = existsSync(resolve(PROJECT_ROOT, 'workbench__backup/scss/component/_titles.scss'))
-        ? resolve(PROJECT_ROOT, 'workbench__backup/scss/component/_titles.scss')
-        : resolve(PROJECT_ROOT, 'workbench/scss/component/_titles.scss');
-      if (existsSync(titlesPath)) {
-        const titlesContent = readFileSync(titlesPath, 'utf8');
-        expect(titlesContent).toContain('.c-title');
-        expect(titlesContent).toContain('.c-ttl20');
-        expect(titlesContent).toContain('.c-ttl24');
-        expect(titlesContent).toContain('.c-ttl30');
-      }
+      const result = installComponent(name, { force: true }, sandboxPaths);
+      expect(result.success).toBe(true);
+      expect(readFileSync(source, 'utf8')).toBe(scss);
+      const installed = readFileSync(resolve(sandboxPaths.clientScssDir, `_${name}.scss`), 'utf8');
+      expect(installed).toContain(`${selector} { color: red; }`);
+      expect(installed).toContain(`${selector}--accent { color: blue; }`);
+      expect(readFileSync(scssIndexPath, 'utf8')).toContain(`@use "${name}";`);
+    });
+
+    it('accepts placeholder SCSS without requiring predefined design classes', () => {
+      const name = 'custom-heading';
+      const scss = '@use "sass:math";\n@use "../global" as *;\n/*! Component placeholder */\n';
+      const source = resolve(sandboxPaths.wbScssDir, `_${name}.scss`);
+      writeFileSync(source, scss, 'utf8');
+      writeFileSync(resolve(sandboxPaths.wbComponentsDir, `_${name}.ejs`), '<h2 class="c-custom-heading">Fixture</h2>', 'utf8');
+
+      expect(installComponent(name, { force: true }, sandboxPaths).success).toBe(true);
+      expect(readFileSync(source, 'utf8')).toBe(scss);
+      const component = getRegistry(sandboxPaths).find(item => item.name === name);
+      expect(component).toBeDefined();
+      expect(component.scssFile).toBe(`_${name}.scss`);
+      expect(component.isInstalled).toBe(false); // A placeholder has no active CSS rules.
     });
 
     it('resolveComponentVendors resolves slider external vendor requirements', () => {
