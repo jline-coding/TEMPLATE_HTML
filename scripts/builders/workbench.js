@@ -118,7 +118,7 @@ async function buildWorkbenchInternal(options = {}) {
     return;
   }
 
-  if (!existsSync(CATALOG_EJS) || !existsSync(WORKBENCH_COMPONENTS_DIR)) {
+  if (!existsSync(CATALOG_EJS)) {
     return;
   }
 

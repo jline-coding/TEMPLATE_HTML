@@ -7,10 +7,16 @@ vi.mock('../scripts/tools/config.js', async (importOriginal) => {
   const config = await importOriginal();
   const { mkdtempSync } = await import('fs');
   const output = mkdtempSync(resolve(config.ROOT, 'test-sandbox-workbench-'));
-  return { ...config, WORKBENCH_OUT_DIR: output };
+  // Git does not preserve empty directories. Reproduce a fresh checkout
+  // of a project whose component library has been cleared.
+  return {
+    ...config,
+    WORKBENCH_OUT_DIR: output,
+    WORKBENCH_COMPONENTS_DIR: resolve(output, 'missing-components')
+  };
 });
 
-import { WORKBENCH_DIR, WORKBENCH_COMPONENTS_DIR, WORKBENCH_SCSS_DIR, WORKBENCH_LAYOUT_DIR, WORKBENCH_OUT_DIR } from '../scripts/tools/config.js';
+import { WORKBENCH_DIR, WORKBENCH_COMPONENTS_DIR, WORKBENCH_LAYOUT_DIR, WORKBENCH_OUT_DIR } from '../scripts/tools/config.js';
 import { cleanWorkbench, buildWorkbenchScss, buildWorkbench } from '../scripts/builders/workbench.js';
 import * as componentService from '../scripts/tools/component-service.js';
 import { syncSnippets } from '../scripts/sync-snippets.js';
@@ -19,10 +25,10 @@ describe('Dual-Environment Workbench System', () => {
   beforeEach(() => cleanWorkbench());
   afterEach(() => vi.restoreAllMocks());
   afterAll(() => cleanWorkbench());
-  it('should have isolated workbench/ directories', () => {
+  it('should keep the base workbench isolated without requiring optional component directories', () => {
     expect(existsSync(WORKBENCH_DIR)).toBe(true);
-    expect(existsSync(WORKBENCH_COMPONENTS_DIR)).toBe(true);
-    expect(existsSync(WORKBENCH_SCSS_DIR)).toBe(true);
+    expect(existsSync(WORKBENCH_COMPONENTS_DIR)).toBe(false);
+    expect(existsSync(resolve(WORKBENCH_DIR, 'scss/global.scss'))).toBe(true);
     expect(existsSync(WORKBENCH_LAYOUT_DIR)).toBe(true);
   });
 
