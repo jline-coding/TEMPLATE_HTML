@@ -10,19 +10,16 @@
  * 5. Transaction Safety & Clean Rollback on Failure
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, rmSync } from 'fs';
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
+import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import { resolve } from 'path';
 import * as sass from 'sass-embedded';
 import {
   getRegistry,
   installComponent,
-  removeComponent,
   saveComponent,
-  resolveComponentVendors,
   findMatchingEjs,
   findMatchingScss,
-  findMatchingJs,
   InstallTransaction
 } from '../scripts/tools/component-service.js';
 import { safeRmDirSync, PROJECT_ROOT } from '../scripts/tools/safety.js';
@@ -49,66 +46,27 @@ describe('Dual-Environment End-to-End Round-Trip (Site ⇄ Workbench)', () => {
 
     Object.values(sandboxPaths).forEach(d => mkdirSync(d, { recursive: true }));
 
-    // Setup global, foundation, utilities SCSS
-    const globalDir = resolve(sandboxDir, 'src/pages/assets/scss/global');
-    const foundDir = resolve(sandboxDir, 'src/pages/assets/scss/foundation');
-    const utilDir = resolve(sandboxDir, 'src/pages/assets/scss/utilities');
+    // Fixed fixtures keep these workflows independent of the user's component library.
+    const scssRoot = resolve(sandboxDir, 'src/pages/assets/scss');
     const jsDir = resolve(sandboxDir, 'src/pages/assets/js');
-    [globalDir, foundDir, utilDir, jsDir].forEach(d => mkdirSync(d, { recursive: true }));
-
-    // Copy globals and foundations from real workspace
-    const realGlobal = resolve(PROJECT_ROOT, 'src/pages/assets/scss/global');
-    if (existsSync(realGlobal)) {
-      readdirSync(realGlobal).forEach(f => {
-        writeFileSync(resolve(globalDir, f), readFileSync(resolve(realGlobal, f)));
-      });
+    for (const name of ['global', 'foundation']) {
+      mkdirSync(resolve(scssRoot, name), { recursive: true });
+      writeFileSync(resolve(scssRoot, name, '_index.scss'), '// Test foundation\n', 'utf8');
     }
-
-    const realFound = resolve(PROJECT_ROOT, 'src/pages/assets/scss/foundation');
-    if (existsSync(realFound)) {
-      readdirSync(realFound).forEach(f => {
-        writeFileSync(resolve(foundDir, f), readFileSync(resolve(realFound, f)));
-      });
-    }
-
-    const realUtil = resolve(PROJECT_ROOT, 'src/pages/assets/scss/utilities');
-    if (existsSync(realUtil)) {
-      readdirSync(realUtil).forEach(f => {
-        writeFileSync(resolve(utilDir, f), readFileSync(resolve(realUtil, f)));
-      });
-    }
-
-    // Copy workbench templates from canonical backup or real workspace
-    const wbSourceDir = (existsSync(resolve(PROJECT_ROOT, 'workbench__backup/components')) && readdirSync(resolve(PROJECT_ROOT, 'workbench__backup/components')).length >= 20)
-      ? resolve(PROJECT_ROOT, 'workbench__backup')
-      : resolve(PROJECT_ROOT, 'workbench');
-
-    const srcWbComp = resolve(wbSourceDir, 'components');
-    if (existsSync(srcWbComp)) {
-      readdirSync(srcWbComp).forEach(f => {
-        writeFileSync(resolve(sandboxPaths.wbComponentsDir, f), readFileSync(resolve(srcWbComp, f)));
-      });
-    }
-
-    const srcWbScssComp = resolve(wbSourceDir, 'scss/component');
-    if (existsSync(srcWbScssComp)) {
-      readdirSync(srcWbScssComp).forEach(f => {
-        writeFileSync(resolve(sandboxPaths.wbScssDir, f), readFileSync(resolve(srcWbScssComp, f)));
-      });
-    }
-
-    const srcWbScssLayout = resolve(wbSourceDir, 'scss/layout');
-    if (existsSync(srcWbScssLayout)) {
-      readdirSync(srcWbScssLayout).forEach(f => {
-        writeFileSync(resolve(sandboxPaths.wbLayoutDir, f), readFileSync(resolve(srcWbScssLayout, f)));
-      });
-    }
-
-    const srcWbJs = resolve(wbSourceDir, 'js');
-    if (existsSync(srcWbJs)) {
-      readdirSync(srcWbJs).forEach(f => {
-        writeFileSync(resolve(sandboxPaths.wbJsDir, f), readFileSync(resolve(srcWbJs, f)));
-      });
+    const fixtures = [
+      { name: 'btns', scss: 'btn', html: '<a class="c-btn">Button</a>', css: '.c-btn { display: inline-block; }' },
+      { name: 'header', html: '<header class="c-header">Header</header>', css: '.c-header { display: block; padding: 20px; }', js: 'console.log("header");' },
+      { name: 'bread', html: '<nav class="c-bread">Breadcrumb</nav>', css: '.c-bread { display: flex; }' },
+      { name: 'titles', html: '<h2 class="c-title">Title</h2>', css: '.c-title { font-size: 24px; }' },
+      { name: 'mv', html: '<section class="c-mv">Main visual</section>', css: '.c-mv { min-height: 200px; }' },
+      { name: 'slider', html: '<div class="c-slider">Slider</div>', css: '.c-slider { overflow: hidden; }', js: 'console.log("slider");' },
+      { name: 'grids', category: 'layout', html: '<div class="l-grid">Grid</div>', css: '.l-grid { display: grid; }' }
+    ];
+    for (const fixture of fixtures) {
+      writeFileSync(resolve(sandboxPaths.wbComponentsDir, `_${fixture.name}.ejs`), fixture.html, 'utf8');
+      const scssDir = fixture.category === 'layout' ? sandboxPaths.wbLayoutDir : sandboxPaths.wbScssDir;
+      writeFileSync(resolve(scssDir, `_${fixture.scss || fixture.name}.scss`), fixture.css, 'utf8');
+      if (fixture.js) writeFileSync(resolve(sandboxPaths.wbJsDir, `${fixture.name}.js`), fixture.js, 'utf8');
     }
 
     // Initialize empty client indexes and initial common.js
@@ -117,7 +75,7 @@ describe('Dual-Environment End-to-End Round-Trip (Site ⇄ Workbench)', () => {
     writeFileSync(resolve(jsDir, 'common.js'), `'use strict';\n// Initial common.js\n`, 'utf8');
   }
 
-  beforeAll(() => {
+  beforeEach(() => {
     setupIsolatedSandbox();
   });
 
@@ -139,7 +97,7 @@ describe('Dual-Environment End-to-End Round-Trip (Site ⇄ Workbench)', () => {
   // ─────────────────────────────────────────────────────────────
   it('Round-Trip A: installs all components from Workbench into empty Site and compiles SCSS cleanly', async () => {
     const registry = getRegistry(sandboxPaths);
-    expect(registry.length).toBeGreaterThanOrEqual(1);
+    expect(registry).toHaveLength(7);
 
     // Install every component into the empty site
     for (const comp of registry) {
@@ -208,6 +166,13 @@ describe('Dual-Environment End-to-End Round-Trip (Site ⇄ Workbench)', () => {
   // 3. ROUND-TRIP B: PURGE WORKBENCH & EXPORT FROM SITE -> WORKBENCH
   // ─────────────────────────────────────────────────────────────
   it('Round-Trip B: exports all installed components from Site back to empty Workbench showroom', () => {
+    // Prepare this round-trip independently of other tests.
+    const originalRegistry = getRegistry(sandboxPaths);
+    for (const comp of originalRegistry) {
+      const result = installComponent(comp.name, { includeEjs: true, force: true }, sandboxPaths);
+      expect(result.success).toBe(true);
+    }
+
     // Purge sandbox workbench completely
     safeRmDirSync(sandboxPaths.wbComponentsDir, PROJECT_ROOT);
     safeRmDirSync(sandboxPaths.wbScssDir, PROJECT_ROOT);
@@ -223,8 +188,8 @@ describe('Dual-Environment End-to-End Round-Trip (Site ⇄ Workbench)', () => {
     writeFileSync(resolve(sandboxPaths.wbScssDir, '_index.scss'), '// WB Component SCSS\n', 'utf8');
     writeFileSync(resolve(sandboxPaths.wbLayoutDir, '_index.scss'), '// WB Layout SCSS\n', 'utf8');
 
-    // List of components that were installed in Round-Trip A
-    const componentsToExport = ['header', 'bread', 'titles', 'mv'];
+    // Export every installed fixture, including layout and JavaScript modules
+    const componentsToExport = originalRegistry.map(comp => comp.name);
 
     let successCount = 0;
     for (const compName of componentsToExport) {
@@ -243,6 +208,8 @@ describe('Dual-Environment End-to-End Round-Trip (Site ⇄ Workbench)', () => {
     const exportedTitles = restoredRegistry.find(r => r.name === 'titles');
     expect(exportedTitles).toBeDefined();
     expect(exportedTitles.scssFile).toBe('_titles.scss');
+    expect(existsSync(resolve(sandboxPaths.wbLayoutDir, '_grids.scss'))).toBe(true);
+    expect(existsSync(resolve(sandboxPaths.wbJsDir, 'header.js'))).toBe(true);
   });
 
   // ─────────────────────────────────────────────────────────────

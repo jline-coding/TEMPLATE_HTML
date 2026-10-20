@@ -4,6 +4,7 @@
  */
 
 import { existsSync, unlinkSync, rmSync } from 'fs';
+import { pathToFileURL } from 'url';
 import { extname, relative, resolve, basename, dirname } from 'path';
 
 import {
@@ -483,17 +484,22 @@ async function startWatch() {
 // ─────────────────────────────────────────────
 // Entry Point
 // ─────────────────────────────────────────────
-if (isWatch) {
-  startWatch();
-} else {
-  fullBuild().then((success) => {
-    if (!success) {
+// Importing the pipeline must not start an unawaited build.
+const isMainModule = process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url;
+if (isMainModule) {
+  if (isWatch) {
+    startWatch();
+  } else {
+    fullBuild().then((success) => {
+      if (!success) {
+        process.exitCode = 1;
+      }
+    }).catch((err) => {
+      console.error('\n💥 Unexpected build error:', err);
       process.exitCode = 1;
-    }
-  }).catch((err) => {
-    console.error('\n💥 Unexpected build error:', err);
-    process.exitCode = 1;
-  });
+    });
+  }
+
 }
 
 export { fullBuild, startWatch };

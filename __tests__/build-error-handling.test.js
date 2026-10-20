@@ -1,11 +1,49 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest';
+import { resolve } from 'path';
+import { existsSync } from 'fs';
+
+vi.mock('../scripts/tools/config.js', async (importOriginal) => {
+  const config = await importOriginal();
+  const { mkdtempSync } = await import('fs');
+  return {
+    ...config,
+    isWatch: false,
+    isRenew: false,
+    DIST: mkdtempSync(resolve(config.ROOT, 'test-sandbox-build-'))
+  };
+});
+// Test orchestration and error aggregation without rebuilding the user's site.
+vi.mock('../scripts/builders/ejs.js', () => ({ buildEjs: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('../scripts/builders/scss.js', () => ({ buildScss: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('../scripts/builders/assets.js', () => ({
+  buildGeneralCopy: vi.fn().mockResolvedValue(undefined),
+  buildJs: vi.fn(), buildVendor: vi.fn(),
+  buildImages: vi.fn().mockResolvedValue(undefined),
+  buildVideos: vi.fn(), isHandledBySpecificBuilder: vi.fn()
+}));
+vi.mock('../scripts/builders/workbench.js', () => ({
+  buildWorkbench: vi.fn(), cleanWorkbench: vi.fn(), buildWorkbenchScss: vi.fn()
+}));
+vi.mock('../scripts/sync-snippets.js', () => ({ syncSnippets: vi.fn() }));
+
+import { DIST, ROOT } from '../scripts/tools/config.js';
+import { safeRmDirSync } from '../scripts/tools/safety.js';
+import * as assetsBuilder from '../scripts/builders/assets.js';
+import * as workbenchBuilder from '../scripts/builders/workbench.js';
 import { fullBuild } from '../scripts/build.js';
 import * as scssBuilder from '../scripts/builders/scss.js';
+
+const buildCallsOnImport = assetsBuilder.buildGeneralCopy.mock.calls.length;
 
 describe('Production Build Architecture & Error Handling', () => {
   let originalExitCode;
 
+  afterAll(() => {
+    if (existsSync(DIST)) safeRmDirSync(DIST, ROOT);
+  });
+
   beforeEach(() => {
+    vi.clearAllMocks();
     originalExitCode = process.exitCode;
     process.exitCode = undefined;
   });
@@ -13,6 +51,10 @@ describe('Production Build Architecture & Error Handling', () => {
   afterEach(() => {
     process.exitCode = originalExitCode;
     vi.restoreAllMocks();
+  });
+
+  it('does not run builders when the pipeline module is imported', () => {
+    expect(buildCallsOnImport).toBe(0);
   });
 
   it('halts production build with process.exitCode = 1 and returns false when a builder throws', async () => {
@@ -49,5 +91,9 @@ describe('Production Build Architecture & Error Handling', () => {
     const result = await fullBuild();
     expect(result).toBe(true);
     expect(process.exitCode).toBeUndefined();
+    expect(assetsBuilder.buildGeneralCopy).toHaveBeenCalledTimes(1);
+    expect(scssBuilder.buildScss).toHaveBeenCalledTimes(1);
+    expect(assetsBuilder.buildImages).toHaveBeenCalledTimes(1);
+    expect(workbenchBuilder.cleanWorkbench).toHaveBeenCalledTimes(1);
   });
 });
