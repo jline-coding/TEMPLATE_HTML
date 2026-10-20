@@ -42,6 +42,9 @@ import {
 import { syncSnippets } from '../sync-snippets.js';
 import { buildWorkbench } from '../builders/workbench.js';
 import { resolveSafePath } from './safety.js';
+import { InstallTransaction } from './components/transaction.js';
+import { createSnapshotBackup } from './components/backup.js';
+import { getDefaultPaths } from './components/paths.js';
 
 /**
  * Reads text from system clipboard (Windows powershell)
@@ -506,9 +509,7 @@ export async function exportSelectionToWorkbench(options = {}) {
       if (tempContent && tempContent.trim()) {
         html = tempContent.trim();
       }
-      try {
-        import('fs').then(fs => fs.unlinkSync(tempFile));
-      } catch {}
+      try { rmSync(tempFile, { force: true }); } catch {}
     } catch {}
   }
 
@@ -552,93 +553,111 @@ export async function exportSelectionToWorkbench(options = {}) {
   const category = meta?.category || getComponentCategory(targetName);
   const displayTitle = options.title || (targetName.charAt(0).toUpperCase() + targetName.slice(1));
 
-  const savedFiles = [];
-
-  // 4. Save SCSS into workbench (Append/merge component rules into corresponding file)
-  if (foundScss && foundScss.content) {
-    const scssCategory = foundScss.category || category;
-    const targetWbScssDir = scssCategory === 'layout' ? WORKBENCH_LAYOUT_DIR : WORKBENCH_SCSS_DIR;
-    if (!existsSync(targetWbScssDir)) {
-      mkdirSync(targetWbScssDir, { recursive: true });
+  const tx = new InstallTransaction();
+  try {
+    const foundJs = findComponentJsInSite(targetName, blockClasses);
+    const plannedFiles = [resolveSafePath(WORKBENCH_COMPONENTS_DIR, `_${targetName}.ejs`, 'export EJS')];
+    if (foundScss) {
+      const scssDir = (foundScss.category || category) === 'layout' ? WORKBENCH_LAYOUT_DIR : WORKBENCH_SCSS_DIR;
+      plannedFiles.push(resolveSafePath(scssDir, foundScss.fileName, 'export SCSS'), resolve(scssDir, '_index.scss'));
     }
+    if (foundJs) plannedFiles.push(resolveSafePath(WORKBENCH_JS_DIR, foundJs.fileName, 'export JS'));
+    createSnapshotBackup(targetName, 'before_selection_export', getDefaultPaths(), plannedFiles);
+    plannedFiles.forEach(file => tx.capture(file));
+    const savedFiles = [];
 
-    const destScss = resolve(targetWbScssDir, foundScss.fileName);
-    const classQuery = blockClasses.join(' ');
+    // 4. Save SCSS into workbench (Append/merge component rules into corresponding file)
+    if (foundScss && foundScss.content) {
+      const scssCategory = foundScss.category || category;
+      const targetWbScssDir = scssCategory === 'layout' ? WORKBENCH_LAYOUT_DIR : WORKBENCH_SCSS_DIR;
+      if (!existsSync(targetWbScssDir)) {
+        mkdirSync(targetWbScssDir, { recursive: true });
+      }
+
+      const destScss = resolve(targetWbScssDir, foundScss.fileName);
+      const classQuery = blockClasses.join(' ');
     
-    // Slice ONLY this component's rules!
-    const sliced = sliceScssForClasses(foundScss.content, classQuery);
-    const componentScss = sliced || foundScss.content;
+      // Slice ONLY this component's rules!
+      const sliced = sliceScssForClasses(foundScss.content, classQuery);
+      const componentScss = sliced || foundScss.content;
 
-    let finalScss = componentScss;
-    if (existsSync(destScss)) {
-      const existing = readFileSync(destScss, 'utf8');
-      finalScss = mergeVariantScss(existing, componentScss, classQuery);
-      finalScss = mergeComponentScss(finalScss, '', targetName);
+      let finalScss = componentScss;
+      if (existsSync(destScss)) {
+        const existing = readFileSync(destScss, 'utf8');
+        finalScss = mergeVariantScss(existing, componentScss, classQuery);
+        finalScss = mergeComponentScss(finalScss, '', targetName);
+      } else {
+        finalScss = mergeComponentScss('', componentScss, targetName);
+      }
+
+      tx.write(destScss, finalScss.trimEnd() + '\n');
+      savedFiles.push(`workbench/scss/${scssCategory === 'layout' ? 'layout' : 'component'}/${foundScss.fileName}`);
+
+      const wbScssBase = basename(foundScss.fileName, '.scss').replace(/^_/, '');
+      updateWorkbenchScss(wbScssBase, 'add', scssCategory);
+    }
+
+    // 5. Look up and mirror JS for this component into workbench
+    if (foundJs && foundJs.content) {
+      if (!existsSync(WORKBENCH_JS_DIR)) {
+        mkdirSync(WORKBENCH_JS_DIR, { recursive: true });
+      }
+      const destJs = resolve(WORKBENCH_JS_DIR, foundJs.fileName);
+      let finalJs = foundJs.content.trimEnd() + '\n';
+      if (existsSync(destJs)) {
+        const existing = readFileSync(destJs, 'utf8');
+        finalJs = mergeComponentJs(existing, foundJs.content, targetName);
+      }
+      tx.write(destJs, finalJs);
+      savedFiles.push(`workbench/js/${foundJs.fileName}`);
+    }
+
+    // 6. Save/Append HTML to workbench/components/_<targetName>.ejs (Pure HTML/EJS, 100% clean, NO frontmatter)
+    if (!existsSync(WORKBENCH_COMPONENTS_DIR)) {
+      mkdirSync(WORKBENCH_COMPONENTS_DIR, { recursive: true });
+    }
+    const destEjs = resolve(WORKBENCH_COMPONENTS_DIR, `_${targetName}.ejs`);
+    const trimmedHtml = html.trim();
+    const isAlreadyWrapped = /^<div class=["']p-component__item["']>/i.test(trimmedHtml);
+    const itemBlock = isAlreadyWrapped
+      ? (trimmedHtml + '\n')
+      : `<div class="p-component__item">\n    <!-- ${displayTitle} -->\n${trimmedHtml.split('\n').map(l => '    ' + l).join('\n')}\n</div>\n`;
+
+    let existingEjs = existsSync(destEjs) ? readFileSync(destEjs, 'utf8') : '';
+    if (existingEjs.trim()) {
+      const cleanExisting = stripEjsShowroomWrapper(existingEjs);
+      const cleanSnippet = stripEjsShowroomWrapper(trimmedHtml);
+      const normExisting = cleanExisting.replace(/\s+/g, ' ').trim();
+      const normSnippet = cleanSnippet.replace(/\s+/g, ' ').trim();
+      const snippetMissing = !normExisting.includes(normSnippet);
+      if (snippetMissing) {
+        const body = existingEjs.trimEnd() + '\n\n' + itemBlock;
+        tx.write(destEjs, body.trim() + '\n');
+      }
     } else {
-      finalScss = mergeComponentScss('', componentScss, targetName);
+      tx.write(destEjs, itemBlock);
     }
+    savedFiles.push(`workbench/components/_${targetName}.ejs`);
 
-    writeFileSync(destScss, finalScss.trimEnd() + '\n', 'utf8');
-    savedFiles.push(`workbench/scss/${scssCategory === 'layout' ? 'layout' : 'component'}/${foundScss.fileName}`);
+    tx.commit();
+    // Saved source remains committed if only the derived preview fails.
+    const warnings = [];
+    try { syncSnippets({ quiet: true }); } catch (error) { warnings.push(`Snippets: ${error.message}`); }
+    try { await buildWorkbench({ force: true }); } catch (error) { warnings.push(`Preview: ${error.message}`); }
 
-    const wbScssBase = basename(foundScss.fileName, '.scss').replace(/^_/, '');
-    updateWorkbenchScss(wbScssBase, 'add', scssCategory);
+    return {
+      success: true,
+      name: targetName,
+      category,
+      savedFiles,
+      warnings,
+      hasScss: !!foundScss,
+      hasJs: !!foundJs,
+      message: `Đã đưa component "${targetName}" vào Workbench Showroom thành công!`
+    };
+  } catch (error) {
+    try { tx.rollback(); }
+    catch (rollbackError) { return { success: false, rolledBack: false, message: `${error.message}; ${rollbackError.message}` }; }
+    return { success: false, rolledBack: true, message: error.message };
   }
-
-  // 5. Look up and mirror JS for this component into workbench
-  const foundJs = findComponentJsInSite(targetName, blockClasses);
-  if (foundJs && foundJs.content) {
-    if (!existsSync(WORKBENCH_JS_DIR)) {
-      mkdirSync(WORKBENCH_JS_DIR, { recursive: true });
-    }
-    const destJs = resolve(WORKBENCH_JS_DIR, foundJs.fileName);
-    let finalJs = foundJs.content.trimEnd() + '\n';
-    if (existsSync(destJs)) {
-      const existing = readFileSync(destJs, 'utf8');
-      finalJs = mergeComponentJs(existing, foundJs.content, targetName);
-    }
-    writeFileSync(destJs, finalJs, 'utf8');
-    savedFiles.push(`workbench/js/${foundJs.fileName}`);
-  }
-
-  // 6. Save/Append HTML to workbench/components/_<targetName>.ejs (Pure HTML/EJS, 100% clean, NO frontmatter)
-  if (!existsSync(WORKBENCH_COMPONENTS_DIR)) {
-    mkdirSync(WORKBENCH_COMPONENTS_DIR, { recursive: true });
-  }
-  const destEjs = resolve(WORKBENCH_COMPONENTS_DIR, `_${targetName}.ejs`);
-  const trimmedHtml = html.trim();
-  const isAlreadyWrapped = /^<div class=["']p-component__item["']>/i.test(trimmedHtml);
-  const itemBlock = isAlreadyWrapped
-    ? (trimmedHtml + '\n')
-    : `<div class="p-component__item">\n    <!-- ${displayTitle} -->\n${trimmedHtml.split('\n').map(l => '    ' + l).join('\n')}\n</div>\n`;
-
-  let existingEjs = existsSync(destEjs) ? readFileSync(destEjs, 'utf8') : '';
-  if (existingEjs.trim()) {
-    const cleanExisting = stripEjsShowroomWrapper(existingEjs);
-    const cleanSnippet = stripEjsShowroomWrapper(trimmedHtml);
-    const normExisting = cleanExisting.replace(/\s+/g, ' ').trim();
-    const normSnippet = cleanSnippet.replace(/\s+/g, ' ').trim();
-    const snippetMissing = !normExisting.includes(normSnippet);
-    if (snippetMissing) {
-      const body = existingEjs.trimEnd() + '\n\n' + itemBlock;
-      writeFileSync(destEjs, body.trim() + '\n', 'utf8');
-    }
-  } else {
-    writeFileSync(destEjs, itemBlock, 'utf8');
-  }
-  savedFiles.push(`workbench/components/_${targetName}.ejs`);
-
-  // 7. Auto-sync VS Code snippets & rebuild Workbench
-  try { syncSnippets({ quiet: true }); } catch {}
-  try { await buildWorkbench({ force: true }); } catch {}
-
-  return {
-    success: true,
-    name: targetName,
-    category,
-    savedFiles,
-    hasScss: !!foundScss,
-    hasJs: !!foundJs,
-    message: `Đã đưa component "${targetName}" vào Workbench Showroom thành công!`
-  };
 }

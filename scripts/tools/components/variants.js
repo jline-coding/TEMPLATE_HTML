@@ -11,6 +11,7 @@ import {
   getComponentCategory,
   getScssDirForCategory,
   getWorkbenchScssDirForCategory,
+  resolveComponentFiles,
   findMatchingScss
 } from './paths.js';
 
@@ -166,7 +167,7 @@ export function isModifierInBlock(blockContent, modName, fullScss = '', baseBloc
 /**
  * Extract SCSS specific to a class/variant from full component SCSS (Block-Scoped)
  */
-export function sliceScssForClasses(fullScss, classStr) {
+export function sliceScssForClasses(fullScss, classStr, { strict = false } = {}) {
   if (!fullScss || !classStr) return fullScss || '';
   const tokens = classStr.split(/\s+/).filter(Boolean);
 
@@ -185,7 +186,13 @@ export function sliceScssForClasses(fullScss, classStr) {
 
   for (const baseBlockName of uniqueBases) {
     const baseRange = findRuleBlockRange(fullScss, baseBlockName);
-    if (!baseRange) continue;
+    if (!baseRange) {
+      for (const token of tokens.filter(token => token.startsWith(baseBlockName + '--'))) {
+        const standalone = findRuleBlockRange(fullScss, token);
+        if (standalone) extractedBlocks.push(standalone.content.trim());
+      }
+      continue;
+    }
 
     const blockContent = baseRange.content;
     const activeMods = tokens
@@ -229,7 +236,7 @@ export function sliceScssForClasses(fullScss, classStr) {
     }
   }
 
-  if (extractedBlocks.length === 0) return fullScss;
+  if (extractedBlocks.length === 0) return strict ? '' : fullScss;
   return (headers ? headers.trim() + '\n\n' : '') + extractedBlocks.join('\n\n').trim();
 }
 
@@ -351,17 +358,20 @@ export function mergeVariantScss(existing, incoming, classStr) {
 /**
  * Check if a specific component variant is already installed in site (100% Block-Scoped)
  */
-export function isVariantInstalled(compName, classStr, paths = getDefaultPaths()) {
-  const norm = normalizeName(compName);
-  const category = getComponentCategory(norm);
-  const targetClientScssDir = getScssDirForCategory(category, paths);
-  const scssFile = findMatchingScss(norm, targetClientScssDir);
-  if (!scssFile) return false;
-
-  const destScssPath = resolve(targetClientScssDir, scssFile);
-  if (!existsSync(destScssPath)) return false;
-
-  const existing = readFileSync(destScssPath, 'utf8');
+export function isVariantInstalled(compName, classStr, paths = getDefaultPaths(), cache = null) {
+  const cacheKey = `component:${compName}`;
+  let source = cache?.get(cacheKey);
+  if (!source) {
+    source = resolveComponentFiles(compName, paths, 'client');
+    cache?.set(cacheKey, source);
+  }
+  const destScssPath = source.scssPath;
+  if (!destScssPath) return false;
+  let existing = cache?.get(destScssPath);
+  if (existing === undefined) {
+    existing = readFileSync(destScssPath, 'utf8');
+    cache?.set(destScssPath, existing);
+  }
   if (isTemplateStub(existing)) return false;
 
   const tokens = (classStr || '').split(/\s+/).filter(Boolean);
@@ -559,37 +569,17 @@ export function removeVariantFromEjs(html, { classStr, commentTitle, cardIndex }
   if (cards.length === 0) return html;
 
   let targetCard = null;
-
-  if (cardIndex !== undefined && cardIndex >= 0 && cardIndex < cards.length) {
+  const tokens = value => (value || '').trim().split(/\s+/).filter(Boolean).sort().join(' ');
+  const matches = card => (!classStr || tokens(card.classStr) === tokens(classStr)) &&
+    (!commentTitle || (card.commentTitle || '').trim() === commentTitle.trim());
+  if (cardIndex !== undefined) {
+    if (!Number.isInteger(cardIndex) || cardIndex < 0 || cardIndex >= cards.length) return html;
     targetCard = cards[cardIndex];
-  }
-
-  if (!targetCard && classStr) {
-    const targetTokens = classStr.split(/\s+/).filter(Boolean).sort().join(' ');
-    targetCard = cards.find(c => {
-      const cTokens = (c.classStr || '').split(/\s+/).filter(Boolean).sort().join(' ');
-      if (cTokens !== targetTokens) return false;
-      if (commentTitle && c.commentTitle) {
-        return c.commentTitle.toLowerCase().includes(commentTitle.toLowerCase()) ||
-               commentTitle.toLowerCase().includes(c.commentTitle.toLowerCase());
-      }
-      return true;
-    });
-    if (!targetCard) {
-      targetCard = cards.find(c => {
-        const cTokens = (c.classStr || '').split(/\s+/).filter(Boolean).sort().join(' ');
-        return cTokens === targetTokens;
-      });
-    }
-  }
-
-  if (!targetCard && commentTitle) {
-    targetCard = cards.find(c => 
-      c.commentTitle && (
-        c.commentTitle.toLowerCase().includes(commentTitle.toLowerCase()) ||
-        commentTitle.toLowerCase().includes(c.commentTitle.toLowerCase())
-      )
-    );
+    if (!matches(targetCard)) return html;
+  } else if (classStr || commentTitle) {
+    const candidates = cards.filter(matches);
+    if (candidates.length !== 1) return html;
+    targetCard = candidates[0];
   }
 
   if (targetCard) {

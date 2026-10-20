@@ -9,6 +9,7 @@
 
 import { existsSync, readFileSync, writeFileSync, rmSync, copyFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
+import { createHash } from 'crypto';
 import ejs from 'ejs';
 import * as sass from 'sass-embedded';
 
@@ -21,7 +22,7 @@ import {
 import { ensureDir } from '../tools/utils.js';
 import { safeRmDirSync, getDevSessionToken } from '../tools/safety.js';
 import { syncSnippets } from '../sync-snippets.js';
-import { getRegistry, parseComponentMetadata } from '../tools/component-service.js';
+import { getRegistry, getWorkbenchRevision, parseComponentMetadata } from '../tools/component-service.js';
 
 const CATALOG_EJS = resolve(WORKBENCH_CATALOG_DIR, 'catalog.ejs');
 const CATALOG_CSS = resolve(WORKBENCH_CATALOG_DIR, 'catalog.css');
@@ -36,11 +37,8 @@ const WORKBENCH_SCSS = resolve(WORKBENCH_DIR, 'workbench.scss');
  */
 export function cleanWorkbench() {
   if (existsSync(WORKBENCH_OUT_DIR)) {
-    try {
-      safeRmDirSync(WORKBENCH_OUT_DIR, ROOT);
-    } catch (e) {
-      // Ignore
-    }
+    safeRmDirSync(WORKBENCH_OUT_DIR, ROOT);
+    if (existsSync(WORKBENCH_OUT_DIR)) throw new Error(`Could not remove Workbench output: ${WORKBENCH_OUT_DIR}`);
   }
 }
 
@@ -99,13 +97,21 @@ export async function buildWorkbenchScss() {
     }
   } catch (err) {
     console.error('[workbench] SCSS build error:', err.message);
+    throw err;
   }
 }
 
 /**
  * Build Full Workbench Showcase HTML & Assets
  */
-export async function buildWorkbench(options = {}) {
+let pendingBuild = Promise.resolve();
+export function buildWorkbench(options = {}) {
+  const next = pendingBuild.then(() => buildWorkbenchInternal(options));
+  pendingBuild = next.catch(() => {});
+  return next;
+}
+
+async function buildWorkbenchInternal(options = {}) {
   // Only build workbench in watch / dev mode unless explicitly forced!
   if (!isWatch && !options.force) {
     cleanWorkbench();
@@ -179,6 +185,7 @@ export async function buildWorkbench(options = {}) {
 
       return {
         ...item,
+        revision: createHash('sha256').update(raw).digest('hex'),
         file: item.ejsFile,
         isLayout: item.category === 'layout',
         content: renderedContent,
@@ -206,6 +213,7 @@ export async function buildWorkbench(options = {}) {
     const catalogTemplate = readFileSync(CATALOG_EJS, 'utf8');
     const html = ejs.render(catalogTemplate, {
       componentModules,
+      libraryRevision: getWorkbenchRevision(undefined, componentModules),
       siteFontLinks,
       assetsDir: '../assets/',
       siteUrl: SITE_URL,
@@ -266,6 +274,7 @@ export async function buildWorkbench(options = {}) {
     console.log(`[workbench] ✓ Showcase ready: http://localhost:${port}/__workbench/ (${componentModules.length} modules)`);
   } catch (err) {
     console.error('[workbench] Error rendering catalog.ejs:', err.message);
+    throw err;
   }
 
   // 6. Keep snippets synced

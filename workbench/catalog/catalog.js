@@ -414,6 +414,37 @@
     // ─────────────────────────────────────────────────────────────
     // 1-CLICK PERMANENT DELETE FROM WORKBENCH (HTML, SCSS, JS)
     // ─────────────────────────────────────────────────────────────
+    window.clearWorkbenchLibrary = async function(btn) {
+        if (!btn || btn.disabled) return;
+        const count = Number(btn.getAttribute('data-count') || 0);
+        if (!count) return;
+        const confirmed = window.confirm(t(
+            `Xóa toàn bộ ${count} module trong thư viện Workbench?\n\nHệ thống sẽ sao lưu trước khi xóa. Các component đã cài trong site và các file nền của Workbench được giữ nguyên.\n\nThao tác áp dụng cho toàn bộ thư viện, kể cả component đang bị ẩn bởi bộ lọc.`,
+            `Workbenchの全${count}モジュールを削除しますか？\n\n削除前にバックアップします。サイト導入済みのコンポーネントとWorkbenchの基盤ファイルは保持されます。\n\nフィルターで非表示のコンポーネントも対象です。`
+        ));
+        if (!confirmed) return;
+        const original = btn.innerHTML;
+        btn.disabled = true;
+        btn.setAttribute('aria-busy', 'true');
+        btn.textContent = t('Đang sao lưu và xóa...', 'バックアップ・削除中...');
+        try {
+            const res = await apiFetch('/__api/clear-workbench', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ confirm: true, revision: btn.getAttribute('data-revision') })
+            });
+            const data = await res.json();
+            if (!res.ok || !data.success) throw new Error(data.message || t('Không thể xóa thư viện.', 'ライブラリを削除できません。'));
+            if (data.warnings?.length) window.alert(data.message);
+            showToast(t(`Đã xóa ${data.deletedCount} module.`, `${data.deletedCount}モジュールを削除しました。`), '✓');
+            window.location.reload();
+        } catch (error) {
+            showToast(error.message, '⚠️');
+            btn.innerHTML = original;
+            btn.disabled = false;
+            btn.removeAttribute('aria-busy');
+        }
+    };
+
     window.deleteComponentFromWorkbench = async function(compName, title) {
         if (!compName) return;
         const displayName = title || compName;
@@ -507,6 +538,7 @@
                     classStr: classStr,
                     title: title,
                     cardIndex: cardIndex,
+                    revision: btn.closest('.cs-section')?.getAttribute('data-source-revision') || '',
                     commentTitle: commentTitle
                 })
             });
@@ -1255,18 +1287,8 @@
         refreshInstalledCounter();
         syncRegistryState();
 
-        // Activate interactive JS for components in sandbox preview
-        setTimeout(() => {
-            document.querySelectorAll('.cs-raw-js').forEach(ta => {
-                if (!ta.value || !ta.value.trim()) return;
-                try {
-                    const fn = new Function(ta.value);
-                    fn();
-                } catch (e) {
-                    // Safe ignore
-                }
-            });
-        }, 150);
+        // components.js initializes interactive modules once, after this deferred
+        // script has built the preview cards. Raw JS textareas are for copying only.
 
         // Direct hash navigation inside Workbench
         if (window.location.hash) {

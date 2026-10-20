@@ -20,7 +20,7 @@ import {
   CLIENT_JS_DIR
 } from '../config.js';
 import { resolveSafePath } from '../safety.js';
-import { normalizeName } from './metadata.js';
+import { normalizeName, parseComponentMetadata } from './metadata.js';
 
 export const LAYOUT_CATEGORIES = new Set(['layout', 'layouts']);
 export const KNOWN_LAYOUT_COMPONENTS = new Set([
@@ -78,6 +78,38 @@ export function getScssIndexForCategory(category, paths = getDefaultPaths()) {
  */
 export function getWorkbenchScssDirForCategory(category, paths = getDefaultPaths()) {
   return category === 'layout' ? paths.wbLayoutDir : paths.wbScssDir;
+}
+
+// One resolver for registry metadata, aliases and all mutation operations.
+export function resolveComponentFiles(name, paths = getDefaultPaths(), environment = 'workbench') {
+  const norm = normalizeName(name);
+  const client = environment === 'client';
+  const ejsDir = client ? paths.clientComponentsDir : paths.wbComponentsDir;
+  const ejsFile = findMatchingEjs(norm, ejsDir);
+  const ejsPath = ejsFile ? resolveSafePath(ejsDir, ejsFile, 'component EJS') : null;
+  const raw = ejsPath ? readFileSync(ejsPath, 'utf8') : '';
+  const localMeta = parseComponentMetadata(raw).meta || {};
+  const meta = client ? { ...resolveComponentFiles(norm, paths).meta, ...localMeta } : localMeta;
+  for (const [key, extension] of [['scss', '.scss'], ['js', '.js']]) {
+    if (meta[key] && (typeof meta[key] !== 'string' || /[\\/]/.test(meta[key]) || !meta[key].endsWith(extension) || meta[key] === '_index.scss')) {
+      throw new Error(`Invalid ${key} filename in component metadata`);
+    }
+  }
+  const canonicalName = ejsFile ? normalizeName(ejsFile) : norm;
+  const category = meta.category === 'layouts' ? 'layout' : meta.category || getComponentCategory(canonicalName);
+  const scssDir = client ? getScssDirForCategory(category, paths) : getWorkbenchScssDirForCategory(category, paths);
+  const fallbackDir = client ? paths.clientScssDir : paths.wbScssDir;
+  const scssFile = meta.scss || findMatchingScss(canonicalName, scssDir) || findMatchingScss(canonicalName, fallbackDir);
+  let scssPath = scssFile ? resolveSafePath(scssDir, scssFile, 'component SCSS') : null;
+  if (scssPath && !existsSync(scssPath) && fallbackDir !== scssDir) scssPath = resolveSafePath(fallbackDir, scssFile, 'component SCSS fallback');
+  if (scssPath && !existsSync(scssPath)) scssPath = null;
+  const jsDirs = client ? [paths.clientJsDir, resolve(paths.root, 'src/pages/assets/js')] : [paths.wbJsDir];
+  let jsPath = null;
+  for (const dir of jsDirs) {
+    const file = (meta.js && existsSync(resolveSafePath(dir, meta.js, 'component JS'))) ? meta.js : findMatchingJs(canonicalName, dir);
+    if (file) { jsPath = resolveSafePath(dir, file, 'component JS'); break; }
+  }
+  return { name: canonicalName, category, meta, raw, ejsFile, ejsPath, scssFile, scssPath, jsPath };
 }
 
 /**

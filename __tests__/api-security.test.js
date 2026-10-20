@@ -16,8 +16,8 @@ describe('Workbench API Security (4-Layer Defense-in-Depth)', () => {
       method: reqOptions.method || 'GET',
       headers,
       on: (event, handler) => {
-        if (event === 'data' && reqOptions.body) {
-          handler(Buffer.from(JSON.stringify(reqOptions.body)));
+        if (event === 'data' && (reqOptions.rawBody !== undefined || reqOptions.body !== undefined)) {
+          handler(Buffer.from(reqOptions.rawBody ?? JSON.stringify(reqOptions.body)));
         }
         if (event === 'end') {
           handler();
@@ -278,4 +278,28 @@ describe('Workbench API Security (4-Layer Defense-in-Depth)', () => {
       expect(getBody().message).toContain('Path Traversal');
     });
   });
+  describe('Request body validation', () => {
+    it.each(['null', '[]', '"text"', '{invalid'])('rejects invalid body %s as JSON 400', async rawBody => {
+      const http = createMockHttp({ url: '/__api/import', method: 'POST', headers: {'x-workbench-token':validToken}, rawBody });
+      await middleware(http.req, http.res, () => {});
+      expect(http.getStatus()).toBe(400);
+      expect(http.getBody().success).toBe(false);
+    });
+    it('rejects oversized bodies before performing any operation', async () => {
+      const http = createMockHttp({ url: '/__api/import', method: 'POST', headers: {'x-workbench-token':validToken, 'content-length':2 * 1024 * 1024}, body: {} });
+      await middleware(http.req, http.res, () => {});
+      expect(http.getStatus()).toBe(413);
+    });
+    it('rejects invalid batch entries instead of throwing', async () => {
+      const http = createMockHttp({ url: '/__api/check-variants', method: 'POST', headers: {'x-workbench-token':validToken}, body: {items:[null]} });
+      await middleware(http.req, http.res, () => {});
+      expect(http.getStatus()).toBe(400);
+    });
+    it('rejects non-string component names', async () => {
+      const http = createMockHttp({ url: '/__api/import', method: 'POST', headers: {'x-workbench-token':validToken}, body: {component: {name:'alpha'}} });
+      await middleware(http.req, http.res, () => {});
+      expect(http.getStatus()).toBe(400);
+    });
+  });
+
 });

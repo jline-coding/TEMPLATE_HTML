@@ -80,6 +80,8 @@ describe('Dual-Environment Workbench System', () => {
     const html = readFileSync(resolve(WORKBENCH_OUT_DIR, 'index.html'), 'utf8');
     const css = readFileSync(resolve(WORKBENCH_OUT_DIR, 'workbench.css'), 'utf8');
     expect(html).toContain('class="cs-empty-state"');
+    expect(html).toMatch(/id="cs-clear-workbench"[^>]*disabled/s);
+    expect(html).toContain('data-count="0"');
     expect(html).not.toContain('class="cs-section"');
     expect(css).toContain('.l-container');
   });

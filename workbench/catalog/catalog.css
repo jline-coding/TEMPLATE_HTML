@@ -627,6 +627,17 @@ body {
     color: var(--white, #fff);
 }
 
+.cs-clear-workbench {
+    min-height: 34px;
+    flex-shrink: 0;
+}
+
+.cs-clear-workbench:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 .cs-btn-cli {
     background: var(--wb-text-title);
     color: var(--white, #fff);

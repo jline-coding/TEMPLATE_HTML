@@ -4,7 +4,8 @@
  */
 
 import { existsSync, readdirSync, readFileSync } from 'fs';
-import { resolve, basename } from 'path';
+import { resolve, basename, dirname } from 'path';
+import { createHash } from 'crypto';
 import {
   parseComponentMetadata,
   generateComponentId,
@@ -19,10 +20,18 @@ import {
   getWorkbenchScssDirForCategory,
   getScssDirForCategory,
   findMatchingScss,
-  findMatchingJs
+  findMatchingJs,
+  resolveComponentFiles
 } from './paths.js';
-import { isTemplateStub } from './variants.js';
+import { isTemplateStub, findMatchingTag } from './variants.js';
 import { sortComponentRegistry } from './ordering.js';
+import { compareComponentVersions } from './metadata.js';
+
+export function getWorkbenchRevision(paths = getDefaultPaths(), registry = getRegistry(paths)) {
+  const state = registry.map(item => [item.name, item.category, item.ejsFile, item.scssFile, item.jsFile,
+    item.wbEjsContent, item.scssContent, item.jsContent]).sort((a, b) => a[0].localeCompare(b[0]));
+  return createHash('sha256').update(JSON.stringify(state)).digest('hex');
+}
 
 
 /**
@@ -31,45 +40,36 @@ import { sortComponentRegistry } from './ordering.js';
 export function stripEjsShowroomWrapper(content) {
   if (!content) return '';
   const parsed = parseComponentMetadata(content);
-  let clean = parsed.content || '';
-  clean = clean
-    .replace(/<div class="p-component__item">([\s\S]*?)<\/div>(?=\s*(?:<div class="p-component__item">|$))/g, (m, inner) => {
-      return inner.replace(/^\s*<!--[^\n]*-->\s*/, '');
-    })
-    .replace(/^\s*<div class="p-component__item">\s*(?:<!--[^\n]*-->\s*)?/, '')
-    .replace(/\s*<\/div>\s*$/, '');
-  return clean;
+  const clean = parsed.content || '';
+  const wrapper = /<div\b[^>]*class=["'][^"']*\bp-component__item\b[^"']*["'][^>]*>/g;
+  let output = '', offset = 0, match;
+  while ((match = wrapper.exec(clean))) {
+    const end = findMatchingTag(clean, match.index);
+    if (end < 0) break; // Never truncate malformed input.
+    output += clean.slice(offset, match.index);
+    const inner = clean.slice(match.index + match[0].length, end).replace(/<\/div>\s*$/i, '');
+    output += inner.replace(/^\s*<!--[\s\S]*?-->\s*/, '');
+    offset = end;
+    wrapper.lastIndex = end;
+  }
+  return output + clean.slice(offset);
 }
 
 /**
  * Locates the exact character range of a component JS module in a file
  */
 export function getComponentJsRange(fullJs, compName) {
-  if (!fullJs) return null;
-  const pattern = new RegExp(
-    '(?:/\\*\\s*=+\\s*\\r?\\n\\s*)?\\[Component(?:\\s*Module)?:\\s*' + compName + '\\](?:[\\s\\S]*?=+\\s*\\*/|\\r?\\n)',
-    'i'
-  );
-  const match = fullJs.match(pattern);
-  if (!match) return null;
+  if (!fullJs || !compName) return null;
+  const markers = [...fullJs.matchAll(/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*/g)]
+    .map(match => ({ match, name: match[0].match(/\[Component(?:\s*Module)?:\s*([\w-]+)\]/i)?.[1] }))
+    .filter(item => item.name);
+  const index = markers.findIndex(item => item.name.toLowerCase() === compName.toLowerCase());
+  return index < 0 ? null : { start: markers[index].match.index, end: markers[index + 1]?.match.index ?? fullJs.length };
+}
 
-  let startIdx = match.index;
-  if (!match[0].startsWith('/*')) {
-    const immediateBefore = fullJs.substring(Math.max(0, startIdx - 150), startIdx);
-    const commentStart = immediateBefore.lastIndexOf('/* ==========================================================================');
-    if (commentStart !== -1) {
-      startIdx = Math.max(0, startIdx - 150) + commentStart;
-    }
-  }
-
-  const remainder = fullJs.substring(match.index + match[0].length);
-  const nextMatch = remainder.search(/\n(?:\/\*[\s=*]*\r?\n\s*)?\[Component/i);
-  let endIdx = fullJs.length;
-  if (nextMatch !== -1) {
-    endIdx = match.index + match[0].length + nextMatch;
-  }
-
-  return { start: startIdx, end: endIdx };
+export function removeComponentJs(fullJs, compName) {
+  const range = getComponentJsRange(fullJs, compName);
+  return range ? fullJs.slice(0, range.start) + fullJs.slice(range.end) : null;
 }
 
 /**
@@ -144,38 +144,16 @@ export function getRegistry(paths = getDefaultPaths()) {
       } catch {}
     }
 
-    const wbEjsPath = resolve(paths.wbComponentsDir, file);
-    let wbEjsContent = '';
-    let parsedMeta = {};
-    if (existsSync(wbEjsPath)) {
-      try {
-        wbEjsContent = readFileSync(wbEjsPath, 'utf8');
-        const parsed = parseComponentMetadata(wbEjsContent);
-        parsedMeta = parsed.meta || {};
-      } catch {}
-    }
-
-    const category = parsedMeta.category || getComponentCategory(rawName);
+    const source = resolveComponentFiles(rawName, paths);
+    const wbEjsContent = source.raw;
+    const parsedMeta = source.meta;
+    const category = source.category;
     const categoryMeta = getCategoryMeta(category);
-
     const targetWbScssDir = getWorkbenchScssDirForCategory(category, paths);
     const targetClientScssDir = getScssDirForCategory(category, paths);
-
-    // Matching SCSS
-    let matchingScss = parsedMeta.scss || null;
-    let usedWbScssDir = targetWbScssDir;
-    let usedClientScssDir = targetClientScssDir;
-
-    if (!matchingScss) {
-      matchingScss = findMatchingScss(rawName, targetWbScssDir);
-      if (!matchingScss) {
-        matchingScss = findMatchingScss(rawName, paths.wbScssDir);
-        if (matchingScss) {
-          usedWbScssDir = paths.wbScssDir;
-          usedClientScssDir = paths.clientScssDir;
-        }
-      }
-    }
+    const matchingScss = source.scssFile;
+    const usedWbScssDir = source.scssPath ? dirname(source.scssPath) : targetWbScssDir;
+    const usedClientScssDir = usedWbScssDir === paths.wbScssDir ? paths.clientScssDir : targetClientScssDir;
 
     let wbScssContent = '';
     if (matchingScss) {
@@ -200,7 +178,7 @@ export function getRegistry(paths = getDefaultPaths()) {
     }
 
     // Matching JS
-    const matchingJs = parsedMeta.js || findMatchingJs(rawName, paths.wbJsDir);
+    const matchingJs = source.jsPath ? basename(source.jsPath) : null;
     let wbJsContent = '';
     if (matchingJs) {
       const jsPath = resolve(paths.wbJsDir, matchingJs);
@@ -212,46 +190,19 @@ export function getRegistry(paths = getDefaultPaths()) {
       }
     }
 
+    const clientSource = resolveComponentFiles(rawName, paths, 'client');
     let clientJsExists = false;
-    let clientJsFile = '';
+    let clientJsFile = clientSource.jsPath ? basename(clientSource.jsPath) : '';
     let clientJsContent = '';
-    if (matchingJs) {
-      clientJsFile = matchingJs;
-      let clientJsPath = resolve(paths.clientJsDir, matchingJs);
-      if (!existsSync(clientJsPath)) {
-        const rootJs = resolve(paths.root, 'src/pages/assets/js', matchingJs);
-        if (existsSync(rootJs)) {
-          clientJsPath = rootJs;
-        } else {
-          const commonJsPath = resolve(paths.root, 'src/pages/assets/js/common.js');
-          if (existsSync(commonJsPath)) {
-            try {
-              const commonRaw = readFileSync(commonJsPath, 'utf8');
-              const range = getComponentJsRange(commonRaw, rawName);
-              if (range) {
-                clientJsPath = commonJsPath;
-                clientJsFile = 'common.js';
-              }
-            } catch {}
-          }
-        }
-      }
-      if (existsSync(clientJsPath)) {
-        try {
-          const raw = readFileSync(clientJsPath, 'utf8');
-          if (clientJsFile === 'common.js' || clientJsFile === 'top.js') {
-            const range = getComponentJsRange(raw, rawName);
-            clientJsExists = !!range;
-            clientJsContent = range ? sliceJsForComponent(raw, rawName) : '';
-          } else {
-            clientJsExists = true;
-            clientJsContent = raw;
-          }
-        } catch {}
-      }
+    if (clientSource.jsPath) {
+      const raw = readFileSync(clientSource.jsPath, 'utf8');
+      const range = getComponentJsRange(raw, rawName);
+      const dedicated = [rawName + '.js', rawName + 's.js', '_' + rawName + '.js'].includes(clientJsFile);
+      clientJsExists = Boolean(range || dedicated);
+      clientJsContent = range ? raw.slice(range.start, range.end).trim() : dedicated ? raw : '';
     }
 
-    const isInstalled = clientScssExists || (['header', 'footer'].includes(category) && clientEjsExists);
+    const isInstalled = clientScssExists || clientJsExists || (['header', 'footer'].includes(category) && clientEjsExists);
 
     const deps = resolveComponentDependencies(rawName, parsedMeta, wbEjsContent);
     const compTitle = parsedMeta.title || rawName.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -259,7 +210,7 @@ export function getRegistry(paths = getDefaultPaths()) {
     const version = parsedMeta.version || '1.0.0';
     const schemaVersion = parsedMeta.schemaVersion || COMPONENT_SCHEMA_VERSION;
     const installedVersion = isInstalled ? (clientMeta.version || version) : null;
-    const hasUpdate = Boolean(isInstalled && installedVersion && version > installedVersion);
+    const hasUpdate = Boolean(isInstalled && installedVersion && compareComponentVersions(version, installedVersion) > 0);
 
     return {
       id: compId,

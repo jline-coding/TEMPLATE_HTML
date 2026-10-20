@@ -1,6 +1,26 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { resolve } from 'path';
 import { existsSync, readFileSync, writeFileSync, rmSync, mkdirSync } from 'fs';
+// Export tests use deterministic fixtures, never the developer's open files.
+vi.mock('../scripts/tools/config.js', async original => {
+  const config = await original();
+  const { mkdtempSync } = await import('fs');
+  const root = mkdtempSync(resolve(config.ROOT, 'test-sandbox-selection-'));
+  return { ...config, ROOT: root,
+    WORKBENCH_DIR: resolve(root,'workbench'),
+    WORKBENCH_COMPONENTS_DIR: resolve(root,'workbench/components'),
+    WORKBENCH_SCSS_DIR: resolve(root,'workbench/scss/component'),
+    WORKBENCH_LAYOUT_DIR: resolve(root,'workbench/scss/layout'),
+    WORKBENCH_JS_DIR: resolve(root,'workbench/js'),
+    CLIENT_COMPONENTS_DIR: resolve(root,'src/components'),
+    CLIENT_SCSS_DIR: resolve(root,'src/pages/assets/scss/component'),
+    CLIENT_LAYOUT_DIR: resolve(root,'src/pages/assets/scss/layout'),
+    CLIENT_JS_DIR: resolve(root,'src/pages/assets/js/component')
+  };
+});
+vi.mock('../scripts/sync-snippets.js', () => ({syncSnippets: vi.fn()}));
+vi.mock('../scripts/builders/workbench.js', () => ({buildWorkbench: vi.fn().mockResolvedValue(undefined)}));
+import { safeRmDirSync, PROJECT_ROOT } from '../scripts/tools/safety.js';
 import { ROOT, WORKBENCH_COMPONENTS_DIR, WORKBENCH_SCSS_DIR, WORKBENCH_JS_DIR } from '../scripts/tools/config.js';
 import {
   parseComponentHtml,
@@ -23,6 +43,7 @@ describe('Selection Exporter Engine (VS Code to Workbench)', () => {
     if (!existsSync(compDir)) mkdirSync(compDir, { recursive: true });
     if (!existsSync(scssDir)) mkdirSync(scssDir, { recursive: true });
     if (!existsSync(jsDir)) mkdirSync(jsDir, { recursive: true });
+    writeFileSync(resolve(jsDir,'common.js'), '// Shared application JS\n', 'utf8');
 
     const headerFile = resolve(compDir, '_header.ejs');
     const scssFile = resolve(scssDir, '_header.scss');
@@ -59,6 +80,7 @@ describe('Selection Exporter Engine (VS Code to Workbench)', () => {
     if (tempJsModified && originalCommonJs) {
       try { writeFileSync(jsFile, originalCommonJs, 'utf8'); } catch {}
     }
+    safeRmDirSync(ROOT, PROJECT_ROOT);
   });
   it('accurately parses component class, name, and category from HTML snippet', () => {
     const html1 = '<div class="c-accordion"><button class="c-accordion__head">Title</button></div>';

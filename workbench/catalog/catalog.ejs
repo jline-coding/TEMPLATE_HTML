@@ -196,6 +196,12 @@
                 </h1>
             </div>
             <div class="cs-topbar__controls">
+                <button type="button" id="cs-clear-workbench" class="cs-btn-action cs-btn-action--delete cs-clear-workbench"
+                    data-count="<%= comps.length %>" data-revision="<%= libraryRevision %>"
+                    onclick="clearWorkbenchLibrary(this)" <%= comps.length === 0 ? 'disabled' : '' %>>
+                    <span class="lang-vi">🗑 Xóa tất cả component</span>
+                    <span class="lang-ja">🗑 全コンポーネントを削除</span>
+                </button>
                 <a href="./inview.html" class="cs-btn-inview" title="Xem Showcase &amp; Hướng dẫn Motion Inview / Inviewモーションの確認・解説">
                     <span class="cs-btn-inview__icon">🎬</span>
                     <span class="lang-vi">Mẫu Chuyển Động Inview</span>
@@ -244,7 +250,7 @@
             <% } %>
             <% comps.forEach((comp, idx) => { %>
             <section id="sec-<%= comp.name %>" class="cs-section" 
-                     data-name="<%= comp.name %>" 
+                     data-name="<%= comp.name %>" data-source-revision="<%= comp.revision %>"
                      data-title="<%= comp.title %>" 
                      data-file="<%= comp.file %>"
                      data-cat="<%= comp.category %>"

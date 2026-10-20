@@ -13,6 +13,28 @@ import matter from 'gray-matter';
 
 export const COMPONENT_SCHEMA_VERSION = '1.0.0';
 
+export function compareComponentVersions(left, right) {
+  const parse = value => {
+    const [core, prerelease] = String(value).replace(/^v/, '').split('+')[0].split(/-(.*)/s);
+    return { core: core.split('.').map(Number), pre: prerelease === undefined ? null : prerelease.split('.') };
+  };
+  const a = parse(left), b = parse(right);
+  for (let i = 0; i < Math.max(a.core.length, b.core.length); i++) {
+    const diff = (a.core[i] || 0) - (b.core[i] || 0);
+    if (diff) return Math.sign(diff);
+  }
+  if (a.pre === null || b.pre === null) return a.pre === b.pre ? 0 : a.pre === null ? 1 : -1;
+  for (let i = 0; i < Math.max(a.pre.length, b.pre.length); i++) {
+    if (a.pre[i] === undefined || b.pre[i] === undefined) return a.pre[i] === b.pre[i] ? 0 : a.pre[i] === undefined ? -1 : 1;
+    if (a.pre[i] === b.pre[i]) continue;
+    const numericA = /^\d+$/.test(a.pre[i]), numericB = /^\d+$/.test(b.pre[i]);
+    if (numericA && numericB) return Math.sign(Number(a.pre[i]) - Number(b.pre[i]));
+    if (numericA !== numericB) return numericA ? -1 : 1;
+    return a.pre[i] < b.pre[i] ? -1 : 1;
+  }
+  return 0;
+}
+
 /**
  * Standard Component Dependencies Map (Fallback suggestion dictionary)
  * Composite components can use this as fallback when not declared in frontmatter.

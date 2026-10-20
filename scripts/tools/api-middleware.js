@@ -18,10 +18,12 @@ import {
   isVariantInstalled,
   getAvailableJsFiles,
   deleteWorkbenchComponent,
+  deleteAllWorkbenchComponents,
   deleteWorkbenchVariant
 } from './component-service.js';
 import { exportSelectionToWorkbench } from './selection-exporter.js';
 import { buildWorkbench } from '../builders/workbench.js';
+import { syncSnippets } from '../sync-snippets.js';
 import { relative, resolve, normalize, isAbsolute } from 'path';
 import {
   isValidDevToken,
@@ -53,7 +55,8 @@ const MUTATION_ENDPOINTS = new Set([
   '/__api/save-selection',
   '/__api/delete-workbench',
   '/__api/delete-from-workbench',
-  '/__api/delete-variant'
+  '/__api/delete-variant',
+  '/__api/clear-workbench'
 ]);
 
 function sendJson(res, statusCode, data, req = null) {
@@ -76,21 +79,38 @@ function sendJson(res, statusCode, data, req = null) {
   res.end(jsonStr);
 }
 
+async function refreshDerivedFiles(result) {
+  const warnings = result.warnings || [];
+  try { syncSnippets({ quiet: true }); } catch (error) { warnings.push(`Snippets: ${error.message}`); }
+  try { await buildWorkbench({ force: true }); } catch (error) { warnings.push(`Preview: ${error.message}`); }
+  result.warnings = warnings;
+  if (warnings.length) result.message = `${result.message || 'Saved.'} ${warnings.join(' ')}`;
+  return result;
+}
+
 function parseRequestBody(req) {
-  return new Promise((resolve) => {
+  const limit = 1024 * 1024;
+  return new Promise((resolve, reject) => {
     let body = '';
+    let bytes = 0;
+    const invalid = (message, status = 400) => reject(Object.assign(new Error(message), { status }));
+    if (Number(req.headers['content-length']) > limit) return invalid('Request body exceeds 1 MB', 413);
     req.on('data', chunk => {
+      bytes += Buffer.byteLength(chunk);
+      if (bytes > limit) { body = ''; invalid('Request body exceeds 1 MB', 413); return; }
       body += chunk.toString();
     });
     req.on('end', () => {
       if (!body) return resolve({});
       try {
-        resolve(JSON.parse(body));
+        const parsed = JSON.parse(body);
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return invalid('JSON body must be an object');
+        resolve(parsed);
       } catch {
-        resolve({});
+        invalid('Invalid JSON body');
       }
     });
-    req.on('error', () => resolve({}));
+    req.on('error', () => invalid('Request body could not be read'));
   });
 }
 
@@ -174,10 +194,19 @@ export function createApiMiddleware() {
 
     let bodyData = {};
     if (req.method === 'POST') {
-      bodyData = await parseRequestBody(req);
+      try { bodyData = await parseRequestBody(req); }
+      catch (error) { return sendJson(res, error.status || 400, { success: false, message: error.message }, req); }
     }
     const compName = bodyData.component || bodyData.name || queryComp;
     const asAlias = bodyData.as || queryAs;
+    if (bodyData.cardIndex !== undefined && (bodyData.cardIndex === null || !['string', 'number'].includes(typeof bodyData.cardIndex) || !Number.isInteger(Number(bodyData.cardIndex)) || Number(bodyData.cardIndex) < 0)) {
+      return sendJson(res, 400, { success: false, message: 'cardIndex must be a nonnegative integer' }, req);
+    }
+    for (const key of ['component', 'name', 'as', 'classStr', 'scssCode', 'html', 'title', 'commentTitle', 'filePath', 'targetJsFile', 'revision']) {
+      if (bodyData[key] !== undefined && bodyData[key] !== null && typeof bodyData[key] !== 'string') {
+        return sendJson(res, 400, { success: false, message: `${key} must be a string` }, req);
+      }
+    }
 
     // ─────────────────────────────────────────────
     // Security Layer 3: Dev Session Token for State-Mutating Operations
@@ -281,8 +310,7 @@ export function createApiMiddleware() {
           targetJsFile: bodyData.targetJsFile
         });
         if (result.success) {
-          try { syncSnippets({ quiet: true }); } catch {}
-          try { await buildWorkbench({ force: true }); } catch {}
+          await refreshDerivedFiles(result);
           return sendJson(res, 200, result);
         } else {
           const status = result.conflict ? 409 : 400;
@@ -300,8 +328,8 @@ export function createApiMiddleware() {
       }
       try {
         const result = installVariant(compName, bodyData);
-        try { syncSnippets({ quiet: true }); } catch {}
-        return sendJson(res, 200, result);
+        if (result.success) await refreshDerivedFiles(result);
+        return sendJson(res, result.success ? 200 : 400, result, req);
       } catch (err) {
         return sendJson(res, 500, { success: false, error: err.message });
       }
@@ -316,11 +344,15 @@ export function createApiMiddleware() {
 
     // 2d. Batch check multiple variants
     if (pathname === '/__api/check-variants') {
-      const list = Array.isArray(bodyData.items) ? bodyData.items : [];
+      const list = bodyData.items === undefined ? [] : bodyData.items;
+      if (!Array.isArray(list) || list.length > 2000 || list.some(item => !item || typeof item !== 'object' || !isValidComponentName(item.component) || typeof item.classStr !== 'string')) {
+        return sendJson(res, 400, { success: false, message: 'Invalid variant items (maximum 2000)' }, req);
+      }
+      const scssCache = new Map();
       const results = list.map(item => ({
         component: item.component,
         classStr: item.classStr,
-        isInstalled: isVariantInstalled(item.component, item.classStr)
+        isInstalled: isVariantInstalled(item.component, item.classStr, undefined, scssCache)
       }));
       return sendJson(res, 200, { success: true, results });
     }
@@ -334,8 +366,7 @@ export function createApiMiddleware() {
         const force = bodyData.force === true || parsedUrl.searchParams.get('force') === 'true';
         const result = removeComponent(compName, { force });
         if (result.success) {
-          try { syncSnippets({ quiet: true }); } catch {}
-          try { await buildWorkbench({ force: true }); } catch {}
+          await refreshDerivedFiles(result);
           return sendJson(res, 200, result);
         } else {
           const status = result.conflict ? 409 : 400;
@@ -355,8 +386,7 @@ export function createApiMiddleware() {
         const force = bodyData.force === true || parsedUrl.searchParams.get('force') === 'true';
         const result = saveComponent(compName, { as: asAlias, force });
         if (result.success) {
-          try { syncSnippets({ quiet: true }); } catch {}
-          try { await buildWorkbench({ force: true }); } catch {}
+          await refreshDerivedFiles(result);
           return sendJson(res, 200, result);
         } else {
           const status = result.conflict ? 409 : 400;
@@ -379,8 +409,7 @@ export function createApiMiddleware() {
           targetJsFile: bodyData.targetJsFile
         });
         if (result.success) {
-          try { syncSnippets({ quiet: true }); } catch {}
-          try { await buildWorkbench({ force: true }); } catch {}
+          await refreshDerivedFiles(result);
           return sendJson(res, 200, result);
         } else {
           return sendJson(res, 400, result);
@@ -420,6 +449,16 @@ export function createApiMiddleware() {
       }
     }
 
+    if (pathname === '/__api/clear-workbench') {
+      if (req.method !== 'POST') return sendJson(res, 405, { success: false, message: 'Use POST to clear the Workbench library.' }, req);
+      if (bodyData.confirm !== true || !/^[a-f0-9]{64}$/.test(bodyData.revision || '')) {
+        return sendJson(res, 400, { success: false, message: 'Cần xác nhận và phiên bản thư viện hiện tại.' }, req);
+      }
+      const result = deleteAllWorkbenchComponents({ revision: bodyData.revision });
+      if (result.success && result.deletedCount > 0) await refreshDerivedFiles(result);
+      return sendJson(res, result.success ? 200 : result.conflict ? 409 : 400, result, req);
+    }
+
     // 6. Delete entire group component from Workbench (HTML, SCSS, JS)
     if (pathname === '/__api/delete-workbench' || pathname === '/__api/delete-from-workbench') {
       if (!compName) {
@@ -428,8 +467,7 @@ export function createApiMiddleware() {
       try {
         const result = deleteWorkbenchComponent(compName);
         if (result.success) {
-          try { syncSnippets({ quiet: true }); } catch {}
-          try { await buildWorkbench({ force: true }); } catch {}
+          await refreshDerivedFiles(result);
           return sendJson(res, 200, result);
         } else {
           return sendJson(res, 400, result);
@@ -448,14 +486,14 @@ export function createApiMiddleware() {
       try {
         const result = deleteWorkbenchVariant({
           component: comp,
+          revision: bodyData.revision,
           classStr: bodyData.classStr || '',
           title: bodyData.title || '',
           cardIndex: bodyData.cardIndex !== undefined ? Number(bodyData.cardIndex) : undefined,
           commentTitle: bodyData.commentTitle || ''
         });
         if (result.success) {
-          try { syncSnippets({ quiet: true }); } catch {}
-          try { await buildWorkbench({ force: true }); } catch {}
+          await refreshDerivedFiles(result);
           return sendJson(res, 200, result);
         } else {
           return sendJson(res, 400, result);
