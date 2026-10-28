@@ -443,7 +443,8 @@ async function runDeploy() {
     }
 
     // SECURITY LAYER 1: PATH TRAVERSAL PROTECTION
-    const isValidDir = /^[a-zA-Z0-9_.-]+$/.test(config.project_dir);
+    const isValidDir = /^[a-zA-Z0-9_.-]+$/.test(config.project_dir)
+        && config.project_dir !== '.' && config.project_dir !== '..';
     if (!isValidDir) {
         console.error(`[ERROR] CRITICAL: project_dir "${config.project_dir}" is INVALID!`);
         console.error(`   Only alphanumeric, dot (.), dash (-), underscore (_) allowed.`);

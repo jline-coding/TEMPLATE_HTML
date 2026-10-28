@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Kéo Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1 # Manifest-based: khong can lich su git
           lfs: true
@@ -78,9 +78,9 @@ jobs:
       # ── Chế độ FTP: Build + Deploy lên server ──
       - name: ⚙️ Cài đặt Node.js
         if: env.DEPLOY_METHOD == 'ftp' || env.DEPLOY_METHOD == 'ssh'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: 📦 Cài đặt dependencies dự án (nếu cần build)
@@ -116,7 +116,7 @@ jobs:
       # ── Chế độ SSH: Triển khai qua SSH rsync ──
       - name: 🔑 Cài đặt SSH Key cho Deploy
         if: env.DEPLOY_METHOD == 'ssh'
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).private_key }}
 
@@ -140,7 +140,7 @@ jobs:
           DOMAIN=$(echo "${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).host }}" | sed -e 's/^ftp\.//')
           ROOT_PATH="${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}"
           WEB_PATH=$(echo "$ROOT_PATH" | sed -E 's|^.*?/public_html/?|/|')
-          PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // ""' deploy-config.json)
+          PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // .project_dir // ""' deploy-config.json)
           
           SITE_URL="https://${DOMAIN}/${WEB_PATH}/${PROJECT_DIR}"
           SITE_URL=$(echo "$SITE_URL" | sed 's|//|/|g' | sed 's|https:/|https://|')

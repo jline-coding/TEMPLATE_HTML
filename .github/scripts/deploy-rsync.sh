@@ -69,7 +69,7 @@ if [[ ! "$SOURCE_FOLDER" =~ ^[a-zA-Z0-9_-]+$ ]] || [[ "$SOURCE_FOLDER" =~ ^(src|
 fi
 
 # 2b. PATH TRAVERSAL PROTECTION: project_dir chỉ được chứa ký tự an toàn
-if [[ ! "$PROJECT_DIR" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
+if [[ ! "$PROJECT_DIR" =~ ^[a-zA-Z0-9_.-]+$ ]] || [[ "$PROJECT_DIR" == "." || "$PROJECT_DIR" == ".." ]]; then
     echo "[ERROR] CRITICAL: project_dir \"$PROJECT_DIR\" chua ky tu NGUY HIEM!"
     echo "   Chi cho phep: a-z, A-Z, 0-9, dot (.), dash (-), underscore (_)."
     echo "   Server protection: auto-terminated."

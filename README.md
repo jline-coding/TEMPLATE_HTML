@@ -10,7 +10,7 @@ EJS、SCSSのコンパイル、および画像の最適化を行うための静�
 
 
 ## 1. インストール
-1. **必須環境**: Node.js `v20.0.0` 以上。
+1. **必須環境**: Node.js `v24.22.1`（`.nvmrc` と CI で使用）。対応範囲は `^24.22.1` です。
 2. **依存関係のインストール**:
    ```bash
    npm install
@@ -202,7 +202,7 @@ EJSコンポーネントから一般的な静的HTMLをビルドします。
 Hệ thống Build Tĩnh dùng để biên dịch EJS, SCSS và tối ưu ảnh, hỗ trợ linh hoạt cho cả việc làm dự án mới hay tinh chỉnh giao diện trên nền code cũ của khách hàng.
 
 ## 1. Cài Đặt Đầu Tiên
-1. **Yêu cầu**: Cài đặt sẵn Node.js `v20.0.0` trở lên.
+1. **Yêu cầu**: Cài đặt Node.js `v24.22.1` (phiên bản dùng trong `.nvmrc` và CI). Phạm vi hỗ trợ: `^24.22.1` (từ `24.22.1` đến dưới `25.0.0`).
 2. **Cài Packages**:
    ```bash
    npm install

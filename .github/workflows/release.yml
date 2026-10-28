@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Kéo Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
 
@@ -52,9 +52,9 @@ jobs:
           echo "📌 Tag: $TAG_NAME"
 
       - name: ⚙️ Cài đặt Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: 📦 Cài đặt dependencies (nếu cần build)
@@ -137,7 +137,7 @@ jobs:
           echo "📦 File: $ZIP_NAME ($ZIP_SIZE)"
 
       - name: 🚀 Tạo GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.TAG_NAME }}
           name: "🚀 Release ${{ env.TAG_NAME }}"
