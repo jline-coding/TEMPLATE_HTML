@@ -1,5 +1,6 @@
 name: Deploy To Server
 
+
 on:
   push:
     branches:
@@ -141,13 +142,13 @@ jobs:
           ROOT_PATH="${{ fromJson(secrets[format('{0}_CONFIG', env.SERVER_NAME)]).root_path }}"
           WEB_PATH=$(echo "$ROOT_PATH" | sed -E 's|^.*?/public_html/?|/|')
           PROJECT_DIR=$(jq -r --arg env "$DEPLOY_ENV" '.[$env].project_dir // .project_dir // ""' deploy-config.json)
-          
+
           SITE_URL="https://${DOMAIN}/${WEB_PATH}/${PROJECT_DIR}"
           SITE_URL=$(echo "$SITE_URL" | sed 's|//|/|g' | sed 's|https:/|https://|')
-          
+
           echo "🔍 Kiểm tra URL dự kiến: $SITE_URL"
           HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" -I -k "$SITE_URL" || echo "FAILED")
-          
+
           if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ] || [ "$HTTP_STATUS" = "401" ]; then
             echo "✅ Health Check OK: Nhận HTTP $HTTP_STATUS"
           else

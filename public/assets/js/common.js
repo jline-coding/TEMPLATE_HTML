@@ -9,7 +9,7 @@
 
     const $htmlBody = $('html, body');
     const SCROLL_DURATION = 600;
-    
+
     function getTarget(hash) {
         if (!hash || hash === '#' || hash === '#!') {
             return null;
@@ -88,67 +88,25 @@
    Component: Scrollable
    ========================================================================== */
 
-(function ($, window) {
+(function ($) {
     if (!$) return;
-
-    const $targets = $('.js-scrollable, .has-fixed-layout');
-
-    if (!$targets.length) return;
-
-    let resizeTimer;
-
-    function updateState(element) {
-        const $element = $(element);
-
-        const isScrollable =
-            element.scrollWidth > element.clientWidth + 1;
-
-        $element.toggleClass(
-            'is-scrollable',
-            isScrollable
-        );
-
-        if (!isScrollable) {
-            $element.removeClass('is-scrolled');
-        }
+    function initScrollable() {
+        if (typeof window.ScrollHint === 'undefined') return;
+        if (!$('.js-scrollable, .has-fixed-layout').length) return;
+        new window.ScrollHint('.js-scrollable, .has-fixed-layout', {
+            scrollHintIconAppendClass: 'scroll-hint-icon-white',
+            applyToParents: true,
+            i18n: {
+                scrollable: 'スクロールできます',
+            },
+        });
     }
-
-    $targets.each(function () {
-        const element = this;
-        const $element = $(element);
-
-        updateState(element);
-
-        $element.on(
-            'scroll.scrollable',
-            function () {
-                if (element.scrollLeft > 0) {
-                    $element.addClass('is-scrolled');
-                } else {
-                    $element.removeClass('is-scrolled');
-                }
-            }
-        );
-    });
-
-    $(window).on(
-        'resize.scrollable',
-        function () {
-            window.clearTimeout(resizeTimer);
-
-            resizeTimer = window.setTimeout(
-                function () {
-                    $targets.each(function () {
-                        updateState(this);
-                    });
-                },
-                150
-            );
-        }
-    );
-
-})(window.jQuery, window);
-
+    if (document.readyState === 'complete') {
+        initScrollable();
+    } else {
+        $(window).on('load.scrollable', initScrollable);
+    }
+})(window.jQuery);
 /* ==========================================================================
    Component: To Top
    ========================================================================== */
@@ -306,43 +264,3 @@
 
 })(window.jQuery || window.$);
 
-/* ==========================================================================
-   [Component: c-file]
-   ========================================================================== */
-
-(function ($) {
-    'use strict';
-    if (!$) return;
-
-    $(document).on('change.cFile', '.js-file input[type="file"]', function () {
-        const file = this.files && this.files[0];
-        const $wrapper = $(this).closest('.js-file');
-        const $content = $wrapper.find('.js-file__content');
-        const $clearBtn = $wrapper.find('.js-file-clear');
-
-        if (!$content.data('default-text')) {
-            $content.data('default-text', $content.text().trim() || '添付する');
-        }
-
-        if (file) {
-            $content.text(file.name).addClass('is-active');
-            $clearBtn.addClass('is-active').show();
-        } else {
-            $content.text($content.data('default-text')).removeClass('is-active');
-            $clearBtn.removeClass('is-active').hide();
-        }
-    });
-
-    $(document).on('click.cFile', '.js-file-clear', function (e) {
-        e.preventDefault();
-        const $wrapper = $(this).closest('.js-file');
-        const $input = $wrapper.find('input[type="file"]');
-        const $content = $wrapper.find('.js-file__content');
-
-        $input.val('');
-        const defaultText = $content.data('default-text') || '添付する';
-        $content.text(defaultText).removeClass('is-active');
-        $(this).removeClass('is-active').hide();
-    });
-
-})(window.jQuery || window.$);
