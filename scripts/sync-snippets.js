@@ -9,13 +9,12 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'fs';
 import { resolve, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
+import { WORKBENCH_COMPONENTS_DIR } from './tools/config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
-const WB_COMPONENTS_DIR = resolve(ROOT, 'workbench/components');
-const SRC_COMPONENTS_DIR = resolve(ROOT, 'src/components');
-const PAGES_COMPONENTS_DIR = resolve(ROOT, 'src/pages/components');
+const WB_COMPONENTS_DIR = WORKBENCH_COMPONENTS_DIR || resolve(ROOT, 'workbench/components');
 const SNIPPETS_FILE = resolve(ROOT, '.vscode/jline-components.code-snippets');
 const SNIPPET_SCOPE = 'html,ejs,php,blade,vue,svelte,astro,liquid,twig,nunjucks,handlebars,mustache,erb,edge';
 
@@ -113,6 +112,15 @@ function extractFlocssComponents(html, fileName) {
 
     const fullHtml = extractBalancedTag(html, startIndex);
     if (!fullHtml) continue;
+
+    // Skip empty non-void component tags (e.g., <header class="c-header"></header>)
+    if (!VOID_TAGS.has(tagName) && !match[0].endsWith('/>')) {
+      const innerContent = fullHtml
+        .slice(match[0].length, fullHtml.length - (`</${tagName}>`).length)
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .trim();
+      if (!innerContent) continue;
+    }
 
     const endIndex = startIndex + fullHtml.length;
     extractedRanges.push({ start: startIndex, end: endIndex });
@@ -278,11 +286,7 @@ function formatSnippetBody(rawHtml, tagName, mainClass, classStr) {
 export function syncSnippets(options = {}) {
   const { quiet = false } = options;
 
-  const targetDirs = [WB_COMPONENTS_DIR, SRC_COMPONENTS_DIR, PAGES_COMPONENTS_DIR].filter(d => existsSync(d));
-  if (targetDirs.length === 0) {
-    if (!quiet) console.warn('[snippets] No component directories found.');
-    return;
-  }
+  const targetDirs = [WB_COMPONENTS_DIR].filter(d => existsSync(d));
 
   const generated = {};
   const stats = {};
