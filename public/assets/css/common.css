@@ -718,6 +718,10 @@ component > Other (Badges, Tags, Status Labels)
 component > popup
 ------------------------------
 */
+/*!
+component > header
+------------------------------
+*/
 /* ==========================================================================
    Component: Inview Animations (FLOCSS Component Block & Modifiers)
    --------------------------------------------------------------------------
@@ -976,10 +980,6 @@ component > popup
 /* --------------------------------------------------------------------------
    Accessibility: Respect user preference for reduced motion
    -------------------------------------------------------------------------- */
-/*!
-component > header
-------------------------------
-*/
 /*!
 component > cookie
 ------------------------------
