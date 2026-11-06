@@ -8,10 +8,11 @@ import * as phpPlugin from '@prettier/plugin-php';
 
 import {
   isWatch, skipFormat, OUTPUT_EXT, USE_PHP_INCLUDE, SITE_URL,
-  INCLUDE_DIRS, PAGES_DIR, LAYOUTS_DIR, DIST, refreshIncludeDirs,
+  INCLUDE_DIRS, PAGES_DIR, LAYOUTS_DIR, DIST, ROOT, refreshIncludeDirs,
   DIP, DIP_PO, PAGE_OUT_PREFIXES
 } from '../tools/config.js';
 import { norm, ensureDir, walkSync } from '../tools/utils.js';
+import { loadDipSnippets, injectDipSnippets } from '../tools/dip-snippets.js';
 
 const beautifyOptions = {
   indent_size: 4,
@@ -41,6 +42,9 @@ export async function formatCode(code, destExt) {
 }
 
 export async function buildEjs(changedFile) {
+  const dipSnippets = DIP && DIP_PO
+    ? await loadDipSnippets(resolve(ROOT, 'dip-config.js'))
+    : null;
   // Re-scan include dirs to detect runtime changes (rename, add, delete)
   refreshIncludeDirs();
   if (OUTPUT_EXT === '.php' && USE_PHP_INCLUDE) {
@@ -102,7 +106,7 @@ export async function buildEjs(changedFile) {
     const isPartialOrLayout = changedBase.startsWith('_') || changedNorm.includes('/layouts/') || isInIncludeDir;
 
     if (!isPartialOrLayout && changedNorm.includes('/pages/')) {
-      await renderEjsFile(changedFile);
+      await renderEjsFile(changedFile, dipSnippets);
       return;
     }
   }
@@ -110,7 +114,7 @@ export async function buildEjs(changedFile) {
   const errors = [];
   for (const file of ejsFiles) {
     try {
-      await renderEjsFile(file);
+      await renderEjsFile(file, dipSnippets);
     } catch (err) {
       errors.push({ file, error: err });
     }
@@ -124,7 +128,7 @@ export async function buildEjs(changedFile) {
   }
 }
 
-async function renderEjsFile(filePath) {
+async function renderEjsFile(filePath, dipSnippets) {
   try {
     const raw = readFileSync(filePath, 'utf8');
     const { data: frontData, content } = matter(raw);
@@ -237,9 +241,12 @@ async function renderEjsFile(filePath) {
     }
 
     for (const prefix of PAGE_OUT_PREFIXES) {
+      const outputHtml = dipSnippets
+        ? injectDipSnippets(finalFormattedHtml, prefix, dipSnippets)
+        : finalFormattedHtml;
       const outPath = resolve(DIST, prefix, relPath.replace(/\.ejs$/, OUTPUT_EXT));
       ensureDir(dirname(outPath));
-      writeFileSync(outPath, finalFormattedHtml, 'utf8');
+      writeFileSync(outPath, outputHtml, 'utf8');
       console.log(`[ejs] ${relPath} → ${norm(relative(DIST, outPath))}`);
     }
   } catch (err) {

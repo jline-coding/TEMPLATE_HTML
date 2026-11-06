@@ -188,6 +188,8 @@ EJSコンポーネントから一般的な静的HTMLをビルドします。
      - `"DIP_PO"`: `"op186589"` (任意: 指定した場合は `pc/op186589` と `sp/op186589` の完全独立ソースとしてデュアルビルド)
 2. **コード記述**: 通常通り `src/` フォルダ内でコーディングします。画像等のリンクは `./assets/images/...` のままで問題ありません。
 3. **自動最適化**: ビルド時にすべてのHTMLから `assets/` が自動で削除され、`DIP_PO` がある場合はすべてのソースがそれぞれのターゲットフォルダへ複製されます。ローカル開発時は自動的に該当のPCディレクトリ（例：`http://localhost:8687/pc/op186589/`）を開きます。
+4. **PC/SP個別のタグ**: ルートの`dip-config.js`に、`pc` / `sp`それぞれの`bodyStart`（`<body>`直後）と`bodyEnd`（`</body>`直前）を設定できます。バッククォートで囲んだ文字列に支給されたHTML・スクリプトを貼り付けてください。文字列は整形・パス変換後に挿入するため、その内容を維持します。`DIP=true`かつ`DIP_PO`設定時のみ読み込みます。空文字またはファイル未配置の場合は挿入しません。開発中は保存・追加・削除でページを再ビルドします。`dip-config.json`は読み込みません。
+   - JavaScriptの文字列なので、コードにバッククォート、`${`、バックスラッシュが含まれる場合は、それぞれ`` \` ``、`\${`、`\\`と記述してください。既存のメタタグやレイアウトは変更しません。
 - **🚀 クイック起動コマンド**:
   ```bash
   npm run dev        # 開発開始 (Dev起動)
@@ -380,6 +382,8 @@ Mục đích: Dành riêng cho các dự án upload lên Rakuten RMS và Gold, y
      - `"DIP_PO"`: `"op186589"` (Tùy chọn: Nếu điền mã PO, hệ thống sẽ clone ra 2 cấu trúc song song `pc/op186589/` và `sp/op186589/`)
 2. **Code**: Bạn vẫn code bình thường trong `src/` giống y hệt như dự án thường. Đường dẫn ảnh vẫn gọi là `./assets/images/...`.
 3. **Tự động tối ưu**: Lúc build, hệ thống tự động bóc tách và phân luồng thư mục chuẩn xác. Dev server cũng sẽ tự động chuyển hướng vào thư mục đích (VD: `http://localhost:8687/pc/op186589/`) để bạn soi giao diện không bị lệch link.
+4. **Mã riêng cho PC/SP**: File `dip-config.js` ở thư mục gốc chứa `pc` / `sp`, mỗi bản có `bodyStart` (ngay sau `<body>`) và `bodyEnd` (ngay trước `</body>`). Dán HTML/script khách hàng vào giữa hai dấu backtick. Build chèn nguyên chuỗi sau bước format và xử lý đường dẫn, nên giữ nguyên nội dung, xuống dòng và khoảng trắng của chuỗi. Chỉ đọc file khi `DIP=true` và có `DIP_PO`; để chuỗi rỗng hoặc không có file thì không chèn. Khi chạy dev, lưu/thêm/xóa file sẽ tự build lại các trang. File `dip-config.json` không được sử dụng.
+   - Đây là chuỗi JavaScript: nếu mã có backtick, `${` hoặc dấu gạch chéo ngược, cần viết tương ứng là `` \` ``, `\${`, `\\` để giá trị chuỗi giữ đúng ký tự gốc. Metadata và layout hiện có vẫn dùng như trước.
 - **🚀 Lệnh Khởi Chạy Nhanh**:
   ```bash
   npm run dev        # Chạy dev

@@ -8,7 +8,7 @@ import { pathToFileURL } from 'url';
 import { extname, relative, resolve, basename, dirname } from 'path';
 
 import {
-  MODE, OUTPUT_EXT, USE_PHP_INCLUDE, PROXY_URL, 
+  MODE, OUTPUT_EXT, USE_PHP_INCLUDE, PROXY_URL, DIP, DIP_PO,
   isWatch, isRenew, ROOT, DIST, SRC, PAGES_DIR, CSS_OUTPUT_RELS,
   JS_DIR, IMAGES_DIR, VIDEOS_DIR, VENDOR_DIR, SCSS_DIR, RENEW_SCSS_DIRS,
   LAYOUTS_DIR,
@@ -252,7 +252,8 @@ async function startWatch() {
     awaitWriteFinish: { stabilityThreshold: 150, pollInterval: 50 },
   };
 
-  const watcher = chokidarWatch('.', watchOpts);
+  const dipConfigPath = DIP && DIP_PO ? resolve(ROOT, 'dip-config.js') : null;
+  const watcher = chokidarWatch(dipConfigPath ? ['.', dipConfigPath] : '.', watchOpts);
   watcher.on('change', (fp) => router.add('change', getAbs(fp)));
   watcher.on('add', (fp) => router.add('add', getAbs(fp)));
   watcher.on('unlink', (fp) => router.add('unlink', getAbs(fp)));
@@ -301,6 +302,11 @@ async function startWatch() {
 
     // Handle Adds + Changes
     for (const fp of [...added, ...changed]) {
+      if (dipConfigPath && fp === dipConfigPath) {
+        needsEjsFullRebuild = true;
+        needsFullReload = true;
+        continue;
+      }
       const ext = extname(fp).toLowerCase();
       
       if (isRenew) {
@@ -348,6 +354,11 @@ async function startWatch() {
 
     // Handle Unlinks
     for (const fp of unlinked) {
+      if (dipConfigPath && fp === dipConfigPath) {
+        needsEjsFullRebuild = true;
+        needsFullReload = true;
+        continue;
+      }
       const ext = extname(fp).toLowerCase();
       
       if (isRenew) {
