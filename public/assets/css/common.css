@@ -33,7 +33,7 @@ UTILITIES
   font-size: 0.875rem;
 }
 
-.c-txt18 {
+.c-btn, .c-txt18 {
   font-size: 0.875rem;
 }
 
@@ -625,6 +625,42 @@ component > titles
 component > btn
 ------------------------------
 */
+.c-btn {
+  border: 1px solid var(--primary);
+  background-color: var(--primary);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  min-height: 56px;
+  width: 260px;
+  line-height: 1.6;
+  font-weight: 700;
+  padding: 10px 20px;
+}
+.c-btn--arrow {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+.c-btn--arrow .c-btn__content {
+  width: 100%;
+}
+.c-btn--arrow::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  display: block;
+  flex-shrink: 0;
+  border-top: 2px solid var(--white);
+  border-right: 2px solid var(--white);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  transition: 0.5s;
+}
+
 .c-totop {
   position: fixed;
   right: 20px;
@@ -716,6 +752,10 @@ component > Other (Badges, Tags, Status Labels)
 */
 /*!
 component > popup
+------------------------------
+*/
+/*!
+component > header
 ------------------------------
 */
 /* ==========================================================================
@@ -977,10 +1017,6 @@ component > popup
    Accessibility: Respect user preference for reduced motion
    -------------------------------------------------------------------------- */
 /*!
-component > header
-------------------------------
-*/
-/*!
 component > cookie
 ------------------------------
 */
@@ -1056,7 +1092,7 @@ Custom layout structures & wrappers
   .c-txt16, body {
     font-size: clamp(0.875rem, 0.4237vw + 0.6716rem, 1rem);
   }
-  .c-txt18 {
+  .c-btn, .c-txt18 {
     font-size: clamp(0.875rem, 0.8475vw + 0.4682rem, 1.125rem);
   }
   .c-txt20 {
@@ -1071,6 +1107,28 @@ Custom layout structures & wrappers
   }
   .is-sp {
     display: none !important;
+  }
+  .c-btn {
+    border: 2px solid var(--primary);
+    min-height: 64px;
+    gap: 15px;
+    width: 320px;
+  }
+  .c-btn:hover {
+    opacity: 1;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    background-color: var(--white);
+  }
+  .c-btn:hover::after {
+    border-color: var(--primary);
+  }
+  .c-btn--arrow {
+    gap: 10px;
+  }
+  .c-btn--arrow::after {
+    width: 12px;
+    height: 12px;
   }
   .c-totop {
     right: 60px;
