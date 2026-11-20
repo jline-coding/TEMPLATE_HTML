@@ -21,7 +21,7 @@ yarn-error.log*
 
 .repo_lock
 .htpasswd
-.htaccess
+/.htaccess
 .deploy_sha
 .deploy_manifest.json
 .env

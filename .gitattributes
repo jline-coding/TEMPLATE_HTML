@@ -44,6 +44,7 @@ public/** merge=ours
 
 # Apache & Server Config (Bắt buộc LF để server Linux không bị lỗi 500)
 .htaccess text eol=lf
+.htaccess.* text eol=lf
 .htpasswd text eol=lf
 
 # Mailformpro (Perl / CGI / Templates của Nhật - Bắt buộc LF)

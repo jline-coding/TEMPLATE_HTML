@@ -13,6 +13,10 @@ const DEPLOY_ID = crypto.randomBytes(4).toString('hex');
 const TMP_DIR = path.join(os.tmpdir(), `deploy_${DEPLOY_ID}`);
 fs.mkdirSync(TMP_DIR, { recursive: true });
 
+const PROTECTED_FILES = ['.repo_lock', '.htaccess', '.htpasswd', '.deploy_sha', '.deploy_manifest.json'];
+const HTACCESS_BEGIN_MARKER = '# BEGIN AUTO BASIC AUTH';
+const HTACCESS_END_MARKER = '# END AUTO BASIC AUTH';
+
 /**
  * Hash password using apr1 (MD5-APR1) algorithm for .htpasswd.
  * Tries openssl first (strong), falls back to apache-crypt (DES) for compatibility.
@@ -23,6 +27,188 @@ function hashPassword(password) {
     } catch {
         console.warn('[WARN] openssl not available, falling back to DES hash (weaker)');
         return crypt(password);
+    }
+}
+
+function normalizeLf(text) {
+    return String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+}
+
+function hasAutoBasicAuthMarker(text) {
+    return /^# BEGIN AUTO BASIC AUTH\s*$/m.test(normalizeLf(text));
+}
+
+function stripAutoBasicAuth(text) {
+    const lines = normalizeLf(text).split('\n');
+    const kept = [];
+    let skip = false;
+    for (const line of lines) {
+        if (/^# BEGIN AUTO BASIC AUTH\s*$/.test(line)) {
+            skip = true;
+            continue;
+        }
+        if (/^# END AUTO BASIC AUTH\s*$/.test(line)) {
+            skip = false;
+            continue;
+        }
+        if (!skip) kept.push(line);
+    }
+    while (kept.length && /^\s*$/.test(kept[0])) kept.shift();
+    while (kept.length && /^\s*$/.test(kept[kept.length - 1])) kept.pop();
+    return kept.join('\n');
+}
+
+function buildBasicAuthBlock(authUserFilePath) {
+    return [
+        HTACCESS_BEGIN_MARKER,
+        '<Files ~ "^\\.">',
+        'Deny from all',
+        '</Files>',
+        'AuthType Basic',
+        'AuthName "Restricted Area"',
+        `AuthUserFile ${authUserFilePath}`,
+        'Require valid-user',
+        HTACCESS_END_MARKER,
+    ].join('\n');
+}
+
+function composeHtaccess(basicAuthBlock, customContent) {
+    const auth = (basicAuthBlock || '').trim();
+    const body = stripAutoBasicAuth(customContent);
+    if (auth && body) return `${auth}\n\n${body}\n`;
+    if (auth) return `${auth}\n`;
+    if (body) return `${body}\n`;
+    return '';
+}
+
+/**
+ * Validate and resolve the optional "htaccess" setting before any network connection.
+ * Supports: "merge" (default), "basic_auth_only", "preserve", or a safe relative file path inside cwd.
+ */
+function resolveHtaccessConfig(rawValue, sourceFolder, cwd = process.cwd()) {
+    const value = (rawValue === undefined || rawValue === null || String(rawValue).trim() === '')
+        ? 'merge'
+        : String(rawValue).trim();
+
+    if (value === 'merge') {
+        return { mode: 'merge', sourceFile: path.resolve(cwd, sourceFolder, '.htaccess') };
+    }
+    if (value === 'basic_auth_only') {
+        return { mode: 'basic_auth_only', sourceFile: null };
+    }
+    if (value === 'preserve') {
+        return { mode: 'preserve', sourceFile: null };
+    }
+
+    const forbiddenPattern = /^(\.git(\/|$)|\.env($|\.)|node_modules(\/|$)|\.htpasswd$)/;
+    if (
+        !/^[a-zA-Z0-9_./-]+$/.test(value) ||
+        value.startsWith('/') ||
+        /(^|\/)\.\.(\/|$)/.test(value) ||
+        forbiddenPattern.test(value)
+    ) {
+        throw new Error(
+            `[SECURITY P0] htaccess "${value}" khong hop le hoac chua path traversal! ` +
+            'Chi cho phep: "merge", "basic_auth_only", "preserve", hoac duong dan file tuong doi an toan trong repo.'
+        );
+    }
+
+    const resolvedCwd = path.resolve(cwd);
+    const resolvedTarget = path.resolve(resolvedCwd, value);
+    const relTarget = path.relative(resolvedCwd, resolvedTarget);
+    if (!relTarget || relTarget.startsWith('..') || path.isAbsolute(relTarget)) {
+        throw new Error(`[SECURITY P0] htaccess "${value}" vuot ra ngoai thu muc du an!`);
+    }
+
+    if (!fs.existsSync(resolvedTarget)) {
+        throw new Error(`Khong tim thay file htaccess tuy chinh: "${value}"!`);
+    }
+
+    if (typeof fs.statSync === 'function' && !fs.statSync(resolvedTarget).isFile()) {
+        throw new Error(`Duong dan htaccess "${value}" khong phai la file hop le!`);
+    }
+
+    if (typeof fs.realpathSync === 'function') {
+        const realCwd = fs.realpathSync(resolvedCwd);
+        const realTarget = fs.realpathSync(resolvedTarget);
+        const realRel = path.relative(realCwd, realTarget);
+        if (!realRel || realRel.startsWith('..') || path.isAbsolute(realRel)) {
+            throw new Error(`[SECURITY P0] htaccess symlink "${value}" tro ra ngoai thu muc du an!`);
+        }
+    }
+
+    return { mode: 'file', sourceFile: resolvedTarget };
+}
+
+/**
+ * Synchronize .htpasswd & .htaccess on FTP server according to resolved htaccess mode.
+ */
+async function syncHtaccessFtp(client, ftpRoot, targetDir, config, serverInfo, htaccessResolved) {
+    console.log(`Syncing .htpasswd & .htaccess (mode: ${htaccessResolved.mode})...`);
+    await client.cd(ftpRoot);
+
+    let basicAuthBlock = '';
+    if (config.basic_auth) {
+        const hashedPass = hashPassword(config.basic_auth.password);
+        const htpasswdLocal = path.join(TMP_DIR, '.htpasswd');
+        fs.writeFileSync(htpasswdLocal, `${config.basic_auth.username}:${hashedPass}\n`);
+        await client.uploadFrom(htpasswdLocal, `${targetDir}/.htpasswd`);
+        basicAuthBlock = buildBasicAuthBlock(`${serverInfo.root_path}/${config.project_dir}/.htpasswd`);
+    } else {
+        try { await client.remove(`${targetDir}/.htpasswd`); } catch (e) {}
+    }
+
+    if (htaccessResolved.mode === 'preserve') {
+        const remoteLocal = path.join(TMP_DIR, '.htaccess.remote');
+        let remoteRaw = null;
+        try {
+            await client.cd(ftpRoot);
+            await client.downloadTo(remoteLocal, `${targetDir}/.htaccess`);
+            remoteRaw = fs.readFileSync(remoteLocal, 'utf8');
+        } catch {
+            remoteRaw = null;
+        }
+        await client.cd(ftpRoot);
+
+        const hasMarker = remoteRaw !== null && hasAutoBasicAuthMarker(remoteRaw);
+        const preservedBody = remoteRaw !== null ? stripAutoBasicAuth(remoteRaw) : '';
+
+        if (basicAuthBlock) {
+            const finalContent = composeHtaccess(basicAuthBlock, preservedBody);
+            const htaccessLocal = path.join(TMP_DIR, '.htaccess');
+            fs.writeFileSync(htaccessLocal, finalContent);
+            await client.uploadFrom(htaccessLocal, `${targetDir}/.htaccess`);
+            console.log('[OK] .htaccess da cap nhat block Basic Auth va giu nguyen rule tren server (mode: preserve).');
+        } else if (hasMarker) {
+            if (preservedBody) {
+                const htaccessLocal = path.join(TMP_DIR, '.htaccess');
+                fs.writeFileSync(htaccessLocal, `${preservedBody}\n`);
+                await client.uploadFrom(htaccessLocal, `${targetDir}/.htaccess`);
+                console.log('[OK] Da go bo block Basic Auth tu dong va giu nguyen rule tren server (mode: preserve).');
+            } else {
+                try { await client.remove(`${targetDir}/.htaccess`); } catch (e) {}
+                console.log('[OK] Da go bo .htaccess (chi chua block Basic Auth tu dong).');
+            }
+        } else {
+            console.log('[INFO] htaccess=preserve -> giu nguyen .htaccess hien co tren server.');
+        }
+        return;
+    }
+
+    let customRaw = '';
+    if (htaccessResolved.sourceFile && fs.existsSync(htaccessResolved.sourceFile)) {
+        customRaw = fs.readFileSync(htaccessResolved.sourceFile, 'utf8');
+    }
+
+    const finalContent = composeHtaccess(basicAuthBlock, customRaw);
+    if (finalContent) {
+        const htaccessLocal = path.join(TMP_DIR, '.htaccess');
+        fs.writeFileSync(htaccessLocal, finalContent);
+        await client.uploadFrom(htaccessLocal, `${targetDir}/.htaccess`);
+        console.log(`[OK] .htaccess da dong bo (mode: ${htaccessResolved.mode}).`);
+    } else {
+        try { await client.remove(`${targetDir}/.htaccess`); } catch (e) {}
+        console.log('[INFO] Da go bo .htaccess (khong co basic_auth va khong co rule .htaccess nguon).');
     }
 }
 
@@ -92,6 +278,9 @@ function validateConfig(config) {
             errors.push('Truong "basic_auth" neu co thi phai chua "username" va "password"');
         }
     }
+    if (config.htaccess !== undefined && typeof config.htaccess !== 'string') {
+        errors.push('Truong "htaccess" neu co thi phai la kieu string');
+    }
 
     return errors;
 }
@@ -148,6 +337,7 @@ async function uploadDirectory(client, localDir, remoteDir, ftpRoot) {
     let uploadCount = 0;
 
     for (const relPath of files) {
+        if (PROTECTED_FILES.includes(relPath) || relPath.startsWith('.deploy/')) continue;
         const localFilePath = path.join(localDir, relPath);
         const remoteFilePath = `${remoteDir}/${relPath}`;
 
@@ -181,10 +371,13 @@ async function uploadViaZip(client, localDir, remoteDir, ftpRoot, config, server
     const phpRemotePath = `${remoteDir}/${phpFilename}`;
 
     try {
-        // 1. Create ZIP
+        // 1. Create ZIP (exclude root protected files only so subdirectory .htaccess files are preserved)
         console.log('Dang nen source thanh ZIP...');
         try { fs.unlinkSync(zipPath); } catch { /* ignore */ }
-        execSync(`cd "${localDir}" && zip -r "${zipPath}" . -x '.*'`, { stdio: 'pipe' });
+        execSync(
+            `cd "${localDir}" && zip -r "${zipPath}" . -x '.htaccess' '.htpasswd' '.repo_lock' '.deploy_sha' '.deploy_manifest.json' '.deploy/*' '.DS_Store' '*/.DS_Store'`,
+            { stdio: 'pipe' }
+        );
         const zipSize = fs.statSync(zipPath).size;
         console.log(`   ZIP size: ${(zipSize / 1024 / 1024).toFixed(2)} MB`);
 
@@ -423,6 +616,7 @@ async function runDeploy() {
         server: envConfig.server,
         project_dir: envConfig.project_dir || rawConfig.project_dir,
         basic_auth: envConfig.basic_auth,
+        htaccess: envConfig.htaccess !== undefined ? envConfig.htaccess : (rawConfig.htaccess !== undefined ? rawConfig.htaccess : 'merge'),
     };
 
     // Helper to mask project directory to prevent leaking server structure
@@ -432,6 +626,7 @@ async function runDeploy() {
 
     console.log(`   Server: ${config.server}`);
     console.log(`   Directory: ${maskedDir}`);
+    console.log(`   Htaccess: ${config.htaccess || 'merge'}`);
     console.log('');
 
     // VALIDATION
@@ -474,6 +669,15 @@ async function runDeploy() {
         resolvedSource === resolvedCwd
     ) {
         console.error(`[ERROR] [SECURITY P0] source_folder "${config.source_folder}" is unsafe or contains path traversal!`);
+        process.exit(1);
+    }
+
+    // Validate & resolve htaccess configuration BEFORE connecting to FTP
+    let htaccessResolved;
+    try {
+        htaccessResolved = resolveHtaccessConfig(config.htaccess, config.source_folder, process.cwd());
+    } catch (err) {
+        console.error(`[ERROR] ${err.message}`);
         process.exit(1);
     }
 
@@ -592,36 +796,14 @@ async function runDeploy() {
             fs.writeFileSync(path.join(TMP_DIR, '.repo_lock'), lockId);
             await client.uploadFrom(path.join(TMP_DIR, '.repo_lock'), `${remoteMetaDir}/.repo_lock`);
 
-            // 2 & 3. Create .htpasswd & .htaccess
-            if (config.basic_auth) {
-                console.log('Creating .htpasswd & .htaccess...');
-                const hashedPass = hashPassword(config.basic_auth.password);
-                fs.writeFileSync(path.join(TMP_DIR, '.htpasswd'), `${config.basic_auth.username}:${hashedPass}`);
-                await client.uploadFrom(path.join(TMP_DIR, '.htpasswd'), `${targetDir}/.htpasswd`);
-
-                const htaccessLines = [
-                    '<Files ~ "^\\.">',
-                    'Deny from all',
-                    '</Files>',
-                    'AuthType Basic',
-                    'AuthName "Restricted Area"',
-                    `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
-                    'Require valid-user'
-                ];
-                fs.writeFileSync(path.join(TMP_DIR, '.htaccess'), htaccessLines.join('\n'));
-                await client.uploadFrom(path.join(TMP_DIR, '.htaccess'), `${targetDir}/.htaccess`);
-            } else {
-                console.log('--- Removing basic_auth (if exists) ---');
-                try { await client.remove(`${targetDir}/.htpasswd`); } catch (e) {}
-                try { await client.remove(`${targetDir}/.htaccess`); } catch (e) {}
-                console.log('[INFO] basic_auth omitted - removed any old .htaccess/.htpasswd.');
-            }
-
-            // 4. Upload all source (ZIP fast or file-by-file fallback)
+            // 2. Upload all source FIRST (so custom .htaccess redirects/rules cannot interfere with PHP extractor)
             console.log(`Uploading all files from ${config.source_folder}/...`);
             await uploadViaZip(client, config.source_folder, targetDir, ftpRoot, config, serverInfo);
 
-            // 5. Save manifest (file list + hashes)
+            // 3. Sync .htpasswd & .htaccess according to configured mode
+            await syncHtaccessFtp(client, ftpRoot, targetDir, config, serverInfo, htaccessResolved);
+
+            // 4. Save manifest (file list + hashes)
             console.log('Saving manifest...');
             const manifest = generateManifest(config.source_folder);
             fs.writeFileSync(path.join(TMP_DIR, '.deploy_manifest.json'), JSON.stringify(manifest));
@@ -650,33 +832,7 @@ async function runDeploy() {
             await client.ensureDir(remoteMetaDir);
             await client.cd(ftpRoot);
 
-            // Re-sync .htpasswd & .htaccess
-            if (config.basic_auth) {
-                console.log('Syncing .htpasswd & .htaccess...');
-                const hashedPass = hashPassword(config.basic_auth.password);
-                fs.writeFileSync(path.join(TMP_DIR, '.htpasswd'), `${config.basic_auth.username}:${hashedPass}`);
-                await client.uploadFrom(path.join(TMP_DIR, '.htpasswd'), `${targetDir}/.htpasswd`);
-
-                const htaccessLinesUpdate = [
-                    '<Files ~ "^\\.">',
-                    'Deny from all',
-                    '</Files>',
-                    'AuthType Basic',
-                    'AuthName "Restricted Area"',
-                    `AuthUserFile ${serverInfo.root_path}/${config.project_dir}/.htpasswd`,
-                    'Require valid-user'
-                ];
-                fs.writeFileSync(path.join(TMP_DIR, '.htaccess'), htaccessLinesUpdate.join('\n'));
-                await client.uploadFrom(path.join(TMP_DIR, '.htaccess'), `${targetDir}/.htaccess`);
-                console.log('[OK] .htpasswd & .htaccess synced.');
-            } else {
-                console.log('--- Removing basic_auth (if exists) ---');
-                try { await client.remove(`${targetDir}/.htpasswd`); } catch (e) {}
-                try { await client.remove(`${targetDir}/.htaccess`); } catch (e) {}
-                console.log('[INFO] basic_auth omitted - removed any old .htaccess/.htpasswd.');
-            }
-
-            // Check SHA - quick skip if no changes
+            // Check SHA - quick skip if no changes (still re-syncs .htaccess)
             let lastDeployedSha = '';
             const shaLocalPath = path.join(TMP_DIR, '.deploy_sha');
             const shaFound = await tryDownloadFrom(client, shaLocalPath, [
@@ -699,6 +855,7 @@ async function runDeploy() {
             console.log(`Current SHA:  ${currentSha.substring(0, 8)}`);
 
             if (lastDeployedSha === currentSha) {
+                await syncHtaccessFtp(client, ftpRoot, targetDir, config, serverInfo, htaccessResolved);
                 console.log('[INFO] SHA matched - nothing to update.');
                 return;
             }
@@ -729,9 +886,7 @@ async function runDeploy() {
                 console.log('[INFO] Old manifest not found - will upload all.');
             }
 
-            // SECURITY LAYER 3: PROTECTED FILES
-            const PROTECTED_FILES = ['.repo_lock', '.htaccess', '.htpasswd', '.deploy_sha', '.deploy_manifest.json'];
-
+            // SECURITY LAYER 3: PROTECTED FILES (shared top-level PROTECTED_FILES)
             if (!oldManifest) {
                 // --- No old manifest -> Full ZIP upload ---
                 console.log('Switching to full source upload (ZIP)...');
@@ -796,11 +951,16 @@ async function runDeploy() {
                 }
             }
 
+            // Re-sync .htpasswd & .htaccess AFTER source upload so custom rules cannot block extractor
+            await syncHtaccessFtp(client, ftpRoot, targetDir, config, serverInfo, htaccessResolved);
+
             // Cleanup old orphaned files from root if transitioning to .deploy
             try { await client.remove(`${targetDir}/.repo_lock`); } catch(e) {}
             try { await client.remove(`${targetDir}/.deploy_sha`); } catch(e) {}
             try { await client.remove(`${targetDir}/.deploy_manifest.json`); } catch(e) {}
-            try { await client.removeDir(`${targetDir}/.deploy`); } catch(e) {} // Clean up old .deploy folder
+            if (remoteMetaDir !== `${targetDir}/.deploy`) {
+                try { await client.removeDir(`${targetDir}/.deploy`); } catch(e) {} // Clean up old .deploy folder
+            }
 
             // --- Save new manifest + SHA ---
             fs.writeFileSync(path.join(TMP_DIR, '.deploy_manifest.json'), JSON.stringify(currentManifest));
@@ -820,6 +980,9 @@ async function runDeploy() {
         process.exit(1);
     } finally {
         client.close();
+        try {
+            if (typeof fs.rmSync === 'function') fs.rmSync(TMP_DIR, { recursive: true, force: true });
+        } catch {}
         console.log('');
         console.log('FTP connection closed.');
     }

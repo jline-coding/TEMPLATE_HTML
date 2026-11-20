@@ -15,6 +15,10 @@
       "type": "string",
       "description": "Tên thư mục dự án dùng chung cho production và test (có thể override riêng trong từng môi trường)"
     },
+    "htaccess": {
+      "type": "string",
+      "description": "Chế độ xử lý .htaccess mặc định cho các môi trường: \"merge\" (mặc định: tự ghép basic_auth với public/.htaccess), \"basic_auth_only\" (chỉ dùng basic_auth), \"preserve\" (giữ nguyên .htaccess sẵn có trên server), hoặc đường dẫn file tương đối trong repo (vd: \".htaccess.test\"). Có thể override riêng trong từng môi trường."
+    },
     "production": {
       "$ref": "#/definitions/environment"
     },
@@ -48,6 +52,10 @@
           },
           "required": ["username", "password"],
           "description": "Tùy chọn thiết lập Basic Auth bảo vệ thư mục"
+        },
+        "htaccess": {
+          "type": "string",
+          "description": "Chế độ xử lý .htaccess riêng cho môi trường này: \"merge\" (mặc định: ghép basic_auth với public/.htaccess), \"basic_auth_only\" (chỉ dùng basic_auth, bỏ qua public/.htaccess), \"preserve\" (giữ nguyên .htaccess trên server, chỉ cập nhật block Basic Auth nếu bật), hoặc đường dẫn file tương đối trong repo (vd: \".htaccess.test\", \"config/.htaccess.prod\")."
         }
       },
       "required": ["deploy_method", "server"]

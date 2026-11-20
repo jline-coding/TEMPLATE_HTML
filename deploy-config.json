@@ -19,6 +19,7 @@
   "test": {
     "deploy_method": "ssh",
     "server": "JLWEB_SSH",
+    "htaccess": ".htaccess.test",
     "basic_auth": {
       "username": "test",
       "password": "test"

@@ -71,6 +71,7 @@ EJS、SCSSのコンパイル、および画像の最適化を行うための静�
 | **`[branch].deploy_method`**| 必須 | 環境別のデプロイ方式。`"ftp"`, `"ssh"`, `"zip"` が選択可能。 |
 | **`[branch].server`**| 任意 | GitHub Secrets に保管された接続設定の名前。`"zip"` の場合は空欄可。 |
 | **`[branch].basic_auth`**| 任意 | `"ftp"`/`"ssh"` デプロイ時に指定すると、自動的にベーシック認証の設定を施します。 |
+| **`[branch].htaccess`**| 任意 | `.htaccess` の適用方式（省略時は `"merge"`）。`"merge"`（`src/pages/.htaccess` 等からビルドされた `public/.htaccess` と `basic_auth` を自動マージ）、`"basic_auth_only"`（`public/.htaccess` を無視し Basic 認証のみ出力）、`"preserve"`（サーバー既存の `.htaccess` を保持し、`basic_auth` 指定時のみ `# BEGIN AUTO BASIC AUTH` ブロックを更新）、またはリポジトリ内の相対ファイルパス（例: `".htaccess.test"`）を指定可能。ルート直下の `htaccess` で共通デフォルトを設定し、環境ごとに上書きすることもできます。 |
 
 ## 3. ワークフロー（各ケースの実行手順）
 
@@ -265,6 +266,7 @@ Trước khi bắt đầu dự án, bạn cần cấu hình thư mục xuất, c
 | **`[nhánh].deploy_method`**| Bắt buộc | Phương thức đẩy code cho từng nhánh: `"ftp"`, `"ssh"`, hoặc `"zip"`. |
 | **`[nhánh].server`** | Tùy chọn | Khóa truy xuất lưu trữ trong phân luồng GitHub Secrets. Bỏ trống nếu áp dụng dạng nén mộc `"zip"`. |
 | **`[nhánh].basic_auth`**| Tùy chọn | Gắn xác thực cơ bản cho site trên Server lúc Test. Có thể thiết lập hoặc không (nếu không cần thiết, hãy xóa khối `basic_auth` này khỏi `deploy-config.json`). |
+| **`[nhánh].htaccess`**| Tùy chọn | Chế độ xử lý `.htaccess` khi deploy `ssh`/`ftp` (mặc định: `"merge"`). Dev đặt file `.htaccess` trong `src/pages/.htaccess` (mode `new`) hoặc `src/.htaccess` (mode `renew`) để tự build sang `public/.htaccess`: `"merge"` (tự ghép `basic_auth` với `public/.htaccess`), `"basic_auth_only"` (chỉ dùng `basic_auth`, bỏ qua `public/.htaccess` — hữu ích cho staging khi có rule redirect domain thật), `"preserve"` (giữ nguyên `.htaccess` sẵn có trên server, chỉ cập nhật khối `# BEGIN AUTO BASIC AUTH` nếu bật `basic_auth`), hoặc truyền đường dẫn file tương đối trong repo (VD: `".htaccess.test"`). Có thể khai báo mặc định ở root và override theo từng nhánh. |
 
 ## 3. Hướng Dẫn Thực Hành Các Trường Hợp
 
